@@ -58,7 +58,6 @@ public interface TrajectoryConstraint {
     /**
      * Constructs a MinMax with default values.
      */
-    public MinMax() {
-    }
+    public MinMax() {}
   }
 }

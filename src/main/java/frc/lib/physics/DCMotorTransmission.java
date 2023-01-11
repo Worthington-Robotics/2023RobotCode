@@ -7,7 +7,6 @@ import frc.lib.util.Util;
  * and efficiency losses).  The motor is assumed to be symmetric forward/reverse.
  */
 public class DCMotorTransmission {
-
     // All units must be SI!
     protected final double speed_per_volt_;  // rad/s per V (no load)
     protected final double torque_per_volt_;  // N m per V (stall)

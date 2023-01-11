@@ -14,8 +14,7 @@ public class AxisAction extends AxisTrigger {
   /**
    * Create a joystick button for triggering commands.
    *
-   * @param joystick     The GenericHID object that has the button (e.g. Joystick, KinectStick,
-   *                     etc)
+   * @param joystick The GenericHID object that has the button (e.g. Joystick, KinectStick, etc)
    * @param buttonNumber The button number (see {@link GenericHID#getRawButton(int) }
    */
   public AxisAction(GenericHID joystick, int axis, double trigger, boolean trigGreater) {
@@ -33,8 +32,8 @@ public class AxisAction extends AxisTrigger {
   @Override
   public boolean get() {
     boolean get =  m_joystick.getRawAxis(m_axis) >= m_trigger;
-    if(m_trigGreater){
-    return get;
+    if (m_trigGreater) {
+      return get;
     }
     return !get;
   }

@@ -13,21 +13,27 @@ import java.util.Arrays;
 public class DifferentialDrive {
     // All units must be SI!
 
-    // Equivalent mass when accelerating purely linearly, in kg.
-    // This is "equivalent" in that it also absorbs the effects of drivetrain inertia.
-    // Measure by doing drivetrain acceleration characterization in a straight line.
+    /**
+     * Equivalent mass when accelerating purely linearly, in kg.
+     * This is "equivalent" in that it also absorbs the effects of drivetrain inertia.
+     * Measure by doing drivetrain acceleration characterization in a straight line.
+     */
     protected final double mass_;
 
-    // Equivalent moment of inertia when accelerating purely angularly, in kg*m^2.
-    // This is "equivalent" in that it also absorbs the effects of drivetrain inertia.
-    // Measure by doing drivetrain acceleration characterization while turning in place.
+    /**
+     * Equivalent moment of inertia when accelerating purely angularly, in kg*m^2.
+     * This is "equivalent" in that it also absorbs the effects of drivetrain inertia.
+     * Measure by doing drivetrain acceleration characterization while turning in place.
+     */
     protected final double moi_;
 
-    // Drag torque (proportional to angular velocity) that resists turning, in N*m/rad/s
-    // Empirical testing of our drivebase showed that there was an unexplained loss in torque ~proportional to angular
-    // velocity, likely due to scrub of wheels.
-    // NOTE: this may not be a purely linear term, and we have done limited testing, but this factor helps our model to
-    // better match reality.  For future seasons, we should investigate what's going on here...
+    /**
+     * Drag torque (proportional to angular velocity) that resists turning, in N*m/rad/s
+     * Empirical testing of our drivebase showed that there was an unexplained loss in torque ~proportional to angular
+     * velocity, likely due to scrub of wheels.
+     * NOTE: this may not be a purely linear term, and we have done limited testing, but this factor helps our model to
+     * better match reality.  For future seasons, we should investigate what's going on here...
+     */
     protected final double angular_drag_;
 
     // Self-explanatory.  Measure by rolling the robot a known distance and counting encoder ticks.
@@ -218,22 +224,24 @@ public class DifferentialDrive {
     }
 
     public double getMaxAbsVelocity(double curvature, /*double dcurvature, */double max_abs_voltage) {
-        // Alternative implementation:
-        // (Tr - Tl) * r_wb / r_w = I * v^2 * dk
-        // (Tr + Tl) / r_w = 0
-        // T = Tr = -Tl
-        // 2T * r_wb / r_w = I*v^2*dk
-        // T = 2*I*v^2*dk*r_w/r_wb
-        // T = kt*(-vR/kv + V) = -kt*(-vL/vmax + V)
-        // Vr = v * (1 + k*r_wb)
-        // 0 = 2*I*dk*r_w/r_wb * v^2 + kt * ((1 + k*r_wb) * v / kv) - kt * V
-        // solve using quadratic formula?
-        // -b +/- sqrt(b^2 - 4*a*c) / (2a)
+        /**
+         * Alternative implementation:
+         * (Tr - Tl) * r_wb / r_w = I * v^2 * dk
+         * (Tr + Tl) / r_w = 0
+         * T = Tr = -Tl
+         * 2T * r_wb / r_w = I*v^2*dk
+         * T = 2*I*v^2*dk*r_w/r_wb
+         * T = kt*(-vR/kv + V) = -kt*(-vL/vmax + V)
+         * Vr = v * (1 + k*r_wb)
+         * 0 = 2*I*dk*r_w/r_wb * v^2 + kt * ((1 + k*r_wb) * v / kv) - kt * V
+         * solve using quadratic formula?
+         * -b +/- sqrt(b^2 - 4*a*c) / (2a)
 
-        // k = w / v
-        // v = r_w*(wr + wl) / 2
-        // w = r_w*(wr - wl) / (2 * r_wb)
-        // Plug in max_abs_voltage for each wheel.
+         * k = w / v
+         * v = r_w*(wr + wl) / 2
+         * w = r_w*(wr - wl) / (2 * r_wb)
+         * Plug in max_abs_voltage for each wheel.
+         */
         final double left_speed_at_max_voltage = left_transmission_.free_speed_at_voltage(max_abs_voltage);
         final double right_speed_at_max_voltage = right_transmission_.free_speed_at_voltage(max_abs_voltage);
         if (Util.epsilonEquals(curvature, 0.0)) {
@@ -261,7 +269,7 @@ public class DifferentialDrive {
         public double min;
         public double max;
     }
-    //TODO the faq?
+    //TODO: the faq?
     // Curvature is redundant here in the case that chassis_velocity is not purely angular.  It is the responsibility of
     // the caller to ensure that curvature = angular vel / linear vel in these cases.
     public MinMax getMinMaxAcceleration(final ChassisState chassis_velocity, double curvature, /*double dcurvature,*/ double
@@ -271,12 +279,14 @@ public class DifferentialDrive {
         result.min = Double.POSITIVE_INFINITY;
         result.max = Double.NEGATIVE_INFINITY;
 
-        // Math:
-        // (Tl + Tr) / r_w = m*a
-        // (Tr - Tl) / r_w * r_wb - drag*w = i*(a * k + v^2 * dk)
+        /**
+         * Math:
+         * (Tl + Tr) / r_w = m*a
+         * (Tr - Tl) / r_w * r_wb - drag*w = i*(a * k + v^2 * dk)
 
-        // 2 equations, 2 unknowns.
-        // Solve for a and (Tl|Tr)
+         * 2 equations, 2 unknowns.
+         * Solve for a and (Tl|Tr)
+         */
 
         final double linear_term = Double.isInfinite(curvature) ? 0.0 : mass_ * effective_wheelbase_radius_;
         final double angular_term = Double.isInfinite(curvature) ? moi_ : moi_ * curvature;
@@ -291,9 +301,11 @@ public class DifferentialDrive {
                 final double fixed_torque = fixed_transmission.getTorqueForVoltage(wheel_velocities.get(left), sign *
                         max_abs_voltage);
                 double variable_torque = 0.0;
-                // NOTE: variable_torque is wrong.  Units don't work out correctly.  We made a math error somewhere...
-                // Leaving this "as is" for code release so as not to be disingenuous, but this whole function needs
-                // revisiting in the future...
+                /**
+                 * NOTE: variable_torque is wrong.  Units don't work out correctly.  We made a math error somewhere...
+                 * Leaving this "as is" for code release so as not to be disingenuous, but this whole function needs
+                 * revisiting in the future...
+                 */
                 if (left) {
                     variable_torque = ((/*-moi_ * chassis_velocity.linear * chassis_velocity.linear * dcurvature*/ -drag_torque) * mass_ * wheel_radius_ + fixed_torque *
                             (linear_term + angular_term)) / (linear_term - angular_term);

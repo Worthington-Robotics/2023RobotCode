@@ -6,23 +6,23 @@ package frc.lib.loops;
  */
 public interface Loop {
     /**
-     * what the loop runs when started by the subsystem manager
+     * What the loop runs when started by the subsystem manager
      *
-     * @param timestamp handled by subsystem manager
+     * @param timestamp Handled by subsystem manager
      */
     public void onStart(double timestamp);
 
     /**
-     * what the loop runs while run by the subsystem manager
+     * What the loop runs while run by the subsystem manager
      *
-     * @param timestamp handled by subsystem manager
+     * @param timestamp Handled by subsystem manager
      */
     public void onLoop(double timestamp);
 
     /**
-     * what the loop runs when ended by the subsystem manager
+     * What the loop runs when ended by the subsystem manager
      *
-     * @param timestamp handled by subsystem manager
+     * @param timestamp Handled by subsystem manager
      */
     public void onStop(double timestamp);
 }

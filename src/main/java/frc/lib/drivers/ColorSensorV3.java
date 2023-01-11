@@ -86,7 +86,7 @@ public class ColorSensorV3 {
             return;
         }
 
-        if(!checkDeviceID()) {
+        if (!checkDeviceID()) {
             return;
         }
 
@@ -117,10 +117,10 @@ public class ColorSensorV3 {
     }
 
     enum MainControl {
-        kRGBMode(0x04),  /* If bit is set to 1, color channels are activated */
-        kLightSensorEnable(0x02),  /* Enable light sensor */
-        kProximitySensorEnable(0x01),  /* Proximity sensor active */
-        OFF(0x00);  /* Nothing on */
+        kRGBMode(0x04),  // If bit is set to 1, color channels are activated
+        kLightSensorEnable(0x02),  // Enable light sensor
+        kProximitySensorEnable(0x01),  // Proximity sensor active
+        OFF(0x00);  // Nothing on
 
         public final byte bVal;
         MainControl(int i) { this.bVal = (byte) i; }
@@ -144,7 +144,7 @@ public class ColorSensorV3 {
         kPulse25mA(0x03),
         kPulse50mA(0x04),
         kPulse75mA(0x05),
-        kPulse100mA(0x06), /* default value */
+        kPulse100mA(0x06), // Default value
         kPulse125mA(0x07);
 
         public final byte bVal;
@@ -152,7 +152,7 @@ public class ColorSensorV3 {
     }
 
     public enum LEDPulseFrequency {
-        kFreq60kHz(0x18), /* default value */
+        kFreq60kHz(0x18), // Default value
         kFreq70kHz(0x40),
         kFreq80kHz(0x28),
         kFreq90kHz(0x30),
@@ -177,7 +177,7 @@ public class ColorSensorV3 {
         kProxRate12ms(0x02),
         kProxRate25ms(0x03),
         kProxRate50ms(0x04),
-        kProxRate100ms(0x05), /* default value */
+        kProxRate100ms(0x05), // Default value
         kProxRate200ms(0x06),
         kProxRate400ms(0x07);
 
@@ -375,13 +375,14 @@ public class ColorSensorV3 {
 
     private boolean checkDeviceID() {
         ByteBuffer raw = ByteBuffer.allocate(1);
-        if(m_i2c.read(Register.kPartID.bVal, 1, raw)) {
+        if (m_i2c.read(Register.kPartID.bVal, 1, raw)) {
             DriverStation.reportError("Could not find REV color sensor", false);
             return false;
         }
 
-        if(kPartID != raw.get()) {
-            DriverStation.reportError("Unknown device found with same I2C addres as REV color sensor", false);
+        if (kPartID != raw.get()) {
+            DriverStation.reportError(
+                "Unknown device found with same I2C addres as REV color sensor", false);
             return false;
         }
 
@@ -396,7 +397,7 @@ public class ColorSensorV3 {
 
         write8(Register.kProximitySensorRate,
                 ProximitySensorResolution.kProxRes11bit.bVal |
-                        ProximitySensorMeasurementRate.kProxRate100ms.bVal);
+                ProximitySensorMeasurementRate.kProxRate100ms.bVal);
 
         write8(Register.kProximitySensorPulses, (byte) 32);
     }

@@ -5,7 +5,6 @@ import frc.lib.util.Util;
 import java.text.DecimalFormat;
 
 public class Displacement1d implements State<Displacement1d> {
-
     protected final double displacement_;
 
     public Displacement1d() {

@@ -9,8 +9,7 @@ public class DifferentialDriveDynamicsConstraint implements TrajectoryConstraint
     protected final double abs_voltage_limit_;
 
     /**
-     * 
-     * @param drive units should be SI / metric
+     * @param drive Units should be SI / metric
      * @param abs_voltage_limit
      */
     public DifferentialDriveDynamicsConstraint(final DifferentialDrive drive, double abs_voltage_limit) {

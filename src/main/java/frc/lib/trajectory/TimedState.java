@@ -38,16 +38,11 @@ public class TimedState implements IPose2d<TimedState> {
     /**
      * Constructs a State with the specified parameters.
      *
-     * @param timeSeconds                   The time elapsed since the beginning of
-     *                                      the trajectory (s).
-     * @param velocityMetersPerSecond       The speed at that point of the
-     *                                      trajectory (m / s).
-     * @param accelerationMetersPerSecondSq The acceleration at that point of the
-     *                                      trajectory (m / s^2).
-     * @param poseMeters                    The pose at that point of the trajectory
-     *                                      (m x m x rad).
-     * @param curvatureRadPerMeter          The curvature at that point of the
-     *                                      trajectory (rad / m).
+     * @param timeSeconds The time elapsed since the beginning of the trajectory (s).
+     * @param velocityMetersPerSecond The speed at that point of the trajectory (m / s).
+     * @param accelerationMetersPerSecondSq The acceleration at that point of the trajectory (m / s^2).
+     * @param poseMeters The pose at that point of the trajectory (m x m x rad).
+     * @param curvatureRadPerMeter The curvature at that point of the trajectory (rad / m).
      */
     public TimedState(double timeSeconds, double velocityMetersPerSecond, double accelerationMetersPerSecondSq,
             Pose2d poseMeters, double curvatureRadPerMeter) {
@@ -62,18 +57,12 @@ public class TimedState implements IPose2d<TimedState> {
     /**
      * Constructs a State with the specified parameters.
      *
-     * @param timeSeconds                   The time elapsed since the beginning of
-     *                                      the trajectory (s).
-     * @param velocityMetersPerSecond       The speed at that point of the
-     *                                      trajectory (m / s).
-     * @param accelerationMetersPerSecondSq The acceleration at that point of the
-     *                                      trajectory (m / s^2).
-     * @param poseMeters                    The pose at that point of the trajectory
-     *                                      (m x m x rad).
-     * @param curvatureRadPerMeter          The curvature at that point of the
-     *                                      trajectory (rad / m).
-     * @param dCurvatureDs                  The change in curvature at that point of 
-     *                                      the trajectory ().
+     * @param timeSeconds The time elapsed since the beginning of the trajectory (s).
+     * @param velocityMetersPerSecond The speed at that point of the trajectory (m / s).
+     * @param accelerationMetersPerSecondSq The acceleration at that point of the trajectory (m / s^2).
+     * @param poseMeters The pose at that point of the trajectory (m x m x rad).
+     * @param curvatureRadPerMeter The curvature at that point of the trajectory (rad / m).
+     * @param dCurvatureDs The change in curvature at that point of  the trajectory ().
      */
     public TimedState(double timeSeconds, double velocityMetersPerSecond, double accelerationMetersPerSecondSq,
             Pose2d poseMeters, double curvatureRadPerMeter, double dCurvatureDs) {
@@ -89,7 +78,7 @@ public class TimedState implements IPose2d<TimedState> {
      * Interpolates between two States.
      *
      * @param endValue The end value for the interpolation.
-     * @param i        The interpolant (fraction).
+     * @param i The interpolant (fraction).
      * @return The interpolated state.
      */
     @Override
@@ -117,10 +106,12 @@ public class TimedState implements IPose2d<TimedState> {
         // delta_s = v_0 t + 0.5 at^2
         final double newS = (velocity * deltaT + 0.5 * acceleration * Math.pow(deltaT, 2)) * (reversing ? -1.0 : 1.0);
 
-        // Return the new state. To find the new position for the new state, we need
-        // to interpolate between the two endpoint poses. The fraction for
-        // interpolation is the change in position (delta s) divided by the total
-        // distance between the two endpoints.
+        /**
+         * Return the new state. To find the new position for the new state, we need
+         * to interpolate between the two endpoint poses. The fraction for
+         * interpolation is the change in position (delta s) divided by the total
+         * distance between the two endpoints.
+         */
         final double interpolationFrac = newS / endValue.pose.getTranslation().distance(pose.getTranslation());
 
         return new TimedState(newT, newV, acceleration, pose.interpolate(endValue.pose, interpolationFrac),
@@ -202,5 +193,4 @@ public class TimedState implements IPose2d<TimedState> {
     public TimedState mirror() {
         return new TimedState(time, -velocity, -acceleration, pose.mirror(), -curvature);
     }
-
 }

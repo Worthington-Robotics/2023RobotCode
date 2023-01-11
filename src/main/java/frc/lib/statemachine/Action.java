@@ -3,7 +3,6 @@ package frc.lib.statemachine;
 import edu.wpi.first.wpilibj.command.Command;
 
 public abstract class Action {
-
     private boolean hasStopped = false;
 
     /**
@@ -45,7 +44,6 @@ public abstract class Action {
      */
     public static Command toCommand(Action action) {
         return new Command() {
-
             protected void initialize() {
                 action.onStart();
             }

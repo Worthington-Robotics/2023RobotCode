@@ -30,9 +30,7 @@ public class SplineGenerator {
         return rv;
     }
 
-    /**
-     * Convenience function to parametrize a spline from t 0 to 1
-     */
+    // Convenience function to parametrize a spline from t 0 to 1
     public static List<Pose2dWithCurvature> parameterizeSpline(Spline s) {
         return parameterizeSpline(s, kMaxDX, kMaxDY, kMaxDTheta, 0.0, 1.0);
     }
@@ -74,5 +72,4 @@ public class SplineGenerator {
             rv.add(s.getPose2dWithCurvature(t1));
         }
     }
-
 }

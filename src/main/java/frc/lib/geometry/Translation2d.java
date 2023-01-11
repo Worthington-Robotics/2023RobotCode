@@ -182,7 +182,7 @@ public class Translation2d implements ITranslation2d<Translation2d> {
     }
 
     @Override
-    public int getNumFields(){
+    public int getNumFields() {
         return 2;
     }
 

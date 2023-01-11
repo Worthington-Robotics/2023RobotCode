@@ -7,7 +7,7 @@ import java.util.List;
 
 public class DriveCharacterization {
     public static class CharacterizationConstants {
-        public double ks; //voltage needed to break static friction
+        public double ks; // Voltage needed to break static friction
         public double kv;
         public double ka;
     }
@@ -77,9 +77,7 @@ public class DriveCharacterization {
         return velocityChacterization;
     }
 
-    /**
-     * removes data points with a velocity of zero to get a better line fit
-     */
+    // Removes data points with a velocity of zero to get a better line fit
     private static double[][] getVelocityData(List<VelocityDataPoint> input) {
         double[][] output = null;
         int startTrim = 0;

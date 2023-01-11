@@ -25,8 +25,7 @@ public class VelocityLimitRegionConstraint implements TrajectoryConstraint {
     }
 
     @Override
-    public MinMax getMinMaxAcceleration(Pose2d pose, double curvature, double velocity){
+    public MinMax getMinMaxAcceleration(Pose2d pose, double curvature, double velocity) {
         return new MinMax();
     }
-
 }

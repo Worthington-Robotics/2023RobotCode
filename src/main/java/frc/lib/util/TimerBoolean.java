@@ -55,7 +55,7 @@ public class TimerBoolean {
 
     /**
      * Returns if the boolean is started.
-     * @return if the boolean is started
+     * @return If the boolean is started
      */
     public boolean isStarted() {
         return started;
@@ -63,7 +63,7 @@ public class TimerBoolean {
 
     /**
      * Sets the duration that must pass until the TimerBoolean returns true.
-     * @param waitDuration the duration that must pass until the TimerBoolean returns true
+     * @param waitDuration The duration that must pass until the TimerBoolean returns true
      */
     public void setWaitDuration(double waitDuration) {
         this.waitDuration = waitDuration;
@@ -71,7 +71,7 @@ public class TimerBoolean {
 
     /**
      * Returns the duration that must pass until the TimerBoolean returns true.
-     * @return the duration that must pass until the TimerBoolean returns true
+     * @return The duration that must pass until the TimerBoolean returns true
      */
     public double getWaitDuration() {
         return waitDuration;

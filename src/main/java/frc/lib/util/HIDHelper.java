@@ -3,10 +3,9 @@ package frc.lib.util;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class HIDHelper {
-
     /**
      * @param constants HID constants
-     * @return double array following X(0), Y(1), Z(2)
+     * @return Double array following X(0), Y(1), Z(2)
      */
     public static double[] getAdjStick(HIDConstants constants) {
         double[] out = new double[4];
@@ -21,7 +20,7 @@ public class HIDHelper {
         return evalDeadBand(stickInput, deadBand, pow) * scalarCut;
     }
 
-    // figures out if the stick value is within the deadband
+    // Figures out if the stick value is within the deadband
     static double evalDeadBand(double stickInpt, double deadBand, int pow) {
         if (Math.abs(stickInpt) < deadBand) {
             return 0;
@@ -67,5 +66,4 @@ public class HIDHelper {
             return hid.joystick;
         }
     }
-
 }

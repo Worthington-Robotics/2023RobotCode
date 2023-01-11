@@ -55,12 +55,12 @@ public class MotionProfileGenerator {
         final double min_abs_vel_at_goal_sqr = start_state.vel2() - 2.0 * constraints.max_abs_acc() * delta_pos;
         final double min_abs_vel_at_goal = Math.sqrt(Math.abs(min_abs_vel_at_goal_sqr));
         final double max_abs_vel_at_goal = Math.sqrt(start_state.vel2() + 2.0 * constraints.max_abs_acc() * delta_pos);
+
         double goal_vel = goal_state.max_abs_vel();
         double max_acc = constraints.max_abs_acc();
         if (min_abs_vel_at_goal_sqr > 0.0
                 && min_abs_vel_at_goal > (goal_state.max_abs_vel() + goal_state.vel_tolerance())) {
-            // Overshoot is unavoidable with the current constraints. Look at completion_behavior to see what we should
-            // do.
+            // Overshoot is unavoidable with the current constraints. Look at completion_behavior to see what we should do.
             if (goal_state.completion_behavior() == CompletionBehavior.VIOLATE_MAX_ABS_VEL) {
                 // Adjust the goal velocity.
                 goal_vel = min_abs_vel_at_goal;
@@ -88,16 +88,18 @@ public class MotionProfileGenerator {
             }
         }
         goal_vel = Math.min(goal_vel, max_abs_vel_at_goal);
-        // Invariant from this point forward: We can achieve goal_vel at goal_state.pos exactly using no more than +/-
-        // max_acc.
+        /**
+         * Invariant from this point forward: We can achieve goal_vel at goal_state.pos exactly using no more than +/-
+         * max_acc.
 
-        // What is the maximum velocity we can reach (Vmax)? This is the intersection of two curves: one accelerating
-        // towards the goal from profile.finalState(), the other coming from the goal at max vel (in reverse). If Vmax
-        // is greater than constraints.max_abs_vel, we will clamp and cruise.
-        // Solve the following three equations to find Vmax (by substitution):
-        // Vmax^2 = Vstart^2 + 2*a*d_accel
-        // Vgoal^2 = Vmax^2 - 2*a*d_decel
-        // delta_pos = d_accel + d_decel
+         * What is the maximum velocity we can reach (Vmax)? This is the intersection of two curves: one accelerating
+         * towards the goal from profile.finalState(), the other coming from the goal at max vel (in reverse). If Vmax
+         * is greater than constraints.max_abs_vel, we will clamp and cruise.
+         * Solve the following three equations to find Vmax (by substitution):
+         * Vmax^2 = Vstart^2 + 2*a*d_accel
+         * Vgoal^2 = Vmax^2 - 2*a*d_decel
+         * delta_pos = d_accel + d_decel
+         */
         final double v_max = Math.min(constraints.max_abs_vel(),
                 Math.sqrt((start_state.vel2() + goal_vel * goal_vel) / 2.0 + delta_pos * max_acc));
 

@@ -5,8 +5,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import frc.lib.util.Util;
 
 public class PIDF {
-
-    //dT is loop time in seconds
+    // dT is loop time in seconds
     protected double kP = 0, kI = 0, kD = 0, kF = 0, dT = 0, iMax = 0;
 
     protected double error, lastError, derivative, integral, inputRange, setPoint;
@@ -105,7 +104,7 @@ public class PIDF {
         }
     }
 
-    public double[] getPID(){
+    public double[] getPID() {
         double[] out = new double[4];
         calculationMutex.lock();
         try {
@@ -180,7 +179,7 @@ public class PIDF {
         return error;
     }
 
-    public double getError(){
+    public double getError() {
         calculationMutex.lock();
         try {
             return error;
@@ -214,7 +213,8 @@ public class PIDF {
      */
     public void setInputRange(double minimumInput, double maximumInput) {
         if (maximumInput < minimumInput) {
-            throw new RuntimeException("Attempted to set a maximum input range lesser than the minimum");
+            throw new RuntimeException(
+                "Attempted to set a maximum input range lesser than the minimum");
         }
 
         calculationMutex.lock();

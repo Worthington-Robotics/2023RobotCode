@@ -4,9 +4,7 @@ import frc.lib.geometry.Pose2d;
 import frc.lib.geometry.Rotation2d;
 import frc.lib.geometry.Translation2d;
 
-/**
- * Temporary spline for testing
- */
+// Temporary spline for testing
 public class CubicHermiteSpline extends Spline {
     private final double ax, bx, cx, dx, ay, by, cy, dy;
 

@@ -29,10 +29,10 @@ import Jama.QRDecomposition;
  * @author Kevin Wayne
  */
 public class PolynomialRegression {
-    private int degree; // degree of the polynomial regression
-    private Matrix beta; // the polynomial regression coefficients
-    private double sse; // sum of squares due to error
-    private double sst; // total sum of squares
+    private int degree; // Degree of the polynomial regression
+    private Matrix beta; // The polynomial regression coefficients
+    private double sse; // Sum of squares due to error
+    private double sst; // Total sum of squares
 
     public PolynomialRegression(double[][] xy, int degree) {
         double[] x = new double[xy.length];
@@ -47,9 +47,9 @@ public class PolynomialRegression {
     /**
      * Performs a polynomial regression on the data points {@code (y[i], x[i])}.
      *
-     * @param x      the values of the predictor variable
-     * @param y      the corresponding values of the response variable
-     * @param degree the degree of the polynomial to fit
+     * @param x      The values of the predictor variable
+     * @param y      The corresponding values of the response variable
+     * @param degree The degree of the polynomial to fit
      */
     public PolynomialRegression(double[] x, double[] y, int degree) {
         solve(x, y, degree);
@@ -62,10 +62,10 @@ public class PolynomialRegression {
         QRDecomposition qr = null;
         Matrix matrixX = null;
 
-        // in case Vandermonde matrix does not have full rank, reduce degree until it does
+        // In case Vandermonde matrix does not have full rank, reduce degree until it does
         while (true) {
 
-            // build Vandermonde matrix
+            // Build Vandermonde matrix
             double[][] vandermonde = new double[n][this.degree + 1];
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j <= this.degree; j++) {
@@ -74,36 +74,36 @@ public class PolynomialRegression {
             }
             matrixX = new Matrix(vandermonde);
 
-            // find least squares solution
+            // Find least squares solution
             qr = new QRDecomposition(matrixX);
             if (qr.isFullRank()) {
                 break;
             }
 
-            // decrease degree and try again
+            // Decrease degree and try again
             this.degree--;
         }
 
-        // create matrix from vector
+        // Create matrix from vector
         Matrix matrixY = new Matrix(y, n);
 
-        // linear regression coefficients
+        // Linear regression coefficients
         beta = qr.solve(matrixY);
 
-        // mean of y[] values
+        // Mean of y[] values
         double sum = 0.0;
         for (int i = 0; i < n; i++) {
             sum += y[i];
         }
         double mean = sum / n;
 
-        // total variation to be accounted for
+        // Total variation to be accounted for
         for (int i = 0; i < n; i++) {
             double dev = y[i] - mean;
             sst += dev * dev;
         }
 
-        // variation not accounted for
+        // Variation not accounted for
         Matrix residuals = matrixX.times(beta).minus(matrixY);
         sse = residuals.norm2() * residuals.norm2();
     }
@@ -111,8 +111,8 @@ public class PolynomialRegression {
     /**
      * Returns the {@code j}th regression coefficient.
      *
-     * @param j the index
-     * @return the {@code j}th regression coefficient
+     * @param j The index
+     * @return The {@code j}th regression coefficient
      */
     public double beta(int j) {
         // to make -0.0 print as 0.0
@@ -125,7 +125,7 @@ public class PolynomialRegression {
     /**
      * Returns the degree of the polynomial to fit.
      *
-     * @return the degree of the polynomial to fit
+     * @return The degree of the polynomial to fit
      */
     public int degree() {
         return degree;
@@ -134,11 +134,11 @@ public class PolynomialRegression {
     /**
      * Returns the coefficient of determination <em>R</em><sup>2</sup>.
      *
-     * @return the coefficient of determination <em>R</em><sup>2</sup>, which is a real number between 0 and 1
+     * @return The coefficient of determination <em>R</em><sup>2</sup>, which is a real number between 0 and 1
      */
     public double R2() {
         if (sst == 0.0) {
-            return 1.0; // constant function
+            return 1.0; // Constant function
         }
         return 1.0 - sse / sst;
     }
@@ -146,11 +146,11 @@ public class PolynomialRegression {
     /**
      * Returns the expected response {@code y} given the value of the predictor variable {@code x}.
      *
-     * @param x the value of the predictor variable
-     * @return the expected response {@code y} given the value of the predictor variable {@code x}
+     * @param x The value of the predictor variable
+     * @return The expected response {@code y} given the value of the predictor variable {@code x}
      */
     public double predict(double x) {
-        // horner's method
+        // Horner's Method
         double y = 0.0;
         for (int j = degree; j >= 0; j--) {
             y = beta(j) + (x * y);
@@ -163,12 +163,12 @@ public class PolynomialRegression {
         StringBuilder s = new StringBuilder();
         int j = degree;
 
-        // ignoring leading zero coefficients
+        // Ignoring leading zero coefficients
         while (j >= 0 && Math.abs(beta(j)) < 1E-5) {
             j--;
         }
 
-        // create remaining terms
+        // Create remaining terms
         while (j >= 0) {
             if (j == 0) {
                 s.append(String.format("%.2f ", beta(j)));

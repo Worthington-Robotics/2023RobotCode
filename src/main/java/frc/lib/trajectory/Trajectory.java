@@ -68,12 +68,14 @@ public class Trajectory implements  CSVWritable {
             return m_states.get(m_states.size() - 1);
         }
 
-        // To get the element that we want, we will use a binary search algorithm
-        // instead of iterating over a for-loop. A binary search is O(std::log(n))
-        // whereas searching using a loop is O(n).
-
-        // This starts at 1 because we use the previous state later on for
-        // interpolation.
+        /**
+         * To get the element that we want, we will use a binary search algorithm
+         * instead of iterating over a for-loop. A binary search is O(std::log(n))
+         * whereas searching using a loop is O(n).
+         * 
+         * This starts at 1 because we use the previous state later on for
+         * interpolation.
+         */
         int low = 1;
         int high = m_states.size() - 1;
 
@@ -90,12 +92,14 @@ public class Trajectory implements  CSVWritable {
             }
         }
 
-        // High and Low should be the same.
-
-        // The sample's timestamp is now greater than or equal to the requested
-        // timestamp. If it is greater, we need to interpolate between the
-        // previous state and the current state to get the exact state that we
-        // want.
+        /**
+         * High and Low should be the same.
+         * 
+         * The sample's timestamp is now greater than or equal to the requested
+         * timestamp. If it is greater, we need to interpolate between the
+         * previous state and the current state to get the exact state that we
+         * want.
+         */
         final TimedState sample = m_states.get(low);
         final TimedState prevSample = m_states.get(low - 1);
 

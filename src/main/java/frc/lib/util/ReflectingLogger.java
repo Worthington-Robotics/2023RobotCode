@@ -18,17 +18,15 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ReflectingLogger<T> {
-
     protected static final String dataSeperator = ", ";
 
     protected PrintWriter output = null;
     protected Map<Field, T> classFieldMap = new LinkedHashMap<>();
     protected final DecimalFormat fmt = new DecimalFormat("#0.000");
 
-    protected ReflectingLogger() {
+    protected ReflectingLogger() {}
 
-    }
-
+    // FIXME: What??
     /**
      * M
      * 
@@ -40,26 +38,25 @@ public class ReflectingLogger<T> {
     }
 
     /**
-     * constructor that allows the specific file to be set and avoid using the
+     * Constructor that allows the specific file to be set and avoid using the
      * default mount
      * 
-     * @param dataClasses the list of data classes to log on
-     * @param loggingFile the file to log to
+     * @param dataClasses The list of data classes to log on
+     * @param loggingFile The file to log to
      */
     public ReflectingLogger(List<T> dataClasses, File loggingFile) {
         this(dataClasses, loggingFile, false);
     }
 
     /**
-     * broadest constructor for the reflecting logger
+     * Broadest constructor for the reflecting logger
      * 
-     * @param dataClasses  the list of data classes to log on
-     * @param loggingFile  the file to log to
-     * @param allowRethrow whether the logger is allowed to throw a runtime error if
-     *                     the file cannot be opened
+     * @param dataClasses The list of data classes to log on
+     * @param loggingFile The file to log to
+     * @param allowRethrow Whether the logger is allowed to throw a runtime error if The file cannot be opened
      */
     public ReflectingLogger(List<T> dataClasses, File loggingFile, Boolean allowRethrow) {
-        // generate map of subsystem IO's and fields
+        // Generate map of subsystem IO's and fields
         for (T dataClass : dataClasses) {
             if (dataClass == null)
                 continue;
@@ -68,18 +65,15 @@ public class ReflectingLogger<T> {
             }
         }
 
-        // create the base file and header
+        // Create the base file and header
         generateHeader(loggingFile, allowRethrow);
     }
 
     /**
-     * Function for generating and writing the CSV header into the specified logging
-     * file
+     * Function for generating and writing the CSV header into the specified logging file
      * 
-     * @param loggingFile  the file to generate the header into and to use for
-     *                     logging
-     * @param allowRethrow whether the logger should allow throwing a runtime error
-     *                     if the file cannot be opened
+     * @param loggingFile The file to generate the header into and to use for logging
+     * @param allowRethrow Whether the logger should allow throwing a runtime error if the file cannot be opened
      */
     protected void generateHeader(File loggingFile, boolean allowRethrow) {
         try {
@@ -132,12 +126,12 @@ public class ReflectingLogger<T> {
      * Function that writes the next update to the log file. It reads a list of data
      * classes and dumps their contents into the opened file
      * 
-     * @param dataClasses   the list of data classes to log
-     * @param fpgaTimestamp the current FPGA time of the system to record
+     * @param dataClasses The list of data classes to log
+     * @param fpgaTimestamp The current FPGA time of the system to record
      */
     public void update(List<T> dataClasses, double fpgaTimestamp) {
 
-        // generate map of subsystem IO's and fields
+        // Generate map of subsystem IO's and fields
         for (T dataClass : dataClasses) {
             if (dataClass == null)
                 continue;
@@ -151,14 +145,13 @@ public class ReflectingLogger<T> {
     }
 
     /**
-     * Internal function for taking the class field map and writing it to the opened
-     * file
+     * Internal function for taking the class field map and writing it to the opened file
      * 
-     * @param fpgaTimestamp, the curent timestamp to write in for the file update
+     * @param fpgaTimestamp, The curent timestamp to write in for the file update
      */
     protected void logMap(double fpgaTimestamp) {
 
-        // no writer avaliable to update exit the update
+        // No writer avaliable to update exit the update
         if (output.equals(null))
             return;
 
@@ -167,12 +160,12 @@ public class ReflectingLogger<T> {
         // Append starting time
         line.append(fmt.format(fpgaTimestamp));
 
-        // for all fields in map generate
+        // For all fields in map generate
         for (Map.Entry<Field, T> entry : classFieldMap.entrySet()) {
-            // append separator
+            // Append separator
             line.append(dataSeperator);
 
-            // this shouldnt happen but is here for safety reasons
+            // This shouldnt happen but is here for safety reasons
             if (entry == null)
                 continue;
 
@@ -211,9 +204,9 @@ public class ReflectingLogger<T> {
     }
 
     /**
-     * method to write a line to the currently open file
+     * Method to write a line to the currently open file
      * 
-     * @param line the complied line of text to write and flush to the file
+     * @param line The complied line of text to write and flush to the file
      */
     protected synchronized void writeLine(String line) {
         if (output != null) {
@@ -232,18 +225,16 @@ public class ReflectingLogger<T> {
 
     /**
      * A function to scan for a logging folder inside a usb device mounted to the
-     * roborio. There is a kernel issue where external drive folders will remain
+     * RoboRio. There is a kernel issue where external drive folders will remain
      * mounted in the file system after a device has been removed
      * 
-     * @param fileName general name of the file to generate with
-     * @return a file reference to the created logging file in the usb drive's
-     *         logging folder
-     * @throws FileNotFoundException if a logging directory is not found a
-     *                               DirectoryNotFoundException will be thrown
+     * @param fileName General name of the file to generate with
+     * @return A file reference to the created logging file in the usb drive's logging folder
+     * @throws FileNotFoundException If a logging directory is not found
      */
     public static File getMount(String fileName) throws FileNotFoundException {
         if (RobotBase.isReal()) {
-            // create base file reference looking for the media directory
+            // Create base file reference looking for the media directory
             File media = new File("/media");
             if (!media.exists()) {
                 throw new DirectoryNotFoundException("/media");
@@ -283,15 +274,13 @@ public class ReflectingLogger<T> {
             }
             return new File(path.toString() + File.separator + getTimeStampedFileName(fileName));
         }
-
     }
 
     /**
-     * Generates a new file name tagged with the creation time and the overall file
-     * name
+     * Generates a new file name tagged with the creation time and the overall file name
      * 
-     * @param fileName the base filename to use that will have the timestamp and
-     *                 extension appended to it
+     * @param fileName The base filename to use that will have the timestamp and
+     *  extension appended to it
      */
     protected static String getTimeStampedFileName(String fileName) {
         SimpleDateFormat outputFormatter = new SimpleDateFormat("yyyyMMdd_HHmmss_SSS");
@@ -299,5 +288,4 @@ public class ReflectingLogger<T> {
         String newDateString = outputFormatter.format(new Date());
         return fileName + "_" + newDateString + "_LOG.csv";
     }
-
 }

@@ -11,9 +11,8 @@ import java.nio.file.Files;
 import java.util.List;
 
 public class VersionData {
-
     /**
-     * reads build data from file and writes to driverstation plus dashboard
+     * Reads build data from file and writes to driverstation plus dashboard
      */
     public static void WriteBuildInfoToDashboard() {
         DriverStation.reportWarning("Build Version ID: " + getInfo("VERSION_ID"), false);
@@ -23,12 +22,11 @@ public class VersionData {
         SmartDashboard.putString("Build_Info/DATE", getInfo("BUILD_DATE"));
     }
 
-
     /**
-     * gets build info from version.dat file
+     * Gets build info from version.dat file
      *
-     * @param key data entry to parse for
-     * @return data contained by key or empty string if not found
+     * @param key Data entry to parse for
+     * @return Data contained by key or empty string if not found
      */
     public static String getInfo(String key) {
         try {

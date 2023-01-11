@@ -20,7 +20,7 @@ public abstract class DebouncedButton extends Trigger {
     /**
      * Starts the given command whenever the button is newly pressed.
      *
-     * @param command the command to start
+     * @param command The command to start
      */
     public void whenPressed(final Command command) {
         whenActive(command);
@@ -32,7 +32,7 @@ public abstract class DebouncedButton extends Trigger {
      * {@link Command#start()} will be called repeatedly while the button is held,
      * and will be canceled when the button is released.
      *
-     * @param command the command to start
+     * @param command The command to start
      */
     public void whileHeld(final Command command) {
         whileActive(command);
@@ -41,7 +41,7 @@ public abstract class DebouncedButton extends Trigger {
     /**
      * Starts the command when the button is released.
      *
-     * @param command the command to start
+     * @param command The command to start
      */
     public void whenReleased(final Command command) {
         whenInactive(command);
@@ -50,12 +50,12 @@ public abstract class DebouncedButton extends Trigger {
     /**
      * Toggles the command whenever the button is pressed (on then off then on).
      *
-     * @param command the command to start
+     * @param command The command to start
      */
     public void toggleWhenPressed(final Command command) {
         TimerBoolean debouncer = new TimerBoolean(.1);
         while (!debouncer.getBoolean()) {
-            if(!debouncer.isStarted())
+            if (!debouncer.isStarted())
             debouncer.start();
         }
         toggleWhenActive(command);
@@ -64,7 +64,7 @@ public abstract class DebouncedButton extends Trigger {
     /**
      * Cancel the command when the button is pressed.
      *
-     * @param command the command to start
+     * @param command The command to start
      */
     public void cancelWhenPressed(final Command command) {
         cancelWhenActive(command);

@@ -2,7 +2,6 @@ package frc.lib.loops;
 
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ public class Looper implements ILooper {
                     timestamp_ = now;
                 }
             }
-        } catch(Exception e){
+        } catch(Exception e) {
             System.out.println("Crash occured on iteration of loop");
             handleCrash(e);
         }
@@ -67,7 +66,7 @@ public class Looper implements ILooper {
                     running_ = true;
                 }
                 notifier_.startPeriodic(kPeriod);
-            }  catch(Exception e){
+            }  catch(Exception e) {
                 System.out.println("Crash occured on startup of loop");
                 handleCrash(e);
             } 
@@ -87,14 +86,14 @@ public class Looper implements ILooper {
                         loop.onStop(timestamp_);
                     }
                 }
-            }  catch(Exception e){
+            }  catch(Exception e) {
                 System.out.println("Crash occured on startup of loop");
                 handleCrash(e);
             } 
         }
     }
 
-    private void handleCrash(Exception e){
+    private void handleCrash(Exception e) {
         System.out.println("Looper crashed!");
         e.printStackTrace();
         System.out.println("The software will now restart");

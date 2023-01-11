@@ -20,7 +20,6 @@ public class ActionGroup {
         for (Action action : actions) {
             group.add(action);
         }
-
     }
 
     /**
@@ -77,24 +76,22 @@ public class ActionGroup {
     }
 
     /**
-     * forcibly terminate all actions within the group
+     * Forcibly terminate all actions within the group
      */
     public void onStop() {
         group.forEach(Action::doStop);
     }
 
     /**
-     * gets a string representation of the class names inside the action group
+     * Gets a string representation of the class names inside the action group
      * @return a string of all class names in the group
      */
-    public String toString(){
+    public String toString() {
         String classNames = "";
         for (int i = 0; i < group.size(); i++) {
             classNames += group.get(i).getClass().getSimpleName();
-            if(i < group.size() - 1) classNames += " ";
+            if (i < group.size() - 1) classNames += " ";
         }
         return classNames;
     }
-
 }
-

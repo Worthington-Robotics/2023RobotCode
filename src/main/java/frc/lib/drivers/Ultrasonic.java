@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalOutput;
 
 public class Ultrasonic {
-
     private DigitalOutput outputPin;
     private Counter inputPin;
     private double distance;
@@ -25,5 +24,4 @@ public class Ultrasonic {
         update();
         return distance;
     }
-
 }
