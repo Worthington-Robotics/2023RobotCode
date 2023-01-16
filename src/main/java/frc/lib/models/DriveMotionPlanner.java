@@ -12,7 +12,7 @@ import frc.lib.trajectory.*;
 import frc.lib.trajectory.constraint.*;
 import frc.lib.util.CSVWritable;
 import frc.lib.util.Util;
-import frc.robot.Constants;
+import frc.lib.Constants;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
