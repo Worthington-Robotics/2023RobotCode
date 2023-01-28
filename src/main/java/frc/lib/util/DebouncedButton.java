@@ -1,7 +1,7 @@
 package frc.lib.util;
 
-import edu.wpi.first.wpilibj.buttons.Trigger;
-import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.Command;
 
 /**
  * This class provides an easy way to link commands to OI inputs.
@@ -35,7 +35,7 @@ public abstract class DebouncedButton extends Trigger {
      * @param command The command to start
      */
     public void whileHeld(final Command command) {
-        whileActive(command);
+        whileActiveContinuous(command);
     }
 
     /**

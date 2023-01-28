@@ -4,10 +4,10 @@
 
 package frc.lib.models;
 
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.wpilibj.trajectory.constraint.TrajectoryConstraint;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.trajectory.constraint.TrajectoryConstraint;
 
 /**
  * A class that enforces constraints on the differential drive kinematics. This can be used to
@@ -49,7 +49,7 @@ public class DifferentialDriveKinematicsConstraint implements TrajectoryConstrai
 
     // Get the wheel speeds and normalize them to within the max velocity.
     var wheelSpeeds = m_kinematics.toWheelSpeeds(chassisSpeeds);
-    wheelSpeeds.normalize(m_maxSpeedMetersPerSecond);
+    wheelSpeeds.desaturate(m_maxSpeedMetersPerSecond);
 
     // Return the new linear chassis speed.
     return m_kinematics.toChassisSpeeds(wheelSpeeds).vxMetersPerSecond;

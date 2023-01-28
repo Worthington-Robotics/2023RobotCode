@@ -1,6 +1,10 @@
 package frc.lib.statemachine;
 
-import edu.wpi.first.wpilibj.command.Command;
+import java.util.Collections;
+import java.util.Set;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public abstract class Action {
     private boolean hasStopped = false;
@@ -44,15 +48,19 @@ public abstract class Action {
      */
     public static Command toCommand(Action action) {
         return new Command() {
-            protected void initialize() {
+            public void initialize() {
                 action.onStart();
             }
 
-            protected void execute() {
+            public Set<Subsystem> getRequirements() {
+                return Collections.emptySet();
+            }
+
+            public void execute() {
                 action.onLoop();
             }
 
-            protected boolean isFinished() {
+            public boolean isFinished() {
                 return action.isFinished();
             }
 

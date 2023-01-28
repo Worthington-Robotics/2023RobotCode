@@ -1,6 +1,6 @@
 package frc.lib.physics;
 
-import frc.lib.util.PolynomialRegression;
+import frc.lib.math.PolynomialRegression;
 import frc.lib.util.Util;
 
 import java.util.List;
