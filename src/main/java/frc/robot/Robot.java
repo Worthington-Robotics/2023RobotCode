@@ -4,9 +4,14 @@
 
 package frc.robot;
 
+import java.util.Arrays;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import frc.robot.subsystems.SubsystemManager;
+import frc.lib.loops.Looper;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -19,6 +24,9 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private SubsystemManager manager;
+  private Looper enabledLooper;
+  private Looper disabledLooper;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -26,6 +34,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    manager = new SubsystemManager(Arrays.asList(), false);
+    enabledLooper = new Looper();
+    disabledLooper = new Looper();
+    // Register the looper threads to the manager to use for enabled and disabled
+    manager.registerEnabledLoops(enabledLooper);
+    manager.registerDisabledLoops(disabledLooper);
+
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
@@ -39,7 +54,9 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    manager.outputTelemetry();
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
@@ -53,6 +70,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    disabledLooper.stop();
+    // Reset subsystems here
+    enabledLooper.start();
     m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
@@ -74,7 +94,11 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    disabledLooper.stop();
+    // Reset subsystems here
+    enabledLooper.start();
+  }
 
   /** This function is called periodically during operator control. */
   @Override
@@ -82,7 +106,11 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    enabledLooper.stop();
+    // Reset subsystems here
+    disabledLooper.start();
+  }
 
   /** This function is called periodically when disabled. */
   @Override
@@ -90,7 +118,11 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when test mode is enabled. */
   @Override
-  public void testInit() {}
+  public void testInit() {
+    disabledLooper.stop();
+    // Reset subsystems here
+    enabledLooper.start();
+  }
 
   /** This function is called periodically during test mode. */
   @Override
