@@ -4,14 +4,17 @@
 
 package frc.robot;
 
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.subsystems.SubsystemManager;
 import frc.lib.loops.Looper;
+import frc.lib.util.ReflectingLogger;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -27,6 +30,7 @@ public class Robot extends TimedRobot {
   private SubsystemManager manager;
   private Looper enabledLooper;
   private Looper disabledLooper;
+  private ReflectingLogger logger;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -40,6 +44,10 @@ public class Robot extends TimedRobot {
     // Register the looper threads to the manager to use for enabled and disabled
     manager.registerEnabledLoops(enabledLooper);
     manager.registerDisabledLoops(disabledLooper);
+
+    try {
+      logger = new ReflectingLogger<String>(Arrays.asList("hello", "goodbye"));
+    } catch (FileNotFoundException err) {}
 
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
@@ -56,6 +64,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     manager.outputTelemetry();
+    logger.update(Arrays.asList("null", "pointer", "exception"), Timer.getFPGATimestamp());
   }
 
   /**
