@@ -185,7 +185,7 @@ public class SubsystemManager implements ILooper, Loggable {
         mLoops.add(loop);
     }
 
-    public LogData getLogger(){
+    public LogData getLogger() {
         return timing;
     }
 
