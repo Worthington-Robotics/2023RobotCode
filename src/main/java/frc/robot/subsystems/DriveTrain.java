@@ -36,7 +36,7 @@ public class DriveTrain extends Subsystem {
     private double[] coordinates = {0.0, 0.0}; // Start point will be 0, 0
     
     private double deadZone = 0.05; // Adjustable deadzone
-
+    
     public DriveTrain(Joystick joystick) {
         this.joy = joystick;
         transmissionSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1, 0);
@@ -52,22 +52,27 @@ public class DriveTrain extends Subsystem {
         forwardRightMotor.setSelectedSensorPosition(0);
         transmissionSolenoid.set(Value.kReverse);
         gyro.setFusedHeading(0);
-
+        
         state = 0;
     }
+
+    private static DriveTrain instance = new DriveTrain();
+
+    public static Lights getInstance() {
+        return m_lightsInstance;
+    }
     
-    @Override
     public void teleop() {
         // 1 is y, 0 is axis, negative because y is inverted on flight stick
         double rightSpeed = -joy.getRawAxis(1)-joy.getRawAxis(0);
         double leftSpeed = -joy.getRawAxis(1)+joy.getRawAxis(0);  // speed = y + x
-
+        
         Boolean transmissionSwitch = joy.getRawButton(2);
         SmartDashboard.putBoolean("TransmissionSwitch", transmissionSwitch);
-    
+        
         if(rightSpeed < deadZone && rightSpeed > -deadZone) {rightSpeed = 0;}             // Deadzone commands
         if(leftSpeed < deadZone && leftSpeed > -deadZone) {leftSpeed = 0;}
-    
+        
         if (rightSpeed > 1) {rightSpeed = 1;}                                             // Normalize Speed
         if (rightSpeed < -1) {rightSpeed = -1;}
         if (leftSpeed > 1) {leftSpeed = 1;}
