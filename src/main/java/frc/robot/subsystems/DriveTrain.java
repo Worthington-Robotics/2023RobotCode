@@ -27,8 +27,6 @@ import frc.lib.util.DriveSignal;
 import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
 
-
-
 public class DriveTrain extends Subsystem {
 
     // construct one and only 1 instance of this class
@@ -622,4 +620,7 @@ public class DriveTrain extends Subsystem {
         return new DriveSignal(rightMotorOutput, leftMotorOutput);
     }
 
+    public class Actions {
+        
+    }
 }
