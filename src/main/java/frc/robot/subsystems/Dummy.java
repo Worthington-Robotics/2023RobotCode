@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 //design pattern for caching periodic writes to avoid hammering the HAL/CAN.
 public class Dummy extends Subsystem {
 	private static Dummy instance = new Dummy();
@@ -10,6 +12,8 @@ public class Dummy extends Subsystem {
 		kStopped
 	}
 	public State state;
+
+	private int count;
 
 	public Dummy() {
 		state = State.kStopped;
@@ -24,13 +28,15 @@ public class Dummy extends Subsystem {
 	 * Writes the periodic outputs to actuators (motors and ect...)
 	 */
 	public void writePeriodicOutputs() {
-		
+		count++;
 	}
 
 	/**
 	 * Outputs all logging information to the SmartDashboard
 	 */
-	public void outputTelemetry() {}
+	public void outputTelemetry() {
+		SmartDashboard.putNumber("Dummy count", count);
+	}
 
 	/**
 	 * Called to reset and configure the subsystem
