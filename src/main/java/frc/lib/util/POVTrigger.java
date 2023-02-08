@@ -15,7 +15,7 @@ public class POVTrigger extends Trigger {
         this.POVpos = POVpos;
     }
 
-    @Override
+    // @Override
     public boolean get() {
         return joystick.getPOV() == POVpos;
     }

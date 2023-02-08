@@ -31,6 +31,7 @@ package frc.lib.drivers;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.hal.SimDouble;
+import edu.wpi.first.hal.SimDevice.Direction;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 
@@ -78,11 +79,12 @@ public class ColorSensorV3 {
 
         m_simDevice = SimDevice.create("REV Color Sensor V3", port.value, kAddress);
         if (m_simDevice != null) {
-            m_simR = m_simDevice.createDouble("Red", false, 0.0);
-            m_simG = m_simDevice.createDouble("Green", false, 0.0);
-            m_simB = m_simDevice.createDouble("Blue", false, 0.0);
-            m_simIR = m_simDevice.createDouble("IR", false, 0.0);
-            m_simProx = m_simDevice.createDouble("Proximity", false, 0.0);
+            // FIXME: Make sure that this change to the function signature is correct
+            m_simR = m_simDevice.createDouble("Red", Direction.kOutput, 0.0);
+            m_simG = m_simDevice.createDouble("Green", Direction.kOutput, 0.0);
+            m_simB = m_simDevice.createDouble("Blue", Direction.kOutput, 0.0);
+            m_simIR = m_simDevice.createDouble("IR", Direction.kOutput, 0.0);
+            m_simProx = m_simDevice.createDouble("Proximity", Direction.kOutput, 0.0);
             return;
         }
 
