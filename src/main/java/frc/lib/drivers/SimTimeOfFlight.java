@@ -7,6 +7,7 @@ import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.hal.SimDouble;
+import edu.wpi.first.hal.SimDevice.Direction;
  
 public class SimTimeOfFlight {
     private TimeOfFlight tof;
@@ -18,7 +19,8 @@ public class SimTimeOfFlight {
         if (sim == null) {
             tof = new TimeOfFlight(sensorId);
         } else {
-            simDist = sim.createDouble("Distance", false, 0.0);
+            // FIXME: Function signature
+            simDist = sim.createDouble("Distance", Direction.kInput, 0.0);
         }
     }
 
