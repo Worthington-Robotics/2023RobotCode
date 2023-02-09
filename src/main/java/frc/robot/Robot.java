@@ -109,7 +109,6 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
 
         //reset anything here
-        Dummy.getInstance().state = State.kStopped;
         //Constants.WHEELS = SmartDashboard.getBoolean("Drive/Wheel Control", Constants.WHEELS);
         initButtons();
         enabledLooper.start();

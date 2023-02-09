@@ -11,12 +11,20 @@ public class Dummy extends Subsystem {
 		kRunning,
 		kStopped
 	}
-	public State state;
+	private State state;
+
+	public void setState(State _state) {
+		state = _state;
+	}
+
+	public int getCount() {
+		return count;
+	}
 
 	private int count;
 
 	public Dummy() {
-		state = State.kStopped;
+		state = State.kRunning;
 	}
 
 	/**
@@ -28,7 +36,9 @@ public class Dummy extends Subsystem {
 	 * Writes the periodic outputs to actuators (motors and ect...)
 	 */
 	public void writePeriodicOutputs() {
-		count++;
+		if (state == State.kRunning) {
+			count++;
+		}
 	}
 
 	/**
