@@ -1,5 +1,3 @@
-// Disabled for the time being until we resolve missing class files from our libraries
-
 package frc.lib.drivers;
 
 import com.playingwithfusion.TimeOfFlight;

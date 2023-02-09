@@ -13,7 +13,7 @@ import frc.lib.loops.Looper;
 import frc.lib.models.DriveTrajectoryGenerator;
 import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.Dummy.State;
+import frc.robot.subsystems.SuperStructure.State;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         manager = new SubsystemManager(
             Arrays.asList(
-                Dummy.getInstance()
+                SuperStructure.getInstance()
             ),
             true
         );
@@ -109,7 +109,7 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
 
         //reset anything here
-        Dummy.getInstance().state = State.kStopped;
+        SuperStructure.getInstance().state = State.kStopped;
         //Constants.WHEELS = SmartDashboard.getBoolean("Drive/Wheel Control", Constants.WHEELS);
         initButtons();
         enabledLooper.start();
@@ -129,7 +129,7 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
 
         //reset anything here
-        Dummy.getInstance().reset();
+        SuperStructure.getInstance().reset();
 
         enabledLooper.start();
     }

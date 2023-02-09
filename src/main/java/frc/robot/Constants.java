@@ -9,53 +9,7 @@ public class Constants {
     /**
      * device ID declarations ---------------------------------
      */
-    
-    //Pigion ID
-    public static final int PIGION_ID = 0;
-
-    //Talon SRX & FX IDs
-    public static final int DRIVE_BACK_LEFT_ID = 1;
-    public static final int DRIVE_FRONT_LEFT_ID = 2;
-    public static final int SHOOTER_FLYWHEEL_LEFT = 5;
-    public static final int SHOOTER_FLYWHEEL_RIGHT = 6;
-
-    public static final int CLIMBING_WINCHR_ID = 3;
-    public static final int CLIMBING_WINCHL_ID = 4;
-
-    public static final int ID_SUPER_DELIVERY_WHEEL = 7;
-    public static final int ID_SUPER_INDEX1 = 8;
-    public static final int ID_SUPER_INDEX2 = 9;
-    public static final int ID_SUPER_INDEX3 = 10;
-    public static final int ID_SUPER_INTAKE = 11;
-
-    public static final int TURRET_CONTROL = 12;
-    public static final int DRIVE_FRONT_RIGHT_ID = 14;
-    public static final int DRIVE_BACK_RIGHT_ID = 15;
-    public static final int CAM_PWM_CHANNEL = 1;
-
-    // TOF IDs
-    public static final int ID_SUPER_TOF1 = 1;
-    public static final int ID_SUPER_TOF2 = 2;
-    public static final int ID_SUPER_TOF3 = 3;
-    public static final int ID_SUPER_TOF4 = 4;
-    public static final int ID_SUPER_TOF5 = 5;
-
-    //Solenoid Ports
-    public static final int TRANS_LOW_ID = 0;
-    public static final int TRANS_HIGH_ID = 7;
-    
-    public static final int UNFOLD_LOW_ID = 1;
-    public static final int UNFOLD_HIGH_ID = 5;
-
-    public static final int CLIMB_LOW_ID = 6; //Do Not Change
-    public static final int CLIMB_HIGH_ID = 2; //Do Not Change
-
-    //Color Sensor Port
-    public static final int COLOR_SENSOR_PORT = 1;
-    
-    //LED Data/Ports
-    public static final int LED_PORT = 0;
-    public static final int LED_LENGTH = 40;
+    public static final int BACKSTOP_TOF_ID = 0;
     //Joystick Constants
     public static final Joystick MASTER = new Joystick(0);
     public static final Joystick SECOND = new Joystick(1);
