@@ -20,7 +20,9 @@ public class SuperStructure extends Subsystem {
 	private TalonFX IntakeWheelSpinner;
 
 	double BackstopTOFRange;
-	public double IntakePower;
+	double intakePower;
+
+
 	public enum State {
 		kRunning,
 		kStopped
@@ -51,19 +53,27 @@ public class SuperStructure extends Subsystem {
 	 */
 	public void writePeriodicOutputs() {
 		if (BackstopTOFRange < 10){
-			RightSideWheel.set(ControlMode.PercentOutput, IntakePower);
-			LeftSideWheel.set(ControlMode.PercentOutput, -IntakePower);
-			ConveyerBelt.set(ControlMode.PercentOutput, IntakePower);
-			IntakeWheelSpinner.set(ControlMode.PercentOutput, IntakePower);
+			RightSideWheel.set(ControlMode.PercentOutput, intakePower);
+			LeftSideWheel.set(ControlMode.PercentOutput, -intakePower);
+			ConveyerBelt.set(ControlMode.PercentOutput, intakePower);
+			IntakeWheelSpinner.set(ControlMode.PercentOutput, intakePower);
 		}
-		count++;
 	}
+
+	/**
+	 *
+	 *
+	 */
+	public void setIntakePower(double newPower) {
+		intakePower = newPower
+	}
+
 
 	/**
 	 * Outputs all logging information to the SmartDashboard
 	 */
 	public void outputTelemetry() {
-		SmartDashboard.putNumber("SuperStructure count", count);
+		SmartDashboard.putNumber("SuperStructure/Intake_Power", Intake_Power);
 	}
 
 	/**
