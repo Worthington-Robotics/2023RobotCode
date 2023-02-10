@@ -1,83 +1,79 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.lib.drivers.SimTimeOfFlight;
-import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
-
-//design pattern for caching periodic writes to avoid hammering the HAL/CAN.
 public class SuperStructure extends Subsystem {
 	private static SuperStructure instance = new SuperStructure();
 	public static SuperStructure getInstance() { return instance; }
+
 	private SimTimeOfFlight backstopTOF;
-	private TalonFX RightSideWheel;
-	private TalonFX LeftSideWheel;
-	private TalonFX ConveyerBelt;
-	private TalonFX IntakeWheelSpinner;
+	private TalonFX leftSideWheel;
+	private TalonFX rightSideWheel;
+	private TalonFX conveyorBelt;
+	private TalonFX intakeWheelSpinner;
 
-	double BackstopTOFRange;
-	double intakePower;
-
-
-	public enum State {
-		kRunning,
-		kStopped
+	public class SuperIO extends Subsystem.PeriodicIO {
+		// TOF range from the backstop
+		double backstopRange = 0.0d;
+		// Motor demand to set intake speed
+		double power = 0.0d;
 	}
-	public State state;
-
-	private int count;
+	private SuperIO periodic;
 
 	public SuperStructure() {
-		state = State.kStopped;
+		periodic = new SuperIO();
+
 		backstopTOF = new SimTimeOfFlight(Constants.BACKSTOP_TOF_ID);
-		RightSideWheel = new TalonFX(1); 
-		
 
-		//add intake TOF
-		//Add HID helper
+		// The left and right side intake wheels. They move the game piece in one direction
+		// so we set the left side to be inverted
+		leftSideWheel = new TalonFX(Constants.INTAKE_LEFT_WHEEL_ID);
+		leftSideWheel.setInverted(true);
+		rightSideWheel = new TalonFX(Constants.INTAKE_RIGHT_WHEEL_ID);
+
+		conveyorBelt = new TalonFX(Constants.INTAKE_CONVEYOR_ID);
+		intakeWheelSpinner = new TalonFX(Constants.INTAKE_SPINNER_ID);
+
+		// TODO: Add intake TOF and HID helper
 	}
 
-	/**
-	 * Updates all periodic variables and sensors
-	 */
 	public void readPeriodicInputs() {
-		double BackstopTOFRange = backstopTOF.getRange();
+		periodic.backstopRange = backstopTOF.getRange();
 	}
 
-	/**
-	 * Writes the periodic outputs to actuators (motors and ect...)
-	 */
 	public void writePeriodicOutputs() {
-		if (BackstopTOFRange < 10){
-			RightSideWheel.set(ControlMode.PercentOutput, intakePower);
-			LeftSideWheel.set(ControlMode.PercentOutput, -intakePower);
-			ConveyerBelt.set(ControlMode.PercentOutput, intakePower);
-			IntakeWheelSpinner.set(ControlMode.PercentOutput, intakePower);
-		}
+		leftSideWheel.set(ControlMode.PercentOutput, periodic.power);
+		rightSideWheel.set(ControlMode.PercentOutput, periodic.power);
+		conveyorBelt.set(ControlMode.PercentOutput, periodic.power);
+		intakeWheelSpinner.set(ControlMode.PercentOutput, periodic.power);
 	}
 
-	/**
-	 *
-	 *
-	 */
-	public void setIntakePower(double newPower) {
-		intakePower = newPower
+	// Set the intake demand to the specified value
+	public void setIntakePower(double power) {
+		periodic.power = power;
 	}
 
+	// Returns if the game piece has completed its intake cycle
+	public boolean isFinished() {
+		return (periodic.backstopRange >= Constants.INTAKE_BACKSTOP_DISTANCE);
+	}
 
-	/**
-	 * Outputs all logging information to the SmartDashboard
-	 */
+	public void reset() {
+		leftSideWheel.setInverted(true);
+		periodic = new SuperIO();
+	}
+
+	// ### Telemetry ###
+
 	public void outputTelemetry() {
-		SmartDashboard.putNumber("SuperStructure/Intake_Power", Intake_Power);
+		SmartDashboard.putNumber("SuperStructure/IntakePower", periodic.power);
 	}
 
-	/**
-	 * Called to reset and configure the subsystem
-	 */
-	public void reset() {}
+	public LogData getLogger() {
+		return periodic;
+	}
 }

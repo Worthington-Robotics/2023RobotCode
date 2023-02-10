@@ -9,7 +9,14 @@ public class Constants {
     /**
      * device ID declarations ---------------------------------
      */
+    // Superstructure
+    // TODO: Change these values to actual IDs
     public static final int BACKSTOP_TOF_ID = 0;
+    public static final int INTAKE_LEFT_WHEEL_ID = 0;
+    public static final int INTAKE_RIGHT_WHEEL_ID = 0;
+    public static final int INTAKE_CONVEYOR_ID = 0;
+    public static final int INTAKE_SPINNER_ID = 0;
+
     //Joystick Constants
     public static final Joystick MASTER = new Joystick(0);
     public static final Joystick SECOND = new Joystick(1);
@@ -20,6 +27,12 @@ public class Constants {
     public static final HIDHelper.HIDConstants MASTER_STICK_SHIFTED = new HIDHelper.HIDConstants(MASTER, 0, 0.45, -1, 0.4, 2);
     public static final HIDHelper.HIDConstants SECOND_STICK = new HIDHelper.HIDConstants(SECOND, 0.01, -0.33, 0.99, 0.8, 2);  
     public static final HIDHelper.HIDConstants WHEEL_STICK = new HIDHelper.HIDConstants(WHEEL, 0, 2, 1, 1, 1, 2);  
+
+    // ### Intake tuned values ###
+
+    // The target distance where the intake backstop TOF will report the
+    // game piece as being ready
+    public static final double INTAKE_BACKSTOP_DISTANCE = 10.0d;
 
     /* 
         Turret & flywheel tuned values ------------------------
