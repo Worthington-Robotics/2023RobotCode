@@ -86,3 +86,13 @@ jar {
 deployArtifact.jarTask = jar
 wpi.java.configureExecutableTasks(jar)
 wpi.java.configureTestTasks(test)
+
+// To set the debug level, use -PdebugLevel={level} (without the braces) when running
+// gradlew deploy
+tasks.register("setDebugLevel") {
+    if (project.hasProperty("debugLevel")) {
+        new File(projectDir.toString() + "/src/main/deploy", "debug.txt").text = debugLevel
+    }
+}
+
+deploy.targets.roborio.artifacts.frcStaticFileDeploy.dependsOn(setDebugLevel)

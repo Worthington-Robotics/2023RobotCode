@@ -2,9 +2,24 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import frc.lib.util.HIDHelper;
+import edu.wpi.first.wpilibj.Filesystem;
+import java.nio.file.Path;
+import java.io.IOException;
+import java.nio.file.Files;
 
 public class Constants {
-    public static final boolean DEBUG = true;
+    public static int DEBUG_LEVEL = 0;
+
+    // Read the debug level from the debug file on the robot
+    public static void readDebugLevel() {
+        Path debugPath = Filesystem.getDeployDirectory().toPath().resolve("debug.txt");
+        try {
+            String contents = new String(Files.readAllBytes(debugPath));
+            DEBUG_LEVEL = Integer.parseInt(contents);
+        } catch (IOException _err) {
+            DEBUG_LEVEL = 0;
+        }
+    }
 
     /**
      * device ID declarations ---------------------------------
