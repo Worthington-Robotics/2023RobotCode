@@ -1,5 +1,5 @@
 package frc.lib.loops;
 
 public interface ILooper {
-    void register(Loop loop);
+    void register(frc.lib.loops.Loop loop);
 }

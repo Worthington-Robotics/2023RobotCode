@@ -2,7 +2,7 @@ package frc.lib.loops;
 
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
-import frc.lib.Constants;
+import frc.robot.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
