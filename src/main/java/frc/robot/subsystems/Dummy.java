@@ -15,6 +15,7 @@ public class Dummy extends Subsystem {
 
 	public Dummy() {
 		state = State.kStopped;
+		periodic = new DummyIO();
 	}
 
 	/**
