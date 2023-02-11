@@ -13,7 +13,7 @@ import frc.lib.loops.Looper;
 import frc.lib.models.DriveTrajectoryGenerator;
 import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.Dummy.State;
+import frc.robot.autos.DummyAuto;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -94,6 +94,9 @@ public class Robot extends TimedRobot {
 
         //reset anything here
         enabledLooper.start();
+        
+        DummyAuto auto = new DummyAuto();
+        StateMachine.getInstance().runMachine(auto);
     }
 
     /**

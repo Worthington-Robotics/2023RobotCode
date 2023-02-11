@@ -18,7 +18,7 @@ public class DummyActions {
 	
 		@Override
 		public boolean isFinished() {
-			return true;
+			return false;
 		}
 	}
 
