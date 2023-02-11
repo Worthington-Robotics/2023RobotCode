@@ -31,8 +31,8 @@ public class Robot extends TimedRobot {
     private Looper enabledLooper, disabledLooper;
 
     // Input bindings
-
-    private JoystickButton intakeButton = new JoystickButton(Constants.MASTER, 2);
+    private JoystickButton intakeCubeButton = new JoystickButton(Constants.MASTER, 2);
+    private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
 
 
@@ -153,7 +153,8 @@ public class Robot extends TimedRobot {
     }
 
     public void initButtons() {
-        intakeButton.whenHeld(Action.toCommand(new SuperstructureActions.RunIntakeAction(1.0)));
-        intakeReverseButton.whenHeld(Action.toCommand(new SuperstructureActions.RunIntakeAction(-1.0)));
+        intakeConeButton.whenHeld(Action.toCommand(new SuperstructureActions.RunIntakeUntilFinishedAction(Constants.CONE_IN_POWER)));
+        intakeReverseButton.whenHeld(Action.toCommand(new SuperstructureActions.RunIntakeUntilFinishedAction(Constants.ANYTHING_OUT_POWER)));
+        intakeCubeButton.whenHeld(Action.toCommand(new SuperstructureActions.RunIntakeUntilFinishedAction(Constants.CUBE_IN_POWER)));
     }
 }

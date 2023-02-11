@@ -59,6 +59,10 @@ public class Constants {
     public static final double CONVEYER_BELT_MULTIPLIER = 0.125;
     public static final double INTAKE_WHEEL_SPINNER_MULTIPLIER = .5;
     public static final double SIDE_WHEELS_MULTIPLIER = .25;
+    //Constants for how much power each type of intake uses
+    public static final double CONE_IN_POWER = 1;
+    public static final double CUBE_IN_POWER = .5; 
+    public static final double ANYTHING_OUT_POWER = -1;
 
     /* 
         Turret & flywheel tuned values ------------------------
