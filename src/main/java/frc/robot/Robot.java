@@ -37,7 +37,8 @@ public class Robot extends TimedRobot {
 
         manager = new SubsystemManager(
             Arrays.asList(
-                Dummy.getInstance()
+                Dummy.getInstance(),
+                DriveTrain.getInstance()
             ),
             true
         );

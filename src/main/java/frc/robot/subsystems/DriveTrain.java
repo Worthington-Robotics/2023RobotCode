@@ -45,6 +45,9 @@ public class DriveTrain extends Subsystem {
         forwardLeftMotor = new TalonFX(Constants.DRIVE_FRONT_LEFT_ID);
         rearLeftMotor = new TalonFX(Constants.DRIVE_BACK_LEFT_ID);
 
+        forwardLeftMotor.setInverted(true);
+        rearLeftMotor.setInverted(true);
+
         //Move this into reset() method
         reset();
       
@@ -53,6 +56,8 @@ public class DriveTrain extends Subsystem {
     private static DriveTrain m_DriveInstance = new DriveTrain();
 
     public static DriveTrain getInstance() {
+        if(m_DriveInstance == null)
+            m_DriveInstance = new DriveTrain();
         return m_DriveInstance;
     }
 
@@ -91,9 +96,6 @@ public class DriveTrain extends Subsystem {
     public void reset() {
         resetEncoders();
 
-        forwardLeftMotor.setInverted(true);
-        rearLeftMotor.setInverted(true);
-
         transmissionSolenoid.set(Value.kReverse);
         gyro.setFusedHeading(0);
     }
@@ -130,15 +132,8 @@ public class DriveTrain extends Subsystem {
     }
 
     public void setMotorDemands(){
-        periodic.rightDemand = -periodic.yValue - periodic.xValue; 
-        periodic.leftDemand = -periodic.yValue + periodic.xValue;
-       
-        if(periodic.rightDemand < Constants.deadZone && periodic.rightDemand > - Constants.deadZone) {
-            periodic.rightDemand = 0;
-        }  
-        if(periodic.leftDemand < Constants.deadZone && periodic.leftDemand > - Constants.deadZone) {
-            periodic.leftDemand = 0;
-        }
+        periodic.rightDemand = periodic.yValue - periodic.xValue; 
+        periodic.leftDemand = periodic.yValue + periodic.xValue;
     
         if (periodic.rightDemand > 1) {periodic.rightDemand = 1;}                               
         if (periodic.rightDemand < -1) {periodic.rightDemand = -1;}
