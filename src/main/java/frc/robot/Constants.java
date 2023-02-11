@@ -21,6 +21,13 @@ public class Constants {
         }
     }
 
+    //Drivetrain Constants
+    public static final int DRIVE_FORWARD_LEFT_ID = 0;
+    public static final int DRIVE_FORWARD_RIGHT_ID = 0;
+    public static final int DRIVE_BACK_LEFT_ID = 0;
+    public static final int DRIVE_BACK_RIGHT_ID = 0;
+
+
     /**
      * device ID declarations ---------------------------------
      */
