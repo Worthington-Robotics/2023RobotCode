@@ -2,6 +2,7 @@ package frc.robot.actions;
 
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.SuperStructure;
+import frc.robot.subsystems.SuperStructure.IntakePosition;
 
 public class SuperstructureActions {
 	public static class RunIntakeUntilFinishedAction extends Action {
@@ -15,6 +16,8 @@ public class SuperstructureActions {
 		@Override
 		public void onStart() {
 			SuperStructure.getInstance().setIntakePower(power);
+			//TODO make sure this works and does not interfere with arm
+			SuperStructure.getInstance().setIntakePosition(IntakePosition.kDown);
 		}
 
 		@Override
@@ -23,6 +26,8 @@ public class SuperstructureActions {
 		@Override
 		public void onStop() {
 			SuperStructure.getInstance().setIntakePower(0.0d);
+			//TODO make sure this works and does not interfere with arm
+			SuperStructure.getInstance().setIntakePosition(IntakePosition.kUp);
 		}
 
 		@Override
@@ -58,4 +63,5 @@ public class SuperstructureActions {
 		}
 	}
 	
+
 }

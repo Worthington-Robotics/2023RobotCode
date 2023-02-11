@@ -63,6 +63,10 @@ public class Constants {
     public static final double CONE_IN_POWER = 1;
     public static final double CUBE_IN_POWER = .5; 
     public static final double ANYTHING_OUT_POWER = -1;
+    //Soliniod ids
+    public static final int INTAKE_SOLINIOD_REVERSE = 0;
+    public static final int INTAKE_SOLINIOD_FORWARD = 1;
+    public static final int INTAKE_PNEUMATICS_ID = 1;
 
     /* 
         Turret & flywheel tuned values ------------------------

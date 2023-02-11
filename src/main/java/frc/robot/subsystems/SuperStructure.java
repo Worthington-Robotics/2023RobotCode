@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.playingwithfusion.TimeOfFlight;
 import frc.robot.Constants;
@@ -15,12 +18,20 @@ public class SuperStructure extends Subsystem {
 	private TalonFX rightSideWheel;
 	private TalonFX conveyorBelt;
 	private TalonFX intakeWheelSpinner;
+	private DoubleSolenoid intakeSolenoid;
+
+	public enum IntakePosition {
+		kUp,
+		kDown
+	}
 
 	public class SuperIO extends Subsystem.PeriodicIO {
 		// TOF range from the backstop
 		double backstopRange = 0.0d;
 		// Motor demand to set intake speed
 		double power = 0.0d;
+		// Whether the intake is up or down
+		public IntakePosition intakePosition = IntakePosition.kUp;
 	}
 	private SuperIO periodic;
 
@@ -38,6 +49,9 @@ public class SuperStructure extends Subsystem {
 		conveyorBelt = new TalonFX(Constants.INTAKE_CONVEYOR_ID);
 		intakeWheelSpinner = new TalonFX(Constants.INTAKE_SPINNER_ID);
 
+		intakeSolenoid = new DoubleSolenoid(Constants.INTAKE_PNEUMATICS_ID, PneumaticsModuleType.CTREPCM, Constants.INTAKE_SOLINIOD_REVERSE, Constants.INTAKE_SOLINIOD_FORWARD);
+		intakeSolenoid.set(Value.kReverse);
+
 		// TODO: Add intake TOF and HID helper
 	}
 
@@ -50,12 +64,23 @@ public class SuperStructure extends Subsystem {
 		rightSideWheel.set(ControlMode.PercentOutput, periodic.power * Constants.SIDE_WHEELS_MULTIPLIER);
 		conveyorBelt.set(ControlMode.PercentOutput, periodic.power * Constants.CONVEYER_BELT_MULTIPLIER);
 		intakeWheelSpinner.set(ControlMode.PercentOutput, periodic.power * Constants.INTAKE_WHEEL_SPINNER_MULTIPLIER);
+		switch (periodic.intakePosition) {
+			case kUp:
+				intakeSolenoid.set(Value.kForward);
+			case kDown:
+				intakeSolenoid.set(Value.kReverse);
+		}
 	}
 
 	// Set the intake demand to the specified value
 	public void setIntakePower(double power) {
 		periodic.power = power;
 	}
+
+	public void setIntakePosition(IntakePosition position){
+		periodic.intakePosition = position;
+	}
+
 
 	// Returns if the game piece has completed its intake cycle
 	public boolean isFinished() {
