@@ -55,6 +55,10 @@ public class Constants {
     // The target distance where the intake backstop TOF will report the
     // game piece as being ready
     public static final double INTAKE_BACKSTOP_DISTANCE = 10.0d;
+    // Multipliers for how much of the power each motor of the intake gets
+    public static final double CONVEYER_BELT_MULTIPLIER = 0.25;
+    public static final double INTAKE_WHEEL_SPINNER_MULTIPLIER = 1;
+    public static final double SIDE_WHEELS_MULTIPLIER = .75;
 
     /* 
         Turret & flywheel tuned values ------------------------
