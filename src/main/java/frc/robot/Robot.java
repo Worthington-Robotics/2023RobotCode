@@ -15,6 +15,7 @@ import frc.lib.models.DriveTrajectoryGenerator;
 import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.SuperStructure;
+import frc.robot.subsystems.SuperStructure.IntakePosition;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.SuperstructureActions;
 
@@ -34,6 +35,8 @@ public class Robot extends TimedRobot {
     private JoystickButton intakeCubeButton = new JoystickButton(Constants.MASTER, 2);
     private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
+    private JoystickButton intakeDownButton = new JoystickButton(Constants.MASTER, 10);
+    private JoystickButton intakeUpButton = new JoystickButton(Constants.MASTER, 11);
 
 
     /**
@@ -156,5 +159,7 @@ public class Robot extends TimedRobot {
         intakeConeButton.whenHeld(Action.toCommand(new SuperstructureActions.RunIntakeUntilFinishedAction(Constants.CONE_IN_POWER)));
         intakeReverseButton.whenHeld(Action.toCommand(new SuperstructureActions.RunIntakeUntilFinishedAction(Constants.ANYTHING_OUT_POWER)));
         intakeCubeButton.whenHeld(Action.toCommand(new SuperstructureActions.RunIntakeUntilFinishedAction(Constants.CUBE_IN_POWER)));
+        intakeUpButton.whenPressed(Action.toCommand(new SuperstructureActions.MoveIntakeAction(IntakePosition.kUp )));
+        intakeDownButton.whenPressed(Action.toCommand(new SuperstructureActions.MoveIntakeAction(IntakePosition.kDown)));
     }
 }
