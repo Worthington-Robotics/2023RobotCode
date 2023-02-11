@@ -8,6 +8,7 @@ import com.playingwithfusion.TimeOfFlight;
 import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class SuperStructure extends Subsystem {
 	private static SuperStructure instance = new SuperStructure();
@@ -16,7 +17,7 @@ public class SuperStructure extends Subsystem {
 	private TimeOfFlight backstopTOF;
 	private TalonFX leftSideWheel;
 	private TalonFX rightSideWheel;
-	private TalonFX conveyorBelt;
+	private TalonSRX conveyorBelt;
 	private TalonFX intakeWheelSpinner;
 	private DoubleSolenoid intakeSolenoid;
 
@@ -46,7 +47,7 @@ public class SuperStructure extends Subsystem {
 		leftSideWheel.setInverted(true);
 		rightSideWheel = new TalonFX(Constants.INTAKE_RIGHT_WHEEL_ID);
 
-		conveyorBelt = new TalonFX(Constants.INTAKE_CONVEYOR_ID);
+		conveyorBelt = new TalonSRX(Constants.INTAKE_CONVEYOR_ID);
 		intakeWheelSpinner = new TalonFX(Constants.INTAKE_SPINNER_ID);
 
 		intakeSolenoid = new DoubleSolenoid(Constants.INTAKE_PNEUMATICS_ID, PneumaticsModuleType.CTREPCM, Constants.INTAKE_SOLINIOD_REVERSE, Constants.INTAKE_SOLINIOD_FORWARD);
