@@ -33,16 +33,18 @@ public class Constants {
     /**
      * device ID declarations ---------------------------------
      */
+        // Superstructure
+    // TODO: Change these values to actual IDs
+    public static final int BACKSTOP_TOF_ID = 0;
+    public static final int INTAKE_LEFT_WHEEL_ID = 0;
+    public static final int INTAKE_RIGHT_WHEEL_ID = 0;
+    public static final int INTAKE_CONVEYOR_ID = 0;
+    public static final int INTAKE_SPINNER_ID = 0;
     
     //Pigion ID
     public static final int PIGION_ID = 1;
 
     //Talon SRX & FX IDs
-    public static final int DRIVE_BACK_LEFT_ID = 2;
-    public static final int DRIVE_FRONT_LEFT_ID = 1;
-    public static final int DRIVE_FRONT_RIGHT_ID = 3;
-    public static final int DRIVE_BACK_RIGHT_ID = 4;
-
     public static final int SHOOTER_FLYWHEEL_LEFT = 5;
     public static final int SHOOTER_FLYWHEEL_RIGHT = 6;
 

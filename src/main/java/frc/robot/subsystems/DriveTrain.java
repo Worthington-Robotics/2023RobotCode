@@ -14,8 +14,6 @@ import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.robot.Constants;
 
-
-
 //design pattern for caching periodic writes to avoid hammering the HAL/CAN.
 public class DriveTrain extends Subsystem {
     public TalonFX forwardRightMotor;
@@ -46,31 +44,6 @@ public class DriveTrain extends Subsystem {
         rearRightMotor = new TalonFX(Constants.DRIVE_BACK_RIGHT_ID);
         forwardLeftMotor = new TalonFX(Constants.DRIVE_FRONT_LEFT_ID);
         rearLeftMotor = new TalonFX(Constants.DRIVE_BACK_LEFT_ID);
-
-    @Override
-    public void writePeriodicOutputs() {
-        forwardLeftMotor.set(ControlMode.PercentOutput, leftDemand);
-        rearLeftMotor.set(ControlMode.Follower, 4);
-        forwardRightMotor.set(ControlMode.PercentOutput, rightDemand);
-        rearRightMotor.set(ControlMode.Follower, 1);
-    }
-
-    @Override
-    public void outputTelemetry() {
-        SmartDashboard.putNumber("Right Demand", rightDemand);
-        SmartDashboard.putNumber("Left Demand", leftDemand);
-        //Kick out pidgeon heading here too
-        SmartDashboard.putNumber("Heading", heading);
-    }
-
-    @Override
-    public void reset() {
-        forwardLeftMotor.setInverted(true);
-        rearLeftMotor.setInverted(true);
-
-        //Move this into reset() method
-        reset();
-      
     }
 
     private static DriveTrain m_DriveInstance = new DriveTrain();
@@ -142,8 +115,7 @@ public class DriveTrain extends Subsystem {
 
         });
     }
-
-
+    
     public void resetEncoders(){
         forwardLeftMotor.setSelectedSensorPosition(0);
         forwardRightMotor.setSelectedSensorPosition(0);
