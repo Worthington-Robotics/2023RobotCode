@@ -18,6 +18,33 @@ import frc.robot.subsystems.SuperStructure;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.SuperstructureActions;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -31,7 +58,9 @@ public class Robot extends TimedRobot {
 
     // Input bindings
 
-    private JoystickButton intakeButton = new JoystickButton(Constants.MASTER, 1);
+    private JoystickButton intakeButton = new JoystickButton(Constants.MASTER, 2);
+    private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
+
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -151,5 +180,6 @@ public class Robot extends TimedRobot {
 
     public void initButtons() {
         intakeButton.whenHeld(Action.toCommand(new SuperstructureActions.RunIntakeAction(1.0)));
+        intakeReverseButton.whenHeld(Action.toCommand(new SuperstructureActions.RunIntakeAction(-1.0)));
     }
 }
