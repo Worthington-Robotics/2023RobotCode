@@ -9,11 +9,16 @@ package frc.robot;
 
 import java.util.Arrays;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.lib.loops.Looper;
 import frc.lib.models.DriveTrajectoryGenerator;
 import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.Dummy.State;
+import frc.robot.subsystems.SuperStructure;
+import frc.robot.subsystems.SuperStructure.IntakePosition;
+import frc.lib.statemachine.Action;
+import frc.robot.actions.SuperstructureActions;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -26,6 +31,13 @@ public class Robot extends TimedRobot {
     private SubsystemManager manager;
     private Looper enabledLooper, disabledLooper;
 
+    // Input bindings
+    private JoystickButton intakeCubeButton = new JoystickButton(Constants.MASTER, 2);
+    private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 4);
+    private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
+    private JoystickButton intakeDownButton = new JoystickButton(Constants.MASTER, 10);
+    private JoystickButton intakeUpButton = new JoystickButton(Constants.MASTER, 11);
+
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -37,7 +49,7 @@ public class Robot extends TimedRobot {
 
         manager = new SubsystemManager(
             Arrays.asList(
-                Dummy.getInstance()
+                SuperStructure.getInstance()
             ),
             true
         );
@@ -111,7 +123,6 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
 
         //reset anything here
-        Dummy.getInstance().state = State.kStopped;
         //Constants.WHEELS = SmartDashboard.getBoolean("Drive/Wheel Control", Constants.WHEELS);
         initButtons();
         enabledLooper.start();
@@ -131,7 +142,7 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
 
         //reset anything here
-        Dummy.getInstance().reset();
+        SuperStructure.getInstance().reset();
 
         enabledLooper.start();
     }
@@ -144,7 +155,11 @@ public class Robot extends TimedRobot {
 
     }
 
-    public void initButtons(){
-        // no buttons for you
+    public void initButtons() {
+        intakeConeButton.whenHeld(Action.toCommand(new SuperstructureActions.RunIntakeUntilFinishedAction(Constants.CONE_IN_POWER)));
+        intakeReverseButton.whenHeld(Action.toCommand(new SuperstructureActions.RunIntakeUntilFinishedAction(Constants.ANYTHING_OUT_POWER)));
+        intakeCubeButton.whenHeld(Action.toCommand(new SuperstructureActions.RunIntakeUntilFinishedAction(Constants.CUBE_IN_POWER)));
+        intakeUpButton.whenPressed(Action.toCommand(new SuperstructureActions.MoveIntakeAction(IntakePosition.kUp )));
+        intakeDownButton.whenPressed(Action.toCommand(new SuperstructureActions.MoveIntakeAction(IntakePosition.kDown)));
     }
 }
