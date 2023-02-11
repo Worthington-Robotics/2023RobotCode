@@ -49,7 +49,9 @@ public class Robot extends TimedRobot {
 
         manager = new SubsystemManager(
             Arrays.asList(
-                SuperStructure.getInstance()
+                SuperStructure.getInstance(),
+                Dummy.getInstance(),
+                DriveTrain.getInstance()
             ),
             true
         );
@@ -143,6 +145,8 @@ public class Robot extends TimedRobot {
 
         //reset anything here
         SuperStructure.getInstance().reset();
+        Dummy.getInstance().reset();
+        DriveTrain.getInstance().reset();
 
         enabledLooper.start();
     }
