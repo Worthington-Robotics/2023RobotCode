@@ -17,7 +17,7 @@ public class SuperstructureActions {
 		public void onStart() {
 			SuperStructure.getInstance().setIntakePower(power);
 			//TODO make sure this works and does not interfere with arm
-			SuperStructure.getInstance().setIntakePosition(IntakePosition.kDown);
+			
 		}
 
 		@Override
@@ -27,7 +27,7 @@ public class SuperstructureActions {
 		public void onStop() {
 			SuperStructure.getInstance().setIntakePower(0.0d);
 			//TODO make sure this works and does not interfere with arm
-			SuperStructure.getInstance().setIntakePosition(IntakePosition.kUp);
+			
 		}
 
 		@Override
@@ -62,6 +62,29 @@ public class SuperstructureActions {
 			return false;
 		}
 	}
-	
+
+	public static class MoveIntakeAction extends Action {
+		SuperStructure.IntakePosition position;
+		
+		public MoveIntakeAction(SuperStructure.IntakePosition position) {
+			this.position = position;
+		}
+
+		@Override
+		public void onStart() {
+			SuperStructure.getInstance().setIntakePosition(position);
+		}
+
+		@Override
+		public void onLoop() {}
+
+		@Override
+		public void onStop() {}
+
+		@Override
+		public boolean isFinished() {
+			return false;
+		}
+	}
 
 }
