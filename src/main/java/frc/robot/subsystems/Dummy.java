@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 
 //design pattern for caching periodic writes to avoid hammering the HAL/CAN.
 public class Dummy extends Subsystem {
@@ -12,8 +13,11 @@ public class Dummy extends Subsystem {
 		kStopped
 	}
 
-	public void setState(State _state) {
-		periodic.state = _state;
+	public void setState(State state) {
+		if (Constants.DEBUG_LEVEL > 0) {
+			System.out.println("Set state to " + state);
+		}
+		periodic.state = state;
 	}
 
 	public int getCount() {
@@ -21,8 +25,8 @@ public class Dummy extends Subsystem {
 	}
 
 	public Dummy() {
-		periodic.state = State.kRunning;
 		periodic = new DummyIO();
+		periodic.state = State.kRunning;
 	}
 
 	/**
@@ -44,6 +48,7 @@ public class Dummy extends Subsystem {
 	 */
 	public void outputTelemetry() {
 		SmartDashboard.putNumber("Dummy count", periodic.count);
+		SmartDashboard.putNumber("Debug level", Constants.DEBUG_LEVEL);
 	}
 
 	/**
