@@ -223,5 +223,11 @@ public class Constants {
      * Deadzone Constants
      */
     public static final double deadZone = 0.05;
+    
 
+    /**
+     * AnglePID Constants
+     */
+    public static final double angleKP = 1.0 / 60.0;
+    public static final double angleAcceptance = 2.0;
 }
