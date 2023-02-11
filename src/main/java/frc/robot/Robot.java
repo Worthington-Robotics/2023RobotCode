@@ -33,6 +33,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        Constants.readDebugLevel();
+
         manager = new SubsystemManager(
             Arrays.asList(
                 Dummy.getInstance()
