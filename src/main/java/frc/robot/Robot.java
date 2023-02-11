@@ -132,6 +132,7 @@ public class Robot extends TimedRobot {
 
         //reset anything here
         Dummy.getInstance().reset();
+        DriveTrain.getInstance().reset();
 
         enabledLooper.start();
     }

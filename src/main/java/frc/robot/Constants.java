@@ -217,6 +217,11 @@ public class Constants {
      */
     public static final double CLIMBER_SHOOTER_REQMT = 90;
     public static final double CLIMBER_EPSILON_CONST = 10;
+
+    /**
+     * DeadZone constants
+     */
+    public static final double deadZone = 0.05;
 }
 
 
