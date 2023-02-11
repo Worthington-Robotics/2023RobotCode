@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.lib.drivers.SimTimeOfFlight;
+import com.playingwithfusion.TimeOfFlight;
 import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -10,7 +10,7 @@ public class SuperStructure extends Subsystem {
 	private static SuperStructure instance = new SuperStructure();
 	public static SuperStructure getInstance() { return instance; }
 
-	private SimTimeOfFlight backstopTOF;
+	private TimeOfFlight backstopTOF;
 	private TalonFX leftSideWheel;
 	private TalonFX rightSideWheel;
 	private TalonFX conveyorBelt;
@@ -27,7 +27,7 @@ public class SuperStructure extends Subsystem {
 	public SuperStructure() {
 		periodic = new SuperIO();
 
-		backstopTOF = new SimTimeOfFlight(Constants.BACKSTOP_TOF_ID);
+		backstopTOF = new TimeOfFlight(Constants.BACKSTOP_TOF_ID);
 
 		// The left and right side intake wheels. They move the game piece in one direction
 		// so we set the left side to be inverted
