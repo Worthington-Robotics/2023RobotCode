@@ -19,6 +19,7 @@ public class DriveTrain extends Subsystem{
     public PigeonIMU gyro;
     public Joystick joystick;
     public DoubleSolenoid transmissionSolenoid;
+    private DriveIO periodic;
 
     //Constants
     private double leftPosTicks;
@@ -44,18 +45,19 @@ public class DriveTrain extends Subsystem{
         forwardLeftMotor.setInverted(true);
         rearLeftMotor.setInverted(true);
 
-        forwardLeftMotor.setSelectedSensorPosition(0);
-        rearLeftMotor.setSelectedSensorPosition(0);
-        forwardRightMotor.setSelectedSensorPosition(0);
-        rearRightMotor.setSelectedSensorPosition(0);
-
         transmissionSolenoid.set(Value.kReverse);
         gyro.setFusedHeading(0);
 
         leftPosTicks = 0;
         rightPosTicks = 0;
+
+        
     }
-  
+
+
+    public class DriveIO extends PeriodicIO {
+
+    }
 
     @Override
     public void readPeriodicInputs() {
@@ -77,8 +79,14 @@ public class DriveTrain extends Subsystem{
 
     @Override
     public void reset() {
-        // TODO Auto-generated method stub
-        
+        resetEncoders();
+    }
+
+    private void resetEncoders() {
+        forwardLeftMotor.setSelectedSensorPosition(0);
+        rearLeftMotor.setSelectedSensorPosition(0);
+        forwardRightMotor.setSelectedSensorPosition(0);
+        rearRightMotor.setSelectedSensorPosition(0);
     }
     
 }
