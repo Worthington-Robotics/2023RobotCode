@@ -13,8 +13,8 @@ public class DriveTurn extends Action {
 
     @Override
     public void onStart() {
-        DriveTrain.getInstance().setAnglePID();
         DriveTrain.getInstance().setDesiredHeading(this.heading);
+        DriveTrain.getInstance().setAnglePID();
     }
 
     @Override

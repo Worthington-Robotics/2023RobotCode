@@ -38,6 +38,10 @@ public class DriveTrain extends Subsystem {
         public double[] operatorInput = {0,0,0,0};
         public state currentState = state.OPEN_LOOP;
         public double headingError;
+        public double targetDistance;
+        public double rightError;
+        public double leftError;
+        public double powerChange;
     }
 
     public DriveTrain() {
@@ -61,6 +65,7 @@ public class DriveTrain extends Subsystem {
     public enum state{
         OPEN_LOOP,
         ANGLE_PID,
+        MOVE_FORWARD
     }
 
     private static DriveTrain m_DriveInstance = new DriveTrain();
@@ -129,6 +134,8 @@ public class DriveTrain extends Subsystem {
                         break;
                     case ANGLE_PID:
                         anglePID();
+                    case MOVE_FORWARD:
+                        moveForward();
                         
                 }           
             }
@@ -153,12 +160,20 @@ public class DriveTrain extends Subsystem {
         periodic.desiredHeading = theta;
     }
 
+    public void setTargetDistance(double distance){
+        periodic.targetDistance = distance;
+    }
+
     public void setAnglePID (){
         periodic.currentState = state.ANGLE_PID;
     }
 
     public void setOpenLoop (){
         periodic.currentState = state.OPEN_LOOP;
+    }
+
+    public void setMoveForward(){
+        periodic.currentState = state.MOVE_FORWARD;
     }
 
     public void anglePID () {
@@ -187,8 +202,36 @@ public class DriveTrain extends Subsystem {
         }
     }
 
+    public void moveForward(){
+        periodic.rightError = periodic.targetDistance - periodic.rightEncoderTicks;
+        periodic.leftError = periodic.targetDistance - periodic.leftEncoderTicks;
+        periodic.powerChange = 0.0;
+        periodic.rightDemand = periodic.rightError * Constants.FORWARD_KP;
+        periodic.leftDemand = periodic.leftError * Constants.FORWARD_KP;
+
+        periodic.powerChange = (periodic.desiredHeading - periodic.heading) / 45.0; //need to add rollover math
+        periodic.rightDemand += periodic.powerChange;
+        periodic.leftDemand -= periodic.powerChange;
+
+        if(Math.abs(periodic.rightDemand) > .6 || Math.abs(periodic.leftDemand) > .6) {     //normalizes power
+            double norm = Math.max(Math.abs(periodic.rightDemand), Math.abs(periodic.leftDemand));
+            periodic.rightDemand = (Math.signum(periodic.rightDemand) * 0.6) * Math.abs(periodic.rightDemand / norm);
+            periodic.leftDemand = (Math.signum(periodic.leftDemand) * 0.6 )* Math.abs(periodic.leftDemand / norm);
+        }
+
+        if (periodic.rightDemand < 0.09) {
+            periodic.rightDemand = 0.09;
+        } else if (periodic.leftDemand < 0.09){
+            periodic.leftDemand = 0.09;
+        }
+    }
+
     public double getHeadingError(){
         return periodic.headingError;
+    }
+
+    public double getEncoderError(){
+        return (periodic.rightError + periodic.leftError) / 2.0;
     }
 
     public void setMotorDemands(){

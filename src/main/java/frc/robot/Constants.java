@@ -222,7 +222,7 @@ public class Constants {
     /**
      * Deadzone Constants
      */
-    public static final double deadZone = 0.05;
+    public static final double DEAD_ZONE = 0.05;
     
 
     /**
@@ -230,4 +230,9 @@ public class Constants {
      */
     public static final double angleKP = 1.0 / 60.0;
     public static final double angleAcceptance = 2.0;
+
+     /**
+     * Move Forward Constants
+     */
+    public static final double FORWARD_KP = 1.0/150000.0;
 }
