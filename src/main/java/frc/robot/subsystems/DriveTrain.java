@@ -41,6 +41,9 @@ public class DriveTrain extends Subsystem {
         rearRightMotor = new TalonFX(Constants.DRIVE_BACK_RIGHT_ID);
         forwardLeftMotor = new TalonFX(Constants.DRIVE_FRONT_LEFT_ID);
         rearLeftMotor = new TalonFX(Constants.DRIVE_BACK_LEFT_ID);
+
+        forwardLeftMotor.setInverted(true);
+        rearLeftMotor.setInverted(true);
     }
 
     private static DriveTrain m_DriveInstance = new DriveTrain();
@@ -59,7 +62,7 @@ public class DriveTrain extends Subsystem {
         periodic.heading = gyro.getFusedHeading();
         periodic.operatorInput = HIDHelper.getAdjStick(Constants.MASTER_STICK);
         periodic.xValue = periodic.operatorInput[0];
-        periodic.yValue = periodic.operatorInput[1];
+        periodic.yValue = periodic.operatorInput[1];     
     }
 
     @Override
@@ -102,7 +105,7 @@ public class DriveTrain extends Subsystem {
 
             @Override
             public void onLoop(double timestamp) {
-                  setMotorDemands();             
+                  setMotorDemands();        
             }
 
             @Override
@@ -112,7 +115,7 @@ public class DriveTrain extends Subsystem {
 
         });
     }
-    
+
     public void resetEncoders(){
         forwardLeftMotor.setSelectedSensorPosition(0);
         forwardRightMotor.setSelectedSensorPosition(0);

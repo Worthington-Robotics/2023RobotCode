@@ -64,7 +64,7 @@ public abstract class Action {
                 return action.isFinished();
             }
 
-            protected void end() {
+            public void end(boolean end) {
                 action.onStop();
             }
         };

@@ -11,16 +11,51 @@ public class Constants {
     public static final int DRIVE_FRONT_RIGHT_ID = 3;
     public static final int DRIVE_BACK_LEFT_ID = 2;
     public static final int DRIVE_BACK_RIGHT_ID = 4;
+    //Arm Turret Constants
+    public static final int ARM_TURRET_ID = 9;
+    public static final int ARM_ARM_M_ID = 10;
+    public static final int ARM_EXTENTION_ID = 11;
+    public static final int ARM_ARM_S_ID = 12;
+    
+    public static final int CTRE_PCM_ID = 0;
+    public static final int ARM_GRABBER_FWD_CHANNEL = 2;
+    public static final int ARM_GRABBER_REV_CHANNEL = 3;
 
     // ### Device ID declarations ###
 
     // Superstructure
     // TODO: Change these values to actual IDs
     public static final int BACKSTOP_TOF_ID = 0;
-    public static final int INTAKE_LEFT_WHEEL_ID = 0;
-    public static final int INTAKE_RIGHT_WHEEL_ID = 0;
-    public static final int INTAKE_CONVEYOR_ID = 0;
-    public static final int INTAKE_SPINNER_ID = 0;
+    public static final int INTAKE_LEFT_WHEEL_ID = 5;
+    public static final int INTAKE_RIGHT_WHEEL_ID = 7;
+    public static final int INTAKE_CONVEYOR_ID = 6;
+    public static final int INTAKE_SPINNER_ID = 8;
+    
+    //Pigion ID
+    public static final int PIGION_ID = 1;
+
+    //Talon SRX & FX IDs
+    public static final int SHOOTER_FLYWHEEL_LEFT = 5;
+    public static final int SHOOTER_FLYWHEEL_RIGHT = 6;
+
+    public static final int CLIMBING_WINCHR_ID = 3;
+    public static final int CLIMBING_WINCHL_ID = 4;
+
+    public static final int ID_SUPER_DELIVERY_WHEEL = 7;
+    public static final int ID_SUPER_INDEX1 = 8;
+    public static final int ID_SUPER_INDEX2 = 9;
+    public static final int ID_SUPER_INDEX3 = 10;
+    public static final int ID_SUPER_INTAKE = 11;
+
+    public static final int TURRET_CONTROL = 12;
+    public static final int CAM_PWM_CHANNEL = 1;
+
+    // TOF IDs
+    public static final int ID_SUPER_TOF1 = 1;
+    public static final int ID_SUPER_TOF2 = 2;
+    public static final int ID_SUPER_TOF3 = 3;
+    public static final int ID_SUPER_TOF4 = 4;
+    public static final int ID_SUPER_TOF5 = 5;
 
     // ### Joystick Constants ###
     public static final Joystick MASTER = new Joystick(0);
@@ -41,18 +76,17 @@ public class Constants {
     // The target distance where the intake backstop TOF will report the game piece as being ready
     public static final double INTAKE_BACKSTOP_DISTANCE = 10.0d;
     // Multipliers for how much of the power each motor of the intake gets
-    public static final double CONVEYER_BELT_MULTIPLIER = 0.125;
+    public static final double CONVEYER_BELT_MULTIPLIER = 2;
     public static final double INTAKE_WHEEL_SPINNER_MULTIPLIER = .5;
-    public static final double SIDE_WHEELS_MULTIPLIER = .25;
+    public static final double SIDE_WHEELS_MULTIPLIER = 2;
     // Constants for how much power each type of intake uses
     public static final double CONE_IN_POWER = 1;
     public static final double CUBE_IN_POWER = .5; 
     public static final double ANYTHING_OUT_POWER = -1;
     // Solenoid IDs
-    public static final int INTAKE_SOLINIOD_REVERSE = 0;
-    public static final int INTAKE_SOLINIOD_FORWARD = 1;
-    public static final int INTAKE_PNEUMATICS_ID = 1;
-
+    public static final int INTAKE_SOLINIOD_REVERSE = 4;
+    public static final int INTAKE_SOLINIOD_FORWARD = 5;
+    public static final int INTAKE_PNEUMATICS_ID = 0;
 
     // ### Drivetrain tuned values ###
 

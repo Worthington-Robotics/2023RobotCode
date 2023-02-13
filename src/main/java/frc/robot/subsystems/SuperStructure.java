@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import com.playingwithfusion.TimeOfFlight;
+//import com.playingwithfusion.TimeOfFlight;
 import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -14,7 +14,7 @@ public class SuperStructure extends Subsystem {
 	private static SuperStructure instance = new SuperStructure();
 	public static SuperStructure getInstance() { return instance; }
 
-	private TimeOfFlight backstopTOF;
+	//private TimeOfFlight backstopTOF;
 	private TalonFX leftSideWheel;
 	private TalonFX rightSideWheel;
 	private TalonSRX conveyorBelt;
@@ -28,9 +28,9 @@ public class SuperStructure extends Subsystem {
 
 	public class SuperIO extends Subsystem.PeriodicIO {
 		// TOF range from the backstop
-		double backstopRange = 0.0d;
+		double backstopRange = 0;
 		// Motor demand to set intake speed
-		double power = 0.0d;
+		double power = 0;
 		// Whether the intake is up or down
 		public IntakePosition intakePosition = IntakePosition.kUp;
 	}
@@ -39,7 +39,7 @@ public class SuperStructure extends Subsystem {
 	public SuperStructure() {
 		periodic = new SuperIO();
 
-		backstopTOF = new TimeOfFlight(Constants.BACKSTOP_TOF_ID);
+		//backstopTOF = new TimeOfFlight(Constants.BACKSTOP_TOF_ID);
 
 		// The left and right side intake wheels. They move the game piece in one direction
 		// so we set the left side to be inverted
@@ -49,6 +49,7 @@ public class SuperStructure extends Subsystem {
 
 		conveyorBelt = new TalonSRX(Constants.INTAKE_CONVEYOR_ID);
 		intakeWheelSpinner = new TalonFX(Constants.INTAKE_SPINNER_ID);
+		intakeWheelSpinner.setInverted(true);
 
 		intakeSolenoid = new DoubleSolenoid(Constants.INTAKE_PNEUMATICS_ID, PneumaticsModuleType.CTREPCM, Constants.INTAKE_SOLINIOD_REVERSE, Constants.INTAKE_SOLINIOD_FORWARD);
 		intakeSolenoid.set(Value.kReverse);
@@ -57,7 +58,7 @@ public class SuperStructure extends Subsystem {
 	}
 
 	public void readPeriodicInputs() {
-		periodic.backstopRange = backstopTOF.getRange();
+		//periodic.backstopRange = backstopTOF.getRange();
 	}
 
 	public void writePeriodicOutputs() {
@@ -85,7 +86,8 @@ public class SuperStructure extends Subsystem {
 
 	// Returns if the game piece has completed its intake cycle
 	public boolean isFinished() {
-		return (periodic.backstopRange >= Constants.INTAKE_BACKSTOP_DISTANCE);
+		// return (periodic.backstopRange >= Constants.INTAKE_BACKSTOP_DISTANCE);
+		return false;
 	}
 
 	public void reset() {

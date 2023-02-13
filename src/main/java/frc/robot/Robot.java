@@ -8,8 +8,14 @@
 package frc.robot;
 
 import java.util.Arrays;
+import java.util.function.BooleanSupplier;
+
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.loops.Looper;
 import frc.lib.models.DriveTrajectoryGenerator;
 import frc.lib.statemachine.StateMachine;
@@ -17,6 +23,7 @@ import frc.robot.subsystems.*;
 import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.SuperStructure.IntakePosition;
 import frc.lib.statemachine.Action;
+import frc.robot.actions.RunIntakeAction;
 import frc.robot.actions.SuperstructureActions;
 
 /**
@@ -27,6 +34,7 @@ import frc.robot.actions.SuperstructureActions;
  * project.
  */
 public class Robot extends TimedRobot {
+
     private SubsystemManager manager;
     private Looper enabledLooper, disabledLooper;
 
@@ -35,7 +43,7 @@ public class Robot extends TimedRobot {
     private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton intakeDownButton = new JoystickButton(Constants.MASTER, 10);
-    private JoystickButton intakeUpButton = new JoystickButton(Constants.MASTER, 11);
+    private JoystickButton intakeUpButton = new JoystickButton(Constants.MASTER, 9);
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -46,7 +54,7 @@ public class Robot extends TimedRobot {
         manager = new SubsystemManager(
             Arrays.asList(
                 SuperStructure.getInstance(),
-                Dummy.getInstance(),
+                Arm.getInstance(),
                 DriveTrain.getInstance()
             ),
             true
@@ -77,7 +85,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-        manager.outputTelemetry();
+        manager.outputTelemetry();  
     }
 
     @Override
@@ -149,10 +157,10 @@ public class Robot extends TimedRobot {
     public void testPeriodic() {}
 
     public void initButtons() {
-        intakeConeButton.whenHeld(Action.toCommand(new SuperstructureActions.RunIntakeUntilFinishedAction(Constants.CONE_IN_POWER)));
-        intakeReverseButton.whenHeld(Action.toCommand(new SuperstructureActions.RunIntakeUntilFinishedAction(Constants.ANYTHING_OUT_POWER)));
-        intakeCubeButton.whenHeld(Action.toCommand(new SuperstructureActions.RunIntakeUntilFinishedAction(Constants.CUBE_IN_POWER)));
-        intakeUpButton.whenPressed(Action.toCommand(new SuperstructureActions.MoveIntakeAction(IntakePosition.kUp )));
-        intakeDownButton.whenPressed(Action.toCommand(new SuperstructureActions.MoveIntakeAction(IntakePosition.kDown)));
+        intakeConeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CONE_IN_POWER)));
+        intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
+        intakeCubeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CUBE_IN_POWER)));
+        intakeUpButton.onTrue(Action.toCommand(new SuperstructureActions.MoveIntakeAction(IntakePosition.kUp)));
+        intakeDownButton.onTrue(Action.toCommand(new SuperstructureActions.MoveIntakeAction(IntakePosition.kDown)));
     }
 }
