@@ -1,9 +1,8 @@
-package frc.robot.actions;
+package frc.robot.actions.drive;
 
 import frc.lib.statemachine.Action;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.DriveTrain.state;
 
 public class DriveTurn extends Action {
     double heading;
