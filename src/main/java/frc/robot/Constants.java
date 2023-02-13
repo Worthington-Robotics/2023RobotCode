@@ -162,7 +162,6 @@ public class Constants {
     public static final double DRIVE_Ka = 56.179;  // rad/Vs^2
 
     //PID Constants
-    public static final double ANGLE_KP = -0.024; // 0.065;
     public static final double ANGLE_KI = 0; // 0.00125;
     public static final double ANGLE_KD = 0; // 0.1
     public static final double ANGLE_PID_EPISLON = 1;
@@ -228,8 +227,9 @@ public class Constants {
     /**
      * AnglePID Constants
      */
-    public static final double angleKP = 1.0 / 60.0;
-    public static final double angleAcceptance = 2.0;
+    public static final double ANGLE_KP = 1.0 / 60.0;
+    public static final double ANGLE_ACCEPTANCE = 2.0;
+    public static final double DRIVE_FORWARD_ACCEPTED_ERROR = 5000.0;
 
      /**
      * Move Forward Constants

@@ -2,6 +2,7 @@ package frc.robot.actions.drive;
 
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.Constants;
 
 public class MoveForward extends Action{
     double targetDistance;
@@ -14,23 +15,19 @@ public class MoveForward extends Action{
 
     @Override
     public void onStart() {
-        DriveTrain.getInstance().setDesiredHeading(this.desiredHeading);
-        DriveTrain.getInstance().setTargetDistance(this.targetDistance);
+        DriveTrain.getInstance().setDesiredHeading(desiredHeading);
+        DriveTrain.getInstance().setTargetDistance(targetDistance);
         DriveTrain.getInstance().setMoveForward();
-        
     }
 
     @Override
-    public void onLoop() {
-        // TODO Auto-generated method stub
-        
-    }
+    public void onLoop() {}
 
     @Override
     public boolean isFinished() {
-        if (Math.abs(DriveTrain.getInstance().getEncoderError()) < 5000.0) { //this cheks the exit condition
-            return true;
-        }
+        // if (Math.abs(DriveTrain.getInstance().getEncoderError()) < Constants.DRIVE_FORWARD_ACCEPTED_ERROR) { //this cheks the exit condition
+        //     return true;
+        // }
         return false;
     }
 

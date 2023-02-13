@@ -25,7 +25,7 @@ public class DriveTrain extends Subsystem {
     public DoubleSolenoid transmissionSolenoid;
     private DriveIO periodic;
 
-    class DriveIO extends PeriodicIO {
+    public class DriveIO extends PeriodicIO {
         public double leftEncoderTicks;
         public double rightEncoderTicks;
         public double yValue;
@@ -111,6 +111,8 @@ public class DriveTrain extends Subsystem {
     @Override
     public void reset() {
         resetEncoders();
+        periodic.rightError = 0;
+        periodic.leftError = 0;
 
         transmissionSolenoid.set(Value.kReverse);
         gyro.setFusedHeading(0);
@@ -186,8 +188,8 @@ public class DriveTrain extends Subsystem {
             }
         }
 
-        periodic.rightDemand = periodic.headingError * Constants.angleKP;
-        periodic.leftDemand = periodic.headingError * -Constants.angleKP;
+        periodic.rightDemand = periodic.headingError * Constants.ANGLE_KP;
+        periodic.leftDemand = periodic.headingError * -Constants.ANGLE_KP;
         
         // Normalize
         if (Math.abs(periodic.rightDemand) < 0.09 || Math.abs(periodic.rightDemand) < 0.09) { //Minimum speed
@@ -209,7 +211,9 @@ public class DriveTrain extends Subsystem {
         periodic.rightDemand = periodic.rightError * Constants.FORWARD_KP;
         periodic.leftDemand = periodic.leftError * Constants.FORWARD_KP;
 
-        periodic.powerChange = (periodic.desiredHeading - periodic.heading) / 45.0; //need to add rollover math
+        periodic.headingError = periodic.desiredHeading - periodic.heading;
+
+        periodic.powerChange = (periodic.headingError) / 45.0; //need to add rollover math
         periodic.rightDemand += periodic.powerChange;
         periodic.leftDemand -= periodic.powerChange;
 
@@ -219,7 +223,7 @@ public class DriveTrain extends Subsystem {
             periodic.leftDemand = (Math.signum(periodic.leftDemand) * 0.6 )* Math.abs(periodic.leftDemand / norm);
         }
 
-        if (periodic.rightDemand < 0.09) {
+        if (periodic.rightDemand < 0.09) { //TODO: use signum
             periodic.rightDemand = 0.09;
         } else if (periodic.leftDemand < 0.09){
             periodic.leftDemand = 0.09;
@@ -231,6 +235,7 @@ public class DriveTrain extends Subsystem {
     }
 
     public double getEncoderError(){
+
         return (periodic.rightError + periodic.leftError) / 2.0;
     }
 
@@ -253,4 +258,8 @@ public class DriveTrain extends Subsystem {
         }
         else return heading % 360.0;
     }
+
+    public LogData getLogger() {
+		return periodic;
+	}
 }
