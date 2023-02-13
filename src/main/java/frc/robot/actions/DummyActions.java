@@ -46,4 +46,26 @@ public class DummyActions {
 			return Dummy.getInstance().getCount() >= 5000;
 		}
 	}
+
+	static public class DummyPrint extends Action {
+		@Override
+		public void onStart() {
+			System.out.println(Dummy.getInstance().getCount());
+		}
+	
+		@Override
+		public void onLoop() {
+			System.out.println("Running");
+		}
+	
+		@Override
+		public void onStop() {
+			System.out.println("Done");
+		}
+	
+		@Override
+		public boolean isFinished() {
+			return false;
+		}
+	}
 }

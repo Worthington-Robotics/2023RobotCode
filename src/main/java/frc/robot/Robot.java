@@ -8,11 +8,16 @@
 package frc.robot;
 
 import java.util.Arrays;
+
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.button.*;
 import frc.lib.loops.Looper;
 import frc.lib.models.DriveTrajectoryGenerator;
+import frc.lib.statemachine.Action;
 import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
+import frc.robot.actions.DummyActions;
 import frc.robot.autos.DummyAuto;
 
 /**
@@ -26,6 +31,7 @@ public class Robot extends TimedRobot {
     private SubsystemManager manager;
     private Looper enabledLooper, disabledLooper;
 
+    private JoystickButton dummyButton = new JoystickButton(Constants.SECOND, 1);
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -146,7 +152,9 @@ public class Robot extends TimedRobot {
 
     }
 
-    public void initButtons(){
+    public void initButtons() {
+        dummyButton.toggleOnTrue(Action.toCommand(new DummyActions.DummyPrint()));
+        dummyButton.whileTrue(Action.toCommand(new DummyActions.DummyPrint()));
         // no buttons for you
     }
 }
