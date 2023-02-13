@@ -28,7 +28,6 @@ public class SuperstructureActions {
 			SuperStructure.getInstance().setIntakePower(0.0d);
 			SmartDashboard.putNumber("SuperStructure/Action", 0);
 			//TODO make sure this works and does not interfere with arm
-			
 		}
 
 		@Override
@@ -60,5 +59,4 @@ public class SuperstructureActions {
 			return false;
 		}
 	}
-
 }

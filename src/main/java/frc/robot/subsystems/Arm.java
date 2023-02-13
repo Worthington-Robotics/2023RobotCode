@@ -76,6 +76,10 @@ public class Arm extends Subsystem {
 		periodic.extensionPower = power;
 	}
 
+	public void setGrabber(DoubleSolenoid.Value value) {
+		periodic.grabberEngaged = value;
+	}
+
 	public class ArmIO extends PeriodicIO {
 		public double turretPower = 0;
 		public double armPower = 0;
