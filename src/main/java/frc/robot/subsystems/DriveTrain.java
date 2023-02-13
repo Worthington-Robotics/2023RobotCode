@@ -1,14 +1,11 @@
 package frc.robot.subsystems;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Timer;
 import frc.lib.util.HIDHelper;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import java.lang.Math;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;

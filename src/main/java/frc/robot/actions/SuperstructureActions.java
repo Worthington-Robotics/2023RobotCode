@@ -2,7 +2,6 @@ package frc.robot.actions;
 
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.SuperStructure;
-import frc.robot.subsystems.SuperStructure.IntakePosition;
 
 public class SuperstructureActions {
 	public static class RunIntakeUntilFinishedAction extends Action {
@@ -17,7 +16,6 @@ public class SuperstructureActions {
 		public void onStart() {
 			SuperStructure.getInstance().setIntakePower(power);
 			//TODO make sure this works and does not interfere with arm
-			
 		}
 
 		@Override

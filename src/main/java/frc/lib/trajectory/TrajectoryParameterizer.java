@@ -52,8 +52,6 @@ import frc.lib.geometry.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.management.RuntimeErrorException;
-
 import frc.lib.trajectory.constraint.TrajectoryConstraint;
 import frc.lib.trajectory.constraint.TrajectoryConstraint.MinMax;
 
