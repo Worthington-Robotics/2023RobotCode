@@ -11,10 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
 
-//design pattern for caching periodic writes to avoid hammering the HAL/CAN.
 public class Arm extends Subsystem {
-
-	TalonFX extention, turret, armM, armS;
+	TalonFX extentionMotor, turretMotor, armMasterMotor, armSlaveMotor;
 	DoubleSolenoid grabber;
 
 	private static Arm instance = new Arm();
@@ -22,58 +20,66 @@ public class Arm extends Subsystem {
 	private ArmIO periodic;
 
 	public Arm() {
-		extention = new TalonFX(Constants.ARM_EXTENTION_ID, "Default Name");
-		turret = new TalonFX(Constants.ARM_TURRET_ID, "Default Name");
-		armM = new TalonFX(Constants.ARM_ARM_M_ID, "Default Name");
-		armS = new TalonFX(Constants.ARM_ARM_S_ID, "Default Name");
-		grabber = new DoubleSolenoid(Constants.CTRE_PCM_ID, PneumaticsModuleType.CTREPCM, Constants.ARM_GRABBER_FWD_CHANNEL, Constants.ARM_GRABBER_REV_CHANNEL);
+		extentionMotor = new TalonFX(Constants.ARM_EXTENTION_ID, "Default Name");
+		turretMotor = new TalonFX(Constants.ARM_TURRET_ID, "Default Name");
+		armMasterMotor = new TalonFX(Constants.ARM_ARM_M_ID, "Default Name");
+		armSlaveMotor = new TalonFX(Constants.ARM_ARM_S_ID, "Default Name");
+		grabber = new DoubleSolenoid(
+			Constants.CTRE_PCM_ID,
+			PneumaticsModuleType.CTREPCM,
+			Constants.ARM_GRABBER_FWD_CHANNEL,
+			Constants.ARM_GRABBER_REV_CHANNEL
+		);
 
-		extention.setNeutralMode(NeutralMode.Brake);
-		turret.setNeutralMode(NeutralMode.Brake);
-		armM.setNeutralMode(NeutralMode.Brake);
-		armS.setNeutralMode(NeutralMode.Brake);
-		armS.setInverted(InvertType.FollowMaster);
+		extentionMotor.setNeutralMode(NeutralMode.Brake);
+		turretMotor.setNeutralMode(NeutralMode.Brake);
+		armMasterMotor.setNeutralMode(NeutralMode.Brake);
+		armSlaveMotor.setNeutralMode(NeutralMode.Brake);
+		armSlaveMotor.setInverted(InvertType.FollowMaster);
 
 		periodic = new ArmIO();
 	}
 
-	/**
-	 * Updates all periodic variables and sensors
-	 */
 	public void readPeriodicInputs() {
-		periodic.armPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), 1, 0);
-		periodic.extentionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), .5, -.5);
-		periodic.turretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), -.25, .25);
+		// Testing code for the arm
+		// periodic.armPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), 1, 0);
+		// periodic.extentionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), .5, -.5);
+		// periodic.turretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), -.25, .25);
 	}
 
-	/**
-	 * Writes the periodic outputs to actuators (motors and ect...)
-	 */
 	public void writePeriodicOutputs() {
-		extention.set(ControlMode.PercentOutput, periodic.extentionPower);
-		turret.set(ControlMode.PercentOutput, periodic.turretPower);
-		armM.set(ControlMode.PercentOutput, periodic.armPower);
-		armS.set(ControlMode.Follower, Constants.ARM_ARM_M_ID);
+		extentionMotor.set(ControlMode.PercentOutput, periodic.extensionPower);
+		turretMotor.set(ControlMode.PercentOutput, periodic.turretPower);
+		
+		armMasterMotor.set(ControlMode.PercentOutput, periodic.armPower);
+		armSlaveMotor.set(ControlMode.Follower, Constants.ARM_ARM_M_ID);
 	}
 
-	/**
-	 * Outputs all logging information to the SmartDashboard
-	 */
 	public void outputTelemetry() {
 		SmartDashboard.putNumber("Arm/turretPower", periodic.turretPower);
 		SmartDashboard.putNumber("Arm/armPower", periodic.armPower);
-		SmartDashboard.putNumber("Arm/extentionPower", periodic.extentionPower);
+		SmartDashboard.putNumber("Arm/extensionPower", periodic.extensionPower);
+		SmartDashboard.putString("Arm/grabberEngaged", periodic.grabberEngaged.toString());
 	}
 
-	/**
-	 * Called to reset and configure the subsystem
-	 */
 	public void reset() {}
+
+	public void setTurretPower(double power) {
+		periodic.turretPower = power;
+	}
+
+	public void setArmPower(double power) {
+		periodic.armPower = power;
+	}
+
+	public void setExtensionPower(double power) {
+		periodic.extensionPower = power;
+	}
 
 	public class ArmIO extends PeriodicIO {
 		public double turretPower = 0;
 		public double armPower = 0;
-		public double extentionPower = 0;
+		public double extensionPower = 0;
 		public DoubleSolenoid.Value grabberEngaged = Value.kReverse;
 	}
 
