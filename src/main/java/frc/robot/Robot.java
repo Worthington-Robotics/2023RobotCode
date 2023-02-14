@@ -8,13 +8,25 @@
 package frc.robot;
 
 import java.util.Arrays;
+import java.util.function.BooleanSupplier;
+
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.loops.Looper;
 import frc.lib.models.DriveTrajectoryGenerator;
 import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Dummy.State;
 import frc.robot.autos.TestAuto;
+import frc.robot.subsystems.SuperStructure;
+import frc.robot.subsystems.SuperStructure.IntakePosition;
+import frc.lib.statemachine.Action;
+import frc.robot.actions.RunIntakeAction;
+import frc.robot.actions.SuperstructureActions;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -24,9 +36,16 @@ import frc.robot.autos.TestAuto;
  * project.
  */
 public class Robot extends TimedRobot {
+
     private SubsystemManager manager;
     private Looper enabledLooper, disabledLooper;
 
+    // Input bindings
+    private JoystickButton intakeCubeButton = new JoystickButton(Constants.MASTER, 2);
+    private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 4);
+    private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
+    private JoystickButton intakeDownButton = new JoystickButton(Constants.MASTER, 10);
+    private JoystickButton intakeUpButton = new JoystickButton(Constants.MASTER, 9);
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -34,26 +53,25 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
-        Constants.readDebugLevel();
-
         manager = new SubsystemManager(
             Arrays.asList(
-                Dummy.getInstance(),
+                SuperStructure.getInstance(),
+                Arm.getInstance(),
                 DriveTrain.getInstance()
             ),
             true
         );
 
-        // create the master looper threads
+        // Create the master looper threads
         DriveTrajectoryGenerator.getInstance();
         enabledLooper = new Looper();
         disabledLooper = new Looper();
 
-        // register the looper threads to the manager to use for enabled and disabled
+        // Register the looper threads to the manager to use for enabled and disabled
         manager.registerEnabledLoops(enabledLooper);
         manager.registerDisabledLoops(disabledLooper);
 
-        // add any additional logging sources for capture
+        // Add any additional logging sources for capture
         manager.addLoggingSource(Arrays.asList(StateMachine.getInstance()));
 
         initButtons();
@@ -69,7 +87,7 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
-        manager.outputTelemetry();
+        manager.outputTelemetry();  
     }
 
     @Override
@@ -96,7 +114,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         disabledLooper.stop();
 
-        //reset anything here
+        // Reset anything here
         enabledLooper.start();
 
         TestAuto auto = new TestAuto();
@@ -107,17 +125,13 @@ public class Robot extends TimedRobot {
      * This function is called periodically during autonomous.
      */
     @Override
-    public void autonomousPeriodic() {
-        
-    }
+    public void autonomousPeriodic() {}
 
     @Override
     public void teleopInit() {
         disabledLooper.stop();
 
-        //reset anything here
-        Dummy.getInstance().state = State.kStopped;
-        //Constants.WHEELS = SmartDashboard.getBoolean("Drive/Wheel Control", Constants.WHEELS);
+        // Reset anything here
         initButtons();
         enabledLooper.start();
         
@@ -127,15 +141,14 @@ public class Robot extends TimedRobot {
      * This function is called periodically during operator control.
      */
     @Override
-    public void teleopPeriodic() {
-        
-    }
+    public void teleopPeriodic() {}
 
     @Override
     public void testInit() {
         disabledLooper.stop();
 
-        //reset anything here
+        // Reset anything here
+        SuperStructure.getInstance().reset();
         Dummy.getInstance().reset();
         DriveTrain.getInstance().reset();
 
@@ -146,11 +159,13 @@ public class Robot extends TimedRobot {
      * This function is called periodically during test mode.
      */
     @Override
-    public void testPeriodic() {
+    public void testPeriodic() {}
 
-    }
-
-    public void initButtons(){
-        // no buttons for you
+    public void initButtons() {
+        intakeConeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CONE_IN_POWER)));
+        intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
+        intakeCubeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CUBE_IN_POWER)));
+        intakeUpButton.onTrue(Action.toCommand(new SuperstructureActions.MoveIntakeAction(IntakePosition.kUp)));
+        intakeDownButton.onTrue(Action.toCommand(new SuperstructureActions.MoveIntakeAction(IntakePosition.kDown)));
     }
 }

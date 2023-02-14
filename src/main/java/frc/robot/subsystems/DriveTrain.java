@@ -1,5 +1,4 @@
 package frc.robot.subsystems;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -9,7 +8,6 @@ import edu.wpi.first.wpilibj.Timer;
 import java.lang.Math;
 import frc.lib.util.HIDHelper;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import java.lang.Math;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
@@ -56,10 +54,6 @@ public class DriveTrain extends Subsystem {
 
         forwardLeftMotor.setInverted(true);
         rearLeftMotor.setInverted(true);
-
-        //Move this into reset() method
-        reset();
-      
     }
 
     public enum state{
@@ -85,7 +79,7 @@ public class DriveTrain extends Subsystem {
         periodic.rawHeading = gyro.getFusedHeading();
         periodic.operatorInput = HIDHelper.getAdjStick(Constants.MASTER_STICK);
         periodic.xValue = periodic.operatorInput[0];
-        periodic.yValue = periodic.operatorInput[1];
+        periodic.yValue = periodic.operatorInput[1];     
     }
 
     @Override
@@ -129,7 +123,6 @@ public class DriveTrain extends Subsystem {
 
             @Override
             public void onLoop(double timestamp) {
-                
                 switch (periodic.currentState) {
                     case OPEN_LOOP:
                         setMotorDemands();
@@ -137,9 +130,8 @@ public class DriveTrain extends Subsystem {
                     case ANGLE_PID:
                         anglePID();
                     case MOVE_FORWARD:
-                        moveForward();
-                        
-                }           
+                        moveForward();   
+                }
             }
 
             @Override
@@ -149,7 +141,6 @@ public class DriveTrain extends Subsystem {
 
         });
     }
-
 
     public void resetEncoders(){
         forwardLeftMotor.setSelectedSensorPosition(0);
