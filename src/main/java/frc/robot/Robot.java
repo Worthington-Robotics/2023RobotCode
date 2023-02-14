@@ -146,6 +146,7 @@ public class Robot extends TimedRobot {
         SuperStructure.getInstance().reset();
         Dummy.getInstance().reset();
         DriveTrain.getInstance().reset();
+        Arm.getInstance().reset();
 
         enabledLooper.start();
     }
