@@ -14,28 +14,20 @@ public class DriveTurn extends Action {
     public void onStart() {
         DriveTrain.getInstance().setDesiredHeading(heading);
         DriveTrain.getInstance().setAnglePID();
+        DriveTrain.getInstance().setHeadingError(heading);
     }
 
     @Override
-    public void onLoop() {
-        // TODO Auto-generated method stub
-        
-    }
+    public void onLoop() {}
 
     @Override
     public boolean isFinished() {
-        // TODO Auto-generated method stub
-        if(Math.abs(DriveTrain.getInstance().getHeadingError()) < Constants.ANGLE_ACCEPTANCE){ //checks exit conditions
-            return true;
-        } else {
-            return false;
-        }
+        return (Math.abs(DriveTrain.getInstance().getHeadingError()) < Constants.ANGLE_ACCEPTANCE);
     }
 
     @Override
     public void onStop() {
         DriveTrain.getInstance().resetEncoders();
-        // TODO Auto-generated method stub
-        
+        DriveTrain.getInstance().setStopped();
     }
 }

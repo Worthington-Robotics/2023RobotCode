@@ -1,7 +1,10 @@
 package frc.robot.actions.drive;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.util.DebugLogger;
+import frc.robot.util.DebugLogger.DebugLevel;
 import frc.robot.Constants;
 
 public class MoveForward extends Action{
@@ -16,6 +19,7 @@ public class MoveForward extends Action{
     @Override
     public void onStart() {
         DriveTrain.getInstance().setDesiredHeading(desiredHeading);
+        DriveTrain.getInstance().setEncoderError(targetDistance);
         DriveTrain.getInstance().setTargetDistance(targetDistance);
         DriveTrain.getInstance().setMoveForward();
     }
@@ -25,16 +29,12 @@ public class MoveForward extends Action{
 
     @Override
     public boolean isFinished() {
-        // if (Math.abs(DriveTrain.getInstance().getEncoderError()) < Constants.DRIVE_FORWARD_ACCEPTED_ERROR) { //this cheks the exit condition
-        //     return true;
-        // }
-        return false;
+        double error = Math.abs(DriveTrain.getInstance().getEncoderError());
+        return (error < Constants.DRIVE_FORWARD_ACCEPTED_ERROR);
     }
 
     @Override
     public void onStop() {
-        DriveTrain.getInstance().resetEncoders();
-        
+        DriveTrain.getInstance().setStopped();
     }
-    
 }

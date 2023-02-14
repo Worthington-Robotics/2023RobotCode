@@ -56,10 +56,11 @@ public class DriveTrain extends Subsystem {
         rearLeftMotor.setInverted(true);
     }
 
-    public enum state{
+    public enum state {
         OPEN_LOOP,
         ANGLE_PID,
-        MOVE_FORWARD
+        MOVE_FORWARD,
+        STOPPED
     }
 
     private static DriveTrain m_DriveInstance = new DriveTrain();
@@ -98,6 +99,11 @@ public class DriveTrain extends Subsystem {
         SmartDashboard.putNumber("Drive/leftEncoder", periodic.leftEncoderTicks);
         SmartDashboard.putNumber("Drive/Right Demand", periodic.rightDemand);
         SmartDashboard.putNumber("Drive/Left Demand", periodic.leftDemand);
+        SmartDashboard.putNumber("Drive/Right Error", periodic.rightError);
+        SmartDashboard.putNumber("Drive/Left Error", periodic.leftError);
+        SmartDashboard.putNumber("Drive/TargetDistance", periodic.targetDistance);
+        SmartDashboard.putString("Drive/mode", periodic.currentState.toString());
+        SmartDashboard.putNumber("Drive/averageEncoderError", getEncoderError());
         //Kick out pidgeon heading here too
         SmartDashboard.putNumber("Drive/Heading", periodic.rawHeading);
     }
@@ -107,6 +113,10 @@ public class DriveTrain extends Subsystem {
         resetEncoders();
         periodic.rightError = 0;
         periodic.leftError = 0;
+        periodic.targetDistance = 0;
+        periodic.leftDemand = 0;
+        periodic.rightDemand = 0;
+        periodic.currentState = state.STOPPED;
 
         transmissionSolenoid.set(Value.kReverse);
         gyro.setFusedHeading(0);
@@ -129,8 +139,14 @@ public class DriveTrain extends Subsystem {
                         break;
                     case ANGLE_PID:
                         anglePID();
+                        break;
                     case MOVE_FORWARD:
-                        moveForward();   
+                        moveForward();
+                        break;
+                    case STOPPED:
+                        periodic.leftDemand = 0;
+                        periodic.rightDemand = 0;
+                        break;
                 }
             }
 
@@ -167,6 +183,19 @@ public class DriveTrain extends Subsystem {
 
     public void setMoveForward(){
         periodic.currentState = state.MOVE_FORWARD;
+    }
+
+    public void setStopped() {
+        periodic.currentState = state.STOPPED;
+    }
+
+    public void setEncoderError(double error) {
+        periodic.leftError = error;
+        periodic.rightError = error;
+    }
+
+    public void setHeadingError(double error) {
+        periodic.headingError = error;
     }
 
     public void anglePID () {
@@ -225,8 +254,7 @@ public class DriveTrain extends Subsystem {
         return periodic.headingError;
     }
 
-    public double getEncoderError(){
-
+    public double getEncoderError() {
         return (periodic.rightError + periodic.leftError) / 2.0;
     }
 

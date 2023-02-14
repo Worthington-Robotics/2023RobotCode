@@ -95,6 +95,7 @@ public class Robot extends TimedRobot {
         enabledLooper.stop();
 
         StateMachine.getInstance().assertStop();
+        DriveTrain.getInstance().reset();
 
         disabledLooper.start();
     }
@@ -115,6 +116,7 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
 
         // Reset anything here
+        DriveTrain.getInstance().reset();
         enabledLooper.start();
 
         TestAuto auto = new TestAuto();
@@ -133,6 +135,9 @@ public class Robot extends TimedRobot {
 
         // Reset anything here
         initButtons();
+        DriveTrain.getInstance().reset();
+        DriveTrain.getInstance().setOpenLoop();
+        SuperStructure.getInstance().reset();
         enabledLooper.start();
         
     }
