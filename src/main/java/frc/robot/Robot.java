@@ -13,6 +13,7 @@ import java.util.function.BooleanSupplier;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -39,8 +40,8 @@ public class Robot extends TimedRobot {
     private Looper enabledLooper, disabledLooper;
 
     // Input bindings
-    private JoystickButton intakeCubeButton = new JoystickButton(Constants.MASTER, 2);
-    private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 4);
+    private JoystickButton intakeCubeButton = new JoystickButton(Constants.MASTER, 4);
+    private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 2);
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton intakeDownButton = new JoystickButton(Constants.MASTER, 10);
     private JoystickButton intakeUpButton = new JoystickButton(Constants.MASTER, 9);
@@ -73,6 +74,7 @@ public class Robot extends TimedRobot {
         manager.addLoggingSource(Arrays.asList(StateMachine.getInstance()));
 
         initButtons();
+        CommandScheduler.getInstance().enable();
     }
 
     /**
@@ -86,6 +88,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         manager.outputTelemetry();  
+        CommandScheduler.getInstance().run();
     }
 
     @Override
