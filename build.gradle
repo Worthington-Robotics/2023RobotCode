@@ -91,7 +91,28 @@ wpi.java.configureTestTasks(test)
 // gradlew deploy
 tasks.register("setDebugLevel") {
     if (project.hasProperty("debugLevel")) {
-        new File(projectDir.toString() + "/src/main/deploy", "debug.txt").text = debugLevel
+        def levelInt
+        switch (debugLevel) {
+            case "NONE":
+                levelInt = 0
+                break
+            case "SOME":
+                levelInt = 1
+                break
+            case "MOST":
+                levelInt = 2
+                break
+            case "ALL":
+                levelInt = 3
+                break
+            default:
+                levelInt = Integer.parseInt(debugLevel)
+                break
+        }
+        if (levelInt < 0 || levelInt > 3) {
+            throw new InvalidUserDataException("Invalid debug level (0 <= debugLevel <= 3)");
+        }
+        new File(projectDir.toString() + "/src/main/deploy", "debug.txt").text = levelInt
     }
 }
 

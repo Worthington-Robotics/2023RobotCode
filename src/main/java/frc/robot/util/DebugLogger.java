@@ -39,27 +39,31 @@ public class DebugLogger {
 	}
 
 	// Returns true if the current debug level is at least the specified level
-	public boolean isDebugLevelAtLeast(DebugLevel level) {
+	public boolean isLevel(DebugLevel level) {
 		return (level.compareTo(debugLevel) >= 0);
 	}
 
 	// Print something to the console only at the specified debug level
 	public void debugPrint(DebugLevel level, String message) {
-		if (isDebugLevelAtLeast(level)) {
+		if (isLevel(level)) {
 			System.out.println(message);
 		}
 	}
 
+	public void debugPrint(DebugLevel level, double message) {
+		debugPrint(level, String.valueOf(message));
+	}
+
 	// Report a warning to the driverstation only at the specified debug level
 	public void debugWarn(DebugLevel level, String message) {
-		if (isDebugLevelAtLeast(level)) {
+		if (isLevel(level)) {
 			DriverStation.reportWarning(message, false);
 		}
 	}
 
 	// Report an error to the driverstation only at the specified debug level
 	public void debugError(DebugLevel level, String message) {
-		if (isDebugLevelAtLeast(level)) {
+		if (isLevel(level)) {
 			DriverStation.reportError(message, false);
 		}
 	}
