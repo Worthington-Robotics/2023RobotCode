@@ -45,7 +45,7 @@ public class DriveTrain extends Subsystem {
         // Axis values from the joystick
         public double[] operatorInput = { 0, 0, 0, 0 };
         // Current drive mode
-        public DriveMode currentMode = DriveMode.OPEN_LOOP;
+        public DriveMode currentMode = DriveMode.STOPPED;
         public double powerChange;
     }
 
@@ -84,14 +84,7 @@ public class DriveTrain extends Subsystem {
         periodic.xValue = periodic.operatorInput[0];
         periodic.yValue = periodic.operatorInput[1];
         // These are important derived values that are also read by actions so they should be updated here
-        periodic.headingError = periodic.targetHeading - periodic.heading;
-        if (Math.abs(periodic.headingError) > 180) {
-            if (Math.signum(periodic.headingError) == 1.0) {
-                periodic.headingError -= 360.0;
-            } else {
-                periodic.headingError += 360.0;
-            }
-        }
+        periodic.headingError = normalizeHeadingError(periodic.targetHeading - periodic.heading);
         periodic.leftError = periodic.targetDistance - periodic.leftEncoderTicks;
         periodic.rightError = periodic.targetDistance - periodic.rightEncoderTicks;
     }
@@ -213,12 +206,8 @@ public class DriveTrain extends Subsystem {
         periodic.rightDemand = periodic.headingError * Constants.ANGLE_KP;
         
         // Minimum speed
-        if (Math.abs(periodic.leftDemand) < Constants.DRIVE_TURN_MINIMUM_SPEED ||
-            Math.abs(periodic.rightDemand) < Constants.DRIVE_TURN_MINIMUM_SPEED)
-        {
-            periodic.leftDemand = Math.signum(periodic.leftDemand) * 0.09;
-            periodic.rightDemand = Math.signum(periodic.rightDemand) * 0.09;
-        }
+        periodic.leftDemand = minimumTurnSpeed(periodic.leftDemand);
+        periodic.rightDemand = minimumTurnSpeed(periodic.rightDemand);
 
         // Normalize power
         if (Math.abs(periodic.leftDemand) > .5 || Math.abs(periodic.rightDemand) > .5) {
@@ -272,7 +261,17 @@ public class DriveTrain extends Subsystem {
         if (periodic.leftDemand < -1) { periodic.leftDemand = -1; }
     }
 
-    public double normalizeHeading(double heading) {
+    // Clamps motor demands to a minimum speed while turning
+    public static double minimumTurnSpeed(double demand) {
+        if (Math.abs(demand) < Constants.DRIVE_TURN_MINIMUM_SPEED) {
+            return Math.signum(demand) * Constants.DRIVE_TURN_MINIMUM_SPEED;
+        } else {
+            return demand;
+        }
+    }
+
+    // Normalizes heading direction
+    public static double normalizeHeading(double heading) {
         final double wrappedHeading = heading % 360;
         if (wrappedHeading > 180.0) {
             return wrappedHeading - 360.0;
@@ -281,6 +280,19 @@ public class DriveTrain extends Subsystem {
             return wrappedHeading + 360.0;
         } else {
             return wrappedHeading;
+        }
+    }
+
+    // Normalizes heading error
+    public static double normalizeHeadingError(double error) {
+        if (Math.abs(error) > 180) {
+            if (Math.signum(error) == 1.0) {
+                return error - 360.0;
+            } else {
+                return error + 360.0;
+            }
+        } else {
+            return error;
         }
     }
 
