@@ -14,7 +14,7 @@ public class DriveTurn extends Action {
     public void onStart() {
         DriveTrain.getInstance().setDesiredHeading(heading);
         DriveTrain.getInstance().setHeadingError(heading);
-        DriveTrain.getInstance().setAnglePID();
+        DriveTrain.getInstance().setTurning();
     }
 
     @Override
@@ -22,7 +22,7 @@ public class DriveTurn extends Action {
 
     @Override
     public boolean isFinished() {
-        return (Math.abs(DriveTrain.getInstance().getHeadingError()) < Constants.ANGLE_ACCEPTANCE);
+        return Math.abs(DriveTrain.getInstance().getHeadingError()) < Constants.ANGLE_ACCEPTANCE;
     }
 
     @Override

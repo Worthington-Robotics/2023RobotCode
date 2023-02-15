@@ -1,13 +1,10 @@
 package frc.robot.actions.drive;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.util.DebugLogger;
-import frc.robot.util.DebugLogger.DebugLevel;
 import frc.robot.Constants;
 
-public class MoveForward extends Action{
+public class MoveForward extends Action {
     double targetDistance;
     double desiredHeading;
 
@@ -29,8 +26,7 @@ public class MoveForward extends Action{
 
     @Override
     public boolean isFinished() {
-        double error = Math.abs(DriveTrain.getInstance().getEncoderError());
-        return (error < Constants.DRIVE_FORWARD_ACCEPTED_ERROR);
+        return Math.abs(DriveTrain.getInstance().getEncoderError()) < Constants.DRIVE_FORWARD_ACCEPTED_ERROR;
     }
 
     @Override
