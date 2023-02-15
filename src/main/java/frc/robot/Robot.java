@@ -19,6 +19,7 @@ import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
 import frc.robot.actions.DummyActions;
 import frc.robot.autos.DummyAuto;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -31,7 +32,7 @@ public class Robot extends TimedRobot {
     private SubsystemManager manager;
     private Looper enabledLooper, disabledLooper;
 
-    private JoystickButton dummyButton = new JoystickButton(Constants.SECOND, 1);
+    private JoystickButton dummyButton = new JoystickButton(Constants.MASTER, 1);
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -153,7 +154,8 @@ public class Robot extends TimedRobot {
     }
 
     public void initButtons() {
-        dummyButton.toggleOnTrue(Action.toCommand(new DummyActions.DummyPrint()));
+        SmartDashboard.putBoolean("Dummy/pressed", false);
+        // dummyButton.toggleOnTrue(Action.toCommand(new DummyActions.DummyPrint()));
         dummyButton.whileTrue(Action.toCommand(new DummyActions.DummyPrint()));
         // no buttons for you
     }
