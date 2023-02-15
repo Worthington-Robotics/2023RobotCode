@@ -51,7 +51,6 @@ public class DriveTrain extends Subsystem {
 
     public DriveTrain() {
         periodic = new DriveIO();
-        // TODO: Move the joystick into the constants files (And all the motor/sensor IDs)
         transmissionSolenoid = new DoubleSolenoid(
             PneumaticsModuleType.CTREPCM,
             1, 0
@@ -169,32 +168,27 @@ public class DriveTrain extends Subsystem {
 
     public void setDesiredHeading(double theta) {
         periodic.targetHeading = theta;
+        periodic.headingError = theta;
     }
 
     public void setTargetDistance(double distance) {
         periodic.targetDistance = distance;
+        periodic.leftError = distance;
+        periodic.rightError = distance;
     }
 
-    // Set drive encoder error prior to moving towards a setpoint
-    public void setEncoderError(double error) {
-        periodic.leftError = error;
-        periodic.rightError = error;
-    }
-
-    public void setHeadingError(double error) {
-        periodic.headingError = error;
-    }
-
-    public void setTurning() {
+    public void setTurning(double theta) {
         periodic.currentMode = DriveMode.TURN;
+        setDesiredHeading(theta);
     }
 
     public void setOpenLoop() {
         periodic.currentMode = DriveMode.OPEN_LOOP;
     }
 
-    public void setMoveForward() {
+    public void setMoveForward(double distance) {
         periodic.currentMode = DriveMode.MOVE_FORWARD;
+        setTargetDistance(distance);
     }
 
     public void setStopped() {
@@ -223,7 +217,7 @@ public class DriveTrain extends Subsystem {
         periodic.rightDemand = periodic.rightError * Constants.FORWARD_KP;
 
         //TODO: Add rollover math
-        periodic.powerChange = (periodic.headingError) / 45.0;
+        periodic.powerChange = periodic.headingError / 45.0;
         periodic.leftDemand -= periodic.powerChange;
         periodic.rightDemand += periodic.powerChange;
 

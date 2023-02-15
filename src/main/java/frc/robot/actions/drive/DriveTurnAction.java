@@ -4,17 +4,15 @@ import frc.lib.statemachine.Action;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
 
-public class DriveTurn extends Action {
+public class DriveTurnAction extends Action {
     double heading;
-    public DriveTurn(double heading) {
+    public DriveTurnAction(double heading) {
         this.heading = heading;
     }
 
     @Override
     public void onStart() {
-        DriveTrain.getInstance().setDesiredHeading(heading);
-        DriveTrain.getInstance().setHeadingError(heading);
-        DriveTrain.getInstance().setTurning();
+        DriveTrain.getInstance().setTurning(heading);
     }
 
     @Override

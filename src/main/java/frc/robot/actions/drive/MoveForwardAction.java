@@ -4,11 +4,11 @@ import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.Constants;
 
-public class MoveForward extends Action {
+public class MoveForwardAction extends Action {
     double targetDistance;
     double desiredHeading;
 
-    public MoveForward (double targetDistance, double desiredHeading){
+    public MoveForwardAction (double targetDistance, double desiredHeading){
         this.targetDistance = targetDistance;
         this.desiredHeading = desiredHeading;
     }
@@ -16,9 +16,7 @@ public class MoveForward extends Action {
     @Override
     public void onStart() {
         DriveTrain.getInstance().setDesiredHeading(desiredHeading);
-        DriveTrain.getInstance().setEncoderError(targetDistance);
-        DriveTrain.getInstance().setTargetDistance(targetDistance);
-        DriveTrain.getInstance().setMoveForward();
+        DriveTrain.getInstance().setMoveForward(targetDistance);
     }
 
     @Override
