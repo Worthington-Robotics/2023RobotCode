@@ -21,6 +21,11 @@ public class Constants {
     public static final int ARM_GRABBER_FWD_CHANNEL = 2;
     public static final int ARM_GRABBER_REV_CHANNEL = 3;
 
+    public static final double ENCODER_PER_DEGREE = 1000.0;
+    public static final double ENCODER_PER_INCH = 750.0;
+    public static final double ARM_POWER_KP = .8;
+    public static final double LEVER_LENGTH_KP = 1 / 30.0;
+
     // ### Device ID declarations ###
 
     // Superstructure
@@ -93,7 +98,7 @@ public class Constants {
     // DEBUG AND TESTING flags
     public static boolean WHEELS = true;
     public static final boolean RAMPUP = false;
-    public static final boolean ENABLE_MP_TEST_MODE = true;
+    public static final boolean armENABLE_MP_TEST_MODE = true;
     public static final double MP_TEST_SPEED = 2; //m/s
 
     public static double LOOPER_DT = 0.01;   

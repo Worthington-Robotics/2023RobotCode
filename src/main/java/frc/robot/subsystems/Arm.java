@@ -80,11 +80,29 @@ public class Arm extends Subsystem {
 		periodic.grabberEngaged = value;
 	}
 
+	
+
+	public void moveArm(double currentDegreeEncoder, double extensionEncoder, double desiredArmDegree){
+		periodic.armDegree = 20.0 + (currentDegreeEncoder / Constants.ENCODER_PER_DEGREE);
+		periodic.armLength = 20.0 + (extensionEncoder / Constants.ENCODER_PER_INCH);
+		periodic.desiredArmDegree = desiredArmDegree;
+
+		double leverVal = periodic.armLength * Constants.LEVER_LENGTH_KP;
+		double normalizedArmPower = Math.sin(periodic.armDegree) * Constants.ARM_POWER_KP * leverVal;
+		double degreeError = periodic.armDegree - desiredArmDegree;
+
+		periodic.armPower = normalizedArmPower * degreeError * (1.0 / 60.0);
+	}	
+
+
 	public class ArmIO extends PeriodicIO {
 		public double turretPower = 0;
 		public double armPower = 0;
 		public double extensionPower = 0;
 		public DoubleSolenoid.Value grabberEngaged = Value.kReverse;
+		public double armDegree = 20.0; //TODO: get an accurate starting degree for the arm
+		public double armLength = 20.0; //TODO: make the minimal arm length accurate and put it in inches
+		public double desiredArmDegree = 0;
 	}
 
 	public LogData getLogger() {
