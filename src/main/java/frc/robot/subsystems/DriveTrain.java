@@ -273,11 +273,11 @@ public class DriveTrain extends Subsystem {
     }
 
     public double normalizeHeading(double heading) {
-        double wrappedHeading = heading % 360;
+        final double wrappedHeading = heading % 360;
         if (wrappedHeading > 180.0) {
             return wrappedHeading - 360.0;
         }
-        if ((heading % 360) < -180.0) {
+        if (wrappedHeading < -180.0) {
             return wrappedHeading + 360.0;
         } else {
             return wrappedHeading;
