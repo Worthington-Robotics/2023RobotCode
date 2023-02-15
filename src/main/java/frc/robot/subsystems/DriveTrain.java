@@ -228,10 +228,11 @@ public class DriveTrain extends Subsystem {
             periodic.leftDemand = (Math.signum(periodic.leftDemand) * 0.6 )* Math.abs(periodic.leftDemand / norm);
         }
 
-        if (periodic.rightDemand < 0.9 || periodic.rightDemand > -0.9) {
+        if (periodic.rightDemand > 0.9 || periodic.rightDemand < -0.9) {
             periodic.rightDemand = Math.signum(periodic.rightDemand) * 0.9;
-        } else if (periodic.leftDemand < 0.9 || periodic.leftDemand > -0.9) {
-            periodic.leftDemand = 0.09;
+        }
+        if (periodic.leftDemand > 0.9 || periodic.leftDemand < -0.9) {
+            periodic.leftDemand = Math.signum(periodic.leftDemand) * 0.9;
         }
     }
 

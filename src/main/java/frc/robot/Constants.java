@@ -99,9 +99,9 @@ public class Constants {
     // Angle PID
     public static final double ANGLE_KP = 1.0 / 60.0;
     public static final double ANGLE_ACCEPTANCE = 2.0;
-    public static final double DRIVE_FORWARD_ACCEPTED_ERROR = 5000.0;
 
     // Move forward
+    public static final double DRIVE_FORWARD_ACCEPTED_ERROR = 5000.0;
     public static final double FORWARD_KP = 1.0 / 150000.0;
 
     // ### Constants kept around for compatability with library code ###
