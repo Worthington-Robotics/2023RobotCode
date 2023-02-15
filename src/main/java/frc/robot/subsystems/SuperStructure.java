@@ -31,9 +31,11 @@ public class SuperStructure extends Subsystem {
 		double backstopRange = 0;
 		// Motor demand to set intake speed
 		double power = 0;
+		boolean buttonPressed = false;
 		// Whether the intake is up or down
 		public IntakePosition intakePosition = IntakePosition.kUp;
 	}
+
 	private SuperIO periodic;
 
 	public SuperStructure() {
@@ -62,10 +64,15 @@ public class SuperStructure extends Subsystem {
 	}
 
 	public void writePeriodicOutputs() {
-		leftSideWheel.set(ControlMode.PercentOutput, periodic.power * Constants.SIDE_WHEELS_MULTIPLIER );
-		rightSideWheel.set(ControlMode.PercentOutput, periodic.power * Constants.SIDE_WHEELS_MULTIPLIER);
-		conveyorBelt.set(ControlMode.PercentOutput, periodic.power * Constants.CONVEYER_BELT_MULTIPLIER);
-		intakeWheelSpinner.set(ControlMode.PercentOutput, periodic.power * Constants.INTAKE_WHEEL_SPINNER_MULTIPLIER);
+		leftSideWheel.set(ControlMode.PercentOutput, 1 * Constants.SIDE_WHEELS_MULTIPLIER );
+		rightSideWheel.set(ControlMode.PercentOutput, 1 * Constants.SIDE_WHEELS_MULTIPLIER);
+		conveyorBelt.set(ControlMode.PercentOutput, 1 * Constants.CONVEYER_BELT_MULTIPLIER);
+		intakeWheelSpinner.set(ControlMode.PercentOutput, 1 * Constants.INTAKE_WHEEL_SPINNER_MULTIPLIER);
+		
+		// leftSideWheel.set(ControlMode.PercentOutput, periodic.power * Constants.SIDE_WHEELS_MULTIPLIER );
+		// rightSideWheel.set(ControlMode.PercentOutput, periodic.power * Constants.SIDE_WHEELS_MULTIPLIER);
+		// conveyorBelt.set(ControlMode.PercentOutput, periodic.power * Constants.CONVEYER_BELT_MULTIPLIER);
+		// intakeWheelSpinner.set(ControlMode.PercentOutput, periodic.power * Constants.INTAKE_WHEEL_SPINNER_MULTIPLIER);
 		switch (periodic.intakePosition) {
 			case kUp:
 				intakeSolenoid.set(Value.kForward);
@@ -81,6 +88,10 @@ public class SuperStructure extends Subsystem {
 
 	public void setIntakePosition(IntakePosition position){
 		periodic.intakePosition = position;
+	}
+
+	public void setButtonPressed(){
+		periodic.buttonPressed = !periodic.buttonPressed;
 	}
 
 
@@ -99,6 +110,7 @@ public class SuperStructure extends Subsystem {
 
 	public void outputTelemetry() {
 		SmartDashboard.putNumber("SuperStructure/IntakePower", periodic.power);
+		SmartDashboard.putBoolean("SuperStructure/ButtonPressed", periodic.buttonPressed);
 	}
 
 	public LogData getLogger() {
