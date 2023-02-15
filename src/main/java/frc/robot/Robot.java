@@ -18,6 +18,7 @@ import frc.lib.statemachine.Action;
 import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
 import frc.robot.actions.DummyActions;
+import frc.robot.actions.DummyPrint;
 import frc.robot.autos.DummyAuto;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -40,8 +41,10 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        
         Constants.readDebugLevel();
 
+        initButtons();
         manager = new SubsystemManager(
             Arrays.asList(
                 Dummy.getInstance()
@@ -61,7 +64,6 @@ public class Robot extends TimedRobot {
         // add any additional logging sources for capture
         manager.addLoggingSource(Arrays.asList(StateMachine.getInstance()));
 
-        initButtons();
     }
 
     /**
@@ -122,7 +124,6 @@ public class Robot extends TimedRobot {
 
         //reset anything here
         //Constants.WHEELS = SmartDashboard.getBoolean("Drive/Wheel Control", Constants.WHEELS);
-        initButtons();
         enabledLooper.start();
         
     }
@@ -156,7 +157,7 @@ public class Robot extends TimedRobot {
     public void initButtons() {
         SmartDashboard.putBoolean("Dummy/pressed", false);
         // dummyButton.toggleOnTrue(Action.toCommand(new DummyActions.DummyPrint()));
-        dummyButton.whileTrue(Action.toCommand(new DummyActions.DummyPrint()));
+        dummyButton.whileTrue(Action.toCommand(new DummyPrint()));
         // no buttons for you
     }
 }
