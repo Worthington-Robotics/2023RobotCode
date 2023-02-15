@@ -136,8 +136,8 @@ public class Robot extends TimedRobot {
         // Reset anything here
         initButtons();
         DriveTrain.getInstance().reset();
-        DriveTrain.getInstance().setOpenLoop();
         SuperStructure.getInstance().reset();
+        DriveTrain.getInstance().setOpenLoop();
         enabledLooper.start();
         
     }

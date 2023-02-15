@@ -47,6 +47,7 @@ public class DriveTrain extends Subsystem {
         //Move the joystick into the constants files (And all the motor/sensor IDs)
         transmissionSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1, 0);
         gyro = new PigeonIMU(1);
+
         forwardRightMotor = new TalonFX(Constants.DRIVE_FRONT_RIGHT_ID);
         rearRightMotor = new TalonFX(Constants.DRIVE_BACK_RIGHT_ID);
         forwardLeftMotor = new TalonFX(Constants.DRIVE_FRONT_LEFT_ID);
@@ -73,11 +74,10 @@ public class DriveTrain extends Subsystem {
 
     @Override
     public void readPeriodicInputs() {
+        periodic.rawHeading = gyro.getFusedHeading();
         periodic.heading = normalizeHeading(periodic.rawHeading);
         periodic.leftEncoderTicks = forwardLeftMotor.getSelectedSensorPosition();
         periodic.rightEncoderTicks = forwardRightMotor.getSelectedSensorPosition();
-        //Update the pidgeon here
-        periodic.rawHeading = gyro.getFusedHeading();
         periodic.operatorInput = HIDHelper.getAdjStick(Constants.MASTER_STICK);
         periodic.xValue = periodic.operatorInput[0];
         periodic.yValue = periodic.operatorInput[1];     
@@ -102,10 +102,10 @@ public class DriveTrain extends Subsystem {
         SmartDashboard.putNumber("Drive/Right Error", periodic.rightError);
         SmartDashboard.putNumber("Drive/Left Error", periodic.leftError);
         SmartDashboard.putNumber("Drive/TargetDistance", periodic.targetDistance);
-        SmartDashboard.putString("Drive/mode", periodic.currentState.toString());
-        SmartDashboard.putNumber("Drive/averageEncoderError", getEncoderError());
-        //Kick out pidgeon heading here too
-        SmartDashboard.putNumber("Drive/Heading", periodic.rawHeading);
+        SmartDashboard.putString("Drive/Mode", periodic.currentState.toString());
+        SmartDashboard.putNumber("Drive/Average Encoder Error", getEncoderError());
+        SmartDashboard.putNumber("Drive/Normalized Heading", periodic.heading);
+        SmartDashboard.putNumber("Drive/Raw Heading", periodic.rawHeading);
     }
 
     @Override
@@ -116,6 +116,7 @@ public class DriveTrain extends Subsystem {
         periodic.targetDistance = 0;
         periodic.leftDemand = 0;
         periodic.rightDemand = 0;
+
         periodic.currentState = state.STOPPED;
 
         transmissionSolenoid.set(Value.kReverse);
@@ -127,8 +128,6 @@ public class DriveTrain extends Subsystem {
 
             @Override
             public void onStart(double timestamp) {
-                // TODO Auto-generated method stub
-
             }
 
             @Override
@@ -138,7 +137,7 @@ public class DriveTrain extends Subsystem {
                         setMotorDemands();
                         break;
                     case ANGLE_PID:
-                        anglePID();
+                        turn();
                         break;
                     case MOVE_FORWARD:
                         moveForward();
@@ -173,6 +172,16 @@ public class DriveTrain extends Subsystem {
         periodic.targetDistance = distance;
     }
 
+    public void setEncoderError(double error) {
+        periodic.leftError = error;
+        periodic.rightError = error;
+    }
+
+    public void setHeadingError(double error) {
+        periodic.headingError = error;
+    }
+
+
     public void setAnglePID (){
         periodic.currentState = state.ANGLE_PID;
     }
@@ -189,16 +198,7 @@ public class DriveTrain extends Subsystem {
         periodic.currentState = state.STOPPED;
     }
 
-    public void setEncoderError(double error) {
-        periodic.leftError = error;
-        periodic.rightError = error;
-    }
-
-    public void setHeadingError(double error) {
-        periodic.headingError = error;
-    }
-
-    public void anglePID () {
+    public void turn() {
         periodic.headingError = periodic.desiredHeading - periodic.heading;
         if (Math.abs(periodic.headingError) > 180) {
             if (Math.signum(periodic.headingError) == 1.0) {
@@ -211,7 +211,6 @@ public class DriveTrain extends Subsystem {
         periodic.rightDemand = periodic.headingError * Constants.ANGLE_KP;
         periodic.leftDemand = periodic.headingError * -Constants.ANGLE_KP;
         
-        // Normalize
         if (Math.abs(periodic.rightDemand) < 0.09 || Math.abs(periodic.rightDemand) < 0.09) { //Minimum speed
             periodic.rightDemand = Math.signum(periodic.rightDemand) * 0.09;
             periodic.leftDemand = Math.signum(periodic.leftDemand) * 0.09;
@@ -243,9 +242,9 @@ public class DriveTrain extends Subsystem {
             periodic.leftDemand = (Math.signum(periodic.leftDemand) * 0.6 )* Math.abs(periodic.leftDemand / norm);
         }
 
-        if (periodic.rightDemand < 0.09) { //TODO: use signum
-            periodic.rightDemand = 0.09;
-        } else if (periodic.leftDemand < 0.09){
+        if (periodic.rightDemand < 0.9 || periodic.rightDemand > -0.9) {
+            periodic.rightDemand = Math.signum(periodic.rightDemand) * 0.9;
+        } else if (periodic.leftDemand < 0.9 || periodic.leftDemand > -0.9){
             periodic.leftDemand = 0.09;
         }
     }
