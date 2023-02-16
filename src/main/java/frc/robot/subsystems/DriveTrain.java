@@ -11,7 +11,6 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.robot.Constants;
-import frc.lib.util.Util;
 
 public class DriveTrain extends Subsystem {
     private static DriveTrain instance = new DriveTrain();
@@ -203,17 +202,12 @@ public class DriveTrain extends Subsystem {
     public void turn() {
         periodic.leftDemand = periodic.headingError * -Constants.ANGLE_KP;
         periodic.rightDemand = periodic.headingError * Constants.ANGLE_KP;
-        
-        // Minimum speed  TODO: Switch to clamp function
-        periodic.leftDemand = minimumTurnSpeed(periodic.leftDemand);
-        periodic.rightDemand = minimumTurnSpeed(periodic.rightDemand);
 
         // Normalize power
-        if (Math.abs(periodic.leftDemand) > .5 || Math.abs(periodic.rightDemand) > .5) {
-            final double norm = Math.max(Math.abs(periodic.leftDemand), Math.abs(periodic.rightDemand));
-            periodic.leftDemand = (Math.signum(periodic.leftDemand) * 0.5 ) * Math.abs(periodic.leftDemand / norm);
-            periodic.rightDemand = (Math.signum(periodic.rightDemand) * 0.5 ) * Math.abs(periodic.rightDemand / norm);
-        }
+        periodic.leftDemand = clampDriveSpeed(periodic.leftDemand,
+            Constants.DRIVE_TURN_MINIMUM_SPEED, Constants.DRIVE_TURN_MAXIMUM_SPEED);
+        periodic.rightDemand = clampDriveSpeed(periodic.rightDemand,
+            Constants.DRIVE_TURN_MINIMUM_SPEED, Constants.DRIVE_TURN_MAXIMUM_SPEED);
     }
 
     public void moveForward() {
@@ -227,6 +221,7 @@ public class DriveTrain extends Subsystem {
         periodic.rightDemand = clampDriveSpeed(periodic.rightDemand, 
         Constants.DRIVE_FORWARD_MINIMUM_SPEED, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
 
+        // Correct for heading error
         periodic.driveHeadingCorrect = periodic.headingError * Constants.FORWARD_HEADING_KP;
         periodic.leftDemand -= periodic.driveHeadingCorrect;
         periodic.rightDemand += periodic.driveHeadingCorrect;
@@ -262,13 +257,12 @@ public class DriveTrain extends Subsystem {
     }
 
     public static double clampDriveSpeed(double demand, double min, double max) {
-        if(Math.abs(demand) < min){
-            return Math.signum(demand)*min;
+        if (Math.abs(demand) < min) {
+            return Math.signum(demand) * min;
         }
-        if(Math.abs(demand) > max){
-            return Math.signum(demand)*max;
-        }
-        else{
+        if (Math.abs(demand) > max) {
+            return Math.signum(demand) * max;
+        } else {
             return demand;
         }
     }

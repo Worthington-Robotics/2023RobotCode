@@ -1,6 +1,6 @@
 package frc.robot.actions.drive;
 
-import edu.wpi.first.wpilibj.Timer;
+import frc.lib.control.ErrorChecker;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.Constants;
@@ -8,7 +8,8 @@ import frc.robot.Constants;
 public class MoveForwardAction extends Action {
     double targetDistance;
     double desiredHeading;
-    double startTime;
+    ErrorChecker checker = new ErrorChecker(
+        Constants.DRIVE_FORWARD_ACCEPTED_ERROR, Constants.DRIVE_FORWARD_MINIMUM_TIME);
 
     public MoveForwardAction (double targetDistance, double desiredHeading){
         this.targetDistance = targetDistance;
@@ -19,7 +20,6 @@ public class MoveForwardAction extends Action {
     public void onStart() {
         DriveTrain.getInstance().setDesiredHeading(desiredHeading);
         DriveTrain.getInstance().setMoveForward(targetDistance);
-        startTime = Timer.getFPGATimestamp();
     }
 
     @Override
@@ -27,8 +27,7 @@ public class MoveForwardAction extends Action {
 
     @Override
     public boolean isFinished() {
-        return (Math.abs(DriveTrain.getInstance().getEncoderError()) < Constants.DRIVE_FORWARD_ACCEPTED_ERROR
-        && (Timer.getFPGATimestamp() - startTime) > Constants.DRIVE_FORWARD_MINIMUM_TIME);
+        return checker.check(DriveTrain.getInstance().getEncoderError());
     }
 
     @Override

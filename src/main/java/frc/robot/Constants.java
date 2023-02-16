@@ -90,16 +90,16 @@ public class Constants {
 
     // ### Drivetrain tuned values ###
 
-    // Minimum speed that we can turn at
-    public static final double DRIVE_TURN_MINIMUM_SPEED = 0.09;
-
+    
     // Joystick deadzone
     public static final double DEAD_ZONE = 0.05;
-
+    
     // Angle PID
     public static final double ANGLE_KP = 1.0 / 130.0;
     public static final double ANGLE_ACCEPTANCE = 1.8;
     public static final double ANGLE_PID_MINIMUM_TIME = 3;
+    public static final double DRIVE_TURN_MINIMUM_SPEED = 0.09;
+    public static final double DRIVE_TURN_MAXIMUM_SPEED = 0.5;
 
     // Move forward
     public static final double DRIVE_FORWARD_ACCEPTED_ERROR = 5000.0;

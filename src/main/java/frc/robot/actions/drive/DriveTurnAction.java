@@ -1,13 +1,13 @@
 package frc.robot.actions.drive;
 
-import edu.wpi.first.wpilibj.Timer;
+import frc.lib.control.ErrorChecker;
 import frc.lib.statemachine.Action;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
 
 public class DriveTurnAction extends Action {
     double heading;
-    double startTime = Timer.getFPGATimestamp();
+    ErrorChecker checker = new ErrorChecker(Constants.ANGLE_ACCEPTANCE, Constants.ANGLE_PID_MINIMUM_TIME);
 
     public DriveTurnAction(double heading) {
         this.heading = heading;
@@ -23,8 +23,7 @@ public class DriveTurnAction extends Action {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(DriveTrain.getInstance().getHeadingError()) < Constants.ANGLE_ACCEPTANCE
-            && Timer.getFPGATimestamp() - startTime > Constants.ANGLE_PID_MINIMUM_TIME;
+        return checker.check(DriveTrain.getInstance().getHeadingError());
     }
 
     @Override
