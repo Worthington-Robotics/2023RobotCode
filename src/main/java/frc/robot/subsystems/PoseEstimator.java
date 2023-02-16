@@ -105,9 +105,13 @@ public class PoseEstimator extends Subsystem {
 
     @Override
     public void outputTelemetry() {
-        SmartDashboard.putNumber("Drive/Pose/X", periodic.odometry.getTranslation().x());
-        SmartDashboard.putNumber("Drive/Pose/Y", periodic.odometry.getTranslation().y());
-        SmartDashboard.putNumber("Drive/Pose/Theta", (periodic.odometry.getRotation().getDegrees() + 360) % 360);
+        final double x = periodic.odometry.getTranslation().x();
+        final double y = periodic.odometry.getTranslation().y();
+        final double theta = (periodic.odometry.getRotation().getDegrees() + 360) % 360;
+        SmartDashboard.putNumber("Drive/Pose/X", x);
+        SmartDashboard.putNumber("Drive/Pose/Y", y);
+        SmartDashboard.putNumber("Drive/Pose/Theta", theta);
+        SmartDashboard.putNumberArray("Drive/Pose/Postion", new double[] {x / 1705, y / 1705, theta});
     }
 
     @Override
@@ -116,7 +120,7 @@ public class PoseEstimator extends Subsystem {
     }
     
   
-    public class PoseIO extends Subsystem.PeriodicIO{
+    public class PoseIO extends Subsystem.PeriodicIO {
         public Pose2d odometry = Pose2d.identity();
         public double distance_driven = 0.0;
     }
@@ -133,8 +137,7 @@ public class PoseEstimator extends Subsystem {
 
     }
 
-    public LogData getLogger()
-    {
+    public LogData getLogger() {
         return periodic;
     } 
 }
