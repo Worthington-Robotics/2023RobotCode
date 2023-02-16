@@ -1,7 +1,6 @@
 package frc.lib.control;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Utility class that checks if a value is within an error margin.
