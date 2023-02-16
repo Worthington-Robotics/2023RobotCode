@@ -23,6 +23,8 @@ import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Dummy.State;
 import frc.robot.autos.TestAuto;
+import frc.robot.autos.AutoOne;
+import frc.robot.autos.AutoTwo;
 import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.SuperStructure.IntakePosition;
 import frc.lib.statemachine.Action;
@@ -127,7 +129,9 @@ public class Robot extends TimedRobot {
         enabledLooper.start();
 
         TestAuto auto = new TestAuto();
-        StateMachine.getInstance().runMachine(auto);
+        AutoOne autoOne = new AutoOne();
+        AutoTwo autoTwo = new AutoTwo();
+        StateMachine.getInstance().runMachine(autoTwo);
     }
 
     /**
