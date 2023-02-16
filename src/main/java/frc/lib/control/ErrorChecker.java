@@ -1,6 +1,7 @@
 package frc.lib.control;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Utility class that checks if a value is within an error margin.
@@ -30,7 +31,7 @@ public class ErrorChecker {
 	// Check if all the conditions have been met with a provided error
 	public boolean check(double error) {
 		if (Math.abs(error) < errorMargin) {
-			return (lastTime - Timer.getFPGATimestamp()) > minTime;
+			return (Timer.getFPGATimestamp() - lastTime) > minTime;
 		} else {
 			lastTime = Timer.getFPGATimestamp();
 			return false;
