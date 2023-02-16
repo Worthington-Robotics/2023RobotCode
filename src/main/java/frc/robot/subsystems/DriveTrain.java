@@ -11,6 +11,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.robot.Constants;
+import frc.lib.util.Util;
 
 public class DriveTrain extends Subsystem {
     private static DriveTrain instance = new DriveTrain();
@@ -46,7 +47,8 @@ public class DriveTrain extends Subsystem {
         public double[] operatorInput = { 0, 0, 0, 0 };
         // Current drive mode
         public DriveMode currentMode = DriveMode.STOPPED;
-        public double powerChange;
+        // Amount of heading correction to be made while driving forward
+        public double driveHeadingCorrect;
     }
 
     public DriveTrain() {
@@ -111,6 +113,9 @@ public class DriveTrain extends Subsystem {
         SmartDashboard.putNumber("Drive/Average Encoder Error", getEncoderError());
         SmartDashboard.putNumber("Drive/Normalized Heading", periodic.heading);
         SmartDashboard.putNumber("Drive/Raw Heading", periodic.rawHeading);
+        SmartDashboard.putNumber("Drive/Heading Error", periodic.headingError);
+        SmartDashboard.putNumber("Drive/Desired Heading", periodic.targetHeading);
+        SmartDashboard.putNumber("Drive/Heading Correction", periodic.driveHeadingCorrect);
     }
 
     @Override
@@ -168,7 +173,7 @@ public class DriveTrain extends Subsystem {
 
     public void setDesiredHeading(double theta) {
         periodic.targetHeading = theta;
-        periodic.headingError = theta;
+        periodic.headingError = normalizeHeadingError(normalizeHeading(periodic.rawHeading) - theta);
     }
 
     public void setTargetDistance(double distance) {
@@ -199,7 +204,7 @@ public class DriveTrain extends Subsystem {
         periodic.leftDemand = periodic.headingError * -Constants.ANGLE_KP;
         periodic.rightDemand = periodic.headingError * Constants.ANGLE_KP;
         
-        // Minimum speed
+        // Minimum speed  TODO: Switch to clamp function
         periodic.leftDemand = minimumTurnSpeed(periodic.leftDemand);
         periodic.rightDemand = minimumTurnSpeed(periodic.rightDemand);
 
@@ -212,28 +217,19 @@ public class DriveTrain extends Subsystem {
     }
 
     public void moveForward() {
-        periodic.powerChange = 0.0;
+        periodic.driveHeadingCorrect = 0.0;
         periodic.leftDemand = periodic.leftError * Constants.FORWARD_KP;
         periodic.rightDemand = periodic.rightError * Constants.FORWARD_KP;
-
-        //TODO: Add rollover math
-        periodic.powerChange = periodic.headingError / 45.0;
-        periodic.leftDemand -= periodic.powerChange;
-        periodic.rightDemand += periodic.powerChange;
-
+        
         // Normalize power
-        if (Math.abs(periodic.rightDemand) > .6 || Math.abs(periodic.leftDemand) > .6) {
-            double norm = Math.max(Math.abs(periodic.rightDemand), Math.abs(periodic.leftDemand));
-            periodic.rightDemand = (Math.signum(periodic.rightDemand) * 0.6) * Math.abs(periodic.rightDemand / norm);
-            periodic.leftDemand = (Math.signum(periodic.leftDemand) * 0.6 )* Math.abs(periodic.leftDemand / norm);
-        }
+        periodic.leftDemand = clampDriveSpeed(periodic.leftDemand, 
+        Constants.DRIVE_FORWARD_MINIMUM_SPEED, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
+        periodic.rightDemand = clampDriveSpeed(periodic.rightDemand, 
+        Constants.DRIVE_FORWARD_MINIMUM_SPEED, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
 
-        if (periodic.rightDemand > 0.9 || periodic.rightDemand < -0.9) {
-            periodic.rightDemand = Math.signum(periodic.rightDemand) * 0.9;
-        }
-        if (periodic.leftDemand > 0.9 || periodic.leftDemand < -0.9) {
-            periodic.leftDemand = Math.signum(periodic.leftDemand) * 0.9;
-        }
+        periodic.driveHeadingCorrect = periodic.headingError * Constants.FORWARD_HEADING_KP;
+        periodic.leftDemand -= periodic.driveHeadingCorrect;
+        periodic.rightDemand += periodic.driveHeadingCorrect;
     }
 
     public double getHeadingError() {
@@ -261,6 +257,18 @@ public class DriveTrain extends Subsystem {
         if (Math.abs(demand) < Constants.DRIVE_TURN_MINIMUM_SPEED) {
             return Math.signum(demand) * Constants.DRIVE_TURN_MINIMUM_SPEED;
         } else {
+            return demand;
+        }
+    }
+
+    public static double clampDriveSpeed(double demand, double min, double max) {
+        if(Math.abs(demand) < min){
+            return Math.signum(demand)*min;
+        }
+        if(Math.abs(demand) > max){
+            return Math.signum(demand)*max;
+        }
+        else{
             return demand;
         }
     }
