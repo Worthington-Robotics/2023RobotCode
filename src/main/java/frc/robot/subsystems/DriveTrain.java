@@ -188,6 +188,14 @@ public class DriveTrain extends Subsystem {
         setDesiredHeading(theta);
     }
 
+    public void setHighGear() {
+        transmissionSolenoid.set(Value.kForward);
+    }
+
+    public void setLowGear() {
+        transmissionSolenoid.set(Value.kReverse);
+    }
+
     public double getLeftEncoderDistance() {
         return periodic.leftEncoderTicks;
     }

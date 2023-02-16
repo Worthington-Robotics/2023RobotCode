@@ -28,6 +28,7 @@ import frc.robot.subsystems.SuperStructure.IntakePosition;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.RunIntakeAction;
 import frc.robot.actions.SuperstructureActions;
+import frc.robot.actions.drive.GearChangeAction;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -42,6 +43,7 @@ public class Robot extends TimedRobot {
     private Looper enabledLooper, disabledLooper;
 
     // Input bindings
+    private JoystickButton driveGearButton = new JoystickButton(Constants.MASTER, 1);
     private JoystickButton intakeCubeButton = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 2);
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
@@ -173,6 +175,7 @@ public class Robot extends TimedRobot {
     public void testPeriodic() {}
 
     public void initButtons() {
+        driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
         intakeConeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CONE_IN_POWER)));
         intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
         intakeCubeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CUBE_IN_POWER)));
