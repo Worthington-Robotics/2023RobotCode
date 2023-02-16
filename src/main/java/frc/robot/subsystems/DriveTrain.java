@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.lib.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import java.lang.Math;
@@ -185,6 +186,18 @@ public class DriveTrain extends Subsystem {
     public void setTurning(double theta) {
         periodic.currentMode = DriveMode.TURN;
         setDesiredHeading(theta);
+    }
+
+    public double getLeftEncoderDistance() {
+        return periodic.leftEncoderTicks;
+    }
+
+    public Rotation2d getHeading() {
+        return Rotation2d.fromDegrees(periodic.rawHeading);
+    }
+
+    public double getRightEncoderDistance() {
+        return periodic.rightEncoderTicks;
     }
 
     public void setOpenLoop() {
