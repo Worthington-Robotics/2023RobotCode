@@ -106,9 +106,9 @@ public class Constants {
     public static final double DRIVE_FORWARD_MINIMUM_SPEED = 0.09;
     public static final double DRIVE_FORWARD_MAXIMUM_SPEED = 0.6;
     public static final double DRIVE_FORWARD_MINIMUM_TIME = 0.2;
-    public static final double FORWARD_KP = 1.0 / 75000.0;
+    public static final double DRIVE_FORWARD_KP = 1.0 / 75000.0;
     // Heading correction when moving forward
-    public static final double FORWARD_HEADING_KP = 1.0 / 90.0;
+    public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 90.0;
 
     // ### Constants kept around for compatability with library code ###
     

@@ -213,8 +213,8 @@ public class DriveTrain extends Subsystem {
 
     public void moveForward() {
         periodic.driveHeadingCorrect = 0.0;
-        periodic.leftDemand = periodic.leftError * Constants.FORWARD_KP;
-        periodic.rightDemand = periodic.rightError * Constants.FORWARD_KP;
+        periodic.leftDemand = periodic.leftError * Constants.DRIVE_FORWARD_KP;
+        periodic.rightDemand = periodic.rightError * Constants.DRIVE_FORWARD_KP;
         
         // Normalize power
         periodic.leftDemand = clampDriveSpeed(periodic.leftDemand, 
@@ -223,9 +223,13 @@ public class DriveTrain extends Subsystem {
             Constants.DRIVE_FORWARD_MINIMUM_SPEED, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
 
         // Correct for heading error
-        periodic.driveHeadingCorrect = periodic.headingError * Constants.FORWARD_HEADING_KP;
+        periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;
         periodic.leftDemand -= periodic.driveHeadingCorrect;
         periodic.rightDemand += periodic.driveHeadingCorrect;
+
+        // Final clamp put in as a safety check
+        periodic.leftDemand = clampDriveSpeed(periodic.leftDemand, 0.0, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
+        periodic.rightDemand = clampDriveSpeed(periodic.rightDemand, 0.0, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
     }
 
     public double getHeadingError() {
