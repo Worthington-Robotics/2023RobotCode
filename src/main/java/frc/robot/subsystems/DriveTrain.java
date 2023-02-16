@@ -217,9 +217,9 @@ public class DriveTrain extends Subsystem {
         
         // Normalize power
         periodic.leftDemand = clampDriveSpeed(periodic.leftDemand, 
-        Constants.DRIVE_FORWARD_MINIMUM_SPEED, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
+            Constants.DRIVE_FORWARD_MINIMUM_SPEED, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
         periodic.rightDemand = clampDriveSpeed(periodic.rightDemand, 
-        Constants.DRIVE_FORWARD_MINIMUM_SPEED, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
+            Constants.DRIVE_FORWARD_MINIMUM_SPEED, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
 
         // Correct for heading error
         periodic.driveHeadingCorrect = periodic.headingError * Constants.FORWARD_HEADING_KP;
