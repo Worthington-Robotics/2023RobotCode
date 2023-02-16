@@ -97,7 +97,7 @@ public class Constants {
     // Angle PID
     public static final double ANGLE_KP = 1.0 / 130.0;
     public static final double ANGLE_ACCEPTANCE = 1.8;
-    public static final double ANGLE_PID_MINIMUM_TIME = 3;
+    public static final double ANGLE_PID_MINIMUM_TIME = 0.4;
     public static final double DRIVE_TURN_MINIMUM_SPEED = 0.09;
     public static final double DRIVE_TURN_MAXIMUM_SPEED = 0.5;
 
@@ -105,7 +105,7 @@ public class Constants {
     public static final double DRIVE_FORWARD_ACCEPTED_ERROR = 5000.0;
     public static final double DRIVE_FORWARD_MINIMUM_SPEED = 0.09;
     public static final double DRIVE_FORWARD_MAXIMUM_SPEED = 0.6;
-    public static final double DRIVE_FORWARD_MINIMUM_TIME = 1.0;
+    public static final double DRIVE_FORWARD_MINIMUM_TIME = 0.2;
     public static final double FORWARD_KP = 1.0 / 75000.0;
     // Heading correction when moving forward
     public static final double FORWARD_HEADING_KP = 1.0 / 90.0;
