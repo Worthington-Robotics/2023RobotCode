@@ -37,6 +37,7 @@ public class DriveTrain extends Subsystem {
         public double leftError, rightError;
         // The current facing direction of the robot
         public double heading, rawHeading;
+        // The heading we are trying to reach
         public double targetHeading;
         // Error from desired heading
         public double headingError;
@@ -113,7 +114,7 @@ public class DriveTrain extends Subsystem {
         SmartDashboard.putNumber("Drive/Normalized Heading", periodic.heading);
         SmartDashboard.putNumber("Drive/Raw Heading", periodic.rawHeading);
         SmartDashboard.putNumber("Drive/Heading Error", periodic.headingError);
-        SmartDashboard.putNumber("Drive/Desired Heading", periodic.targetHeading);
+        SmartDashboard.putNumber("Drive/Target Heading", periodic.targetHeading);
         SmartDashboard.putNumber("Drive/Heading Correction", periodic.driveHeadingCorrect);
     }
 
@@ -238,22 +239,12 @@ public class DriveTrain extends Subsystem {
 
     // Sets motor demands in open loop
     public void openLoop() {
-        periodic.rightDemand = periodic.yValue - periodic.xValue; 
         periodic.leftDemand = periodic.yValue + periodic.xValue;
-    
-        if (periodic.rightDemand > 1) { periodic.rightDemand = 1;}
-        if (periodic.rightDemand < -1) { periodic.rightDemand = -1; }
-        if (periodic.leftDemand > 1) { periodic.leftDemand = 1; }
-        if (periodic.leftDemand < -1) { periodic.leftDemand = -1; }
-    }
+        periodic.rightDemand = periodic.yValue - periodic.xValue; 
 
-    // Clamps motor demands to a minimum speed while turning
-    public static double minimumTurnSpeed(double demand) {
-        if (Math.abs(demand) < Constants.DRIVE_TURN_MINIMUM_SPEED) {
-            return Math.signum(demand) * Constants.DRIVE_TURN_MINIMUM_SPEED;
-        } else {
-            return demand;
-        }
+        // Normalize power
+        periodic.leftDemand = clampDriveSpeed(periodic.leftDemand, 0.0, 1.0);
+        periodic.rightDemand = clampDriveSpeed(periodic.rightDemand, 0.0, 1.0);
     }
 
     public static double clampDriveSpeed(double demand, double min, double max) {

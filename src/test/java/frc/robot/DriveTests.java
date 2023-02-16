@@ -8,13 +8,22 @@ import frc.lib.util.Util;
 
 public class DriveTests {
 	@Test
-	public void testMinimumTurnSpeed() {
-		System.out.println("Testing a number over the minimum");
-		assertTrue(Util.epsilonEquals(DriveTrain.minimumTurnSpeed(100.0), 100.0));
+	public void testDriveClamping() {
+		final double min = 1.0;
+		final double max = 5.0;
+		final double avg = (min + max) / 2;
+
+		System.out.println("Testing a normal number");
+		assertTrue(Util.epsilonEquals(DriveTrain.clampDriveSpeed(avg, min, max), avg));
 
 		System.out.println("Testing a number under the minimum");
-		assertTrue(DriveTrain.minimumTurnSpeed(Constants.DRIVE_TURN_MINIMUM_SPEED / 2)
-			>= Constants.DRIVE_TURN_MINIMUM_SPEED);
+		assertTrue(Util.epsilonEquals(DriveTrain.clampDriveSpeed(min / 2, min, max), min));
+
+		System.out.println("Testing a number over the maximum");
+		assertTrue(Util.epsilonEquals(DriveTrain.clampDriveSpeed(max + 100, min, max), max));
+
+		System.out.println("Testing a negative number");
+		assertTrue(Util.epsilonEquals(DriveTrain.clampDriveSpeed(-avg, min, max), -avg));
 	}
 
 	@Test
