@@ -23,6 +23,7 @@ import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Dummy.State;
 import frc.robot.autos.TestAuto;
+import frc.robot.autos.AutoChooser;
 import frc.robot.autos.AutoOne;
 import frc.robot.autos.AutoTwo;
 import frc.robot.subsystems.SuperStructure;
@@ -128,10 +129,7 @@ public class Robot extends TimedRobot {
         DriveTrain.getInstance().reset();
         enabledLooper.start();
 
-        TestAuto auto = new TestAuto();
-        AutoOne autoOne = new AutoOne();
-        AutoTwo autoTwo = new AutoTwo();
-        StateMachine.getInstance().runMachine(autoTwo);
+        AutoChooser.getInstance().run();
     }
 
     /**
