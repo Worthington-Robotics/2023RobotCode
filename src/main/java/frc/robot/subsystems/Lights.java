@@ -25,19 +25,11 @@ public class Lights extends Subsystem {
         ledString.start();
     }
     
-    public void readPeriodicInputs() {
+    public void readPeriodicInputs() {}
 
-    }
+    public void writePeriodicOutputs() {}
 
-    public void writePeriodicOutputs() {
+    public void outputTelemetry() {}
 
-    }
-
-    public void outputTelemetry() {
-
-    }
-
-    public void reset() {
-
-    }
+    public void reset() {}
 }
