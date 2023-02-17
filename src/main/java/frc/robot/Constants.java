@@ -66,7 +66,7 @@ public class Constants {
     public static final Joystick MASTER = new Joystick(0);
     public static final Joystick SECOND = new Joystick(1);
     public static final Joystick WHEEL = new Joystick(2);
-    public static final HIDHelper.HIDConstants MASTER_STICK = new HIDHelper.HIDConstants(MASTER, 0.05, 0.65, -1, 0.4, 2); 
+    public static final HIDHelper.HIDConstants MASTER_STICK = new HIDHelper.HIDConstants(MASTER, 0.07, 0.65, -1, 0.4, 2); 
 
     /**
      * The reason for these negative signs on the Y-axis
@@ -95,6 +95,28 @@ public class Constants {
 
     // ### Drivetrain tuned values ###
 
+    
+    // Joystick deadzone
+    public static final double DEAD_ZONE = 0.05;
+    
+    // Angle PID
+    public static final double ANGLE_KP = 1.0 / 120.0;
+    public static final double ANGLE_ACCEPTANCE = 1.8;
+    public static final double ANGLE_PID_MINIMUM_TIME = 0.06;
+    public static final double DRIVE_TURN_MINIMUM_SPEED = 0.08;
+    public static final double DRIVE_TURN_MAXIMUM_SPEED = 0.5;
+
+    // Move forward
+    public static final double DRIVE_FORWARD_ACCEPTED_ERROR = 5000.0;
+    public static final double DRIVE_FORWARD_MINIMUM_SPEED = 0.09;
+    public static final double DRIVE_FORWARD_MAXIMUM_SPEED = 0.55;
+    public static final double DRIVE_FORWARD_MINIMUM_TIME = 0.03;
+    public static final double DRIVE_FORWARD_KP = 1.0 / 75000.0;
+    // Heading correction when moving forward
+    public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 90.0;
+
+    // ### Constants kept around for compatability with library code ###
+    
     // DEBUG AND TESTING flags
     public static boolean WHEELS = true;
     public static final boolean RAMPUP = false;
@@ -130,37 +152,4 @@ public class Constants {
     public static final double DRIVE_V_INTERCEPT = .621;  // V //1.6 for practice......................
     public static final double DRIVE_Kv = 4.716;  // rad/Vs 
     public static final double DRIVE_Ka = 56.179;  // rad/Vs^2
-
-    // PID Constants
-    public static final double ANGLE_KP = -0.024; // 0.065;
-    public static final double ANGLE_KI = 0; // 0.00125;
-    public static final double ANGLE_KD = 0; // 0.1
-    public static final double ANGLE_PID_EPISLON = 1;
-
-    public static final double DRIVE_RIGHT_KP = 0;//.25;
-    public static final double DRIVE_RIGHT_KI = 0.0;
-    public static final double DRIVE_RIGHT_KD = 0;//5; // 20 for practice bot
-    public static final double DRIVE_RIGHT_KF = 0.065; //.485
-
-    public static final double DRIVE_LEFT_KP = 0;//.25; // .0885
-    public static final double DRIVE_LEFT_KI = 0.0; //NO INTEGRAL it masks deeper problems
-    public static final double DRIVE_LEFT_KD = 0;//5; //20 for practice
-    public static final double DRIVE_LEFT_KF = 0.065;
-
-    // Limelight Constants
-    public static final double LIMELIGHT_DEG_FOV = 0.0; //TODO CALCULATE FOV
-    public static final double fov = 0;
-    public static final int redH1 = 0;
-    public static final int redH2 = 360;
-    public static final int yellowH = 60;
-    public static final int greenH = 120;
-    public static final int blueH = 180;
-    public static final int error = 29;
-    public static final int satLimit = 80;
-    public static final int valLimit = 80;
-
-    /**
-     * Deadzone Constants
-     */
-    public static final double deadZone = 0.05;
 }
