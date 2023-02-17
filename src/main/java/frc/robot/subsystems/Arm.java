@@ -12,7 +12,7 @@ import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
 
 public class Arm extends Subsystem {
-	TalonFX extentionMotor, turretMotor, armMasterMotor, armSlaveMotor;
+	TalonFX extensionMotor, turretMotor, armMasterMotor, armSlaveMotor;
 	DoubleSolenoid grabber;
 
 	private static Arm instance = new Arm();
@@ -20,7 +20,7 @@ public class Arm extends Subsystem {
 	private ArmIO periodic;
 
 	public Arm() {
-		extentionMotor = new TalonFX(Constants.ARM_EXTENTION_ID, "Default Name");
+		extensionMotor = new TalonFX(Constants.ARM_EXTENTION_ID, "Default Name");
 		turretMotor = new TalonFX(Constants.ARM_TURRET_ID, "Default Name");
 		armMasterMotor = new TalonFX(Constants.ARM_ARM_M_ID, "Default Name");
 		armSlaveMotor = new TalonFX(Constants.ARM_ARM_S_ID, "Default Name");
@@ -31,7 +31,7 @@ public class Arm extends Subsystem {
 			Constants.ARM_GRABBER_REV_CHANNEL
 		);
 
-		extentionMotor.setNeutralMode(NeutralMode.Brake);
+		extensionMotor.setNeutralMode(NeutralMode.Brake);
 		turretMotor.setNeutralMode(NeutralMode.Brake);
 		armMasterMotor.setNeutralMode(NeutralMode.Brake);
 		armSlaveMotor.setNeutralMode(NeutralMode.Brake);
@@ -48,7 +48,7 @@ public class Arm extends Subsystem {
 	}
 
 	public void writePeriodicOutputs() {
-		extentionMotor.set(ControlMode.PercentOutput, periodic.extensionPower);
+		extensionMotor.set(ControlMode.PercentOutput, periodic.extensionPower);
 		turretMotor.set(ControlMode.PercentOutput, periodic.turretPower);
 		
 		armMasterMotor.set(ControlMode.PercentOutput, periodic.armPower);
@@ -80,8 +80,6 @@ public class Arm extends Subsystem {
 		periodic.grabberEngaged = value;
 	}
 
-	
-
 	public void moveArm(double currentDegreeEncoder, double extensionEncoder, double desiredArmDegree){
 		periodic.armDegree = 20.0 + (currentDegreeEncoder / Constants.ENCODER_PER_DEGREE);
 		periodic.armLength = 20.0 + (extensionEncoder / Constants.ENCODER_PER_INCH);
@@ -92,16 +90,15 @@ public class Arm extends Subsystem {
 		double degreeError = periodic.armDegree - desiredArmDegree;
 
 		periodic.armPower = normalizedArmPower * degreeError * (1.0 / 60.0);
-	}	
-
+	}
 
 	public class ArmIO extends PeriodicIO {
 		public double turretPower = 0;
 		public double armPower = 0;
 		public double extensionPower = 0;
 		public DoubleSolenoid.Value grabberEngaged = Value.kReverse;
-		public double armDegree = 20.0; //TODO: get an accurate starting degree for the arm
-		public double armLength = 20.0; //TODO: make the minimal arm length accurate and put it in inches
+		public double armDegree = 20.0; // TODO: get an accurate starting degree for the arm
+		public double armLength = 20.0; // TODO: make the minimal arm length accurate and put it in inches
 		public double desiredArmDegree = 0;
 	}
 
