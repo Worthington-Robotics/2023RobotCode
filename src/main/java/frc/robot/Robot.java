@@ -8,30 +8,21 @@
 package frc.robot;
 
 import java.util.Arrays;
-import java.util.function.BooleanSupplier;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.loops.Looper;
 import frc.lib.models.DriveTrajectoryGenerator;
 import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.Dummy.State;
-import frc.robot.autos.TestAuto;
 import frc.robot.autos.AutoChooser;
-import frc.robot.autos.AutoOne;
-import frc.robot.autos.AutoTwo;
 import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.SuperStructure.IntakePosition;
 import frc.lib.statemachine.Action;
-import frc.robot.actions.RunIntakeAction;
-import frc.robot.actions.SuperstructureActions;
 import frc.robot.actions.drive.GearChangeAction;
+import frc.robot.actions.superstructure.MoveIntakeAction;
+import frc.robot.actions.superstructure.RunIntakeAction;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -41,7 +32,6 @@ import frc.robot.actions.drive.GearChangeAction;
  * project.
  */
 public class Robot extends TimedRobot {
-
     private SubsystemManager manager;
     private Looper enabledLooper, disabledLooper;
 
@@ -181,7 +171,7 @@ public class Robot extends TimedRobot {
         intakeConeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CONE_IN_POWER)));
         intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
         intakeCubeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CUBE_IN_POWER)));
-        intakeUpButton.onTrue(Action.toCommand(new SuperstructureActions.MoveIntakeAction(IntakePosition.kUp)));
-        intakeDownButton.onTrue(Action.toCommand(new SuperstructureActions.MoveIntakeAction(IntakePosition.kDown)));
+        intakeUpButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kUp)));
+        intakeDownButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kDown)));
     }
 }
