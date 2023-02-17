@@ -1,31 +1,31 @@
-package frc.robot.actions;
+
+package frc.robot.actions.drive;
 
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
 
-public class DriveTrainActions extends Action{
 
+public class WaitAction extends Action {
+    
     @Override
     public void onStart() {
-        // TODO Auto-generated method stub
-        
+        DriveTrain.getInstance().setStopped();  
     }
 
     @Override
     public void onLoop() {
-        // TODO Auto-generated method stub
         
     }
 
     @Override
     public boolean isFinished() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public void onStop() {
-        // TODO Auto-generated method stub
+        DriveTrain.getInstance().resetEncoders();
+        DriveTrain.getInstance().setStopped();
         
     }
     

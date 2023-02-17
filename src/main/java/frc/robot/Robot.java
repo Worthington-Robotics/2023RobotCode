@@ -21,11 +21,17 @@ import frc.lib.loops.Looper;
 import frc.lib.models.DriveTrajectoryGenerator;
 import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Dummy.State;
+import frc.robot.autos.TestAuto;
+import frc.robot.autos.AutoChooser;
+import frc.robot.autos.AutoOne;
+import frc.robot.autos.AutoTwo;
 import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.SuperStructure.IntakePosition;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.RunIntakeAction;
 import frc.robot.actions.SuperstructureActions;
+import frc.robot.actions.drive.GearChangeAction;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -40,6 +46,7 @@ public class Robot extends TimedRobot {
     private Looper enabledLooper, disabledLooper;
 
     // Input bindings
+    private JoystickButton driveGearButton = new JoystickButton(Constants.MASTER, 1);
     private JoystickButton intakeCubeButton = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 2);
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
@@ -55,6 +62,7 @@ public class Robot extends TimedRobot {
         manager = new SubsystemManager(
             Arrays.asList(
                 SuperStructure.getInstance(),
+                PoseEstimator.getInstance(),
                 Arm.getInstance(),
                 DriveTrain.getInstance()
             ),
@@ -96,6 +104,8 @@ public class Robot extends TimedRobot {
         enabledLooper.stop();
 
         StateMachine.getInstance().assertStop();
+        DriveTrain.getInstance().reset();
+        PoseEstimator.getInstance().reset();
 
         disabledLooper.start();
     }
@@ -116,7 +126,10 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
 
         // Reset anything here
+        DriveTrain.getInstance().reset();
         enabledLooper.start();
+
+        AutoChooser.getInstance().run();
     }
 
     /**
@@ -131,8 +144,12 @@ public class Robot extends TimedRobot {
 
         // Reset anything here
         initButtons();
+        DriveTrain.getInstance().reset();
+        SuperStructure.getInstance().reset();
+        DriveTrain.getInstance().setOpenLoop();
+        PoseEstimator.getInstance().reset();
+
         enabledLooper.start();
-        
     }
 
     /**
@@ -160,6 +177,7 @@ public class Robot extends TimedRobot {
     public void testPeriodic() {}
 
     public void initButtons() {
+        driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
         intakeConeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CONE_IN_POWER)));
         intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
         intakeCubeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CUBE_IN_POWER)));
