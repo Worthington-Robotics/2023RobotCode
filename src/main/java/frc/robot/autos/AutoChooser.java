@@ -20,7 +20,7 @@ public class AutoChooser {
 	// The currently chosen autonomous routine
 	private AutoType chosen;
 
-	public AutoChooser() {
+	private AutoChooser() {
 		change(AutoType.kTwo);
 	}
 

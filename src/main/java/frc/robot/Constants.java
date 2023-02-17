@@ -6,12 +6,15 @@ import edu.wpi.first.wpilibj.Joystick;
 import frc.lib.util.HIDHelper;
 
 public class Constants {
-    // Drivetrain Constants
+    // ### Device ID declarations ###
+
+    // Drivetrain
     public static final int DRIVE_FRONT_LEFT_ID = 1;
     public static final int DRIVE_FRONT_RIGHT_ID = 3;
     public static final int DRIVE_BACK_LEFT_ID = 2;
     public static final int DRIVE_BACK_RIGHT_ID = 4;
-    //Arm Turret Constants
+    
+    // Arm / Turret
     public static final int ARM_TURRET_ID = 9;
     public static final int ARM_ARM_M_ID = 10;
     public static final int ARM_EXTENTION_ID = 11;
@@ -21,41 +24,18 @@ public class Constants {
     public static final int ARM_GRABBER_FWD_CHANNEL = 2;
     public static final int ARM_GRABBER_REV_CHANNEL = 3;
 
-    // ### Device ID declarations ###
-
     // Superstructure
-    // TODO: Change these values to actual IDs
     public static final int BACKSTOP_TOF_ID = 0;
     public static final int INTAKE_LEFT_WHEEL_ID = 5;
     public static final int INTAKE_RIGHT_WHEEL_ID = 7;
     public static final int INTAKE_CONVEYOR_ID = 6;
     public static final int INTAKE_SPINNER_ID = 8;
     
-    //Pigion ID
-    public static final int PIGION_ID = 1;
+    // Pigeon ID
+    public static final int PIGEON_ID = 1;
 
-    //Talon SRX & FX IDs
-    public static final int SHOOTER_FLYWHEEL_LEFT = 5;
-    public static final int SHOOTER_FLYWHEEL_RIGHT = 6;
-
-    public static final int CLIMBING_WINCHR_ID = 3;
-    public static final int CLIMBING_WINCHL_ID = 4;
-
-    public static final int ID_SUPER_DELIVERY_WHEEL = 7;
-    public static final int ID_SUPER_INDEX1 = 8;
-    public static final int ID_SUPER_INDEX2 = 9;
-    public static final int ID_SUPER_INDEX3 = 10;
-    public static final int ID_SUPER_INTAKE = 11;
-
-    public static final int TURRET_CONTROL = 12;
-    public static final int CAM_PWM_CHANNEL = 1;
-
-    // TOF IDs
-    public static final int ID_SUPER_TOF1 = 1;
-    public static final int ID_SUPER_TOF2 = 2;
-    public static final int ID_SUPER_TOF3 = 3;
-    public static final int ID_SUPER_TOF4 = 4;
-    public static final int ID_SUPER_TOF5 = 5;
+    // Lights
+    public static final int LIGHTS_ID = 0;
 
     // ### Joystick Constants ###
     public static final Joystick MASTER = new Joystick(0);
@@ -90,7 +70,6 @@ public class Constants {
 
     // ### Drivetrain tuned values ###
 
-    
     // Joystick deadzone
     public static final double DEAD_ZONE = 0.05;
     
@@ -109,6 +88,9 @@ public class Constants {
     public static final double DRIVE_FORWARD_KP = 1.0 / 75000.0;
     // Heading correction when moving forward
     public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 90.0;
+
+    // ### Lightbar values ###
+    public static final int LIGHTS_LED_COUNT = 60;
 
     // ### Constants kept around for compatability with library code ###
     

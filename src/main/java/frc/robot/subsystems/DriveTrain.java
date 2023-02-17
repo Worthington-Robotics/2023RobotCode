@@ -58,13 +58,14 @@ public class DriveTrain extends Subsystem {
             PneumaticsModuleType.CTREPCM,
             1, 0
         );
-        gyro = new PigeonIMU(1);
+        gyro = new PigeonIMU(Constants.PIGEON_ID);
 
         forwardRightMotor = new TalonFX(Constants.DRIVE_FRONT_RIGHT_ID);
         rearRightMotor = new TalonFX(Constants.DRIVE_BACK_RIGHT_ID);
         forwardLeftMotor = new TalonFX(Constants.DRIVE_FRONT_LEFT_ID);
         rearLeftMotor = new TalonFX(Constants.DRIVE_BACK_LEFT_ID);
 
+        // TODO: Use setInverted to follow to make sure that motors are going the same direction
         forwardLeftMotor.setInverted(true);
         rearLeftMotor.setInverted(true);
     }
