@@ -7,12 +7,12 @@ import frc.robot.subsystems.Arm;
 import frc.robot.Constants;
 
 public class ArmActions {
-	public static class PivotAction extends Action {
+	public static class ReachPivotAngleAction extends Action {
 		double desiredDegree = 0.0;
 		double startTime = Timer.getFPGATimestamp();
 		// TODO: Add minimum times with error checking after merge
 
-		public PivotAction (double theta) {
+		public ReachPivotAngleAction (double theta) {
 			this.desiredDegree = theta;
 		}
 
@@ -45,11 +45,11 @@ public class ArmActions {
 		}
 	}
 
-	public static class ExtensionAction extends Action {
+	public static class ReachExtensionAction extends Action {
 		double desiredLength = 0.0;
 		double startTime = Timer.getFPGATimestamp();
 
-		public ExtensionAction (double length) {
+		public ReachExtensionAction (double length) {
 			this.desiredLength = length;
 		}
 
@@ -84,11 +84,11 @@ public class ArmActions {
 
 	}
 
-	public static class TurretAction extends Action {
+	public static class ReachTurretAction extends Action {
 		double desiredAngle = 0.0;
 		double startTime = Timer.getFPGATimestamp();
 
-		public TurretAction (double theta) {
+		public ReachTurretAction (double theta) {
 			this.desiredAngle = theta;
 		}
 
@@ -124,7 +124,7 @@ public class ArmActions {
 	}
 
 	public static class SetTurretPowerAction extends Action {
-		// The speed to run the arm at
+		// The speed to run the turret motor at
 		double power;
 		
 		public SetTurretPowerAction(double power) {
@@ -151,7 +151,7 @@ public class ArmActions {
 	}
 
 	public static class SetExtensionPowerAction extends Action {
-		// The speed to run the arm at
+		// The speed to run the extension motor at
 		double power;
 		
 		public SetExtensionPowerAction(double power) {
