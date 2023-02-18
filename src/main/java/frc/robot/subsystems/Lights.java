@@ -18,7 +18,7 @@ public class Lights extends Subsystem {
         ledString.setLength(ledBuffer.getLength());
 
         for (int i = 0; i < ledBuffer.getLength(); i++) {
-            ledBuffer.setRGB(i, 0, 0, 255);
+            ledBuffer.setRGB(i, 255, 255, 255);
         }
 
         ledString.setData(ledBuffer);

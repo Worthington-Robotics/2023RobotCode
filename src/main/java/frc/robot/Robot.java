@@ -57,7 +57,8 @@ public class Robot extends TimedRobot {
                 SuperStructure.getInstance(),
                 PoseEstimator.getInstance(),
                 Arm.getInstance(),
-                DriveTrain.getInstance()
+                DriveTrain.getInstance(),
+                Lights.getInstance()
             ),
             true
         );
@@ -137,6 +138,7 @@ public class Robot extends TimedRobot {
 
         // Reset anything here
         initButtons();
+        Lights.getInstance().reset();
         DriveTrain.getInstance().reset();
         SuperStructure.getInstance().reset();
         DriveTrain.getInstance().setOpenLoop();

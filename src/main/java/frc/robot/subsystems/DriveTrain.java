@@ -62,12 +62,6 @@ public class DriveTrain extends Subsystem {
         // Right encoder previous distance
         public double rightEncoderPrevDistance;
         // Delta right encoder
-        public double deltaRightEncoder;
-        // Delta left encoder
-        public double deltaLeftEncoder;
-        // previous encoder ticks
-        public double prevEncoderRightTick;
-        public double prevEncoderLeftTick;
         public double gyroTilt;
         // Delta from last gyro tilt, used for D term
         public double tiltDelta;
@@ -112,10 +106,6 @@ public class DriveTrain extends Subsystem {
 
         periodic.leftEncoderTicks = forwardLeftMotor.getSelectedSensorPosition();
         periodic.rightEncoderTicks = forwardRightMotor.getSelectedSensorPosition();
-        periodic.deltaLeftEncoder = periodic.leftEncoderTicks - periodic.leftEncoderPrevDistance;
-        periodic.deltaRightEncoder = periodic.rightEncoderTicks - periodic.rightEncoderPrevDistance;
-        periodic.leftEncoderPrevDistance = periodic.leftEncoderTicks;
-        periodic.rightEncoderPrevDistance = periodic.rightEncoderTicks;
         periodic.operatorInput = HIDHelper.getAdjStick(Constants.MASTER_STICK);
         periodic.xValue = periodic.operatorInput[0];
         periodic.yValue = periodic.operatorInput[1];
