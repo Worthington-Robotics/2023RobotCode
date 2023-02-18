@@ -1,10 +1,128 @@
 package frc.robot.actions;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Timer;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.Arm;
+import frc.robot.Constants;
 
 public class ArmActions {
+	public static class PivotAction extends Action {
+		double desiredDegree = 0.0;
+		double startTime = Timer.getFPGATimestamp();
+		// TODO: Add minimum times with error checking after merge
+
+		public PivotAction (double theta) {
+			this.desiredDegree = theta;
+		}
+
+		@Override
+		public void onStart() {
+			Arm.getInstance().setDesiredPivot(desiredDegree);
+		}
+
+		@Override
+		public void onLoop() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public boolean isFinished() {
+			if (Math.abs(Arm.getInstance().getPivotError()) < Constants.PIVOT_ANGLE_ACCEPTANCE
+				&& Timer.getFPGATimestamp() - startTime > Constants.PIVOT_MIN_TIME){
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+
+		@Override
+		public void onStop() {
+			// TODO Auto-generated method stub
+			
+		}
+	}
+
+	public static class ExtensionAction extends Action {
+		double desiredLength = 0.0;
+		double startTime = Timer.getFPGATimestamp();
+
+		public ExtensionAction (double length) {
+			this.desiredLength = length;
+		}
+
+		@Override
+		public void onStart() {
+			Arm.getInstance().setDesiredLength(desiredLength);	
+		}
+
+		@Override
+		public void onLoop() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public boolean isFinished() {
+			if (Math.abs(Arm.getInstance().getLengthError()) < Constants.EXTENSION_DISTANCE_ACCEPTED
+				&& Timer.getFPGATimestamp() - startTime > Constants.EXTENSION_MIN_TIME){
+				return true;
+			}
+			else {
+				return false;
+			}
+	
+		}
+
+		@Override
+		public void onStop() {
+			// TODO Auto-generated method stub
+			
+		}
+
+	}
+
+	public static class TurretAction extends Action {
+		double desiredAngle = 0.0;
+		double startTime = Timer.getFPGATimestamp();
+
+		public TurretAction (double theta) {
+			this.desiredAngle = theta;
+		}
+
+		@Override
+		public void onStart() {
+			Arm.getInstance().setDesiredLength(desiredAngle);	
+		}
+
+		@Override
+		public void onLoop() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public boolean isFinished() {
+			if (Math.abs(Arm.getInstance().getTurretError()) < Constants.TURRET_ANGLE_ACCEPTANCE
+				&& Timer.getFPGATimestamp() - startTime > Constants.TURRET_MIN_TIME){
+				return true;
+			}
+			else {
+				return false;
+			}
+	
+		}
+
+		@Override
+		public void onStop() {
+			// TODO Auto-generated method stub
+			
+		}
+
+	}
+
 	public static class SetTurretPowerAction extends Action {
 		// The speed to run the arm at
 		double power;
@@ -69,7 +187,7 @@ public class ArmActions {
 
 		@Override
 		public void onStart() {
-			Arm.getInstance().setArmPower(power);
+			Arm.getInstance().setPivotPower(power);
 		}
 
 		@Override
@@ -77,7 +195,7 @@ public class ArmActions {
 
 		@Override
 		public void onStop() {
-			Arm.getInstance().setArmPower(0.0d);
+			Arm.getInstance().setPivotPower(0.0d);
 		}
 
 		@Override

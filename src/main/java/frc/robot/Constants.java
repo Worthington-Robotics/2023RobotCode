@@ -11,20 +11,55 @@ public class Constants {
     public static final int DRIVE_FRONT_RIGHT_ID = 3;
     public static final int DRIVE_BACK_LEFT_ID = 2;
     public static final int DRIVE_BACK_RIGHT_ID = 4;
-    //Arm Turret Constants
+
+    // Arm and Turret Constants
+
+    // Arm Consants - IDs
     public static final int ARM_TURRET_ID = 9;
     public static final int ARM_ARM_M_ID = 10;
-    public static final int ARM_EXTENTION_ID = 11;
+    public static final int ARM_EXTENSION_ID = 11;
     public static final int ARM_ARM_S_ID = 12;
     
     public static final int CTRE_PCM_ID = 0;
     public static final int ARM_GRABBER_FWD_CHANNEL = 2;
     public static final int ARM_GRABBER_REV_CHANNEL = 3;
 
+    // Arm Constants - Measurements
     public static final double ENCODER_PER_DEGREE = 1000.0;
     public static final double ENCODER_PER_INCH = 750.0;
-    public static final double ARM_POWER_KP = .8;
-    public static final double LEVER_LENGTH_KP = 1 / 30.0;
+
+    // Arm Constants - PID 
+    public static final double ARM_PIVOT_KP = 1.0 / 110.0; // TODO: Adjust all kps and mins and maxs for arm
+    public static final double PIVOT_ANGLE_ACCEPTANCE = 2.0;
+    public static final double PIVOT_MIN_TIME = 1.0;
+
+    public static final double TURRET_KP = 1.0 / 110.0;
+    public static final double TURRET_ANGLE_ACCEPTANCE = 2.0;
+    public static final double TURRET_MIN_TIME = 1.5;
+
+    public static final double ARM_EXTENSION_KP = 1.0 / 750000.0;
+    public static final double EXTENSION_DISTANCE_ACCEPTED = 2.0;
+    public static final double EXTENSION_MIN_TIME = 1.5;
+    
+    
+    // Arm Constants - Safety
+    public static final double PIVOT_WARNING_ANGLE = 5.0; // Degrees(not ticks) from min or max when arm slows
+    public static final double MAX_PIVOT = 75.0; // TODO: Actual Value
+    public static final double MIN_PIVOT = 0.0; // Assume that arm moves slow enough to completely stop and reset when limit switch activated
+    public static final double PIVOT_MAX_SPEED = 0.5;
+    public static final double PIVOT_MIN_SPEED = 0.1;
+
+    public static final double EXTENSION_WARNING_DISTANCE = 5.0; // distance from min or max when arm slows, in inches
+    public static final double MAX_ARM_LENGTH = 50.0; // TODO: Actual value
+    public static final double MIN_ARM_LENGTH = 1.0;
+    public static final double EXTENSION_MAX_SPEED = 0.5;
+    public static final double EXTENSION_MIN_SPEED = 0.1;
+
+    public static final double TURRET_WARNING_DISTANCE = 5.0; // Degree
+    public static final double TURRET_MIN_DISTANCE = -130.0;
+    public static final double TURRET_MAX_DISTANCE = 130.0;
+    public static final double TURRET_MAX_SPEED = 0.5;
+    public static final double TURRET_MIN_SPEED = 0.1;
 
     // ### Device ID declarations ###
 
@@ -147,12 +182,7 @@ public class Constants {
     public static final double DRIVE_LEFT_KD = 0;//5; //20 for practice
     public static final double DRIVE_LEFT_KF = 0.065;
 
-    // Limelight Constants
-    public static final double LIMELIGHT_DEG_FOV = 0.0; //TODO CALCULATE FOV
-    public static final double fov = 0;
-    public static final int redH1 = 0;
-    public static final int redH2 = 360;
-    public static final int yellowH = 60;
+
     public static final int greenH = 120;
     public static final int blueH = 180;
     public static final int error = 29;
@@ -163,4 +193,5 @@ public class Constants {
      * Deadzone Constants
      */
     public static final double deadZone = 0.05;
+
 }
