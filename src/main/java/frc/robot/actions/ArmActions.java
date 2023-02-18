@@ -94,7 +94,7 @@ public class ArmActions {
 
 		@Override
 		public void onStart() {
-			Arm.getInstance().setDesiredLength(desiredAngle);	
+			Arm.getInstance().setDesiredTurretDegree(desiredAngle);	
 		}
 
 		@Override
@@ -177,11 +177,11 @@ public class ArmActions {
 		} 
 	}
 
-	public static class SetArmPowerAction extends Action {
+	public static class SetPivotPowerAction extends Action {
 		// The speed to run the arm at
 		double power;
 		
-		public SetArmPowerAction(double power) {
+		public SetPivotPowerAction(double power) {
 			this.power = power;
 		}
 

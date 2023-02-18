@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -13,6 +14,7 @@ import frc.robot.Constants;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.lib.util.Util;
+import frc.lib.util.HIDHelper;
 
 
 public class Arm extends Subsystem {
@@ -29,7 +31,6 @@ public class Arm extends Subsystem {
 		turretMotor = new TalonFX(Constants.ARM_TURRET_ID, "Default Name");
 		armMasterMotor = new TalonFX(Constants.ARM_ARM_M_ID, "Default Name");
 		armSlaveMotor = new TalonFX(Constants.ARM_ARM_S_ID, "Default Name");
-		bottomLimitSwitch = new DigitalInput(1); //TODO: change ID
 
 		grabber = new DoubleSolenoid(
 			Constants.CTRE_PCM_ID,
@@ -48,33 +49,38 @@ public class Arm extends Subsystem {
 	}
 
 	public enum ArmMode {
-		PIVOT,
-		EXTENSION,
-		TURRET,
-		REST
+		OPEN_LOOP,
+		OPEN_CLOSED_LOOP,
+		CLOSED_LOOP
     }
 
 	public class ArmIO extends PeriodicIO {
 		// Power Values
-		public double turretPower = 0.0;
-		public double pivotPower = 0.0;
-		public double extensionPower = 0.0;
+		public double turretPower;
+		public double pivotPower;
+		public double extensionPower;
+		public double rawTurretPower; //take in values from HID helper
+		public double rawPivotPower; //take in values from HID helper
+		public double rawExtensionPower; //take in values from HID helper
 		public DoubleSolenoid.Value grabberEngaged = Value.kReverse;
 
 		// Encoder Values
-		public double pivotEncoder = 0.0;
-		public double lengthEncoder = 0.0;
-		public double turretEncoder = 0.0;
+		public double pivotEncoder;
+		public double lengthEncoder;
+		public double turretEncoder;
 
 		// Actual Values
-		public double armDegree = 0.0; // Assumes arm starts at 0 degrees (all the way down)
-		public double armLength = 0.0; // Assumes arm starts at 0 inches of extension 
-		public double turretDegree = 0.0; // Assumes arm starts at 0 degrees (centered)
+		public double armDegree; // Assumes arm starts at 0 degrees (all the way down)
+		public double armLength; // Assumes arm starts at 0 inches of extension 
+		public double turretDegree; // Assumes arm starts at 0 degrees (centered)
 
 		// Desired values
-		public double desiredArmDegree = 0; // from 0 to the maximum extension of the arm 
-		public double desiredArmLength = 0; // inches
-		public double desiredTurretDegree = 0; // scale of -135 to 135
+		public double desiredPivotDegree; // from 0 to the maximum extension of the arm 
+		public double desiredArmLength; // inches
+		public double desiredTurretDegree; // scale of -135 to 135
+		public double desiredPivotEncoder;
+		public double desiredArmLengthEncoder;
+		public double desiredTurretDegreeEncoder;
 
 
 		// Error Values
@@ -84,20 +90,24 @@ public class Arm extends Subsystem {
 
 		//state
 		public ArmMode currentMode;
+
+		//arbitrary feed forward
+		public double arbitraryFeedForward;
 	}
 
 	public void readPeriodicInputs() {
-		periodic.pivotEncoder = (armMasterMotor.getSelectedSensorPosition() + armSlaveMotor.getSelectedSensorPosition()) / 2;
+		periodic.pivotEncoder = armMasterMotor.getSelectedSensorPosition();
 		periodic.lengthEncoder = extensionMotor.getSelectedSensorPosition();
 		periodic.turretDegree = turretMotor.getSelectedSensorPosition();
 
-		periodic.armDegree = periodic.pivotEncoder / Constants.ENCODER_PER_DEGREE;
+		periodic.armDegree = (periodic.pivotEncoder / Constants.ENCODER_PER_DEGREE) + 20.0;
 		periodic.armLength = periodic.lengthEncoder / Constants.ENCODER_PER_INCH;
 		periodic.turretDegree = periodic.pivotEncoder / Constants.ENCODER_PER_DEGREE;
-		// Testing code for the arm
-		// periodic.armPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), 1, 0);
-		// periodic.extentionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), .5, -.5);
-		// periodic.turretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), -.25, .25);
+
+		periodic.rawPivotPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), 1, 0);
+		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), .5, -.5);
+		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), -.25, .25);
+
 	}
 
 	public void registerEnabledLoops(ILooper enabledLooper) {
@@ -111,25 +121,28 @@ public class Arm extends Subsystem {
 			@Override
 			public void onLoop(double timestamp) {
 				switch (periodic.currentMode) {
-					case PIVOT:
+					case OPEN_LOOP:
+						setTurretPower(periodic.rawTurretPower);
+						setPivotPower(periodic.rawPivotPower);
+						setExtensionPower(periodic.rawExtensionPower);
+						break;
+					case OPEN_CLOSED_LOOP:
+						periodic.desiredPivotEncoder = periodic.rawPivotPower; //multiply by constant
 						armAnglePID();
-						break;
-					case EXTENSION:
+						periodic.desiredArmLength = periodic.rawExtensionPower; //multiply by constant
 						armExtensionPID();
-						break;
-					case TURRET:
+						periodic.desiredTurretDegree = periodic.rawTurretPower; //multiply by sontant
 						turretAnglePID();
-					case REST:
-						periodic.extensionPower = 0.0;
-						periodic.pivotPower = 0.0;
-						periodic.turretPower = 0.0;
-						break;
+					case CLOSED_LOOP:
+						armAnglePID();
+						armExtensionPID();
+						turretAnglePID();
 				}
 			}
 
 			@Override
 			public void onStop(double timestamp) {
-				// TODO Auto-generated method stub
+				reset();
 				
 			}
 			
@@ -141,7 +154,7 @@ public class Arm extends Subsystem {
 		extensionMotor.set(ControlMode.PercentOutput, periodic.extensionPower);
 		turretMotor.set(ControlMode.PercentOutput, periodic.turretPower);
 		
-		armMasterMotor.set(ControlMode.PercentOutput, periodic.pivotPower);
+		armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder, DemandType.ArbitraryFeedForward, periodic.pivotPower);
 		armSlaveMotor.set(ControlMode.Follower, Constants.ARM_ARM_M_ID);
 	}
 
@@ -150,16 +163,19 @@ public class Arm extends Subsystem {
 		SmartDashboard.putNumber("Arm/armPower", periodic.pivotPower);
 		SmartDashboard.putNumber("Arm/extensionPower", periodic.extensionPower);
 		SmartDashboard.putString("Arm/grabberEngaged", periodic.grabberEngaged.toString());
+		SmartDashboard.putNumber("Arm/arbitaryFeed", periodic.arbitraryFeedForward);
 	}
 
 	public void reset() {
 		resetEncoders();	
-		periodic.desiredArmDegree = 0; // from 0 to the maximum extension of the arm 
-		periodic.desiredArmLength = 0; // inches
-		periodic.desiredTurretDegree = 0; // scale of -135 to 135
-		periodic.currentMode = ArmMode.REST;
-
-		// TODO: Move arm to 0s, than do above
+		periodic.desiredPivotDegree = 0.0; // from 0 to the maximum extension of the arm 
+		periodic.desiredArmLength = 0.0; // inches
+		periodic.desiredTurretDegree = 0.0; // scale of -135 to 135
+		
+		periodic.pivotPower = 0.0;
+		periodic.extensionPower = 0.0;
+		periodic.turretPower = 0.0;
+		periodic.currentMode = ArmMode.OPEN_LOOP;
 	}
 	
 	// Getters
@@ -176,48 +192,48 @@ public class Arm extends Subsystem {
 		return periodic.turretError;
 	}
 
-	// Setters
-
+	// for closed loop
 	public void setDesiredPivot(double theta) {
-		periodic.desiredArmDegree = theta;
-		periodic.pivotError = periodic.desiredArmDegree - periodic.armDegree; 
-		periodic.currentMode = ArmMode.PIVOT;
+		periodic.desiredPivotDegree = theta;
+		periodic.desiredPivotEncoder = theta * Constants.ENCODER_PER_DEGREE;
+		periodic.pivotError = periodic.desiredPivotDegree - periodic.armDegree; 
+		periodic.currentMode = ArmMode.CLOSED_LOOP;
 	}
 
 	public void setDesiredTurretDegree(double theta) {
 		periodic.desiredTurretDegree = theta;
-		periodic.turretError = periodic.desiredTurretDegree - periodic.turretDegree; 
-		periodic.currentMode = ArmMode.TURRET;
+		periodic.turretError = periodic.desiredTurretDegree - periodic.turretDegree;
+		periodic.currentMode = ArmMode.CLOSED_LOOP;
 	}
 
 	public void setDesiredLength(double length) {
 		periodic.desiredArmLength = length;
-		periodic.armLength = periodic.desiredArmLength - periodic.armLength; 
-		periodic.currentMode = ArmMode.EXTENSION;
+		periodic.lengthError = periodic.desiredArmLength - periodic.armLength;
+		periodic.currentMode = ArmMode.CLOSED_LOOP; 
 	}
 	 
 	// Subsystem Exclusive Utilities - Could be private
 		
-	public double safetyLimit(double power, double position, double warningRange, double min, double max) {		
-		// warnings - slows down motors when get close to limit
-		if(position < (min + warningRange) && power < 0.0){ // If the arm is moving in the direction of its minimum value and is approaching its warning point
-			return -0.1; // set to minimum motor speed, probably should be changed as different for each part of arm
-		}
-		else if(position > (max - warningRange) && power > 0.0){
-			return 0.1;
-		}
-		// Safety shutoff - Disable motors
-		else if(position <= min && power < 0.0){
-			return 0.0;
-		}
-		else if(position >= max && power > 0.0){
-			return 0.0;
-		}
-		// Fine
-		else{
-			return power;
-		}
-	}
+	// public double safetyLimit(double power, double position, double warningRange, double min, double max) {		
+	// 	// warnings - slows down motors when get close to limit
+	// 	if(position < (min + warningRange) && power < 0.0){ // If the arm is moving in the direction of its minimum value and is approaching its warning point
+	// 		return -0.1; // set to minimum motor speed, probably should be changed as different for each part of arm
+	// 	}
+	// 	else if(position > (max - warningRange) && power > 0.0){
+	// 		return 0.1;
+	// 	}
+	// 	// Safety shutoff - Disable motors
+	// 	else if(position <= min && power < 0.0){
+	// 		return 0.0;
+	// 	}
+	// 	else if(position >= max && power > 0.0){
+	// 		return 0.0;
+	// 	}
+	// 	// Fine
+	// 	else{
+	// 		return power;
+	// 	}
+	// }
 
 	public void resetEncoders() {
 		extensionMotor.setSelectedSensorPosition(0);
@@ -226,56 +242,32 @@ public class Arm extends Subsystem {
 		armSlaveMotor.setSelectedSensorPosition(0);
 	}
 
-	public void limitcheck() {
-		// TODO: Fill out
-		// If limit switch pressed, reset pivot encoder and Arm must go up
-		if(bottomLimitSwitch.get()){
-			periodic.pivotEncoder = 0;
-			periodic.pivotPower = 0;
-		}
-	}
-
 	// MainLoop Functions (Mostly PID) - Could be private
 
-	public void armAnglePID() { // The power calculation assumes that the values are decreased when the motors go in reverse. TODO: Verify this behavior
-		periodic.pivotError = periodic.desiredArmDegree - periodic.armDegree; 
-		//periodic.pivotPower = periodic.pivotError * Constants.ARM_PIVOT_KP;
+	public void armAnglePID() {
 		double leverLengthCoeff = periodic.armLength * Constants.ARM_EXTENSION_KP;
 		periodic.pivotPower = Math.sin(periodic.armDegree) * Constants.ARM_PIVOT_KP * leverLengthCoeff;
-
 		periodic.pivotPower = Util.clampSpeed(periodic.pivotPower, Constants.PIVOT_MIN_SPEED, Constants.PIVOT_MAX_SPEED);
-		// periodic.pivotPower = safetyLimit(periodic.pivotPower, periodic.armDegree, 
-		// 	Constants.PIVOT_WARNING_ANGLE, Constants.MIN_PIVOT, Constants.MAX_PIVOT); 
+		periodic.arbitraryFeedForward = Math.sin(periodic.armDegree) * Constants.ARM_PIVOT_KP * leverLengthCoeff;
 	}
 
 	public void turretAnglePID() {
-		double adjAngle = periodic.turretDegree; // TODO: Fix, temporary solution until safetyLimit() is fixed to work with negatives
-		periodic.turretError = periodic.desiredTurretDegree - periodic.turretDegree;
 		periodic.turretPower = periodic.turretError * Constants.ARM_EXTENSION_KP;
-
 		periodic.turretPower = Util.clampSpeed(periodic.turretPower, Constants.TURRET_MIN_SPEED, Constants.TURRET_MAX_SPEED);
-		// periodic.turretPower = safetyLimit(periodic.turretPower, adjAngle, Constants.TURRET_WARNING_DISTANCE, 
-		// 	5.0, 265.0); // TODO: See comment on adjAngle
 	}
 
 	public void armExtensionPID() {
-		periodic.lengthError = periodic.desiredArmLength - periodic.armLength;
 		periodic.extensionPower = periodic.lengthError * Constants.ARM_EXTENSION_KP;
-
 		periodic.extensionPower = Util.clampSpeed(periodic.extensionPower, Constants.EXTENSION_MIN_SPEED, Constants.EXTENSION_MAX_SPEED);
 		// periodic.extensionPower = safetyLimit(periodic.extensionPower, periodic.armLength, 
 		// 	Constants.EXTENSION_WARNING_DISTANCE, Constants.MIN_ARM_LENGTH, Constants.MAX_ARM_LENGTH);
 	}
-	
-	// Old Code
 
 	public void setTurretPower(double power) {
 		periodic.turretPower = power;
 	}
 
 	public void setPivotPower(double power) {
-		//double leverLengthCoeff = periodic.armLength * Constants.ARM_EXTENSION_KP;
-		//periodic.pivotPower = Math.sin(periodic.armDegree) * Constants.ARM_PIVOT_KP * leverLengthCoeff;
 		periodic.pivotPower = power;
 	}
 
