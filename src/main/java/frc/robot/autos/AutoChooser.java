@@ -21,7 +21,7 @@ public class AutoChooser {
 	private AutoType chosen;
 
 	private AutoChooser() {
-		change(AutoType.kTwo);
+		change(AutoType.kTest);	
 	}
 
 	// Run the currently selected autonomous

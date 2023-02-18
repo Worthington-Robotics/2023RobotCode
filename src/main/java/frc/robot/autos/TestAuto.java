@@ -24,7 +24,5 @@ public class TestAuto extends StateMachineDescriptor {
         addSequential(new MoveForwardAction(70000, -90), 5000);
         addSequential(new DriveTurnAction(180), 5000);
         addSequential(new MoveForwardAction(170000, 180), 5000);
-
-        addSequential(new DriveTurnAction(0), 5000);
     }
 }

@@ -9,6 +9,6 @@ public class AutoTwo extends StateMachineDescriptor {
     public AutoTwo() {
         addSequential(new WaitAction(), 2000);
         addSequential(new DriveTurnAction(-90), 5000);
-        addSequential(new MoveForwardAction(76725, -90), 5000);
+        addSequential(new MoveForwardAction(120000, -90), 5000);
     }
 }

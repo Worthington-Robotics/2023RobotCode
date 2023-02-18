@@ -64,11 +64,6 @@ public class SuperStructure extends Subsystem {
 	}
 
 	public void writePeriodicOutputs() {
-		// leftSideWheel.set(ControlMode.PercentOutput, 1 * Constants.SIDE_WHEELS_MULTIPLIER );
-		// rightSideWheel.set(ControlMode.PercentOutput, 1 * Constants.SIDE_WHEELS_MULTIPLIER);
-		// conveyorBelt.set(ControlMode.PercentOutput, 1 * Constants.CONVEYER_BELT_MULTIPLIER);
-		// intakeWheelSpinner.set(ControlMode.PercentOutput, 1 * Constants.INTAKE_WHEEL_SPINNER_MULTIPLIER);
-		
 		leftSideWheel.set(ControlMode.PercentOutput, periodic.power * Constants.SIDE_WHEELS_MULTIPLIER );
 		rightSideWheel.set(ControlMode.PercentOutput, periodic.power * Constants.SIDE_WHEELS_MULTIPLIER);
 		conveyorBelt.set(ControlMode.PercentOutput, periodic.power * Constants.CONVEYER_BELT_MULTIPLIER);
