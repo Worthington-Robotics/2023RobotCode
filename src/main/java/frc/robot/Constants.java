@@ -135,7 +135,7 @@ public class Constants {
     public static final double DEAD_ZONE = 0.05;
     
     // Angle PID
-    public static final double ANGLE_KP = 1.0 / 120.0;
+    public static final double TURN_KP = 1.0 / 120.0;
     public static final double ANGLE_ACCEPTANCE = 1.8;
     public static final double ANGLE_PID_MINIMUM_TIME = 0.06;
     public static final double DRIVE_TURN_MINIMUM_SPEED = 0.08;
