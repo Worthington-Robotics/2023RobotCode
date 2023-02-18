@@ -69,6 +69,8 @@ public class DriveTrain extends Subsystem {
         public double prevEncoderRightTick;
         public double prevEncoderLeftTick;
         public double gyroTilt;
+        // Delta from last gyro tilt, used for D term
+        public double tiltDelta;
     }
 
     public DriveTrain() {
@@ -96,14 +98,18 @@ public class DriveTrain extends Subsystem {
         OPEN_LOOP,
         TURN,
         MOVE_FORWARD,
-        STOPPED
+        STOPPED,
+        AUTO_LEVEL
     }
 
     @Override
     public void readPeriodicInputs() {
+        final double lastTilt = periodic.gyroTilt;
         periodic.gyroTilt = gyro.getRoll() * -1.0;
+        periodic.tiltDelta = periodic.gyroTilt - lastTilt;
         periodic.rawHeading = gyro.getFusedHeading();
         periodic.heading = normalizeHeading(periodic.rawHeading);
+
         periodic.leftEncoderTicks = forwardLeftMotor.getSelectedSensorPosition();
         periodic.rightEncoderTicks = forwardRightMotor.getSelectedSensorPosition();
         periodic.deltaLeftEncoder = periodic.leftEncoderTicks - periodic.leftEncoderPrevDistance;
@@ -148,6 +154,7 @@ public class DriveTrain extends Subsystem {
         SmartDashboard.putNumber("Drive/Total Left Encoder", periodic.totalLeftEncoder);
         SmartDashboard.putNumber("Drive/Total Right Encoder", periodic.totalRightEncoder);
         SmartDashboard.putNumber("Drive/Pitch", periodic.gyroTilt);
+        SmartDashboard.putNumber("Drive/Heading", (periodic.rawHeading + 360) % 360);
     }
 
     @Override
@@ -188,6 +195,9 @@ public class DriveTrain extends Subsystem {
                     case STOPPED:
                         periodic.leftDemand = 0;
                         periodic.rightDemand = 0;
+                        break;
+                    case AUTO_LEVEL:
+                        autoLevel();
                         break;
                 }
             }
@@ -257,11 +267,15 @@ public class DriveTrain extends Subsystem {
         setTargetDistance(distance);
     }
 
+    public void setAutoLevel() {
+        periodic.currentMode = DriveMode.AUTO_LEVEL;
+    }
+
     public void setStopped() {
         periodic.currentMode = DriveMode.STOPPED;
     }
 
-    public void turn() {
+    private void turn() {
         periodic.leftDemand = periodic.headingError * -Constants.ANGLE_KP;
         periodic.rightDemand = periodic.headingError * Constants.ANGLE_KP;
 
@@ -272,7 +286,7 @@ public class DriveTrain extends Subsystem {
             Constants.DRIVE_TURN_MINIMUM_SPEED, Constants.DRIVE_TURN_MAXIMUM_SPEED);
     }
 
-    public void moveForward() {
+    private void moveForward() {
         periodic.driveHeadingCorrect = 0.0;
         periodic.leftDemand = periodic.leftError * Constants.DRIVE_FORWARD_KP;
         periodic.rightDemand = periodic.rightError * Constants.DRIVE_FORWARD_KP;
@@ -303,7 +317,7 @@ public class DriveTrain extends Subsystem {
     }
 
     // Sets motor demands in open loop
-    public void openLoop() {
+    private void openLoop() {
         periodic.leftDemand = periodic.yValue + periodic.xValue;
         periodic.rightDemand = periodic.yValue - periodic.xValue; 
 
@@ -314,6 +328,20 @@ public class DriveTrain extends Subsystem {
         // Filter output
         periodic.leftDemand = leftFilter.calculate(periodic.leftDemand);
         periodic.rightDemand = rightFilter.calculate(periodic.rightDemand);
+    }
+
+    // Auto-leveling mode for charge station
+    private void autoLevel() {
+        final double levelError = -2.0 + periodic.gyroTilt;
+        // final double derivative = 
+        periodic.leftDemand = levelError * Constants.DRIVE_LEVEL_KP;
+        periodic.rightDemand = levelError * Constants.DRIVE_LEVEL_KP;
+
+        // Normalize power
+        periodic.leftDemand = clampDriveSpeed(periodic.leftDemand,
+            0.0, Constants.DRIVE_LEVEL_MAX_SPEED);
+        periodic.rightDemand = clampDriveSpeed(periodic.rightDemand,
+            0.0, Constants.DRIVE_LEVEL_MAX_SPEED);
     }
 
     public static double clampDriveSpeed(double demand, double min, double max) {

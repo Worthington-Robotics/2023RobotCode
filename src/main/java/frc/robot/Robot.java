@@ -20,6 +20,7 @@ import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.SuperStructure.IntakePosition;
 import frc.lib.statemachine.Action;
+import frc.robot.actions.drive.DriveLevelAction;
 import frc.robot.actions.drive.DriveTurnActionLimelight;
 import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.superstructure.MoveIntakeAction;
@@ -175,6 +176,6 @@ public class Robot extends TimedRobot {
         intakeCubeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CUBE_IN_POWER)));
         intakeUpButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kUp)));
         intakeDownButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kDown)));
-        limelightRotateButton.whileTrue(Action.toCommand(new DriveTurnActionLimelight()));
+        limelightRotateButton.whileTrue(Action.toCommand(new DriveLevelAction()));
     }
 }

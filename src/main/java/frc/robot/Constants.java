@@ -89,6 +89,11 @@ public class Constants {
     // Heading correction when moving forward
     public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 90.0;
 
+    // Auto level
+    public static final double DRIVE_LEVEL_KP = 1.0 / 90.0;
+    public static final double DRIVE_LEVEL_KD = 1.0 / 1000.0;
+    public static final double DRIVE_LEVEL_MAX_SPEED = 0.6;
+
     // ### Lightbar values ###
     public static final int LIGHTS_LED_COUNT = 60;
 

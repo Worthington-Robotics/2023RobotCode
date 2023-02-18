@@ -1,6 +1,7 @@
 package frc.robot.autos;
 
 import frc.lib.statemachine.StateMachineDescriptor;
+import frc.robot.actions.drive.DriveLevelAction;
 import frc.robot.actions.drive.DriveTurnAction;
 import frc.robot.actions.drive.MoveForwardAction;
 import frc.robot.actions.drive.WaitAction;
@@ -10,5 +11,6 @@ public class AutoTwo extends StateMachineDescriptor {
         addSequential(new WaitAction(), 2000);
         addSequential(new DriveTurnAction(-90), 5000);
         addSequential(new MoveForwardAction(120000, -90), 5000);
+        addSequential(new DriveLevelAction(), 5000);
     }
 }
