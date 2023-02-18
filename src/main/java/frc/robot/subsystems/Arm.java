@@ -44,6 +44,10 @@ public class Arm extends Subsystem {
 		periodic.armPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), 1, 0);
 		periodic.extentionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), .5, -.5);
 		periodic.turretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), -.25, .25);
+
+		periodic.armEncoder = armM.getSelectedSensorPosition();
+		periodic.extentionEncoder = extention.getSelectedSensorPosition();
+		periodic.turretEncoder = turret.getSelectedSensorPosition();
 	}
 
 	/**
@@ -63,6 +67,10 @@ public class Arm extends Subsystem {
 		SmartDashboard.putNumber("Arm/turretPower", periodic.turretPower);
 		SmartDashboard.putNumber("Arm/armPower", periodic.armPower);
 		SmartDashboard.putNumber("Arm/extentionPower", periodic.extentionPower);
+		
+		SmartDashboard.putNumber("Arm/turretEncoder", periodic.turretEncoder);
+		SmartDashboard.putNumber("Arm/armEncoder", periodic.armEncoder);
+		SmartDashboard.putNumber("Arm/extentionEncoder", periodic.extentionEncoder);
 	}
 
 	/**
@@ -74,6 +82,10 @@ public class Arm extends Subsystem {
 		public double turretPower = 0;
 		public double armPower = 0;
 		public double extentionPower = 0;
+		
+		public double turretEncoder = 0;
+		public double armEncoder = 0;
+		public double extentionEncoder = 0;
 		public DoubleSolenoid.Value grabberEngaged = Value.kReverse;
 	}
 

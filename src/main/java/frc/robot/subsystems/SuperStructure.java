@@ -4,17 +4,18 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-//import com.playingwithfusion.TimeOfFlight;
 import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.playingwithfusion.TimeOfFlight;
+import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 public class SuperStructure extends Subsystem {
 	private static SuperStructure instance = new SuperStructure();
 	public static SuperStructure getInstance() { return instance; }
 
-	//private TimeOfFlight backstopTOF;
+	private TimeOfFlight tof;
 	private TalonFX leftSideWheel;
 	private TalonFX rightSideWheel;
 	private TalonSRX conveyorBelt;
@@ -54,12 +55,15 @@ public class SuperStructure extends Subsystem {
 		intakeWheelSpinner.setInverted(true);
 
 		intakeSolenoid = new DoubleSolenoid(Constants.INTAKE_PNEUMATICS_ID, PneumaticsModuleType.CTREPCM, Constants.INTAKE_SOLINIOD_REVERSE, Constants.INTAKE_SOLINIOD_FORWARD);
-		intakeSolenoid.set(Value.kReverse);
+		//intakeSolenoid.set(Value.kReverse);
 
+		tof = new TimeOfFlight(1);
+		tof.setRangingMode(RangingMode.Short, 40);
 		// TODO: Add intake TOF and HID helper
 	}
 
 	public void readPeriodicInputs() {
+		tof.getRange();
 		//periodic.backstopRange = backstopTOF.getRange();
 	}
 
@@ -70,9 +74,9 @@ public class SuperStructure extends Subsystem {
 		intakeWheelSpinner.set(ControlMode.PercentOutput, periodic.power * Constants.INTAKE_WHEEL_SPINNER_MULTIPLIER);
 		switch (periodic.intakePosition) {
 			case kUp:
-				intakeSolenoid.set(Value.kForward);
+				//intakeSolenoid.set(Value.kForward);
 			case kDown:
-				intakeSolenoid.set(Value.kReverse);
+				//intakeSolenoid.set(Value.kReverse);
 		}
 	}
 
