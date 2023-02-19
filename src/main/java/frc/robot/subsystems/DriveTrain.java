@@ -27,6 +27,8 @@ public class DriveTrain extends Subsystem {
     private PigeonIMU gyro;
     // Solenoid used to change gear
     private DoubleSolenoid transmissionSolenoid;
+
+    private DoubleSolenoid extraSolenoid;
     // Filters used for open loop drive
     private LinearFilter leftFilter, rightFilter;
 
@@ -71,8 +73,10 @@ public class DriveTrain extends Subsystem {
         periodic = new DriveIO();
         transmissionSolenoid = new DoubleSolenoid(
             PneumaticsModuleType.CTREPCM,
-            1, 0
+            Constants.DRIVE_TRANSMISSION_FORWARD, Constants.DRIVE_TRANSMISSION_REVERSE
         );
+        // extraSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
+        
         gyro = new PigeonIMU(Constants.PIGEON_ID);
 
         forwardRightMotor = new TalonFX(Constants.DRIVE_FRONT_RIGHT_ID);
@@ -144,7 +148,7 @@ public class DriveTrain extends Subsystem {
         SmartDashboard.putNumber("Drive/Total Left Encoder", periodic.totalLeftEncoder);
         SmartDashboard.putNumber("Drive/Total Right Encoder", periodic.totalRightEncoder);
         SmartDashboard.putNumber("Drive/Pitch", periodic.gyroTilt);
-        SmartDashboard.putNumber("Drive/Heading", (periodic.rawHeading + 360) % 360);
+        SmartDashboard.putNumber("Drive/Heading", (-periodic.rawHeading + 360) % 360);
     }
 
     @Override

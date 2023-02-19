@@ -93,6 +93,13 @@ public class SuperStructure extends Subsystem {
 		periodic.buttonPressed = !periodic.buttonPressed;
 	}
 
+	public void setIntakeUp() {
+		intakeSolenoid.set(Value.kForward);
+	}
+
+	public void setIntakeDown() {
+		intakeSolenoid.set(Value.kReverse);
+	}
 
 	// Returns if the game piece has completed its intake cycle
 	public boolean isFinished() {

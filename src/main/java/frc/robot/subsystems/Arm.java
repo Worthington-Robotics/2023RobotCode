@@ -71,12 +71,24 @@ public class Arm extends Subsystem {
 		SmartDashboard.putNumber("Arm/turretEncoder", periodic.turretEncoder);
 		SmartDashboard.putNumber("Arm/armEncoder", periodic.armEncoder);
 		SmartDashboard.putNumber("Arm/extentionEncoder", periodic.extentionEncoder);
+
+		SmartDashboard.putNumber("Arm/Stator/PivotCurrent", armM.getStatorCurrent());
+		SmartDashboard.putNumber("Arm/Stator/ExtendCurrent", extention.getStatorCurrent());
+		SmartDashboard.putNumber("Arm/Stator/TurretCurrent", turret.getStatorCurrent());
 	}
 
 	/**
 	 * Called to reset and configure the subsystem
 	 */
 	public void reset() {}
+
+	public void setClawOpen() {
+		grabber.set(Value.kForward);
+	}
+
+	public void setClawClosed() {
+		grabber.set(Value.kReverse);
+	}
 
 	public class ArmIO extends PeriodicIO {
 		public double turretPower = 0;

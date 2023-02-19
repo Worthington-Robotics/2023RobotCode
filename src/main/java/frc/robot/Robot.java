@@ -20,11 +20,13 @@ import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.SuperStructure.IntakePosition;
 import frc.lib.statemachine.Action;
+import frc.robot.actions.arm.OpenClaw;
 import frc.robot.actions.drive.DriveLevelAction;
 import frc.robot.actions.drive.DriveTurnActionLimelight;
 import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.superstructure.MoveIntakeAction;
 import frc.robot.actions.superstructure.RunIntakeAction;
+import frc.robot.actions.superstructure.SwitchSolenoid;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -38,7 +40,9 @@ public class Robot extends TimedRobot {
     private Looper enabledLooper, disabledLooper;
 
     // Input bindings
-    private JoystickButton driveGearButton = new JoystickButton(Constants.MASTER, 1);
+    private JoystickButton clawButton = new JoystickButton(Constants.SECOND, 1);
+    private JoystickButton transmissionButton = new JoystickButton(Constants.MASTER, 1);
+    private JoystickButton intakeSolenoidButton = new JoystickButton(Constants.MASTER, 6);
     private JoystickButton intakeCubeButton = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton limelightRotateButton = new JoystickButton(Constants.MASTER, 6);
     private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 2);
@@ -172,7 +176,9 @@ public class Robot extends TimedRobot {
     public void testPeriodic() {}
 
     public void initButtons() {
-        driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
+        transmissionButton.whileTrue(Action.toCommand(new GearChangeAction()));
+        intakeSolenoidButton.whileTrue(Action.toCommand(new SwitchSolenoid()));
+        clawButton.whileTrue(Action.toCommand(new OpenClaw()));
         intakeConeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CONE_IN_POWER)));
         intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
         intakeCubeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CUBE_IN_POWER)));

@@ -13,6 +13,9 @@ public class Constants {
     public static final int DRIVE_FRONT_RIGHT_ID = 3;
     public static final int DRIVE_BACK_LEFT_ID = 2;
     public static final int DRIVE_BACK_RIGHT_ID = 4;
+
+    public static final int DRIVE_TRANSMISSION_FORWARD = 4;
+    public static final int DRIVE_TRANSMISSION_REVERSE = 5;
     
     // Arm / Turret
     public static final int ARM_TURRET_ID = 9;
@@ -21,8 +24,8 @@ public class Constants {
     public static final int ARM_ARM_S_ID = 12;
     
     public static final int CTRE_PCM_ID = 0;
-    public static final int ARM_GRABBER_FWD_CHANNEL = 2;
-    public static final int ARM_GRABBER_REV_CHANNEL = 3;
+    public static final int ARM_GRABBER_FWD_CHANNEL = 1;
+    public static final int ARM_GRABBER_REV_CHANNEL = 0;
 
     // Superstructure
     public static final int BACKSTOP_TOF_ID = 0;
@@ -64,8 +67,8 @@ public class Constants {
     public static final double CUBE_IN_POWER = .5; 
     public static final double ANYTHING_OUT_POWER = -1;
     // Solenoid IDs
-    public static final int INTAKE_SOLINIOD_REVERSE = 4;
-    public static final int INTAKE_SOLINIOD_FORWARD = 5;
+    public static final int INTAKE_SOLINIOD_REVERSE = 2;
+    public static final int INTAKE_SOLINIOD_FORWARD = 3;
     public static final int INTAKE_PNEUMATICS_ID = 0;
 
     // ### Drivetrain tuned values ###
