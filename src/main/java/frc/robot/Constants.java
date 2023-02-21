@@ -25,11 +25,12 @@ public class Constants {
     public static final int ARM_GRABBER_REV_CHANNEL = 3;
 
     // Arm Constants - Measurements
-    public static final double ENCODER_PER_DEGREE = 1000.0;
+    //public static final double ENCODER_PER_DEGREE = 1000.0;
+    public static final double ENCODER_PER_DEGREE = 4096.0 / 360.0;
     public static final double ENCODER_PER_INCH = 750.0;
 
     // Arm Constants - PID 
-    public static final double ARM_PIVOT_KP = 1.0 / 110.0; // TODO: Adjust all kps and mins and maxs for arm
+    public static final double ARM_PIVOT_KP = 0.5; // TODO: Adjust all kps and mins and maxs for arm
     public static final double PIVOT_ANGLE_ACCEPTANCE = 2.0;
     public static final double PIVOT_MIN_TIME = 1.0;
 
@@ -37,7 +38,7 @@ public class Constants {
     public static final double TURRET_ANGLE_ACCEPTANCE = 2.0;
     public static final double TURRET_MIN_TIME = 1.5;
 
-    public static final double ARM_EXTENSION_KP = 1.0 / 750000.0;
+    public static final double ARM_EXTENSION_KP = 1.0 / 1500.0;
     public static final double EXTENSION_DISTANCE_ACCEPTED = 2.0;
     public static final double EXTENSION_MIN_TIME = 1.5;
     

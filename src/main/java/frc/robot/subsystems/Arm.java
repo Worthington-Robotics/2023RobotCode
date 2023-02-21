@@ -98,7 +98,7 @@ public class Arm extends Subsystem {
 	public void readPeriodicInputs() {
 		periodic.pivotEncoder = armMasterMotor.getSelectedSensorPosition();
 		periodic.lengthEncoder = extensionMotor.getSelectedSensorPosition();
-		periodic.turretDegree = turretMotor.getSelectedSensorPosition();
+		periodic.turretEncoder = turretMotor.getSelectedSensorPosition();
 
 		periodic.armDegree = (periodic.pivotEncoder / Constants.ENCODER_PER_DEGREE) + 20.0;
 		periodic.armLength = periodic.lengthEncoder / Constants.ENCODER_PER_INCH;
@@ -252,7 +252,7 @@ public class Arm extends Subsystem {
 	}
 
 	public void turretAnglePID() {
-		periodic.turretPower = periodic.turretError * Constants.ARM_EXTENSION_KP;
+		periodic.turretPower = periodic.turretError * Constants.TURRET_KP;
 		periodic.turretPower = Util.clampSpeed(periodic.turretPower, Constants.TURRET_MIN_SPEED, Constants.TURRET_MAX_SPEED);
 	}
 
