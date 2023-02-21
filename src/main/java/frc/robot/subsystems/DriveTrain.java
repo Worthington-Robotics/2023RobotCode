@@ -113,7 +113,13 @@ public class DriveTrain extends Subsystem {
         periodic.operatorInput = HIDHelper.getAdjStick(Constants.MASTER_STICK);
         periodic.xValue = periodic.operatorInput[0];
         periodic.yValue = periodic.operatorInput[1];
+
         // These are important derived values that are also read by actions so they should be updated here
+        
+        // Aligned target heading for auto leveling
+        if (periodic.currentMode == DriveMode.AUTO_LEVEL) {
+            periodic.targetHeading = getAlignedTargetHeading(periodic.rawHeading);
+        }
         periodic.headingError = normalizeHeadingError(periodic.targetHeading - periodic.heading);
         periodic.leftError = periodic.targetDistance - periodic.leftEncoderTicks;
         periodic.rightError = periodic.targetDistance - periodic.rightEncoderTicks;
@@ -326,10 +332,14 @@ public class DriveTrain extends Subsystem {
 
     // Auto-leveling mode for charge station
     private void autoLevel() {
-        final double levelError = -2.0 + periodic.gyroTilt;
-        // final double derivative = 
+        final double levelError = Constants.DRIVE_LEVEL_ZERO + periodic.gyroTilt;
         periodic.leftDemand = levelError * Constants.DRIVE_LEVEL_KP;
         periodic.rightDemand = levelError * Constants.DRIVE_LEVEL_KP;
+
+        // Correct for heading error
+        periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;
+        periodic.leftDemand -= periodic.driveHeadingCorrect;
+        periodic.rightDemand += periodic.driveHeadingCorrect;
 
         // Normalize power
         periodic.leftDemand = clampDriveSpeed(periodic.leftDemand,
@@ -372,6 +382,16 @@ public class DriveTrain extends Subsystem {
             }
         } else {
             return error;
+        }
+    }
+
+    // Gets a target heading which is the closest between 0 and 180
+    public static double getAlignedTargetHeading(double currentHeading) {
+        final double normalized = normalizeHeading(currentHeading);
+        if (Math.abs(normalized) < 90) {
+            return 0;
+        } else {
+            return 180 * Math.signum(normalized);
         }
     }
 

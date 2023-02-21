@@ -45,6 +45,7 @@ public class Robot extends TimedRobot {
     private JoystickButton intakeSolenoidButton = new JoystickButton(Constants.MASTER, 6);
     private JoystickButton intakeCubeButton = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton limelightRotateButton = new JoystickButton(Constants.MASTER, 6);
+    private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 7);
     private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 2);
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton intakeDownButton = new JoystickButton(Constants.MASTER, 10);
@@ -184,6 +185,7 @@ public class Robot extends TimedRobot {
         intakeCubeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CUBE_IN_POWER)));
         intakeUpButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kUp)));
         intakeDownButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kDown)));
-        limelightRotateButton.whileTrue(Action.toCommand(new DriveLevelAction()));
+        autoLevelButton.whileTrue(Action.toCommand(new DriveLevelAction()));
+        limelightRotateButton.whileTrue(Action.toCommand(new DriveTurnActionLimelight()));
     }
 }

@@ -96,6 +96,8 @@ public class Constants {
     public static final double DRIVE_LEVEL_KP = 1.0 / 90.0;
     public static final double DRIVE_LEVEL_KD = 1.0 / 1000.0;
     public static final double DRIVE_LEVEL_MAX_SPEED = 0.6;
+    // Correction for pigeon pitch inaccuracy
+    public static final double DRIVE_LEVEL_ZERO = -2.5;
 
     // ### Lightbar values ###
     public static final int LIGHTS_LED_COUNT = 60;
