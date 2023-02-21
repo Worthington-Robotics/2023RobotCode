@@ -5,7 +5,6 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -20,7 +19,6 @@ import frc.lib.util.HIDHelper;
 public class Arm extends Subsystem {
 	TalonFX extensionMotor, turretMotor, armMasterMotor, armSlaveMotor;
 	DoubleSolenoid grabber;
-	DigitalInput bottomLimitSwitch;
 
 	private static Arm instance = new Arm();
 	public static Arm getInstance() { return instance; }
@@ -81,7 +79,6 @@ public class Arm extends Subsystem {
 		public double desiredPivotEncoder;
 		public double desiredArmLengthEncoder;
 		public double desiredTurretDegreeEncoder;
-
 
 		// Error Values
 		public double pivotError;
@@ -160,22 +157,28 @@ public class Arm extends Subsystem {
 
 	public void outputTelemetry() {
 		SmartDashboard.putNumber("Arm/turretPower", periodic.turretPower);
+		SmartDashboard.putNumber("Arm/encoder/turretEncoder", periodic.turretEncoder);
+		SmartDashboard.putNumber("Arm/degree/turretDegree", periodic.turretDegree);
 		SmartDashboard.putNumber("Arm/armPower", periodic.pivotPower);
+		SmartDashboard.putNumber("Arm/encoder/armEncoder", periodic.pivotEncoder);
+		SmartDashboard.putNumber("Arm/degree/armDegree", periodic.armDegree);
 		SmartDashboard.putNumber("Arm/extensionPower", periodic.extensionPower);
+		SmartDashboard.putNumber("Arm/encoder/lengthEncoder", periodic.lengthEncoder);
+		SmartDashboard.putNumber("Arm/lengthOfExtension", periodic.armLength);
 		SmartDashboard.putString("Arm/grabberEngaged", periodic.grabberEngaged.toString());
 		SmartDashboard.putNumber("Arm/arbitaryFeed", periodic.arbitraryFeedForward);
 	}
 
 	public void reset() {
-		resetEncoders();	
-		periodic.desiredPivotDegree = 0.0; // from 0 to the maximum extension of the arm 
-		periodic.desiredArmLength = 0.0; // inches
-		periodic.desiredTurretDegree = 0.0; // scale of -135 to 135
+		// resetEncoders();	
+		// periodic.desiredPivotDegree = 0.0; // from 0 to the maximum extension of the arm 
+		// periodic.desiredArmLength = 0.0; // inches
+		// periodic.desiredTurretDegree = 0.0; // scale of -135 to 135
 		
-		periodic.pivotPower = 0.0;
-		periodic.extensionPower = 0.0;
-		periodic.turretPower = 0.0;
-		periodic.currentMode = ArmMode.OPEN_LOOP;
+		// periodic.pivotPower = 0.0;
+		// periodic.extensionPower = 0.0;
+		// periodic.turretPower = 0.0;
+		// periodic.currentMode = ArmMode.OPEN_LOOP;
 	}
 	
 	// Getters
