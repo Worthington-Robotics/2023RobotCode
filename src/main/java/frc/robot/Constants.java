@@ -24,9 +24,11 @@ public class Constants {
     public static final int ARM_GRABBER_FWD_CHANNEL = 2;
     public static final int ARM_GRABBER_REV_CHANNEL = 3;
 
+    
+
     // Arm Constants - Measurements
-    //public static final double ENCODER_PER_DEGREE = 1000.0;
-    public static final double ENCODER_PER_DEGREE = 4096.0 / 360.0;
+    public static final double PIVOT_ENCODER_PER_DEGREE = 416.31;
+    public static final double TURRET_ENCODER_PER_DEGREE = 218.56;
     public static final double ENCODER_PER_INCH = 750.0;
 
     // Arm Constants - PID 

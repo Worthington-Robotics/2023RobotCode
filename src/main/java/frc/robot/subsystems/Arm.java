@@ -1,19 +1,21 @@
 package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.DemandType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.lib.util.Util;
-import frc.lib.util.HIDHelper;
+
+
 
 
 public class Arm extends Subsystem {
@@ -97,9 +99,9 @@ public class Arm extends Subsystem {
 		periodic.lengthEncoder = extensionMotor.getSelectedSensorPosition();
 		periodic.turretEncoder = turretMotor.getSelectedSensorPosition();
 
-		periodic.armDegree = (periodic.pivotEncoder / Constants.ENCODER_PER_DEGREE) + 20.0;
+		periodic.armDegree = (periodic.pivotEncoder / Constants.PIVOT_ENCODER_PER_DEGREE) + 20.0;
 		periodic.armLength = periodic.lengthEncoder / Constants.ENCODER_PER_INCH;
-		periodic.turretDegree = periodic.pivotEncoder / Constants.ENCODER_PER_DEGREE;
+		periodic.turretDegree = periodic.pivotEncoder / Constants.TURRET_ENCODER_PER_DEGREE;
 
 		periodic.rawPivotPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), 1, 0);
 		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), .5, -.5);
@@ -198,7 +200,7 @@ public class Arm extends Subsystem {
 	// for closed loop
 	public void setDesiredPivot(double theta) {
 		periodic.desiredPivotDegree = theta;
-		periodic.desiredPivotEncoder = theta * Constants.ENCODER_PER_DEGREE;
+		periodic.desiredPivotEncoder = theta * Constants.PIVOT_ENCODER_PER_DEGREE;
 		periodic.pivotError = periodic.desiredPivotDegree - periodic.armDegree; 
 		periodic.currentMode = ArmMode.CLOSED_LOOP;
 	}
@@ -281,17 +283,7 @@ public class Arm extends Subsystem {
 	public void setGrabber(DoubleSolenoid.Value value) {
 		periodic.grabberEngaged = value;
 	}
-	// public void moveArm(double currentDegreeEncoder, double extensionEncoder, double desiredArmDegree){
-	// 	periodic.armDegree = 20.0 + (currentDegreeEncoder / Constants.ENCODER_PER_DEGREE);
-	// 	periodic.armLength = 20.0 + (extensionEncoder / Constants.ENCODER_PER_INCH);
-	// 	periodic.desiredArmDegree = desiredArmDegree;
-
-	// 	double leverVal = periodic.armLength * Constants.LEVER_LENGTH_KP;
-	// 	double normalizedArmPower = Math.sin(periodic.armDegree) * Constants.ARM_POWER_KP * leverVal;
-	// 	double degreeError = periodic.armDegree - desiredArmDegree;
-
-	// 	periodic.armPower = normalizedArmPower * degreeError * (1.0 / 60.0);
-	// }
+	
 
 	// Logging
 
