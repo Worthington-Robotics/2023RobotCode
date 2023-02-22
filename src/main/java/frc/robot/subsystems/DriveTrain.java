@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -81,17 +82,21 @@ public class DriveTrain extends Subsystem {
         gyro = new PigeonIMU(Constants.PIGEON_ID);
 
         forwardRightMotor = new TalonFX(Constants.DRIVE_FRONT_RIGHT_ID);
+        forwardRightMotor.setNeutralMode(NeutralMode.Brake);
         rearRightMotor = new TalonFX(Constants.DRIVE_BACK_RIGHT_ID);
+        rearRightMotor.setNeutralMode(NeutralMode.Brake);
         forwardLeftMotor = new TalonFX(Constants.DRIVE_FRONT_LEFT_ID);
+        forwardLeftMotor.setNeutralMode(NeutralMode.Brake);
         rearLeftMotor = new TalonFX(Constants.DRIVE_BACK_LEFT_ID);
+        rearLeftMotor.setNeutralMode(NeutralMode.Brake);
 
         // TODO: Use setInverted to follow to make sure that motors are going the same direction
         forwardLeftMotor.setInverted(true);
         rearLeftMotor.setInverted(true);
 
-        leftFilter = LinearFilter.singlePoleIIR(0.04, 0.02);
-        rightFilter = LinearFilter.singlePoleIIR(0.04, 0.02);
-        tiltDeltaFilter = LinearFilter.singlePoleIIR(0.04, 0.02);
+        leftFilter = LinearFilter.singlePoleIIR(Constants.OPEN_LOOP_FILTER, 0.02);
+        rightFilter = LinearFilter.singlePoleIIR(Constants.OPEN_LOOP_FILTER, 0.02);
+        tiltDeltaFilter = LinearFilter.singlePoleIIR(Constants.DRIVE_LEVEL_D_FILTER, 0.02);
     }
 
     public enum DriveMode {
@@ -106,6 +111,7 @@ public class DriveTrain extends Subsystem {
     public void readPeriodicInputs() {
         final double lastTilt = periodic.gyroTilt;
         periodic.gyroTilt = gyro.getRoll() * -1.0;
+        SmartDashboard.putNumber("Drive/Unfiltered Delta", periodic.gyroTilt - lastTilt);
         periodic.tiltDelta = tiltDeltaFilter.calculate(periodic.gyroTilt - lastTilt);
         periodic.rawHeading = gyro.getFusedHeading();
         periodic.heading = normalizeHeading(periodic.rawHeading);

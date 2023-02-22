@@ -75,6 +75,7 @@ public class Constants {
 
     // Joystick deadzone
     public static final double DEAD_ZONE = 0.05;
+    public static final double OPEN_LOOP_FILTER = 0.3;
     
     // Angle PID
     public static final double ANGLE_KP = 1.0 / 120.0;
@@ -93,8 +94,9 @@ public class Constants {
     public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 90.0;
 
     // Auto level
-    public static final double DRIVE_LEVEL_KP = 1.0 / 90.0;
-    public static final double DRIVE_LEVEL_KD = 1.0 / 3.0;
+    public static final double DRIVE_LEVEL_KP = 1.0 / 80.0;
+    public static final double DRIVE_LEVEL_KD = 1.0 / 1.0;
+    public static final double DRIVE_LEVEL_D_FILTER = 0.2;
     public static final double DRIVE_LEVEL_MAX_SPEED = 0.6;
     // Correction for pigeon pitch inaccuracy
     public static final double DRIVE_LEVEL_ZERO = -2.5;
