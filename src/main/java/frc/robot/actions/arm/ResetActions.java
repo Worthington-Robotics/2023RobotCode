@@ -5,15 +5,10 @@ import frc.lib.statemachine.Action;
 import frc.robot.subsystems.Arm;
 import frc.robot.Constants;
 
-public class ReturnActions {
+public class ResetActions {
     public static class ReturnPivotToBottomAction extends Action {
 		double desiredDegree = 0.0;
 		double startTime = Timer.getFPGATimestamp();
-		// TODO: Add minimum times with error checking after merge
-
-		public ReturnPivotToBottomAction (double theta) {
-			this.desiredDegree = theta;
-		}
 
 		@Override
 		public void onStart() {
@@ -21,9 +16,7 @@ public class ReturnActions {
 		}
 
 		@Override
-		public void onLoop() {
-			// TODO Auto-generated method stub
-			
+		public void onLoop() {	
 		}
 
 		@Override
@@ -39,7 +32,7 @@ public class ReturnActions {
 
 		@Override
 		public void onStop() {
-			// TODO Auto-generated method stub
+			Arm.getInstance().setPivotPower(0.0d);
 			
 		}
 	}
@@ -47,10 +40,6 @@ public class ReturnActions {
 	public static class RetractExtensionAction extends Action {
 		double desiredLength = 0.0;
 		double startTime = Timer.getFPGATimestamp();
-
-		public RetractExtensionAction (double length) {
-			this.desiredLength = length;
-		}
 
 		@Override
 		public void onStart() {
@@ -77,8 +66,7 @@ public class ReturnActions {
 
 		@Override
 		public void onStop() {
-			// TODO Auto-generated method stub
-			
+			Arm.getInstance().setExtensionPower(0.0d);
 		}
 
 	}
@@ -86,10 +74,6 @@ public class ReturnActions {
 	public static class ReturnTurretAction extends Action {
 		double desiredAngle = 0.0;
 		double startTime = Timer.getFPGATimestamp();
-
-		public ReturnTurretAction (double theta) {
-			this.desiredAngle = theta;
-		}
 
 		@Override
 		public void onStart() {
@@ -116,7 +100,7 @@ public class ReturnActions {
 
 		@Override
 		public void onStop() {
-			// TODO Auto-generated method stub
+			Arm.getInstance().setTurretPower(0.0d);
 			
 		}
 

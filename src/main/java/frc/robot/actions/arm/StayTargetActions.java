@@ -26,7 +26,7 @@ public class StayTargetActions {
 
 		@Override
 		public void onStop() {
-			Arm.getInstance().setTurretPower(0.0d);
+			//Arm.getInstance().setTurretPower(0.0d);
 		}
 
 		@Override
@@ -53,7 +53,7 @@ public class StayTargetActions {
 
 		@Override
 		public void onStop() {
-			Arm.getInstance().setExtensionPower(0.0d);
+			//Arm.getInstance().setExtensionPower(0.0d);
 		}
 
 		@Override
@@ -80,7 +80,7 @@ public class StayTargetActions {
 
 		@Override
 		public void onStop() {
-			Arm.getInstance().setPivotPower(0.0d);
+			//Arm.getInstance().setPivotPower(0.0d);
 		}
 
 		@Override
