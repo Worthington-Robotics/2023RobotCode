@@ -84,6 +84,8 @@ public class Robot extends TimedRobot {
 
         initButtons();
         CommandScheduler.getInstance().enable();
+        AutoChooser.getInstance().logAuto();
+        AutoChooser.getInstance().printList();
     }
 
     /**
@@ -130,7 +132,7 @@ public class Robot extends TimedRobot {
         DriveTrain.getInstance().reset();
         enabledLooper.start();
 
-        AutoChooser.getInstance().run();
+        AutoChooser.getInstance().run_from_selection();
     }
 
     /**
