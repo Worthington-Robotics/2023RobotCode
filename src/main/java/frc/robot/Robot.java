@@ -43,6 +43,7 @@ public class Robot extends TimedRobot {
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton intakeDownButton = new JoystickButton(Constants.MASTER, 10);
     private JoystickButton intakeUpButton = new JoystickButton(Constants.MASTER, 9);
+    private JoystickButton pivotButton = new JoystickButton(Constants.MASTER, 3);
 
     /**
      * This function is run when the robot is first started up and should be used

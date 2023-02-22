@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
 import frc.lib.loops.ILooper;
@@ -56,12 +57,12 @@ public class Arm extends Subsystem {
 
 	public class ArmIO extends PeriodicIO {
 		// Power Values
-		public double turretPower;
-		public double pivotPower;
-		public double extensionPower;
-		public double rawTurretPower; //take in values from HID helper
-		public double rawPivotPower; //take in values from HID helper
-		public double rawExtensionPower; //take in values from HID helper
+		public double turretPower = 0;
+		public double pivotPower = 0;
+		public double extensionPower = 0;
+		public double rawTurretPower = 0; //take in values from HID helper
+		public double rawPivotPower = 0; //take in values from HID helper
+		public double rawExtensionPower = 0; //take in values from HID helper
 		public DoubleSolenoid.Value grabberEngaged = Value.kReverse;
 
 		// Encoder Values
@@ -102,6 +103,7 @@ public class Arm extends Subsystem {
 		periodic.armDegree = (periodic.pivotEncoder / Constants.PIVOT_ENCODER_PER_DEGREE) + 20.0;
 		periodic.armLength = periodic.lengthEncoder / Constants.ENCODER_PER_INCH;
 		periodic.turretDegree = periodic.pivotEncoder / Constants.TURRET_ENCODER_PER_DEGREE;
+
 
 		periodic.rawPivotPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), 1, 0);
 		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), .5, -.5);
