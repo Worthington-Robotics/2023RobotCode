@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
 import frc.lib.loops.ILooper;
@@ -89,10 +88,14 @@ public class Arm extends Subsystem {
 		public double turretError;
 
 		//state
-		public ArmMode currentMode;
+		public ArmMode currentMode = ArmMode.OPEN_LOOP;
 
 		//arbitrary feed forward
 		public double arbitraryFeedForward;
+
+		//is pressed
+		public boolean turretButtonIsPressed = false;
+		public boolean extensionButtonIsPressed = false;
 	}
 
 	public void readPeriodicInputs() {
@@ -106,7 +109,7 @@ public class Arm extends Subsystem {
 
 
 		periodic.rawPivotPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), 1, 0);
-		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), .5, -.5);
+		//periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), .5, -.5);
 		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), -.25, .25);
 
 	}
@@ -182,7 +185,7 @@ public class Arm extends Subsystem {
 		// periodic.pivotPower = 0.0;
 		// periodic.extensionPower = 0.0;
 		// periodic.turretPower = 0.0;
-		// periodic.currentMode = ArmMode.OPEN_LOOP;
+		periodic.currentMode = ArmMode.OPEN_LOOP;
 	}
 	
 	// Getters
@@ -255,7 +258,7 @@ public class Arm extends Subsystem {
 		double leverLengthCoeff = periodic.armLength * Constants.ARM_EXTENSION_KP;
 		periodic.pivotPower = Math.sin(periodic.armDegree) * Constants.ARM_PIVOT_KP * leverLengthCoeff;
 		periodic.pivotPower = Util.clampSpeed(periodic.pivotPower, Constants.PIVOT_MIN_SPEED, Constants.PIVOT_MAX_SPEED);
-		//periodic.arbitraryFeedForward = Math.sin(periodic.armDegree) * Constants.ARM_PIVOT_KP * leverLengthCoeff;
+		periodic.arbitraryFeedForward = Math.sin(periodic.armDegree) * Constants.ARM_PIVOT_KP * leverLengthCoeff;
 	}
 
 	public void turretAnglePID() {
@@ -270,16 +273,38 @@ public class Arm extends Subsystem {
 		// 	Constants.EXTENSION_WARNING_DISTANCE, Constants.MIN_ARM_LENGTH, Constants.MAX_ARM_LENGTH);
 	}
 
+	public void setTurretButtonPressedTrue(){
+			periodic.turretButtonIsPressed = true;
+	}
+
+	public void setExtensionButtonPressedTrue(){
+			periodic.extensionButtonIsPressed = true;
+	}
+
+	public void setTurretButtonPressedFalse(){
+		periodic.turretButtonIsPressed = false;
+	}
+
+	public void setExtensionButtonPressedFalse(){
+		periodic.extensionButtonIsPressed = false;
+	}
+
+
+
 	public void setTurretPower(double power) {
-		periodic.turretPower = power;
+		if(periodic.turretButtonIsPressed){
+			periodic.turretPower = power;
+		}
 	}
 
 	public void setPivotPower(double power) {
-		periodic.pivotPower = power;
+			periodic.pivotPower = power;
 	}
 
 	public void setExtensionPower(double power) {
-		periodic.extensionPower = power;
+		if(periodic.extensionButtonIsPressed){
+			periodic.extensionPower = power;
+		}
 	}
 
 	public void setGrabber(DoubleSolenoid.Value value) {

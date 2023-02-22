@@ -27,18 +27,18 @@ public class Constants {
     // Arm Constants - Measurements
     public static final double PIVOT_ENCODER_PER_DEGREE = 416.31;
     public static final double TURRET_ENCODER_PER_DEGREE = 218.56;
-    public static final double ENCODER_PER_INCH = 750.0;
+    public static final double ENCODER_PER_INCH = 3904.5;
 
     // Arm Constants - PID 
-    public static final double ARM_PIVOT_KP = 1.4; // TODO: Adjust all kps and mins and maxs for arm
+    public static final double ARM_PIVOT_KP = 1.9; // TODO: Adjust all kps and mins and maxs for arm
     public static final double PIVOT_ANGLE_ACCEPTANCE = 2.0;
     public static final double PIVOT_MIN_TIME = 1.0;
 
-    public static final double TURRET_KP = 1.0 / 180.0;
+    public static final double TURRET_KP = 1.0 / 250.0;
     public static final double TURRET_ANGLE_ACCEPTANCE = 2.0;
     public static final double TURRET_MIN_TIME = 1.5;
 
-    public static final double ARM_EXTENSION_KP = 1.0 / 15000.0;
+    public static final double ARM_EXTENSION_KP = 1.0 / 100.0;
     public static final double EXTENSION_DISTANCE_ACCEPTED = 2.0;
     public static final double EXTENSION_MIN_TIME = 1.5;
     
@@ -59,8 +59,8 @@ public class Constants {
     public static final double TURRET_WARNING_DISTANCE = 5.0; // Degree
     public static final double TURRET_MIN_ANGLE = -90.0;
     public static final double TURRET_MAX_ANGLE = 90.0;
-    public static final double TURRET_MAX_SPEED = 0.7;
-    public static final double TURRET_MIN_SPEED = 0.1;
+    public static final double TURRET_MAX_SPEED = 0.75;
+    public static final double TURRET_MIN_SPEED = 0.05;
 
     // ### Device ID declarations ###
 

@@ -23,6 +23,8 @@ import frc.lib.statemachine.Action;
 import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.superstructure.MoveIntakeAction;
 import frc.robot.actions.superstructure.RunIntakeAction;
+import frc.robot.actions.arm.AllowTurretPowerAction;
+import frc.robot.actions.arm.AllowExtensionPowerAction;
 
 
 /**
@@ -43,7 +45,8 @@ public class Robot extends TimedRobot {
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton intakeDownButton = new JoystickButton(Constants.MASTER, 10);
     private JoystickButton intakeUpButton = new JoystickButton(Constants.MASTER, 9);
-    private JoystickButton pivotButton = new JoystickButton(Constants.MASTER, 3);
+    private JoystickButton turretButton = new JoystickButton(Constants.MASTER, 3);
+    private JoystickButton extensionButton = new JoystickButton(Constants.MASTER, 4);
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -176,5 +179,7 @@ public class Robot extends TimedRobot {
         intakeCubeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CUBE_IN_POWER)));
         intakeUpButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kUp)));
         intakeDownButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kDown)));
+        turretButton.whileTrue(Action.toCommand(new AllowTurretPowerAction()));
+        extensionButton.whileTrue(Action.toCommand(new AllowExtensionPowerAction()));
     }
 }
