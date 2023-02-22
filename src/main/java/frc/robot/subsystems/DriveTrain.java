@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.lib.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import java.lang.Math;
@@ -31,6 +30,8 @@ public class DriveTrain extends Subsystem {
     private DoubleSolenoid extraSolenoid;
     // Filters used for open loop drive
     private LinearFilter leftFilter, rightFilter;
+    // Filter for tilt delta
+    public LinearFilter tiltDeltaFilter;
 
     public class DriveIO extends PeriodicIO {
         // Read ticks from the left and right drivetrain encoders
@@ -90,6 +91,7 @@ public class DriveTrain extends Subsystem {
 
         leftFilter = LinearFilter.singlePoleIIR(0.04, 0.02);
         rightFilter = LinearFilter.singlePoleIIR(0.04, 0.02);
+        tiltDeltaFilter = LinearFilter.singlePoleIIR(0.04, 0.02);
     }
 
     public enum DriveMode {
@@ -104,7 +106,7 @@ public class DriveTrain extends Subsystem {
     public void readPeriodicInputs() {
         final double lastTilt = periodic.gyroTilt;
         periodic.gyroTilt = gyro.getRoll() * -1.0;
-        periodic.tiltDelta = periodic.gyroTilt - lastTilt;
+        periodic.tiltDelta = tiltDeltaFilter.calculate(periodic.gyroTilt - lastTilt);
         periodic.rawHeading = gyro.getFusedHeading();
         periodic.heading = normalizeHeading(periodic.rawHeading);
 
@@ -115,11 +117,6 @@ public class DriveTrain extends Subsystem {
         periodic.yValue = periodic.operatorInput[1];
 
         // These are important derived values that are also read by actions so they should be updated here
-        
-        // Aligned target heading for auto leveling
-        if (periodic.currentMode == DriveMode.AUTO_LEVEL) {
-            periodic.targetHeading = getAlignedTargetHeading(periodic.rawHeading);
-        }
         periodic.headingError = normalizeHeadingError(periodic.targetHeading - periodic.heading);
         periodic.leftError = periodic.targetDistance - periodic.leftEncoderTicks;
         periodic.rightError = periodic.targetDistance - periodic.rightEncoderTicks;
@@ -155,6 +152,7 @@ public class DriveTrain extends Subsystem {
         SmartDashboard.putNumber("Drive/Total Right Encoder", periodic.totalRightEncoder);
         SmartDashboard.putNumber("Drive/Pitch", periodic.gyroTilt);
         SmartDashboard.putNumber("Drive/Heading", (-periodic.rawHeading + 360) % 360);
+        SmartDashboard.putNumber("Drive/Tilt Delta", periodic.tiltDelta);
     }
 
     @Override
@@ -246,8 +244,12 @@ public class DriveTrain extends Subsystem {
         return periodic.totalLeftEncoder + periodic.leftEncoderTicks;
     }
 
-    public Rotation2d getHeading() {
-        return Rotation2d.fromDegrees(periodic.rawHeading);
+    public double getRawHeading() {
+        return periodic.rawHeading;
+    }
+
+    public double getNormalizedHeading() {
+        return periodic.heading;
     }
 
     public double getHeadingDegrees() {
@@ -333,8 +335,10 @@ public class DriveTrain extends Subsystem {
     // Auto-leveling mode for charge station
     private void autoLevel() {
         final double levelError = Constants.DRIVE_LEVEL_ZERO + periodic.gyroTilt;
-        periodic.leftDemand = levelError * Constants.DRIVE_LEVEL_KP;
-        periodic.rightDemand = levelError * Constants.DRIVE_LEVEL_KP;
+        final double power = (levelError * Constants.DRIVE_LEVEL_KP);
+            // - (periodic.tiltDelta * Constants.DRIVE_LEVEL_KD);
+        periodic.leftDemand = power;
+        periodic.rightDemand = power;
 
         // Correct for heading error
         periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;
@@ -389,7 +393,7 @@ public class DriveTrain extends Subsystem {
     public static double getAlignedTargetHeading(double currentHeading) {
         final double normalized = normalizeHeading(currentHeading);
         if (Math.abs(normalized) < 90) {
-            return 0;
+            return 0 * Math.signum(normalized);
         } else {
             return 180 * Math.signum(normalized);
         }
