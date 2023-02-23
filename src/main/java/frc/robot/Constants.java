@@ -73,28 +73,31 @@ public class Constants {
 
     // ### Drivetrain tuned values ###
 
+    // Conversion factor from drive ticks to inches
+    public static final double TICKS_PER_INCH = 1695;
+
     // Joystick deadzone
     public static final double DEAD_ZONE = 0.05;
     public static final double OPEN_LOOP_FILTER = 0.3;
     
     // Angle PID
-    public static final double ANGLE_KP = 1.0 / 120.0;
-    public static final double ANGLE_ACCEPTANCE = 1.8;
-    public static final double ANGLE_PID_MINIMUM_TIME = 0.06;
+    public static final double ANGLE_KP = 1.0 / 130.0;
+    public static final double ANGLE_ACCEPTANCE = 1.5;
+    public static final double ANGLE_PID_MINIMUM_TIME = 0.1;
     public static final double DRIVE_TURN_MINIMUM_SPEED = 0.08;
     public static final double DRIVE_TURN_MAXIMUM_SPEED = 0.5;
 
     // Move forward
-    public static final double DRIVE_FORWARD_ACCEPTED_ERROR = 5000.0;
+    public static final double DRIVE_FORWARD_ACCEPTED_ERROR = 3000.0;
     public static final double DRIVE_FORWARD_MINIMUM_SPEED = 0.09;
     public static final double DRIVE_FORWARD_MAXIMUM_SPEED = 0.55;
-    public static final double DRIVE_FORWARD_MINIMUM_TIME = 0.03;
-    public static final double DRIVE_FORWARD_KP = 1.0 / 75000.0;
+    public static final double DRIVE_FORWARD_MINIMUM_TIME = 0.05;
+    public static final double DRIVE_FORWARD_KP = 1.0 / 60000.0;
     // Heading correction when moving forward
     public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 90.0;
 
     // Auto level
-    public static final double DRIVE_LEVEL_KP = 1.0 / 80.0;
+    public static final double DRIVE_LEVEL_KP = 1.0 / 90.0;
     public static final double DRIVE_LEVEL_KD = 1.0 / 1.0;
     public static final double DRIVE_LEVEL_D_FILTER = 0.2;
     public static final double DRIVE_LEVEL_MAX_SPEED = 0.6;

@@ -8,6 +8,7 @@ import frc.lib.geometry.Rotation2d;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.lib.math.*;
+import frc.robot.Constants;
 import frc.robot.Kinematics;
 
 import java.util.Map;
@@ -109,7 +110,7 @@ public class PoseEstimator extends Subsystem {
         SmartDashboard.putNumber("Drive/Pose/X", x);
         SmartDashboard.putNumber("Drive/Pose/Y", y);
         SmartDashboard.putNumber("Drive/Pose/Theta", theta);
-        SmartDashboard.putNumberArray("Drive/Pose/Postion", new double[] {x / 1705, y / 1705, theta});
+        SmartDashboard.putNumberArray("Drive/Pose/Postion", new double[] {x / Constants.TICKS_PER_INCH, y / Constants.TICKS_PER_INCH, theta});
         SmartDashboard.putNumber("Drive/Pose/ThetaZero", heading_zero);
     }
 
