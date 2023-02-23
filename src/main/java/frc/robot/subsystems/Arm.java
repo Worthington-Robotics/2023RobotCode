@@ -158,8 +158,8 @@ public class Arm extends Subsystem {
 		extensionMotor.set(ControlMode.PercentOutput, periodic.extensionPower);
 		turretMotor.set(ControlMode.PercentOutput, periodic.turretPower);
 		
-		armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder, DemandType.ArbitraryFeedForward, periodic.pivotPower);
-		armSlaveMotor.set(ControlMode.Follower, Constants.ARM_ARM_M_ID);
+		// armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder, DemandType.ArbitraryFeedForward, periodic.pivotPower);
+		// armSlaveMotor.set(ControlMode.Follower, Constants.ARM_ARM_M_ID);
 	}
 
 	public void outputTelemetry() {

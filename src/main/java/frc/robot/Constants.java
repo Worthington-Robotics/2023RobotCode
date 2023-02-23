@@ -118,7 +118,7 @@ public class Constants {
     public static final double INTAKE_BACKSTOP_DISTANCE = 10.0d;
     // Multipliers for how much of the power each motor of the intake gets
     public static final double CONVEYER_BELT_MULTIPLIER = 2;
-    public static final double INTAKE_WHEEL_SPINNER_MULTIPLIER = .5;
+    public static final double INTAKE_WHEEL_SPINNER_MULTIPLIER = .92;
     public static final double SIDE_WHEELS_MULTIPLIER = 2;
     // Constants for how much power each type of intake uses
     public static final double CONE_IN_POWER = 1;
