@@ -14,8 +14,8 @@ public class Constants {
     public static final int DRIVE_BACK_LEFT_ID = 2;
     public static final int DRIVE_BACK_RIGHT_ID = 4;
 
-    public static final int DRIVE_TRANSMISSION_FORWARD = 4;
-    public static final int DRIVE_TRANSMISSION_REVERSE = 5;
+    public static final int DRIVE_TRANSMISSION_FORWARD = 1;
+    public static final int DRIVE_TRANSMISSION_REVERSE = 0;
     
     // Arm / Turret
     public static final int ARM_TURRET_ID = 9;
@@ -24,8 +24,8 @@ public class Constants {
     public static final int ARM_ARM_S_ID = 12;
     
     public static final int CTRE_PCM_ID = 0;
-    public static final int ARM_GRABBER_FWD_CHANNEL = 1;
-    public static final int ARM_GRABBER_REV_CHANNEL = 0;
+    public static final int ARM_GRABBER_FWD_CHANNEL = 5;
+    public static final int ARM_GRABBER_REV_CHANNEL = 4;
 
     // Superstructure
     public static final int BACKSTOP_TOF_ID = 0;
@@ -90,9 +90,11 @@ public class Constants {
     // Move forward
     public static final double DRIVE_FORWARD_ACCEPTED_ERROR = 3000.0;
     public static final double DRIVE_FORWARD_MINIMUM_SPEED = 0.09;
-    public static final double DRIVE_FORWARD_MAXIMUM_SPEED = 0.55;
+    public static final double DRIVE_FORWARD_MAXIMUM_SPEED = 0.8;
     public static final double DRIVE_FORWARD_MINIMUM_TIME = 0.05;
     public static final double DRIVE_FORWARD_KP = 1.0 / 60000.0;
+    public static final double DRIVE_FORWARD_KI = 1.0 / 750000.0;
+    public static final double DRIVE_FORWARD_KD = 1.0 / 9000.0;
     // Heading correction when moving forward
     public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 90.0;
 

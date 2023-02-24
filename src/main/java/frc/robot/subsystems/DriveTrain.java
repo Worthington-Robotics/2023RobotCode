@@ -42,7 +42,11 @@ public class DriveTrain extends Subsystem {
         // Motor demands for left and right sides
         public double leftDemand, rightDemand;
         // Error from desired distance for the left and right encoders
-        public double leftError, rightError;
+        public double leftError = 0;
+        public double rightError = 0;
+        public double averageError = 0;
+        public double integralError = 0;
+        public double derivativeError = 0;
         // The current facing direction of the robot
         public double heading, rawHeading;
         // The heading we are trying to reach
@@ -124,8 +128,15 @@ public class DriveTrain extends Subsystem {
 
         // These are important derived values that are also read by actions so they should be updated here
         periodic.headingError = normalizeHeadingError(periodic.targetHeading - periodic.heading);
+        double oldError = (periodic.leftError + periodic.rightError) / 2.0;
         periodic.leftError = periodic.targetDistance - periodic.leftEncoderTicks;
         periodic.rightError = periodic.targetDistance - periodic.rightEncoderTicks;
+        periodic.averageError = (periodic.leftError + periodic.rightError) / 2.0;
+        periodic.integralError += periodic.averageError;
+        if(periodic.integralError >= 100000.0){
+            periodic.integralError = 100000.0;
+        }
+        periodic.derivativeError = periodic.averageError - oldError;
     }
 
     @Override
@@ -296,8 +307,12 @@ public class DriveTrain extends Subsystem {
 
     private void moveForward() {
         periodic.driveHeadingCorrect = 0.0;
-        periodic.leftDemand = periodic.leftError * Constants.DRIVE_FORWARD_KP;
-        periodic.rightDemand = periodic.rightError * Constants.DRIVE_FORWARD_KP;
+        periodic.leftDemand = periodic.leftError * Constants.DRIVE_FORWARD_KP +
+                                periodic.integralError * Constants.DRIVE_FORWARD_KI +
+                                periodic.derivativeError * Constants.DRIVE_FORWARD_KD;
+        periodic.rightDemand = periodic.rightError * Constants.DRIVE_FORWARD_KP +
+                                periodic.integralError * Constants.DRIVE_FORWARD_KI +
+                                periodic.derivativeError * Constants.DRIVE_FORWARD_KD;
         
         // Normalize power
         periodic.leftDemand = clampDriveSpeed(periodic.leftDemand, 
