@@ -8,24 +8,24 @@
 package frc.robot;
 
 import java.util.Arrays;
-import java.util.function.BooleanSupplier;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.loops.Looper;
 import frc.lib.models.DriveTrajectoryGenerator;
 import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
+import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.SuperStructure.IntakePosition;
 import frc.lib.statemachine.Action;
-import frc.robot.actions.RunIntakeAction;
-import frc.robot.actions.SuperstructureActions;
+import frc.robot.actions.drive.GearChangeAction;
+import frc.robot.actions.superstructure.MoveIntakeAction;
+import frc.robot.actions.superstructure.RunIntakeAction;
+import frc.robot.actions.arm.AllowTurretPowerAction;
+import frc.robot.actions.arm.AllowExtensionPowerAction;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -35,16 +35,18 @@ import frc.robot.actions.SuperstructureActions;
  * project.
  */
 public class Robot extends TimedRobot {
-
     private SubsystemManager manager;
     private Looper enabledLooper, disabledLooper;
 
     // Input bindings
+    private JoystickButton driveGearButton = new JoystickButton(Constants.MASTER, 1);
     private JoystickButton intakeCubeButton = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 2);
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton intakeDownButton = new JoystickButton(Constants.MASTER, 10);
     private JoystickButton intakeUpButton = new JoystickButton(Constants.MASTER, 9);
+    private JoystickButton turretButton = new JoystickButton(Constants.MASTER, 3);
+    private JoystickButton extensionButton = new JoystickButton(Constants.MASTER, 4);
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -55,6 +57,7 @@ public class Robot extends TimedRobot {
         manager = new SubsystemManager(
             Arrays.asList(
                 SuperStructure.getInstance(),
+                PoseEstimator.getInstance(),
                 Arm.getInstance(),
                 DriveTrain.getInstance()
             ),
@@ -96,6 +99,8 @@ public class Robot extends TimedRobot {
         enabledLooper.stop();
 
         StateMachine.getInstance().assertStop();
+        DriveTrain.getInstance().reset();
+        PoseEstimator.getInstance().reset();
 
         disabledLooper.start();
     }
@@ -116,7 +121,10 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
 
         // Reset anything here
+        DriveTrain.getInstance().reset();
         enabledLooper.start();
+
+        AutoChooser.getInstance().run();
     }
 
     /**
@@ -131,8 +139,12 @@ public class Robot extends TimedRobot {
 
         // Reset anything here
         initButtons();
+        DriveTrain.getInstance().reset();
+        SuperStructure.getInstance().reset();
+        DriveTrain.getInstance().setOpenLoop();
+        PoseEstimator.getInstance().reset();
+
         enabledLooper.start();
-        
     }
 
     /**
@@ -161,10 +173,13 @@ public class Robot extends TimedRobot {
     public void testPeriodic() {}
 
     public void initButtons() {
+        driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
         intakeConeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CONE_IN_POWER)));
         intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
         intakeCubeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CUBE_IN_POWER)));
-        intakeUpButton.onTrue(Action.toCommand(new SuperstructureActions.MoveIntakeAction(IntakePosition.kUp)));
-        intakeDownButton.onTrue(Action.toCommand(new SuperstructureActions.MoveIntakeAction(IntakePosition.kDown)));
+        intakeUpButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kUp)));
+        intakeDownButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kDown)));
+        turretButton.whileTrue(Action.toCommand(new AllowTurretPowerAction()));
+        extensionButton.whileTrue(Action.toCommand(new AllowExtensionPowerAction()));
     }
 }

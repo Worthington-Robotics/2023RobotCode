@@ -11,20 +11,56 @@ public class Constants {
     public static final int DRIVE_FRONT_RIGHT_ID = 3;
     public static final int DRIVE_BACK_LEFT_ID = 2;
     public static final int DRIVE_BACK_RIGHT_ID = 4;
-    //Arm Turret Constants
+
+    // Arm and Turret Constants
+
+    // Arm Consants - IDs
     public static final int ARM_TURRET_ID = 9;
     public static final int ARM_ARM_M_ID = 10;
-    public static final int ARM_EXTENTION_ID = 11;
+    public static final int ARM_EXTENSION_ID = 11;
     public static final int ARM_ARM_S_ID = 12;
     
     public static final int CTRE_PCM_ID = 0;
     public static final int ARM_GRABBER_FWD_CHANNEL = 2;
     public static final int ARM_GRABBER_REV_CHANNEL = 3;
 
-    public static final double ENCODER_PER_DEGREE = 1000.0;
-    public static final double ENCODER_PER_INCH = 750.0;
-    public static final double ARM_POWER_KP = .8;
-    public static final double LEVER_LENGTH_KP = 1 / 30.0;
+    // Arm Constants - Measurements
+    public static final double PIVOT_ENCODER_PER_DEGREE = 416.31;
+    public static final double TURRET_ENCODER_PER_DEGREE = 218.56;
+    public static final double ENCODER_PER_INCH = 3904.5;
+
+    // Arm Constants - PID 
+    public static final double ARM_PIVOT_KP = 1.9; // TODO: Adjust all kps and mins and maxs for arm
+    public static final double PIVOT_ANGLE_ACCEPTANCE = 2.0;
+    public static final double PIVOT_MIN_TIME = 1.0;
+
+    public static final double TURRET_KP = 1.0 / 250.0;
+    public static final double TURRET_ANGLE_ACCEPTANCE = 2.0;
+    public static final double TURRET_MIN_TIME = 1.5;
+
+    public static final double ARM_EXTENSION_KP = 1.0 / 100.0;
+    public static final double EXTENSION_DISTANCE_ACCEPTED = 2.0;
+    public static final double EXTENSION_MIN_TIME = 1.5;
+    
+    
+    // Arm Constants - Safety
+    public static final double PIVOT_WARNING_ANGLE = 5.0; // Degrees(not ticks) from min or max when arm slows
+    public static final double MAX_PIVOT = 75.0; // TODO: Actual Value
+    public static final double MIN_PIVOT = 0.0; // Assume that arm moves slow enough to completely stop and reset when limit switch activated
+    public static final double PIVOT_MAX_SPEED = 0.7;
+    public static final double PIVOT_MIN_SPEED = 0.1;
+
+    public static final double EXTENSION_WARNING_DISTANCE = 5.0; // distance from min or max when arm slows, in inches
+    public static final double MAX_ARM_LENGTH = 50.0; // TODO: Actual value
+    public static final double MIN_ARM_LENGTH = 1.0;
+    public static final double EXTENSION_MAX_SPEED = 0.5;
+    public static final double EXTENSION_MIN_SPEED = 0.1;
+
+    public static final double TURRET_WARNING_DISTANCE = 5.0; // Degree
+    public static final double TURRET_MIN_ANGLE = -90.0;
+    public static final double TURRET_MAX_ANGLE = 90.0;
+    public static final double TURRET_MAX_SPEED = 0.75;
+    public static final double TURRET_MIN_SPEED = 0.05;
 
     // ### Device ID declarations ###
 
@@ -66,7 +102,7 @@ public class Constants {
     public static final Joystick MASTER = new Joystick(0);
     public static final Joystick SECOND = new Joystick(1);
     public static final Joystick WHEEL = new Joystick(2);
-    public static final HIDHelper.HIDConstants MASTER_STICK = new HIDHelper.HIDConstants(MASTER, 0.05, 0.65, -1, 0.4, 2); 
+    public static final HIDHelper.HIDConstants MASTER_STICK = new HIDHelper.HIDConstants(MASTER, 0.07, 0.65, -1, 0.4, 2); 
 
     /**
      * The reason for these negative signs on the Y-axis
@@ -82,7 +118,7 @@ public class Constants {
     public static final double INTAKE_BACKSTOP_DISTANCE = 10.0d;
     // Multipliers for how much of the power each motor of the intake gets
     public static final double CONVEYER_BELT_MULTIPLIER = 2;
-    public static final double INTAKE_WHEEL_SPINNER_MULTIPLIER = .5;
+    public static final double INTAKE_WHEEL_SPINNER_MULTIPLIER = .92;
     public static final double SIDE_WHEELS_MULTIPLIER = 2;
     // Constants for how much power each type of intake uses
     public static final double CONE_IN_POWER = 1;
@@ -95,10 +131,32 @@ public class Constants {
 
     // ### Drivetrain tuned values ###
 
+    
+    // Joystick deadzone
+    public static final double DEAD_ZONE = 0.05;
+    
+    // Angle PID
+    public static final double TURN_KP = 1.0 / 120.0;
+    public static final double ANGLE_ACCEPTANCE = 1.8;
+    public static final double ANGLE_PID_MINIMUM_TIME = 0.06;
+    public static final double DRIVE_TURN_MINIMUM_SPEED = 0.08;
+    public static final double DRIVE_TURN_MAXIMUM_SPEED = 0.5;
+
+    // Move forward
+    public static final double DRIVE_FORWARD_ACCEPTED_ERROR = 5000.0;
+    public static final double DRIVE_FORWARD_MINIMUM_SPEED = 0.09;
+    public static final double DRIVE_FORWARD_MAXIMUM_SPEED = 0.55;
+    public static final double DRIVE_FORWARD_MINIMUM_TIME = 0.03;
+    public static final double DRIVE_FORWARD_KP = 1.0 / 75000.0;
+    // Heading correction when moving forward
+    public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 90.0;
+
+    // ### Constants kept around for compatability with library code ###
+    
     // DEBUG AND TESTING flags
     public static boolean WHEELS = true;
     public static final boolean RAMPUP = false;
-    public static final boolean armENABLE_MP_TEST_MODE = true;
+    public static final boolean ENABLE_MP_TEST_MODE = false;
     public static final double MP_TEST_SPEED = 2; //m/s
 
     public static double LOOPER_DT = 0.01;   
@@ -147,12 +205,7 @@ public class Constants {
     public static final double DRIVE_LEFT_KD = 0;//5; //20 for practice
     public static final double DRIVE_LEFT_KF = 0.065;
 
-    // Limelight Constants
-    public static final double LIMELIGHT_DEG_FOV = 0.0; //TODO CALCULATE FOV
-    public static final double fov = 0;
-    public static final int redH1 = 0;
-    public static final int redH2 = 360;
-    public static final int yellowH = 60;
+
     public static final int greenH = 120;
     public static final int blueH = 180;
     public static final int error = 29;
@@ -163,4 +216,5 @@ public class Constants {
      * Deadzone Constants
      */
     public static final double deadZone = 0.05;
+
 }
