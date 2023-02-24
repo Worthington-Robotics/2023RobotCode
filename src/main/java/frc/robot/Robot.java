@@ -131,6 +131,7 @@ public class Robot extends TimedRobot {
         // Reset anything here
         DriveTrain.getInstance().reset();
         enabledLooper.start();
+        Lights.getInstance().reset();
 
         AutoChooser.getInstance().run_from_selection();
     }
