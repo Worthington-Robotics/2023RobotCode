@@ -13,6 +13,7 @@ public class VisionLink extends Subsystem {
 
 	public void readPeriodicInputs() {
         //need to get turret angle from arm subsystem
+        //also read smartdashboard for vision values
     }
 
 	public void writePeriodicOutputs() {
@@ -22,6 +23,8 @@ public class VisionLink extends Subsystem {
             periodic.turretAngle += 0.1;
         }
 	}
+
+    //add getters for vision values, so other subsystems dont need to get values from smartdash
 
 	public void outputTelemetry() {
 		SmartDashboard.putNumber("VisionData", periodic.turretAngle);
