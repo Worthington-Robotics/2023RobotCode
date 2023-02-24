@@ -45,8 +45,8 @@ public class Robot extends TimedRobot {
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton intakeDownButton = new JoystickButton(Constants.MASTER, 10);
     private JoystickButton intakeUpButton = new JoystickButton(Constants.MASTER, 9);
-    private JoystickButton turretButton = new JoystickButton(Constants.MASTER, 3);
-    private JoystickButton extensionButton = new JoystickButton(Constants.MASTER, 4);
+    private JoystickButton turretButton = new JoystickButton(Constants.MASTER, 5);
+    private JoystickButton extensionButton = new JoystickButton(Constants.MASTER, 6);
 
     /**
      * This function is run when the robot is first started up and should be used

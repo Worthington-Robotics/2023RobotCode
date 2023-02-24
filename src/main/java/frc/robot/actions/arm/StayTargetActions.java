@@ -89,23 +89,23 @@ public class StayTargetActions {
 		} 
 	}
 
-	public static class GrabAction extends Action {
-		@Override
-		public void onStart() {
-			Arm.getInstance().setGrabber(DoubleSolenoid.Value.kForward);
-		}
+	// public static class GrabAction extends Action {
+	// 	@Override
+	// 	public void onStart() {
+	// 		Arm.getInstance().setGrabber(DoubleSolenoid.Value.kForward);
+	// 	}
 
-		@Override
-		public void onLoop() {}
+	// 	@Override
+	// 	public void onLoop() {}
 
-		@Override
-		public void onStop() {
-			Arm.getInstance().setGrabber(DoubleSolenoid.Value.kReverse);
-		}
+	// 	@Override
+	// 	public void onStop() {
+	// 		Arm.getInstance().setGrabber(DoubleSolenoid.Value.kReverse);
+	// 	}
 
-		@Override
-		public boolean isFinished() {
-			return false;
-		} 
-	}
+	// 	@Override
+	// 	public boolean isFinished() {
+	// 		return false;
+	// 	} 
+	// }
 }
