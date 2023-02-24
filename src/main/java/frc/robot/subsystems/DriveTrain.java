@@ -307,12 +307,12 @@ public class DriveTrain extends Subsystem {
 
     private void moveForward() {
         periodic.driveHeadingCorrect = 0.0;
-        periodic.leftDemand = periodic.leftError * Constants.DRIVE_FORWARD_KP +
-                                periodic.integralError * Constants.DRIVE_FORWARD_KI +
-                                periodic.derivativeError * Constants.DRIVE_FORWARD_KD;
-        periodic.rightDemand = periodic.rightError * Constants.DRIVE_FORWARD_KP +
-                                periodic.integralError * Constants.DRIVE_FORWARD_KI +
-                                periodic.derivativeError * Constants.DRIVE_FORWARD_KD;
+        periodic.leftDemand = periodic.leftError * Constants.DRIVE_FORWARD_KP;
+                                // periodic.integralError * Constants.DRIVE_FORWARD_KI +
+                                // periodic.derivativeError * Constants.DRIVE_FORWARD_KD;
+        periodic.rightDemand = periodic.rightError * Constants.DRIVE_FORWARD_KP;
+                                // periodic.integralError * Constants.DRIVE_FORWARD_KI +
+                                // periodic.derivativeError * Constants.DRIVE_FORWARD_KD;
         
         // Normalize power
         periodic.leftDemand = clampDriveSpeed(periodic.leftDemand, 
