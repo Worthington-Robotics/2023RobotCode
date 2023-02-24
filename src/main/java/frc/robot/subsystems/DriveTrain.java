@@ -28,11 +28,10 @@ public class DriveTrain extends Subsystem {
     // Solenoid used to change gear
     private DoubleSolenoid transmissionSolenoid;
 
-    private DoubleSolenoid extraSolenoid;
     // Filters used for open loop drive
     private LinearFilter leftFilter, rightFilter;
-    // Filter for tilt delta
-    public LinearFilter tiltDeltaFilter;
+    // Filter for drive delta
+    public LinearFilter driveDeltaFilter;
 
     public class DriveIO extends PeriodicIO {
         // Read ticks from the left and right drivetrain encoders
@@ -46,7 +45,7 @@ public class DriveTrain extends Subsystem {
         public double rightError = 0;
         public double averageError = 0;
         public double integralError = 0;
-        public double derivativeError = 0;
+        public double forwardDerivativeError = 0;
         // The current facing direction of the robot
         public double heading, rawHeading;
         // The heading we are trying to reach
@@ -73,6 +72,7 @@ public class DriveTrain extends Subsystem {
         public double gyroTilt;
         // Delta from last gyro tilt, used for D term
         public double tiltDelta;
+        public boolean gyroLock = false;
     }
 
     public DriveTrain() {
@@ -100,7 +100,7 @@ public class DriveTrain extends Subsystem {
 
         leftFilter = LinearFilter.singlePoleIIR(Constants.OPEN_LOOP_FILTER, 0.02);
         rightFilter = LinearFilter.singlePoleIIR(Constants.OPEN_LOOP_FILTER, 0.02);
-        tiltDeltaFilter = LinearFilter.singlePoleIIR(Constants.DRIVE_LEVEL_D_FILTER, 0.02);
+        driveDeltaFilter = LinearFilter.singlePoleIIR(Constants.DRIVE_FORWARD_D_FILT, 0.02);
     }
 
     public enum DriveMode {
@@ -116,7 +116,7 @@ public class DriveTrain extends Subsystem {
         final double lastTilt = periodic.gyroTilt;
         periodic.gyroTilt = gyro.getRoll() * -1.0;
         SmartDashboard.putNumber("Drive/Unfiltered Delta", periodic.gyroTilt - lastTilt);
-        periodic.tiltDelta = tiltDeltaFilter.calculate(periodic.gyroTilt - lastTilt);
+        // periodic.tiltDelta = tiltDeltaFilter.calculate(periodic.gyroTilt - lastTilt);
         periodic.rawHeading = gyro.getFusedHeading();
         periodic.heading = normalizeHeading(periodic.rawHeading);
 
@@ -132,11 +132,7 @@ public class DriveTrain extends Subsystem {
         periodic.leftError = periodic.targetDistance - periodic.leftEncoderTicks;
         periodic.rightError = periodic.targetDistance - periodic.rightEncoderTicks;
         periodic.averageError = (periodic.leftError + periodic.rightError) / 2.0;
-        periodic.integralError += periodic.averageError;
-        if(periodic.integralError >= 100000.0){
-            periodic.integralError = 100000.0;
-        }
-        periodic.derivativeError = periodic.averageError - oldError;
+        periodic.forwardDerivativeError = driveDeltaFilter.calculate(periodic.averageError - oldError);
     }
 
     @Override
@@ -182,6 +178,7 @@ public class DriveTrain extends Subsystem {
         periodic.rightDemand = 0;
 
         periodic.currentMode = DriveMode.STOPPED;
+        periodic.gyroLock = false;
 
         transmissionSolenoid.set(Value.kReverse);
         gyro.setFusedHeading(0);
@@ -257,6 +254,10 @@ public class DriveTrain extends Subsystem {
         transmissionSolenoid.set(Value.kReverse);
     }
 
+    public void setGyroLock(boolean locked) {
+        periodic.gyroLock = locked;
+    }
+
     public double getLeftEncoderDistance() {
         return periodic.totalLeftEncoder + periodic.leftEncoderTicks;
     }
@@ -307,12 +308,10 @@ public class DriveTrain extends Subsystem {
 
     private void moveForward() {
         periodic.driveHeadingCorrect = 0.0;
-        periodic.leftDemand = periodic.leftError * Constants.DRIVE_FORWARD_KP;
-                                // periodic.integralError * Constants.DRIVE_FORWARD_KI +
-                                // periodic.derivativeError * Constants.DRIVE_FORWARD_KD;
-        periodic.rightDemand = periodic.rightError * Constants.DRIVE_FORWARD_KP;
-                                // periodic.integralError * Constants.DRIVE_FORWARD_KI +
-                                // periodic.derivativeError * Constants.DRIVE_FORWARD_KD;
+        periodic.leftDemand = periodic.leftError * Constants.DRIVE_FORWARD_KP
+            + periodic.forwardDerivativeError * Constants.DRIVE_FORWARD_KD;
+        periodic.rightDemand = periodic.rightError * Constants.DRIVE_FORWARD_KP
+            + periodic.forwardDerivativeError * Constants.DRIVE_FORWARD_KD;
         
         // Normalize power
         periodic.leftDemand = clampDriveSpeed(periodic.leftDemand, 
@@ -341,8 +340,16 @@ public class DriveTrain extends Subsystem {
 
     // Sets motor demands in open loop
     private void openLoop() {
-        periodic.leftDemand = periodic.yValue + periodic.xValue;
-        periodic.rightDemand = periodic.yValue - periodic.xValue; 
+        periodic.leftDemand = periodic.yValue;
+        periodic.rightDemand = periodic.yValue;
+        if (periodic.gyroLock) {
+            periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;
+            periodic.leftDemand -= periodic.driveHeadingCorrect;
+            periodic.rightDemand += periodic.driveHeadingCorrect;
+        } else {
+            periodic.leftDemand += periodic.xValue;
+            periodic.rightDemand -= periodic.xValue; 
+        }
 
         // Normalize 
         periodic.leftDemand = clampDriveSpeed(periodic.leftDemand, 0.0, 1.0);

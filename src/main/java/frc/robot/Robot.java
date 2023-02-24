@@ -22,6 +22,7 @@ import frc.lib.statemachine.Action;
 import frc.robot.actions.arm.OpenClaw;
 import frc.robot.actions.drive.DriveTurnActionLimelight;
 import frc.robot.actions.drive.GearChangeAction;
+import frc.robot.actions.drive.GyroLockAction;
 import frc.robot.actions.drive.SetPositionAction;
 import frc.robot.actions.drive.TeleopLevelAction;
 import frc.robot.actions.superstructure.MoveIntakeAction;
@@ -43,7 +44,7 @@ public class Robot extends TimedRobot {
     private JoystickButton clawButton = new JoystickButton(Constants.SECOND, 1);
     private JoystickButton transmissionButton = new JoystickButton(Constants.MASTER, 1);
     private JoystickButton intakeSolenoidButton = new JoystickButton(Constants.MASTER, 6);
-    private JoystickButton intakeCubeButton = new JoystickButton(Constants.MASTER, 4);
+    private JoystickButton gryoLockButton = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton limelightRotateButton = new JoystickButton(Constants.MASTER, 6);
     private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 7);
     private JoystickButton resetPoseButton = new JoystickButton(Constants.MASTER, 8);
@@ -185,11 +186,11 @@ public class Robot extends TimedRobot {
         clawButton.whileTrue(Action.toCommand(new OpenClaw()));
         intakeConeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CONE_IN_POWER)));
         intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
-        intakeCubeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CUBE_IN_POWER)));
         intakeUpButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kUp)));
         intakeDownButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kDown)));
         autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
         limelightRotateButton.whileTrue(Action.toCommand(new DriveTurnActionLimelight()));
         resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
+        gryoLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
     }
 }
