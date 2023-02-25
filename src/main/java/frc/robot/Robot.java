@@ -121,6 +121,7 @@ public class Robot extends TimedRobot {
 
         // Reset anything here
         DriveTrain.getInstance().reset();
+        Arm.getInstance().reset();
         enabledLooper.start();
 
         AutoChooser.getInstance().run();
@@ -142,7 +143,7 @@ public class Robot extends TimedRobot {
         Manipulator.getInstance().reset();
         DriveTrain.getInstance().setOpenLoop();
         PoseEstimator.getInstance().reset();
-
+        Arm.getInstance().reset();
         enabledLooper.start();
     }
 
