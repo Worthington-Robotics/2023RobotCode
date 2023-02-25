@@ -61,7 +61,6 @@ public class Arm extends Subsystem {
 		public double rawTurretPower = 0; //take in values from HID helper
 		public double rawPivotPower = 0; //take in values from HID helper
 		public double rawExtensionPower = 0; //take in values from HID helper
-		//public DoubleSolenoid.Value grabberEngaged = Value.kReverse;
 
 		// Encoder Values
 		public double pivotEncoder;
@@ -107,9 +106,9 @@ public class Arm extends Subsystem {
 		periodic.turretDegree = periodic.turretEncoder / Constants.TURRET_ENCODER_PER_DEGREE;
 
 
-		periodic.rawPivotPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), 1, 0);
-		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), .5, -.5);
-		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), -.25, .25);
+		periodic.rawPivotPower = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(3), 1, 0);
+		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(1), .5, -.5);
+		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(0), -.25, .25);
 
 	}
 
@@ -174,10 +173,8 @@ public class Arm extends Subsystem {
 		SmartDashboard.putNumber("Arm/rawExtensionPower", periodic.rawExtensionPower);
 		SmartDashboard.putNumber("Arm/lengthEncoder", periodic.lengthEncoder);
 		SmartDashboard.putNumber("Arm/lengthOfExtension", periodic.armLength);
-		//SmartDashboard.putString("Arm/grabberEngaged", periodic.grabberEngaged.toString());
 		SmartDashboard.putBoolean("Arm/turret button pressed", periodic.turretButtonIsPressed);
 		SmartDashboard.putBoolean("Arm/extension button pressed", periodic.extensionButtonIsPressed);
-		SmartDashboard.putNumber("extension axis",  HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), .5, -.5));
 	}
 	
 
@@ -280,7 +277,7 @@ public class Arm extends Subsystem {
 		if(periodic.turretButtonIsPressed){
 			periodic.turretPower = power;
 		} else {
-			periodic.turretPower = 5;
+			periodic.turretPower = 0;
 		}
 	}
 
@@ -292,7 +289,7 @@ public class Arm extends Subsystem {
 		if(periodic.extensionButtonIsPressed){
 			periodic.extensionPower = power;
 		} else {
-			periodic.extensionPower = 5;
+			periodic.extensionPower = 0;
 		}
 	}
 
