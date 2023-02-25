@@ -105,10 +105,9 @@ public class Arm extends Subsystem {
 		periodic.armLength = periodic.lengthEncoder / Constants.ENCODER_PER_INCH;
 		periodic.turretDegree = periodic.turretEncoder / Constants.TURRET_ENCODER_PER_DEGREE;
 
-
-		periodic.rawPivotPower = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(3), 1, 0);
-		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(1), .5, -.5);
-		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(0), -.25, .25);
+		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), .5, -.5);
+		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), -.25, .25);
+		
 
 	}
 
@@ -121,12 +120,10 @@ public class Arm extends Subsystem {
 			}
 
 			@Override
-			public void onLoop(double timestamp) {
+			public void onLoop(double timestamp) {/*
 				switch (periodic.currentMode) {
 					case OPEN_LOOP:
-						setTurretPower(periodic.rawTurretPower);
-						setPivotPower(periodic.rawPivotPower);
-						setExtensionPower(periodic.rawExtensionPower);
+						/* 
 						break;
 					case OPEN_CLOSED_LOOP:
 						periodic.desiredPivotEncoder = periodic.rawPivotPower; //multiply by constant
@@ -139,7 +136,8 @@ public class Arm extends Subsystem {
 						armAnglePID();
 						armExtensionPID();
 						turretAnglePID();
-				}
+						
+				}*/
 			}
 
 			@Override
@@ -153,10 +151,9 @@ public class Arm extends Subsystem {
 	}
 
 	public void writePeriodicOutputs() {
-		extensionMotor.set(ControlMode.PercentOutput, periodic.extensionPower);
-		turretMotor.set(ControlMode.PercentOutput, periodic.turretPower);
-		
-		armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder, DemandType.ArbitraryFeedForward, periodic.pivotPower);
+		extensionMotor.set(ControlMode.PercentOutput, periodic.rawExtensionPower);
+		turretMotor.set(ControlMode.PercentOutput, periodic.rawTurretPower);
+		armMasterMotor.set(ControlMode.PercentOutput, periodic.rawPivotPower);
 		armSlaveMotor.set(ControlMode.Follower, Constants.ARM_ARM_M_ID);
 	}
 
@@ -274,23 +271,15 @@ public class Arm extends Subsystem {
 
 
 	public void setTurretPower(double power) {
-		if(periodic.turretButtonIsPressed){
 			periodic.turretPower = power;
-		} else {
-			periodic.turretPower = 0;
-		}
 	}
 
-	public void setPivotPower(double power) {
-			periodic.pivotPower = power;
+	public void setRawPivotPower(double power) {
+			periodic.rawPivotPower = power;
 	}
 
 	public void setExtensionPower(double power) {
-		if(periodic.extensionButtonIsPressed){
 			periodic.extensionPower = power;
-		} else {
-			periodic.extensionPower = 0;
-		}
 	}
 
 	// public void setGrabber(DoubleSolenoid.Value value) {

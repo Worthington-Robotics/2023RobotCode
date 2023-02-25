@@ -1,4 +1,5 @@
 package frc.robot.subsystems;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -55,8 +56,9 @@ public class DriveTrain extends Subsystem {
     public DriveTrain() {
         periodic = new DriveIO();
         transmissionSolenoid = new DoubleSolenoid(
+            0,
             PneumaticsModuleType.CTREPCM,
-            1, 0
+            5, 4
         );
         gyro = new PigeonIMU(1);
 
@@ -64,6 +66,10 @@ public class DriveTrain extends Subsystem {
         rearRightMotor = new TalonFX(Constants.DRIVE_BACK_RIGHT_ID);
         forwardLeftMotor = new TalonFX(Constants.DRIVE_FRONT_LEFT_ID);
         rearLeftMotor = new TalonFX(Constants.DRIVE_BACK_LEFT_ID);
+		forwardRightMotor.setNeutralMode(NeutralMode.Brake);
+		rearRightMotor.setNeutralMode(NeutralMode.Brake);
+		forwardLeftMotor.setNeutralMode(NeutralMode.Brake);
+		rearLeftMotor.setNeutralMode(NeutralMode.Brake);
 
         forwardLeftMotor.setInverted(true);
         rearLeftMotor.setInverted(true);
