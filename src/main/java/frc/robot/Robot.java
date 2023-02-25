@@ -17,6 +17,7 @@ import frc.lib.models.DriveTrajectoryGenerator;
 import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
 import frc.robot.autos.AutoChooser;
+<<<<<<< HEAD
 import frc.robot.subsystems.Manipulator;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.drive.DriveLevelAction;
@@ -24,6 +25,19 @@ import frc.robot.actions.drive.DriveTurnActionLimelight;
 import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
 import frc.robot.actions.manipulator.RunPivotAction;
+=======
+import frc.robot.subsystems.SuperStructure.IntakePosition;
+import frc.lib.statemachine.Action;
+import frc.robot.actions.arm.OpenClaw;
+import frc.robot.actions.drive.DriveTurnActionLimelight;
+import frc.robot.actions.drive.GearChangeAction;
+import frc.robot.actions.drive.GyroLockAction;
+import frc.robot.actions.drive.SetPositionAction;
+import frc.robot.actions.drive.TeleopLevelAction;
+import frc.robot.actions.superstructure.MoveIntakeAction;
+import frc.robot.actions.superstructure.RunIntakeAction;
+import frc.robot.actions.superstructure.SwitchSolenoid;
+>>>>>>> 21dd283423ffab9d407bd44957e2f1c621d3e450
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -38,11 +52,24 @@ public class Robot extends TimedRobot {
 
     // Input bindings
     private JoystickButton transmissionButton = new JoystickButton(Constants.MASTER, 1);
+<<<<<<< HEAD
     private JoystickButton limelightRotateButton = new JoystickButton(Constants.MASTER, 9);
     private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 7);
     private JoystickButton intakeButton = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton pivotIntakeButton = new JoystickButton(Constants.MASTER, 2);
+=======
+    private JoystickButton intakeSolenoidButton = new JoystickButton(Constants.MASTER, 6);
+    private JoystickButton gryoLockButton = new JoystickButton(Constants.MASTER, 4);
+    private JoystickButton limelightRotateButton = new JoystickButton(Constants.MASTER, 6);
+    private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 7);
+    private JoystickButton resetPoseButton = new JoystickButton(Constants.MASTER, 8);
+    private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 2);
+    private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
+    private JoystickButton intakeDownButton = new JoystickButton(Constants.MASTER, 10);
+    private JoystickButton intakeUpButton = new JoystickButton(Constants.MASTER, 9);
+
+>>>>>>> 21dd283423ffab9d407bd44957e2f1c621d3e450
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -73,6 +100,8 @@ public class Robot extends TimedRobot {
 
         initButtons();
         CommandScheduler.getInstance().enable();
+        AutoChooser.getInstance().logAuto();
+        AutoChooser.getInstance().printList();
     }
 
     /**
@@ -118,8 +147,9 @@ public class Robot extends TimedRobot {
         // Reset anything here
         DriveTrain.getInstance().reset();
         enabledLooper.start();
+        Lights.getInstance().reset();
 
-        AutoChooser.getInstance().run();
+        AutoChooser.getInstance().run_from_selection();
     }
 
     /**
@@ -169,9 +199,18 @@ public class Robot extends TimedRobot {
     public void initButtons() {
         transmissionButton.whileTrue(Action.toCommand(new GearChangeAction()));
         intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
+<<<<<<< HEAD
         intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER)));
         autoLevelButton.whileTrue(Action.toCommand(new DriveLevelAction()));
         limelightRotateButton.whileTrue(Action.toCommand(new DriveTurnActionLimelight()));
         pivotIntakeButton.whileTrue(Action.toCommand(new RunPivotAction()));
+=======
+        intakeUpButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kUp)));
+        intakeDownButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kDown)));
+        autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
+        limelightRotateButton.whileTrue(Action.toCommand(new DriveTurnActionLimelight()));
+        resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
+        gryoLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
+>>>>>>> 21dd283423ffab9d407bd44957e2f1c621d3e450
     }
 }

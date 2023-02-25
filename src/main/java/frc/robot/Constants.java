@@ -14,8 +14,8 @@ public class Constants {
     public static final int DRIVE_BACK_LEFT_ID = 2;
     public static final int DRIVE_BACK_RIGHT_ID = 4;
 
-    public static final int DRIVE_TRANSMISSION_FORWARD = 4;
-    public static final int DRIVE_TRANSMISSION_REVERSE = 5;
+    public static final int DRIVE_TRANSMISSION_FORWARD = 1;
+    public static final int DRIVE_TRANSMISSION_REVERSE = 0;
     
     // Arm / Turret
     public static final int ARM_TURRET_ID = 9;
@@ -24,8 +24,8 @@ public class Constants {
     public static final int ARM_ARM_S_ID = 12;
     
     public static final int CTRE_PCM_ID = 0;
-    public static final int ARM_GRABBER_FWD_CHANNEL = 1;
-    public static final int ARM_GRABBER_REV_CHANNEL = 0;
+    public static final int ARM_GRABBER_FWD_CHANNEL = 5;
+    public static final int ARM_GRABBER_REV_CHANNEL = 4;
 
     //Manipulator
     public static final int INTAKE_WHEEL_ID = 5;
@@ -69,28 +69,35 @@ public class Constants {
 
     // ### Drivetrain tuned values ###
 
+    // Conversion factor from drive ticks to inches
+    public static final double TICKS_PER_INCH = 1695;
+
     // Joystick deadzone
     public static final double DEAD_ZONE = 0.05;
+    public static final double OPEN_LOOP_FILTER = 0.3;
     
     // Angle PID
-    public static final double ANGLE_KP = 1.0 / 120.0;
-    public static final double ANGLE_ACCEPTANCE = 1.8;
-    public static final double ANGLE_PID_MINIMUM_TIME = 0.06;
+    public static final double ANGLE_KP = 1.0 / 130.0;
+    public static final double ANGLE_ACCEPTANCE = 1.5;
+    public static final double ANGLE_PID_MINIMUM_TIME = 0.1;
     public static final double DRIVE_TURN_MINIMUM_SPEED = 0.08;
     public static final double DRIVE_TURN_MAXIMUM_SPEED = 0.5;
 
     // Move forward
-    public static final double DRIVE_FORWARD_ACCEPTED_ERROR = 5000.0;
+    public static final double DRIVE_FORWARD_ACCEPTED_ERROR = 2000.0;
     public static final double DRIVE_FORWARD_MINIMUM_SPEED = 0.09;
-    public static final double DRIVE_FORWARD_MAXIMUM_SPEED = 0.55;
-    public static final double DRIVE_FORWARD_MINIMUM_TIME = 0.03;
-    public static final double DRIVE_FORWARD_KP = 1.0 / 75000.0;
+    public static final double DRIVE_FORWARD_MAXIMUM_SPEED = 0.8;
+    public static final double DRIVE_FORWARD_MINIMUM_TIME = 0.01;
+    public static final double DRIVE_FORWARD_KP = 1.0 / 100000.0;
+    public static final double DRIVE_FORWARD_KD = 0.0 / 10000.0;
+    public static final double DRIVE_FORWARD_D_FILT = 2.5;
     // Heading correction when moving forward
-    public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 90.0;
+    public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 300.0;
 
     // Auto level
     public static final double DRIVE_LEVEL_KP = 1.0 / 90.0;
-    public static final double DRIVE_LEVEL_KD = 1.0 / 1000.0;
+    public static final double DRIVE_LEVEL_KD = 1.0 / 1.0;
+    public static final double DRIVE_LEVEL_D_FILTER = 0.2;
     public static final double DRIVE_LEVEL_MAX_SPEED = 0.6;
     // Correction for pigeon pitch inaccuracy
     public static final double DRIVE_LEVEL_ZERO = -2.5;
