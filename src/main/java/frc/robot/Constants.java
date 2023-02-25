@@ -27,13 +27,16 @@ public class Constants {
     public static final int ARM_GRABBER_FWD_CHANNEL = 1;
     public static final int ARM_GRABBER_REV_CHANNEL = 0;
 
-    // Superstructure
-    public static final int BACKSTOP_TOF_ID = 0;
-    public static final int INTAKE_LEFT_WHEEL_ID = 5;
-    public static final int INTAKE_RIGHT_WHEEL_ID = 7;
-    public static final int INTAKE_CONVEYOR_ID = 6;
-    public static final int INTAKE_SPINNER_ID = 8;
-    
+    //Manipulator
+    public static final int INTAKE_WHEEL_ID = 5;
+    public static final int MANIPULATOR_TOF_ID = 1;
+    public static final double INTAKE_POWER = .7;
+    public static final double ANYTHING_OUT_POWER = -.7;
+
+    public static final double PIVOT_INCREMENT = 0.1;
+    public static final double MAX_PIVOT_POWER = 0.7;
+    public static final double MIN_PIVOT_POWER = 0;
+
     // Pigeon ID
     public static final int PIGEON_ID = 1;
 
@@ -57,15 +60,8 @@ public class Constants {
     // ### Intake tuned values ###
 
     // The target distance where the intake backstop TOF will report the game piece as being ready
-    public static final double INTAKE_BACKSTOP_DISTANCE = 10.0d;
-    // Multipliers for how much of the power each motor of the intake gets
-    public static final double CONVEYER_BELT_MULTIPLIER = 2;
-    public static final double INTAKE_WHEEL_SPINNER_MULTIPLIER = .5;
-    public static final double SIDE_WHEELS_MULTIPLIER = 2;
-    // Constants for how much power each type of intake uses
-    public static final double CONE_IN_POWER = 1;
-    public static final double CUBE_IN_POWER = .5; 
-    public static final double ANYTHING_OUT_POWER = -1;
+    public static final double INTAKE_DISTANCE = 10.0d;
+
     // Solenoid IDs
     public static final int INTAKE_SOLINIOD_REVERSE = 2;
     public static final int INTAKE_SOLINIOD_FORWARD = 3;

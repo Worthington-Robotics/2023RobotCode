@@ -1,7 +1,7 @@
-package frc.robot.actions.superstructure;
+package frc.robot.actions.manipulator;
 
 import frc.lib.statemachine.Action;
-import frc.robot.subsystems.SuperStructure;
+import frc.robot.subsystems.Manipulator;
 
 public class RunIntakeAction extends Action {
     // The speed to run the intake at
@@ -13,8 +13,7 @@ public class RunIntakeAction extends Action {
 
     @Override
     public void onStart() {
-        SuperStructure.getInstance().setIntakePower(power);
-        SuperStructure.getInstance().setButtonPressed();
+        Manipulator.getInstance().setIntakePower(power);
     }
 
     @Override
@@ -22,8 +21,7 @@ public class RunIntakeAction extends Action {
 
     @Override
     public void onStop() {
-        SuperStructure.getInstance().setIntakePower(0);
-        SuperStructure.getInstance().setButtonPressed();
+        Manipulator.getInstance().setIntakePower(0);
     }
 
     @Override
