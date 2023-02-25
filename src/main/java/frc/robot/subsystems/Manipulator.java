@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import com.playingwithfusion.TimeOfFlight;
 import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 public class Manipulator extends Subsystem {
@@ -29,8 +30,10 @@ public class Manipulator extends Subsystem {
 
 		// The left and right side intake wheels. They move the game piece in one direction
 		// so we set the left side to be inverted
-		wristMotor = new TalonFX(Constants.WRIST_MOTOR_ID);
-		intakeMotor = new TalonFX(Constants.INTAKE_MOTOR_ID);
+		wristMotor = new TalonFX(Constants.WRIST_MOTOR_ID, "Default Name");
+		wristMotor.setNeutralMode(NeutralMode.Brake);
+		intakeMotor = new TalonFX(Constants.INTAKE_MOTOR_ID, "Default Name");
+		intakeMotor.setNeutralMode(NeutralMode.Brake);
 		// TODO: Add intake TOF and HID helper
 	}
 

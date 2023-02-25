@@ -128,8 +128,8 @@ public class Constants {
   
 
     //Lights Constants
-    public static final int LIGHTS_ID = 0;
-    public static final int LIGHTS_LED_COUNT = 60;
+    public static final int LIGHTS_ID = 9;
+    public static final int LIGHTS_LED_COUNT = 30;
     
     // Angle PID
     public static final double TURN_KP = 1.0 / 120.0;

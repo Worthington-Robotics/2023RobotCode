@@ -28,6 +28,7 @@ import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.manipulator.MoveWrist;
 import frc.robot.actions.manipulator.RunIntakeAction;
 import frc.robot.actions.arm.AllowTurretPowerAction;
+import frc.robot.actions.arm.PivotMoveAction;
 import frc.robot.actions.arm.AllowExtensionPowerAction;
 
 
@@ -43,19 +44,17 @@ public class Robot extends TimedRobot {
     private Looper enabledLooper, disabledLooper;
 
     // Input bindings
-    private JoystickButton driveGearButton = new JoystickButton(Constants.SECOND, 1);
-    private JoystickButton intakeButton = new JoystickButton(Constants.SECOND, 2);
+    private JoystickButton driveGearButton = new JoystickButton(Constants.MASTER, 1);
+    private JoystickButton intakeButton = new JoystickButton(Constants.MASTER, 2);
+    private JoystickButton shootButton = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 3);
     private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 4);
     private JoystickButton turretButton = new JoystickButton(Constants.SECOND, 5);
     private JoystickButton extensionButton = new JoystickButton(Constants.SECOND, 6);
-    private JoystickButton intakeReverseButton = new JoystickButton(Constants.SECOND, 9);
-
-    private JoystickButton limelightRotateButton = new JoystickButton(Constants.MASTER, 2);
-    private JoystickButton gryoLockButton = new JoystickButton(Constants.MASTER,3);
-    private JoystickButton resetPoseButton = new JoystickButton(Constants.MASTER, 4);
-    private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 5);
-  
+    private JoystickButton pivotDownHighButton = new JoystickButton(Constants.SECOND, 7);
+    private JoystickButton pivotUpHighButton = new JoystickButton(Constants.SECOND, 8);
+    private JoystickButton pivotDownSlowButton = new JoystickButton(Constants.SECOND, 9);
+    private JoystickButton pivotUpSlowButton = new JoystickButton(Constants.SECOND, 10);
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -193,18 +192,25 @@ public class Robot extends TimedRobot {
 
     public void initButtons() {
         driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
-        autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
-        limelightRotateButton.whileTrue(Action.toCommand(new DriveTurnActionLimelight()));
-        resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
-        gryoLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
-        driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
+        shootButton.whileTrue(Action.toCommand(new RunIntakeAction(-.5)));
+        intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(.5)));
+        wristUpButton.whileTrue(Action.toCommand(new MoveWrist(-.3)));
+        writstDownButton.whileTrue(Action.toCommand(new MoveWrist(.3)));
+        // autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
+        // limelightRotateButton.whileTrue(Action.toCommand(new DriveTurnActionLimelight()));
+        // resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
+        // gryoLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
+        // driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
 
-        intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
-        intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER)));
-        wristUpButton.whileTrue(Action.toCommand(new MoveWrist(.3)));
-        wristDownButton.whileTrue(Action.toCommand(new MoveWrist(-.3)));
-
+        // intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
+        // intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER)));
+        // wristUpButton.whileTrue(Action.toCommand(new MoveWrist(.3)));
+        // wristDownButton.whileTrue(Action.toCommand(new MoveWrist(-.3)));
         turretButton.whileTrue(Action.toCommand(new AllowTurretPowerAction()));
         extensionButton.whileTrue(Action.toCommand(new AllowExtensionPowerAction()));
+        pivotUpHighButton.whileTrue(Action.toCommand(new PivotMoveAction(.66)));
+        pivotDownHighButton.whileTrue(Action.toCommand(new PivotMoveAction(-.66)));
+        pivotUpSlowButton.whileTrue(Action.toCommand(new PivotMoveAction(.33)));
+        pivotDownSlowButton.whileTrue(Action.toCommand(new PivotMoveAction(-.33)));
     }
 }

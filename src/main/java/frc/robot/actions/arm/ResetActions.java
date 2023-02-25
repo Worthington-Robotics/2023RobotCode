@@ -32,7 +32,7 @@ public class ResetActions {
 
 		@Override
 		public void onStop() {
-			Arm.getInstance().setPivotPower(0.0d);
+			Arm.getInstance().setRawPivotPower(0.0d);
 			
 		}
 	}
