@@ -72,7 +72,7 @@ public class StayTargetActions {
 
 		@Override
 		public void onStart() {
-			Arm.getInstance().setRawPivotPower(power);
+			Arm.getInstance().setPivotPower(power);
 		}
 
 		@Override

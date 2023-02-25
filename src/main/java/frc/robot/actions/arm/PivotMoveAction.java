@@ -11,7 +11,7 @@ public class PivotMoveAction extends Action {
 
 	@Override
 	public void onStart() {
-		Arm.getInstance().setRawPivotPower(power);
+		Arm.getInstance().setPivotPower(power);
 	}
 
 	@Override
@@ -19,7 +19,7 @@ public class PivotMoveAction extends Action {
 
 	@Override
 	public void onStop() {
-		Arm.getInstance().setRawPivotPower(0);
+		Arm.getInstance().setPivotPower(0);
 	}
 
 	@Override

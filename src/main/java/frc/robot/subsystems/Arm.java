@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.DemandType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
 import frc.lib.loops.ILooper;
@@ -27,13 +28,6 @@ public class Arm extends Subsystem {
 		turretMotor = new TalonFX(Constants.ARM_TURRET_ID, "Default Name");
 		armMasterMotor = new TalonFX(Constants.ARM_ARM_M_ID, "Default Name");
 		armSlaveMotor = new TalonFX(Constants.ARM_ARM_S_ID, "Default Name");
-
-		// grabber = new DoubleSolenoid(
-		// 	Constants.CTRE_PCM_ID,
-		// 	PneumaticsModuleType.CTREPCM,
-		// 	Constants.ARM_GRABBER_FWD_CHANNEL,
-		// 	Constants.ARM_GRABBER_REV_CHANNEL
-		// );
 
 		extensionMotor.setNeutralMode(NeutralMode.Brake);
 		turretMotor.setNeutralMode(NeutralMode.Brake);
@@ -76,7 +70,7 @@ public class Arm extends Subsystem {
 		public double desiredTurretDegree; // scale of -135 to 135
 		public double desiredPivotEncoder;
 		public double desiredArmLengthEncoder;
-		public double desiredTurretDegreeEncoder;
+		public double desiredTurretEncoder;
 
 		// Error Values
 		public double pivotError;
@@ -105,6 +99,7 @@ public class Arm extends Subsystem {
 
 		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), .5, -.5);
 		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), -.25, .25);
+		periodic.rawPivotPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), 1,0);
 
 	}
 
@@ -119,7 +114,7 @@ public class Arm extends Subsystem {
 			}
 
 			@Override
-			public void onLoop(double timestamp) {/*
+			public void onLoop(double timestamp) {
 				switch (periodic.currentMode) {
 					case OPEN_LOOP:
 						periodic.extensionPower = periodic.rawExtensionPower;
@@ -130,18 +125,18 @@ public class Arm extends Subsystem {
 						setExtensionPower(periodic.rawExtensionPower);
 						break;
 					case OPEN_CLOSED_LOOP:
-						periodic.desiredPivotEncoder = periodic.rawPivotPower; //multiply by constant
+						periodic.desiredArmLength = convertRawExtensionIntoEncoder(periodic.rawExtensionPower);
+						periodic.desiredPivotEncoder = convertRawPivotIntoEncoder(periodic.rawPivotPower);
+						periodic.desiredTurretEncoder = convertRawTurretIntoEncoder(periodic.rawTurretPower); //multiply by sontant
 						armAnglePID();
-						periodic.desiredArmLength = periodic.rawExtensionPower; //multiply by constant
 						armExtensionPID();
-						periodic.desiredTurretDegree = periodic.rawTurretPower; //multiply by sontant
 						turretAnglePID();
 					case CLOSED_LOOP:
 						armAnglePID();
 						armExtensionPID();
 						turretAnglePID();
 						
-				}*/
+				}
 			}
 
 			@Override
@@ -155,13 +150,15 @@ public class Arm extends Subsystem {
 	}
 
 	public void writePeriodicOutputs() {
+		armMasterMotor.set(ControlMode.PercentOutput, periodic.rawPivotPower);
 		extensionMotor.set(ControlMode.PercentOutput, periodic.rawExtensionPower);
 		turretMotor.set(ControlMode.PercentOutput, periodic.rawTurretPower);
-		armMasterMotor.set(ControlMode.PercentOutput, periodic.rawPivotPower);
+		armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
 		// extensionMotor.set(ControlMode.PercentOutput, periodic.extensionPower);
 		// turretMotor.set(ControlMode.PercentOutput, periodic.turretPower);
 		// armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder, DemandType.ArbitraryFeedForward, periodic.pivotPower);
 		armSlaveMotor.set(ControlMode.Follower, Constants.ARM_ARM_M_ID);
+		extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
 	}
 
 	public void outputTelemetry() {
@@ -183,14 +180,6 @@ public class Arm extends Subsystem {
 	
 
 	public void reset() {
-		// resetEncoders();	
-		// periodic.desiredPivotDegree = 0.0; // from 0 to the maximum extension of the arm 
-		// periodic.desiredArmLength = 0.0; // inches
-		// periodic.desiredTurretDegree = 0.0; // scale of -135 to 135
-		
-		// periodic.pivotPower = 0.0;
-		// periodic.extensionPower = 0.0;
-		// periodic.turretPower = 0.0;
 		periodic.currentMode = ArmMode.OPEN_LOOP;
 		periodic.turretButtonIsPressed = false;
 		periodic.extensionButtonIsPressed = false;
@@ -218,7 +207,7 @@ public class Arm extends Subsystem {
 		periodic.currentMode = ArmMode.CLOSED_LOOP;
 	}
 
-	public void setDesiredTurretDegree(double theta) {
+	public void setDesiredTurret(double theta) {
 		periodic.desiredTurretDegree = theta;
 		periodic.turretError = periodic.desiredTurretDegree - periodic.turretDegree;
 		periodic.currentMode = ArmMode.CLOSED_LOOP;
@@ -237,24 +226,47 @@ public class Arm extends Subsystem {
 		armMasterMotor.setSelectedSensorPosition(0);
 		armSlaveMotor.setSelectedSensorPosition(0);
 	}
+	
+	public double convertRawPivotIntoEncoder(double inputPower){
+		//double joystickVal = Math.abs(inputPower - 1); //the joystick value ranges from 0 to 2
+		return inputPower * 30000;
+	}
 
+	public double convertRawExtensionIntoEncoder(double inputPower){
+		if(inputPower >= 0) {
+			return inputPower * 125000;
+		} else {
+			return 0;
+		}
+	}
+
+	public double convertRawTurretIntoEncoder(double inputPower){
+		return inputPower * 22000;
+	}
+
+	
 	// MainLoop Functions (Mostly PID) - Could be private
 
 	public void armAnglePID() {
-		double leverLengthCoeff = periodic.armLength * Constants.ARM_EXTENSION_KP;
-		periodic.pivotPower = Math.sin(periodic.armDegree) * Constants.ARM_PIVOT_KP * leverLengthCoeff;
-		periodic.pivotPower = Util.clampSpeed(periodic.pivotPower, Constants.PIVOT_MIN_SPEED, Constants.PIVOT_MAX_SPEED);
-		periodic.arbitraryFeedForward = Math.sin(periodic.armDegree) * Constants.ARM_PIVOT_KP * leverLengthCoeff;
+		armMasterMotor.config_kP(0, Constants.ARM_PIVOT_KP);
+	
+		// double leverLengthCoeff = periodic.armLength * Constants.ARM_EXTENSION_KP;
+		// periodic.pivotPower = Math.sin(periodic.armDegree) * Constants.ARM_PIVOT_KP * leverLengthCoeff;
+		// periodic.pivotPower = Util.clampSpeed(periodic.pivotPower, Constants.PIVOT_MIN_SPEED, Constants.PIVOT_MAX_SPEED);
+		// periodic.arbitraryFeedForward = Math.sin(periodic.armDegree) * Constants.ARM_PIVOT_KP * leverLengthCoeff;
 	}
 
 	public void turretAnglePID() {
-		periodic.turretPower = periodic.turretError * Constants.TURRET_KP;
-		periodic.turretPower = Util.clampSpeed(periodic.turretPower, Constants.TURRET_MIN_SPEED, Constants.TURRET_MAX_SPEED);
+		//turretMotor.config_kP(0, Constants.TURRET_KP);
+		// turretMotor.config_kP(0, getLengthError())
+		// periodic.turretPower = periodic.turretError * Constants.TURRET_KP;
+		// periodic.turretPower = Util.clampSpeed(periodic.turretPower, Constants.TURRET_MIN_SPEED, Constants.TURRET_MAX_SPEED);
 	}
 
 	public void armExtensionPID() {
-		periodic.extensionPower = periodic.lengthError * Constants.ARM_EXTENSION_KP;
-		periodic.extensionPower = Util.clampSpeed(periodic.extensionPower, Constants.EXTENSION_MIN_SPEED, Constants.EXTENSION_MAX_SPEED);
+		extensionMotor.config_kP(0, Constants.ARM_EXTENSION_KP);
+		//periodic.extensionPower = periodic.lengthError * Constants.ARM_EXTENSION_KP;
+		//periodic.extensionPower = Util.clampSpeed(periodic.extensionPower, Constants.EXTENSION_MIN_SPEED, Constants.EXTENSION_MAX_SPEED);
 		// periodic.extensionPower = safetyLimit(periodic.extensionPower, periodic.armLength, 
 		// 	Constants.EXTENSION_WARNING_DISTANCE, Constants.MIN_ARM_LENGTH, Constants.MAX_ARM_LENGTH);
 	}
@@ -275,13 +287,11 @@ public class Arm extends Subsystem {
 		periodic.extensionButtonIsPressed = false;
 	}
 
-
-
 	public void setTurretPower(double power) {
 			periodic.turretPower = power;
 	}
 
-	public void setRawPivotPower(double power) {
+	public void setPivotPower(double power) {
 			periodic.rawPivotPower = power;
 	}
 
@@ -289,11 +299,7 @@ public class Arm extends Subsystem {
 			periodic.extensionPower = power;
 	}
 
-	// public void setGrabber(DoubleSolenoid.Value value) {
-	// 	periodic.grabberEngaged = value;
-	// }
 	
-
 	// Logging
 
 	public LogData getLogger() {
