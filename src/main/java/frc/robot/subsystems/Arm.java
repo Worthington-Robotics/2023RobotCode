@@ -101,7 +101,7 @@ public class Arm extends Subsystem {
 		periodic.lengthEncoder = extensionMotor.getSelectedSensorPosition();
 		periodic.turretEncoder = turretMotor.getSelectedSensorPosition();
 
-		periodic.armDegree = (periodic.pivotEncoder / Constants.PIVOT_ENCODER_PER_DEGREE) + 20.0;
+		periodic.armDegree = (periodic.pivotEncoder / Constants.PIVOT_ENCODER_PER_DEGREE) + 25.0;
 		periodic.armLength = periodic.lengthEncoder / Constants.ENCODER_PER_INCH;
 		periodic.turretDegree = periodic.turretEncoder / Constants.TURRET_ENCODER_PER_DEGREE;
 
@@ -110,6 +110,8 @@ public class Arm extends Subsystem {
 		
 
 	}
+
+
 
 	public void registerEnabledLoops(ILooper enabledLooper) {
 		enabledLooper.register(new Loop(){
@@ -123,7 +125,12 @@ public class Arm extends Subsystem {
 			public void onLoop(double timestamp) {/*
 				switch (periodic.currentMode) {
 					case OPEN_LOOP:
-						/* 
+						periodic.extensionPower = periodic.rawExtensionPower;
+						periodic.turretPower = periodic.rawTurretPower;
+						periodic.pivotPower = periodic.rawPivotPower;
+						setTurretPower(periodic.rawTurretPower);
+						setPivotPower(periodic.rawPivotPower);
+						setExtensionPower(periodic.rawExtensionPower);
 						break;
 					case OPEN_CLOSED_LOOP:
 						periodic.desiredPivotEncoder = periodic.rawPivotPower; //multiply by constant
@@ -154,6 +161,9 @@ public class Arm extends Subsystem {
 		extensionMotor.set(ControlMode.PercentOutput, periodic.rawExtensionPower);
 		turretMotor.set(ControlMode.PercentOutput, periodic.rawTurretPower);
 		armMasterMotor.set(ControlMode.PercentOutput, periodic.rawPivotPower);
+		// extensionMotor.set(ControlMode.PercentOutput, periodic.extensionPower);
+		// turretMotor.set(ControlMode.PercentOutput, periodic.turretPower);
+		// armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder, DemandType.ArbitraryFeedForward, periodic.pivotPower);
 		armSlaveMotor.set(ControlMode.Follower, Constants.ARM_ARM_M_ID);
 	}
 

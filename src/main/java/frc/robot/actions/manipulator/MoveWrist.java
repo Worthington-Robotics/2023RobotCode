@@ -1,7 +1,7 @@
-package frc.robot.actions.superstructure;
+package frc.robot.actions.manipulator;
 
 import frc.lib.statemachine.Action;
-import frc.robot.subsystems.SuperStructure;
+import frc.robot.subsystems.Manipulator;
 
 public class MoveWrist extends Action {
 	
@@ -12,7 +12,7 @@ public class MoveWrist extends Action {
 
 	@Override
 	public void onStart() {
-		SuperStructure.getInstance().setWristPower(power);
+		Manipulator.getInstance().setWristPower(power);
 	}
 
 	@Override
@@ -20,7 +20,7 @@ public class MoveWrist extends Action {
 
 	@Override
 	public void onStop() {
-		SuperStructure.getInstance().setWristPower(0);
+		Manipulator.getInstance().setWristPower(0);
 	}
 
 	@Override

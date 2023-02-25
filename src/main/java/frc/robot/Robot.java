@@ -17,11 +17,11 @@ import frc.lib.models.DriveTrajectoryGenerator;
 import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
 import frc.robot.autos.AutoChooser;
-import frc.robot.subsystems.SuperStructure;
+import frc.robot.subsystems.Manipulator;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.drive.GearChangeAction;
-import frc.robot.actions.superstructure.MoveWrist;
-import frc.robot.actions.superstructure.RunIntakeAction;
+import frc.robot.actions.manipulator.MoveWrist;
+import frc.robot.actions.manipulator.RunIntakeAction;
 import frc.robot.actions.arm.AllowTurretPowerAction;
 import frc.robot.actions.arm.PivotMoveAction;
 import frc.robot.actions.arm.AllowExtensionPowerAction;
@@ -59,7 +59,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         manager = new SubsystemManager(
             Arrays.asList(
-                SuperStructure.getInstance(),
+                Manipulator.getInstance(),
                 PoseEstimator.getInstance(),
                 Arm.getInstance(),
                 DriveTrain.getInstance(),
@@ -127,6 +127,7 @@ public class Robot extends TimedRobot {
 
         // Reset anything here
         DriveTrain.getInstance().reset();
+        Arm.getInstance().reset();
         enabledLooper.start();
 
         AutoChooser.getInstance().run();
@@ -145,10 +146,10 @@ public class Robot extends TimedRobot {
         // Reset anything here
         initButtons();
         DriveTrain.getInstance().reset();
-        SuperStructure.getInstance().reset();
+        Manipulator.getInstance().reset();
         DriveTrain.getInstance().setOpenLoop();
         PoseEstimator.getInstance().reset();
-
+        Arm.getInstance().reset();
         enabledLooper.start();
     }
 
@@ -163,7 +164,7 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
 
         // Reset anything here
-        SuperStructure.getInstance().reset();
+        Manipulator.getInstance().reset();
         Dummy.getInstance().reset();
         DriveTrain.getInstance().reset();
         Arm.getInstance().reset();
