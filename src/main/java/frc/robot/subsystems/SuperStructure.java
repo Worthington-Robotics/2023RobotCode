@@ -15,25 +15,14 @@ public class SuperStructure extends Subsystem {
 	public static SuperStructure getInstance() { return instance; }
 
 	//private TimeOfFlight backstopTOF;
-	private TalonFX leftSideWheel;
-	private TalonFX rightSideWheel;
-	private TalonSRX conveyorBelt;
-	private TalonFX intakeWheelSpinner;
-	private DoubleSolenoid intakeSolenoid;
-
-	public enum IntakePosition {
-		kUp,
-		kDown
-	}
+	private TalonFX wristMotor;
+	private TalonFX intakeMotor;
 
 	public class SuperIO extends Subsystem.PeriodicIO {
 		// TOF range from the backstop
 		double backstopRange = 0;
 		// Motor demand to set intake speed
-		double power = 0;
-		boolean buttonPressed = false;
-		// Whether the intake is up or down
-		public IntakePosition intakePosition = IntakePosition.kUp;
+		double wristMotorPower, intakeMotorPower;
 	}
 
 	private SuperIO periodic;
@@ -45,17 +34,8 @@ public class SuperStructure extends Subsystem {
 
 		// The left and right side intake wheels. They move the game piece in one direction
 		// so we set the left side to be inverted
-		leftSideWheel = new TalonFX(Constants.INTAKE_LEFT_WHEEL_ID);
-		leftSideWheel.setInverted(true);
-		rightSideWheel = new TalonFX(Constants.INTAKE_RIGHT_WHEEL_ID);
-
-		conveyorBelt = new TalonSRX(Constants.INTAKE_CONVEYOR_ID);
-		intakeWheelSpinner = new TalonFX(Constants.INTAKE_SPINNER_ID);
-		intakeWheelSpinner.setInverted(true);
-
-		intakeSolenoid = new DoubleSolenoid(Constants.INTAKE_PNEUMATICS_ID, PneumaticsModuleType.CTREPCM, Constants.INTAKE_SOLINIOD_REVERSE, Constants.INTAKE_SOLINIOD_FORWARD);
-		intakeSolenoid.set(Value.kReverse);
-
+		wristMotor = new TalonFX(Constants.WRIST_MOTOR_ID);
+		intakeMotor = new TalonFX(Constants.INTAKE_MOTOR_ID);
 		// TODO: Add intake TOF and HID helper
 	}
 
@@ -64,53 +44,30 @@ public class SuperStructure extends Subsystem {
 	}
 
 	public void writePeriodicOutputs() {
-		// leftSideWheel.set(ControlMode.PercentOutput, 1 * Constants.SIDE_WHEELS_MULTIPLIER );
-		// rightSideWheel.set(ControlMode.PercentOutput, 1 * Constants.SIDE_WHEELS_MULTIPLIER);
-		// conveyorBelt.set(ControlMode.PercentOutput, 1 * Constants.CONVEYER_BELT_MULTIPLIER);
-		// intakeWheelSpinner.set(ControlMode.PercentOutput, 1 * Constants.INTAKE_WHEEL_SPINNER_MULTIPLIER);
-		
-		leftSideWheel.set(ControlMode.PercentOutput, periodic.power * Constants.SIDE_WHEELS_MULTIPLIER );
-		rightSideWheel.set(ControlMode.PercentOutput, periodic.power * Constants.SIDE_WHEELS_MULTIPLIER);
-		conveyorBelt.set(ControlMode.PercentOutput, periodic.power * Constants.CONVEYER_BELT_MULTIPLIER);
-		intakeWheelSpinner.set(ControlMode.PercentOutput, periodic.power * Constants.INTAKE_WHEEL_SPINNER_MULTIPLIER);
-		switch (periodic.intakePosition) {
-			case kUp:
-				intakeSolenoid.set(Value.kForward);
-			case kDown:
-				intakeSolenoid.set(Value.kReverse);
-		}
+		wristMotor.set(ControlMode.PercentOutput, periodic.wristMotorPower);
+		intakeMotor.set(ControlMode.PercentOutput, periodic.intakeMotorPower);
 	}
 
 	// Set the intake demand to the specified value
 	public void setIntakePower(double power) {
-		periodic.power = power;
+		periodic.intakeMotorPower = power;
 	}
 
-	public void setIntakePosition(IntakePosition position){
-		periodic.intakePosition = position;
+	public void setWristPower(double power){
+		periodic.wristMotorPower = power;
 	}
+	
 
-	public void setButtonPressed(){
-		periodic.buttonPressed = !periodic.buttonPressed;
-	}
-
-
-	// Returns if the game piece has completed its intake cycle
-	public boolean isFinished() {
-		// return (periodic.backstopRange >= Constants.INTAKE_BACKSTOP_DISTANCE);
-		return false;
-	}
 
 	public void reset() {
-		leftSideWheel.setInverted(true);
-		periodic = new SuperIO();
+		//
 	}
 
 	// ### Telemetry ###
 
 	public void outputTelemetry() {
-		SmartDashboard.putNumber("SuperStructure/IntakePower", periodic.power);
-		SmartDashboard.putBoolean("SuperStructure/ButtonPressed", periodic.buttonPressed);
+		SmartDashboard.putNumber("SuperStructure/IntakePower", periodic.intakeMotorPower);
+		SmartDashboard.putNumber("SuperStructure/WristPower", periodic.wristMotorPower);
 	}
 
 	public LogData getLogger() {

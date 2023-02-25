@@ -67,10 +67,8 @@ public class Constants {
     // Superstructure
     // TODO: Change these values to actual IDs
     public static final int BACKSTOP_TOF_ID = 0;
-    public static final int INTAKE_LEFT_WHEEL_ID = 5;
-    public static final int INTAKE_RIGHT_WHEEL_ID = 7;
-    public static final int INTAKE_CONVEYOR_ID = 6;
-    public static final int INTAKE_SPINNER_ID = 8;
+    public static final int WRIST_MOTOR_ID = 5;
+    public static final int INTAKE_MOTOR_ID = 7;
     
     //Pigion ID
     public static final int PIGION_ID = 1;

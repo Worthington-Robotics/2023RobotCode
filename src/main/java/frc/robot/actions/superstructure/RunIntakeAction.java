@@ -14,7 +14,6 @@ public class RunIntakeAction extends Action {
     @Override
     public void onStart() {
         SuperStructure.getInstance().setIntakePower(power);
-        SuperStructure.getInstance().setButtonPressed();
     }
 
     @Override
@@ -23,7 +22,6 @@ public class RunIntakeAction extends Action {
     @Override
     public void onStop() {
         SuperStructure.getInstance().setIntakePower(0);
-        SuperStructure.getInstance().setButtonPressed();
     }
 
     @Override

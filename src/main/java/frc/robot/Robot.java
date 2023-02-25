@@ -18,10 +18,9 @@ import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
 import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.SuperStructure;
-import frc.robot.subsystems.SuperStructure.IntakePosition;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.drive.GearChangeAction;
-import frc.robot.actions.superstructure.MoveIntakeAction;
+import frc.robot.actions.superstructure.MoveWrist;
 import frc.robot.actions.superstructure.RunIntakeAction;
 import frc.robot.actions.arm.AllowTurretPowerAction;
 import frc.robot.actions.arm.AllowExtensionPowerAction;
@@ -39,12 +38,10 @@ public class Robot extends TimedRobot {
     private Looper enabledLooper, disabledLooper;
 
     // Input bindings
-    private JoystickButton driveGearButton = new JoystickButton(Constants.SECOND, 1);
-    private JoystickButton intakeCubeButton = new JoystickButton(Constants.MASTER, 4);
-    private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 2);
-    private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
-    private JoystickButton intakeDownButton = new JoystickButton(Constants.SECOND, 10);
-    private JoystickButton intakeUpButton = new JoystickButton(Constants.MASTER, 9);
+    private JoystickButton driveGearButton = new JoystickButton(Constants.MASTER, 1);
+    private JoystickButton intakeButton = new JoystickButton(Constants.SECOND, 2);
+    private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 3);
+    private JoystickButton writstDownButton = new JoystickButton(Constants.SECOND, 4);
     private JoystickButton turretButton = new JoystickButton(Constants.SECOND, 5);
     private JoystickButton extensionButton = new JoystickButton(Constants.SECOND, 6);
 
@@ -174,11 +171,9 @@ public class Robot extends TimedRobot {
 
     public void initButtons() {
         driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
-        intakeConeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CONE_IN_POWER)));
-        intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
-        intakeCubeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CUBE_IN_POWER)));
-        intakeUpButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kUp)));
-        intakeDownButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kDown)));
+        intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CONE_IN_POWER)));
+        wristUpButton.whileTrue(Action.toCommand(new MoveWrist(.3)));
+        writstDownButton.whileTrue(Action.toCommand(new MoveWrist(-.3)));
         turretButton.whileTrue(Action.toCommand(new AllowTurretPowerAction()));
         extensionButton.whileTrue(Action.toCommand(new AllowExtensionPowerAction()));
     }
