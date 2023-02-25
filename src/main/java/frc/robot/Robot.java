@@ -21,12 +21,15 @@ import frc.robot.subsystems.Manipulator;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.drive.DriveLevelAction;
 import frc.robot.actions.drive.TeleopLevelAction;
-import frc.robot.actions.drive.DriveTurnActionLimelight;
-import frc.robot.actions.drive.GearChangeAction;
-import frc.robot.actions.manipulator.RunIntakeAction;
-import frc.robot.actions.manipulator.RunPivotAction;
 import frc.robot.actions.drive.GyroLockAction;
 import frc.robot.actions.drive.SetPositionAction;
+import frc.robot.actions.drive.DriveTurnActionLimelight;
+import frc.robot.actions.drive.GearChangeAction;
+import frc.robot.actions.manipulator.MoveWrist;
+import frc.robot.actions.manipulator.RunIntakeAction;
+import frc.robot.actions.arm.AllowTurretPowerAction;
+import frc.robot.actions.arm.AllowExtensionPowerAction;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -40,14 +43,19 @@ public class Robot extends TimedRobot {
     private Looper enabledLooper, disabledLooper;
 
     // Input bindings
-    private JoystickButton transmissionButton = new JoystickButton(Constants.MASTER, 1);
-    private JoystickButton limelightRotateButton = new JoystickButton(Constants.MASTER, 9);
-    private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 7);
-    private JoystickButton intakeButton = new JoystickButton(Constants.MASTER, 3);
-    private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 4);
-    private JoystickButton pivotIntakeButton = new JoystickButton(Constants.MASTER, 2);
-    private JoystickButton gryoLockButton = new JoystickButton(Constants.MASTER, 4);
-    private JoystickButton resetPoseButton = new JoystickButton(Constants.MASTER, 8);
+    private JoystickButton driveGearButton = new JoystickButton(Constants.SECOND, 1);
+    private JoystickButton intakeButton = new JoystickButton(Constants.SECOND, 2);
+    private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 3);
+    private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 4);
+    private JoystickButton turretButton = new JoystickButton(Constants.SECOND, 5);
+    private JoystickButton extensionButton = new JoystickButton(Constants.SECOND, 6);
+    private JoystickButton intakeReverseButton = new JoystickButton(Constants.SECOND, 9);
+
+    private JoystickButton limelightRotateButton = new JoystickButton(Constants.MASTER, 2);
+    private JoystickButton gryoLockButton = new JoystickButton(Constants.MASTER,3);
+    private JoystickButton resetPoseButton = new JoystickButton(Constants.MASTER, 4);
+    private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 5);
+  
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -57,6 +65,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         manager = new SubsystemManager(
             Arrays.asList(
+                Manipulator.getInstance(),
                 PoseEstimator.getInstance(),
                 Arm.getInstance(),
                 DriveTrain.getInstance(),
@@ -105,6 +114,7 @@ public class Robot extends TimedRobot {
         DriveTrain.getInstance().reset();
         PoseEstimator.getInstance().reset();
         Manipulator.getInstance().reset();
+        Lights.getInstance().reset();
 
         disabledLooper.start();
     }
@@ -126,8 +136,10 @@ public class Robot extends TimedRobot {
 
         // Reset anything here
         DriveTrain.getInstance().reset();
+        Arm.getInstance().reset();
         enabledLooper.start();
         Lights.getInstance().reset();
+        Manipulator.getInstance().reset();;
 
         AutoChooser.getInstance().run_from_selection();
     }
@@ -146,10 +158,10 @@ public class Robot extends TimedRobot {
         initButtons();
         Lights.getInstance().reset();
         DriveTrain.getInstance().reset();
+        Manipulator.getInstance().reset();
         DriveTrain.getInstance().setOpenLoop();
         PoseEstimator.getInstance().reset();
-        Manipulator.getInstance().reset();
-
+        Arm.getInstance().reset();
         enabledLooper.start();
     }
 
@@ -167,6 +179,9 @@ public class Robot extends TimedRobot {
         Dummy.getInstance().reset();
         DriveTrain.getInstance().reset();
         Manipulator.getInstance().reset();
+        DriveTrain.getInstance().reset();
+        Arm.getInstance().reset();
+
         enabledLooper.start();
     }
 
@@ -177,13 +192,19 @@ public class Robot extends TimedRobot {
     public void testPeriodic() {}
 
     public void initButtons() {
-        transmissionButton.whileTrue(Action.toCommand(new GearChangeAction()));
-        intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
-        intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER)));
-        pivotIntakeButton.whileTrue(Action.toCommand(new RunPivotAction()));
+        driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
         autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
         limelightRotateButton.whileTrue(Action.toCommand(new DriveTurnActionLimelight()));
         resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
         gryoLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
+        driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
+
+        intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
+        intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER)));
+        wristUpButton.whileTrue(Action.toCommand(new MoveWrist(.3)));
+        wristDownButton.whileTrue(Action.toCommand(new MoveWrist(-.3)));
+
+        turretButton.whileTrue(Action.toCommand(new AllowTurretPowerAction()));
+        extensionButton.whileTrue(Action.toCommand(new AllowExtensionPowerAction()));
     }
 }

@@ -61,4 +61,15 @@ public class Util {
         }
         return result;
     }
+
+    public static double clampSpeed(double demand, double min, double max) {
+        if (Math.abs(demand) < min) {
+            return Math.signum(demand) * min;
+        }
+        if (Math.abs(demand) > max) {
+            return Math.signum(demand) * max;
+        } else {
+            return demand;
+        }
+    }
 }
