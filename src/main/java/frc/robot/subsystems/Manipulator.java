@@ -1,20 +1,15 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import com.playingwithfusion.TimeOfFlight;
 import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-public class SuperStructure extends Subsystem {
-	private static SuperStructure instance = new SuperStructure();
-	public static SuperStructure getInstance() { return instance; }
+public class Manipulator extends Subsystem {
+	private static Manipulator instance = new Manipulator();
+	public static Manipulator getInstance() { return instance; }
 
-	//private TimeOfFlight backstopTOF;
 	private TalonFX wristMotor;
 	private TalonFX intakeMotor;
 
@@ -27,7 +22,7 @@ public class SuperStructure extends Subsystem {
 
 	private SuperIO periodic;
 
-	public SuperStructure() {
+	public Manipulator() {
 		periodic = new SuperIO();
 
 		//backstopTOF = new TimeOfFlight(Constants.BACKSTOP_TOF_ID);
@@ -66,8 +61,8 @@ public class SuperStructure extends Subsystem {
 	// ### Telemetry ###
 
 	public void outputTelemetry() {
-		SmartDashboard.putNumber("SuperStructure/IntakePower", periodic.intakeMotorPower);
-		SmartDashboard.putNumber("SuperStructure/WristPower", periodic.wristMotorPower);
+		SmartDashboard.putNumber("Manipulator/IntakePower", periodic.intakeMotorPower);
+		SmartDashboard.putNumber("Manipulator/WristPower", periodic.wristMotorPower);
 	}
 
 	public LogData getLogger() {
