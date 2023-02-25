@@ -5,9 +5,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.DemandType;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
@@ -52,6 +49,7 @@ public class Arm extends Subsystem {
 		OPEN_CLOSED_LOOP,
 		CLOSED_LOOP
     }
+
 
 	public class ArmIO extends PeriodicIO {
 		// Power Values
@@ -107,7 +105,6 @@ public class Arm extends Subsystem {
 
 		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), .5, -.5);
 		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), -.25, .25);
-		
 
 	}
 

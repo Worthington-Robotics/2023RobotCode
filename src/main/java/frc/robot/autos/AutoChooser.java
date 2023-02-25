@@ -11,32 +11,32 @@ public class AutoChooser {
 	public static AutoChooser getInstance() { return instance; }
 	
 	public enum AutoType {
-		kNone,
-		kOne,
-		kTwo,
-		kTest
+		None,
+		One,
+		Two,
+		Test
 	}
 
 	// The currently chosen autonomous routine
 	private AutoType chosen;
 
-	public AutoChooser() {
-		change(AutoType.kTwo);
+	private AutoChooser() {
+		change(AutoType.Two);	
 	}
 
 	// Run the currently selected autonomous
 	public void run() {
 		switch (chosen) {
-			case kNone:
+			case None:
 				DebugLogger.getInstance().debugError(DebugLevel.kNone, "No autonomous is currently selected!");
 				break;
-			case kOne:
+			case One:
 				StateMachine.getInstance().runMachine(new AutoOne());
 				break;
-			case kTwo:
+			case Two:
 				StateMachine.getInstance().runMachine(new AutoTwo());
 				break;
-			case kTest:
+			case Test:
 				StateMachine.getInstance().runMachine(new TestAuto());
 				break;
 		}
@@ -49,8 +49,32 @@ public class AutoChooser {
 		logAuto();
 	}
 
+	public void change(String name) {
+		for (AutoType sel : AutoType.values()) {
+			if (sel.toString().equalsIgnoreCase(name)) {
+				chosen = sel;
+				return;
+			}
+		}
+		chosen = AutoType.None;
+	}
+
+	public void printList() {
+		String[] list = new String[AutoType.values().length];
+		for (int i = 0; i < AutoType.values().length; i++) {
+			list[i] = AutoType.values()[i].toString();
+		}
+		SmartDashboard.putStringArray("Auto List", list);
+	}
+
+	public void run_from_selection() {
+		final String selection = SmartDashboard.getString("Auto Selector", "None");
+		change(selection);
+		run();
+	}
+
 	// Logs current auto to telemetry
-	private void logAuto() {
-		SmartDashboard.putString("Auto/Current Auto", chosen.toString());
+	public void logAuto() {
+		SmartDashboard.putString("Auto/Current", chosen.toString());
 	}
 }

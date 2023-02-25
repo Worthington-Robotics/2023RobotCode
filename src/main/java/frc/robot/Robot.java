@@ -19,6 +19,11 @@ import frc.robot.subsystems.*;
 import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.Manipulator;
 import frc.lib.statemachine.Action;
+import frc.robot.actions.drive.DriveLevelAction;
+import frc.robot.actions.drive.TeleopLevelAction;
+import frc.robot.actions.drive.GyroLockAction;
+import frc.robot.actions.drive.SetPositionAction;
+import frc.robot.actions.drive.DriveTurnActionLimelight;
 import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.manipulator.MoveWrist;
 import frc.robot.actions.manipulator.RunIntakeAction;
@@ -43,7 +48,7 @@ public class Robot extends TimedRobot {
     private JoystickButton intakeButton = new JoystickButton(Constants.MASTER, 2);
     private JoystickButton shootButton = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 3);
-    private JoystickButton writstDownButton = new JoystickButton(Constants.SECOND, 4);
+    private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 4);
     private JoystickButton turretButton = new JoystickButton(Constants.SECOND, 5);
     private JoystickButton extensionButton = new JoystickButton(Constants.SECOND, 6);
     private JoystickButton pivotDownHighButton = new JoystickButton(Constants.SECOND, 7);
@@ -82,6 +87,8 @@ public class Robot extends TimedRobot {
 
         initButtons();
         CommandScheduler.getInstance().enable();
+        AutoChooser.getInstance().logAuto();
+        AutoChooser.getInstance().printList();
     }
 
     /**
@@ -105,6 +112,7 @@ public class Robot extends TimedRobot {
         StateMachine.getInstance().assertStop();
         DriveTrain.getInstance().reset();
         PoseEstimator.getInstance().reset();
+        Manipulator.getInstance().reset();
         Lights.getInstance().reset();
 
         disabledLooper.start();
@@ -129,8 +137,10 @@ public class Robot extends TimedRobot {
         DriveTrain.getInstance().reset();
         Arm.getInstance().reset();
         enabledLooper.start();
+        Lights.getInstance().reset();
+        Manipulator.getInstance().reset();;
 
-        AutoChooser.getInstance().run();
+        AutoChooser.getInstance().run_from_selection();
     }
 
     /**
@@ -145,6 +155,7 @@ public class Robot extends TimedRobot {
 
         // Reset anything here
         initButtons();
+        Lights.getInstance().reset();
         DriveTrain.getInstance().reset();
         Manipulator.getInstance().reset();
         DriveTrain.getInstance().setOpenLoop();
@@ -164,8 +175,9 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
 
         // Reset anything here
-        Manipulator.getInstance().reset();
         Dummy.getInstance().reset();
+        DriveTrain.getInstance().reset();
+        Manipulator.getInstance().reset();
         DriveTrain.getInstance().reset();
         Arm.getInstance().reset();
 
@@ -184,6 +196,16 @@ public class Robot extends TimedRobot {
         intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(.5)));
         wristUpButton.whileTrue(Action.toCommand(new MoveWrist(-.3)));
         writstDownButton.whileTrue(Action.toCommand(new MoveWrist(.3)));
+        // autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
+        // limelightRotateButton.whileTrue(Action.toCommand(new DriveTurnActionLimelight()));
+        // resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
+        // gryoLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
+        // driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
+
+        // intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
+        // intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER)));
+        // wristUpButton.whileTrue(Action.toCommand(new MoveWrist(.3)));
+        // wristDownButton.whileTrue(Action.toCommand(new MoveWrist(-.3)));
         turretButton.whileTrue(Action.toCommand(new AllowTurretPowerAction()));
         extensionButton.whileTrue(Action.toCommand(new AllowExtensionPowerAction()));
         pivotUpHighButton.whileTrue(Action.toCommand(new PivotMoveAction(.66)));

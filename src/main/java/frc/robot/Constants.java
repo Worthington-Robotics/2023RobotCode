@@ -6,12 +6,17 @@ import edu.wpi.first.wpilibj.Joystick;
 import frc.lib.util.HIDHelper;
 
 public class Constants {
-    // Drivetrain Constants
+    // ### Device ID declarations ###
+
+    // Drivetrain
     public static final int DRIVE_FRONT_LEFT_ID = 1;
     public static final int DRIVE_FRONT_RIGHT_ID = 3;
     public static final int DRIVE_BACK_LEFT_ID = 2;
     public static final int DRIVE_BACK_RIGHT_ID = 4;
 
+    public static final int DRIVE_TRANSMISSION_FORWARD = 1;
+    public static final int DRIVE_TRANSMISSION_REVERSE = 0;
+    
     // Arm and Turret Constants
 
     // Arm Consants - IDs
@@ -21,9 +26,19 @@ public class Constants {
     public static final int ARM_ARM_S_ID = 12;
     
     public static final int CTRE_PCM_ID = 0;
-    public static final int ARM_GRABBER_FWD_CHANNEL = 2;
-    public static final int ARM_GRABBER_REV_CHANNEL = 3;
+    public static final int ARM_GRABBER_FWD_CHANNEL = 5;
+    public static final int ARM_GRABBER_REV_CHANNEL = 4;
 
+    //Manipulator
+    public static final int INTAKE_WHEEL_ID = 5;
+    public static final int MANIPULATOR_TOF_ID = 1;
+    public static final double INTAKE_POWER = .7;
+    public static final double ANYTHING_OUT_POWER = -.7;
+
+    public static final double PIVOT_INCREMENT = 0.1;
+    public static final double MAX_PIVOT_POWER = 0.7;
+    public static final double MIN_PIVOT_POWER = 0;
+    
     // Arm Constants - Measurements
     public static final double PIVOT_ENCODER_PER_DEGREE = 416.31;
     public static final double TURRET_ENCODER_PER_DEGREE = 218.56;
@@ -73,28 +88,9 @@ public class Constants {
     //Pigion ID
     public static final int PIGION_ID = 1;
 
-    //Talon SRX & FX IDs
-    public static final int SHOOTER_FLYWHEEL_LEFT = 5;
-    public static final int SHOOTER_FLYWHEEL_RIGHT = 6;
+    // Pigeon ID
+    public static final int PIGEON_ID = 1;
 
-    public static final int CLIMBING_WINCHR_ID = 3;
-    public static final int CLIMBING_WINCHL_ID = 4;
-
-    public static final int ID_SUPER_DELIVERY_WHEEL = 7;
-    public static final int ID_SUPER_INDEX1 = 8;
-    public static final int ID_SUPER_INDEX2 = 9;
-    public static final int ID_SUPER_INDEX3 = 10;
-    public static final int ID_SUPER_INTAKE = 11;
-
-    public static final int TURRET_CONTROL = 12;
-    public static final int CAM_PWM_CHANNEL = 1;
-
-    // TOF IDs
-    public static final int ID_SUPER_TOF1 = 1;
-    public static final int ID_SUPER_TOF2 = 2;
-    public static final int ID_SUPER_TOF3 = 3;
-    public static final int ID_SUPER_TOF4 = 4;
-    public static final int ID_SUPER_TOF5 = 5;
 
     // ### Joystick Constants ###
     public static final Joystick MASTER = new Joystick(0);
@@ -113,25 +109,23 @@ public class Constants {
     // ### Intake tuned values ###
 
     // The target distance where the intake backstop TOF will report the game piece as being ready
-    public static final double INTAKE_BACKSTOP_DISTANCE = 10.0d;
-    // Multipliers for how much of the power each motor of the intake gets
-    public static final double CONVEYER_BELT_MULTIPLIER = 2;
-    public static final double INTAKE_WHEEL_SPINNER_MULTIPLIER = .92;
-    public static final double SIDE_WHEELS_MULTIPLIER = 2;
-    // Constants for how much power each type of intake uses
-    public static final double CONE_IN_POWER = 1;
-    public static final double CUBE_IN_POWER = .5; 
-    public static final double ANYTHING_OUT_POWER = -1;
+    public static final double INTAKE_DISTANCE = 10.0d;
+
     // Solenoid IDs
-    public static final int INTAKE_SOLINIOD_REVERSE = 4;
-    public static final int INTAKE_SOLINIOD_FORWARD = 5;
+    public static final int INTAKE_SOLINIOD_REVERSE = 2;
+    public static final int INTAKE_SOLINIOD_FORWARD = 3;
     public static final int INTAKE_PNEUMATICS_ID = 0;
 
     // ### Drivetrain tuned values ###
 
-    
+    // Conversion factor from drive ticks to inches
+    public static final double TICKS_PER_INCH = 1695;
+
     // Joystick deadzone
     public static final double DEAD_ZONE = 0.05;
+    public static final double OPEN_LOOP_FILTER = 0.3;
+    
+  
 
     //Lights Constants
     public static final int LIGHTS_ID = 9;
@@ -145,13 +139,25 @@ public class Constants {
     public static final double DRIVE_TURN_MAXIMUM_SPEED = 0.5;
 
     // Move forward
-    public static final double DRIVE_FORWARD_ACCEPTED_ERROR = 5000.0;
+    public static final double DRIVE_FORWARD_ACCEPTED_ERROR = 2000.0;
     public static final double DRIVE_FORWARD_MINIMUM_SPEED = 0.09;
-    public static final double DRIVE_FORWARD_MAXIMUM_SPEED = 0.55;
-    public static final double DRIVE_FORWARD_MINIMUM_TIME = 0.03;
-    public static final double DRIVE_FORWARD_KP = 1.0 / 75000.0;
+    public static final double DRIVE_FORWARD_MAXIMUM_SPEED = 0.8;
+    public static final double DRIVE_FORWARD_MINIMUM_TIME = 0.01;
+    public static final double DRIVE_FORWARD_KP = 1.0 / 100000.0;
+    public static final double DRIVE_FORWARD_KD = 0.0 / 10000.0;
+    public static final double DRIVE_FORWARD_D_FILT = 2.5;
     // Heading correction when moving forward
-    public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 90.0;
+    public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 300.0;
+
+    // Auto level
+    public static final double DRIVE_LEVEL_KP = 1.0 / 90.0;
+    public static final double DRIVE_LEVEL_KD = 1.0 / 1.0;
+    public static final double DRIVE_LEVEL_D_FILTER = 0.2;
+    public static final double DRIVE_LEVEL_MAX_SPEED = 0.6;
+    // Correction for pigeon pitch inaccuracy
+    public static final double DRIVE_LEVEL_ZERO = -2.5;
+
+
 
     // ### Constants kept around for compatability with library code ###
     
@@ -192,7 +198,7 @@ public class Constants {
     public static final double DRIVE_Ka = 56.179;  // rad/Vs^2
 
     // PID Constants
-    public static final double ANGLE_KP = -0.024; // 0.065;
+    public static final double ANGLE_KP = 0.024; // 0.065;
     public static final double ANGLE_KI = 0; // 0.00125;
     public static final double ANGLE_KD = 0; // 0.1
     public static final double ANGLE_PID_EPISLON = 1;
