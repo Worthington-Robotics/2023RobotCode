@@ -91,8 +91,6 @@ public class Constants {
     // Pigeon ID
     public static final int PIGEON_ID = 1;
 
-    // Lights
-    public static final int LIGHTS_ID = 0;
 
     // ### Joystick Constants ###
     public static final Joystick MASTER = new Joystick(0);
@@ -127,10 +125,7 @@ public class Constants {
     public static final double DEAD_ZONE = 0.05;
     public static final double OPEN_LOOP_FILTER = 0.3;
     
-    // Angle PID
-    public static final double ANGLE_KP = 1.0 / 130.0;
-    public static final double ANGLE_ACCEPTANCE = 1.5;
-    public static final double ANGLE_PID_MINIMUM_TIME = 0.1;
+  
 
     //Lights Constants
     public static final int LIGHTS_ID = 0;
@@ -162,8 +157,7 @@ public class Constants {
     // Correction for pigeon pitch inaccuracy
     public static final double DRIVE_LEVEL_ZERO = -2.5;
 
-    // ### Lightbar values ###
-    public static final int LIGHTS_LED_COUNT = 60;
+
 
     // ### Constants kept around for compatability with library code ###
     
@@ -204,7 +198,7 @@ public class Constants {
     public static final double DRIVE_Ka = 56.179;  // rad/Vs^2
 
     // PID Constants
-    public static final double ANGLE_KP = -0.024; // 0.065;
+    public static final double ANGLE_KP = 0.024; // 0.065;
     public static final double ANGLE_KI = 0; // 0.00125;
     public static final double ANGLE_KD = 0; // 0.1
     public static final double ANGLE_PID_EPISLON = 1;

@@ -104,9 +104,9 @@ public class Arm extends Subsystem {
 		periodic.turretDegree = periodic.turretEncoder / Constants.TURRET_ENCODER_PER_DEGREE;
 
 
-		periodic.rawPivotPower = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(3), 1, 0);
-		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(1), .5, -.5);
-		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(0), -.25, .25);
+		periodic.rawPivotPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), 1, 0);
+		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), .5, -.5);
+		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), -.25, .25);
 
 	}
 
