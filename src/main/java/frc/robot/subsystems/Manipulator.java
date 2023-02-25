@@ -13,12 +13,12 @@ public class Manipulator extends Subsystem {
 
 	private TimeOfFlight tof;
 	private TalonFX intakeWheelMotor;
-	private TalonFX intakePivotMotor;
+	private TalonFX intakeWristMotor;
 
 	public class SuperIO extends Subsystem.PeriodicIO {
 		double tofRange = 0;
 		double intakePower = 0;
-        double pivotPower = 0;
+        double wristPower = 0;
 	}
 
 	private SuperIO periodic;
@@ -36,7 +36,7 @@ public class Manipulator extends Subsystem {
 
 	public void writePeriodicOutputs() {
 		intakeWheelMotor.set(ControlMode.PercentOutput, periodic.intakePower);
-        intakePivotMotor.set(ControlMode.PercentOutput, periodic.pivotPower);
+        intakeWristMotor.set(ControlMode.PercentOutput, periodic.wristPower);
 	}
 
 
@@ -45,16 +45,16 @@ public class Manipulator extends Subsystem {
 	}
 
     public void increasePivotPower(){
-        periodic.pivotPower += Constants.PIVOT_INCREMENT;
-        if(periodic.pivotPower >= Constants.MAX_PIVOT_POWER){
-            periodic.pivotPower = Constants.MAX_PIVOT_POWER;
+        periodic.wristPower += Constants.PIVOT_INCREMENT;
+        if(periodic.wristPower >= Constants.MAX_PIVOT_POWER){
+            periodic.wristPower = Constants.MAX_PIVOT_POWER;
         }
     }
 
     public void decreasePivotPower(){
-        periodic.pivotPower -= Constants.PIVOT_INCREMENT;
-        if(periodic.pivotPower <= Constants.MIN_PIVOT_POWER){
-            periodic.pivotPower = Constants.MIN_PIVOT_POWER;
+        periodic.wristPower -= Constants.PIVOT_INCREMENT;
+        if(periodic.wristPower <= Constants.MIN_PIVOT_POWER){
+            periodic.wristPower = Constants.MIN_PIVOT_POWER;
         }
     }
 
@@ -72,7 +72,7 @@ public class Manipulator extends Subsystem {
 
 	public void outputTelemetry() {
 		SmartDashboard.putNumber("Manipulator/IntakePower", periodic.intakePower);
-        SmartDashboard.putNumber("Manipulator/PivotPower", periodic.pivotPower);
+        SmartDashboard.putNumber("Manipulator/WristPower", periodic.wristPower);
 	}
 
 	public LogData getLogger() {

@@ -34,8 +34,8 @@ public class Constants {
     public static final double ANYTHING_OUT_POWER = -.7;
 
     public static final double PIVOT_INCREMENT = 0.1;
-    public static final double MAX_PIVOT_POWER = 0.7;
-    public static final double MIN_PIVOT_POWER = 0;
+    public static final double MAX_PIVOT_POWER = 0.3;
+    public static final double MIN_PIVOT_POWER = -0.3;
 
     // Pigeon ID
     public static final int PIGEON_ID = 1;

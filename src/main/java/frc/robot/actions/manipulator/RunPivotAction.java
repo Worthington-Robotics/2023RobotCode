@@ -5,9 +5,15 @@ import frc.robot.subsystems.Manipulator;
 
 public class RunPivotAction extends Action{
 
+    double power;
+
+    public RunPivotAction (double power){
+        this.power = power;
+    }
+
     @Override
     public void onStart() {
-        Manipulator.getInstance().increasePivotPower();   
+        Manipulator.getInstance().setWristPower(power);   
     }
 
     @Override
@@ -21,7 +27,7 @@ public class RunPivotAction extends Action{
 
     @Override
     public void onStop() {
-        Manipulator.getInstance().decreasePivotPower();  
+        Manipulator.getInstance().setWristPower(0);    
     }
     
 }

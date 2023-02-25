@@ -37,12 +37,15 @@ public class Robot extends TimedRobot {
     private Looper enabledLooper, disabledLooper;
 
     // Input bindings
-    private JoystickButton transmissionButton = new JoystickButton(Constants.MASTER, 1);
-    private JoystickButton limelightRotateButton = new JoystickButton(Constants.MASTER, 9);
-    private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 7);
-    private JoystickButton intakeButton = new JoystickButton(Constants.MASTER, 3);
-    private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 4);
-    private JoystickButton pivotIntakeButton = new JoystickButton(Constants.MASTER, 2);
+    private JoystickButton driveGearButton = new JoystickButton(Constants.SECOND, 1);
+    private JoystickButton intakeButton = new JoystickButton(Constants.SECOND, 2);
+    private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 3);
+    private JoystickButton writstDownButton = new JoystickButton(Constants.SECOND, 4);
+    private JoystickButton turretButton = new JoystickButton(Constants.SECOND, 5);
+    private JoystickButton extensionButton = new JoystickButton(Constants.SECOND, 6);
+    private JoystickButton autoLevelButton = new JoystickButton(Constants.SECOND, 7);
+    private JoystickButton limelightRotateButton = new JoystickButton(Constants.SECOND, 9);
+    private JoystickButton intakeReverseButton = new JoystickButton(Constants.SECOND, 10);
     /**
      * This function is run when the robot is first started up and should be used
      * for any initialization code.
@@ -167,11 +170,12 @@ public class Robot extends TimedRobot {
     public void testPeriodic() {}
 
     public void initButtons() {
-        transmissionButton.whileTrue(Action.toCommand(new GearChangeAction()));
+        driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
         intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
         intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER)));
         autoLevelButton.whileTrue(Action.toCommand(new DriveLevelAction()));
         limelightRotateButton.whileTrue(Action.toCommand(new DriveTurnActionLimelight()));
-        pivotIntakeButton.whileTrue(Action.toCommand(new RunPivotAction()));
+        wristUpButton.whileTrue(Action.toCommand(new RunPivotAction(.3)));
+        writstDownButton.whileTrue(Action.toCommand(new RunPivotAction(-.3)));
     }
 }
