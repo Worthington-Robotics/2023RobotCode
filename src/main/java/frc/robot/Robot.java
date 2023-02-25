@@ -17,13 +17,14 @@ import frc.lib.models.DriveTrajectoryGenerator;
 import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
 import frc.robot.autos.AutoChooser;
-import frc.robot.subsystems.SuperStructure;
 import frc.robot.subsystems.SuperStructure.IntakePosition;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.arm.OpenClaw;
-import frc.robot.actions.drive.DriveLevelAction;
 import frc.robot.actions.drive.DriveTurnActionLimelight;
 import frc.robot.actions.drive.GearChangeAction;
+import frc.robot.actions.drive.GyroLockAction;
+import frc.robot.actions.drive.SetPositionAction;
+import frc.robot.actions.drive.TeleopLevelAction;
 import frc.robot.actions.superstructure.MoveIntakeAction;
 import frc.robot.actions.superstructure.RunIntakeAction;
 import frc.robot.actions.superstructure.SwitchSolenoid;
@@ -43,9 +44,10 @@ public class Robot extends TimedRobot {
     private JoystickButton clawButton = new JoystickButton(Constants.SECOND, 1);
     private JoystickButton transmissionButton = new JoystickButton(Constants.MASTER, 1);
     private JoystickButton intakeSolenoidButton = new JoystickButton(Constants.MASTER, 6);
-    private JoystickButton intakeCubeButton = new JoystickButton(Constants.MASTER, 4);
+    private JoystickButton gryoLockButton = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton limelightRotateButton = new JoystickButton(Constants.MASTER, 6);
     private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 7);
+    private JoystickButton resetPoseButton = new JoystickButton(Constants.MASTER, 8);
     private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 2);
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton intakeDownButton = new JoystickButton(Constants.MASTER, 10);
@@ -82,6 +84,8 @@ public class Robot extends TimedRobot {
 
         initButtons();
         CommandScheduler.getInstance().enable();
+        AutoChooser.getInstance().logAuto();
+        AutoChooser.getInstance().printList();
     }
 
     /**
@@ -127,8 +131,9 @@ public class Robot extends TimedRobot {
         // Reset anything here
         DriveTrain.getInstance().reset();
         enabledLooper.start();
+        Lights.getInstance().reset();
 
-        AutoChooser.getInstance().run();
+        AutoChooser.getInstance().run_from_selection();
     }
 
     /**
@@ -182,10 +187,11 @@ public class Robot extends TimedRobot {
         clawButton.whileTrue(Action.toCommand(new OpenClaw()));
         intakeConeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CONE_IN_POWER)));
         intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
-        intakeCubeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CUBE_IN_POWER)));
         intakeUpButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kUp)));
         intakeDownButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kDown)));
-        autoLevelButton.whileTrue(Action.toCommand(new DriveLevelAction()));
+        autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
         limelightRotateButton.whileTrue(Action.toCommand(new DriveTurnActionLimelight()));
+        resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
+        gryoLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
     }
 }
