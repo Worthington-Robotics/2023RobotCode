@@ -122,7 +122,7 @@ public class Arm extends Subsystem {
 						setExtensionPower(periodic.rawExtensionPower);
 						break;
 					case OPEN_CLOSED_LOOP:
-						periodic.desiredArmLength = convertRawExtensionIntoEncoder(periodic.rawExtensionPower);
+						periodic.desiredArmLengthEncoder = convertRawExtensionIntoEncoder(periodic.rawExtensionPower);
 						periodic.desiredPivotEncoder = convertRawPivotIntoEncoder(periodic.rawPivotPower);
 						periodic.desiredTurretEncoder = convertRawTurretIntoEncoder(periodic.rawTurretPower);
 						armAnglePID();

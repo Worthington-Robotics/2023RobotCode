@@ -38,6 +38,8 @@ public class Constants {
     public static final double PIVOT_INCREMENT = 0.1;
     public static final double MAX_PIVOT_POWER = 0.7;
     public static final double MIN_PIVOT_POWER = 0;
+
+    public static final double WRIST_PIVOT_KP = 1.0; //TODO: change this kp
     
     // Arm Constants - Measurements
     public static final double PIVOT_ENCODER_PER_DEGREE = 416.31;
