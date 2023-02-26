@@ -15,10 +15,11 @@ public class Manipulator extends Subsystem {
 	private TalonFX intakeMotor;
 
 	public class SuperIO extends Subsystem.PeriodicIO {
-		// TOF range from the backstop
-		double backstopRange = 0;
 		// Motor demand to set intake speed
-		double wristMotorPower, intakeMotorPower;
+		double wristMotorPower;
+		double intakeMotorPower;
+		double rawWristMotorPower;
+		double rawIntakeMotorPower;
 	}
 
 	private SuperIO periodic;
@@ -38,12 +39,17 @@ public class Manipulator extends Subsystem {
 	}
 
 	public void readPeriodicInputs() {
-		//periodic.backstopRange = backstopTOF.getRange();
+		periodic.rawWristMotorPower = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(3), 1,0);
 	}
 
 	public void writePeriodicOutputs() {
 		wristMotor.set(ControlMode.PercentOutput, periodic.wristMotorPower);
 		intakeMotor.set(ControlMode.PercentOutput, periodic.intakeMotorPower);
+	}
+
+	//convert joystick values into motor powers
+	public void convertRawWristPowerIntoEncoder(double inputPower){
+		return inputPower * 1000;
 	}
 
 	// Set the intake demand to the specified value

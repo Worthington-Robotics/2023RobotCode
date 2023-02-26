@@ -117,9 +117,6 @@ public class Arm extends Subsystem {
 			public void onLoop(double timestamp) {
 				switch (periodic.currentMode) {
 					case OPEN_LOOP:
-						periodic.extensionPower = periodic.rawExtensionPower;
-						periodic.turretPower = periodic.rawTurretPower;
-						periodic.pivotPower = periodic.rawPivotPower;
 						setTurretPower(periodic.rawTurretPower);
 						setPivotPower(periodic.rawPivotPower);
 						setExtensionPower(periodic.rawExtensionPower);
@@ -127,7 +124,7 @@ public class Arm extends Subsystem {
 					case OPEN_CLOSED_LOOP:
 						periodic.desiredArmLength = convertRawExtensionIntoEncoder(periodic.rawExtensionPower);
 						periodic.desiredPivotEncoder = convertRawPivotIntoEncoder(periodic.rawPivotPower);
-						periodic.desiredTurretEncoder = convertRawTurretIntoEncoder(periodic.rawTurretPower); //multiply by sontant
+						periodic.desiredTurretEncoder = convertRawTurretIntoEncoder(periodic.rawTurretPower);
 						armAnglePID();
 						armExtensionPID();
 						turretAnglePID();
@@ -150,14 +147,13 @@ public class Arm extends Subsystem {
 	}
 
 	public void writePeriodicOutputs() {
-		armMasterMotor.set(ControlMode.PercentOutput, periodic.rawPivotPower);
-		extensionMotor.set(ControlMode.PercentOutput, periodic.rawExtensionPower);
-		turretMotor.set(ControlMode.PercentOutput, periodic.rawTurretPower);
-		armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
-		// extensionMotor.set(ControlMode.PercentOutput, periodic.extensionPower);
-		// turretMotor.set(ControlMode.PercentOutput, periodic.turretPower);
-		// armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder, DemandType.ArbitraryFeedForward, periodic.pivotPower);
+		armMasterMotor.set(ControlMode.PercentOutput, periodic.pivotPower);
+		extensionMotor.set(ControlMode.PercentOutput, periodic.rextensionPower);
+		turretMotor.set(ControlMode.PercentOutput, periodic.turretPower);
 		armSlaveMotor.set(ControlMode.Follower, Constants.ARM_ARM_M_ID);
+		
+		armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
+		armSlaveMotor.set(ControlMode.Position, periodic.desiredPivotEncoder)
 		extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
 	}
 
@@ -257,6 +253,7 @@ public class Arm extends Subsystem {
 	}
 
 	public void turretAnglePID() {
+		periodic.turretPower = periodic.rawTurretPower;
 		//turretMotor.config_kP(0, Constants.TURRET_KP);
 		// turretMotor.config_kP(0, getLengthError())
 		// periodic.turretPower = periodic.turretError * Constants.TURRET_KP;
