@@ -1,10 +1,6 @@
 package frc.robot.actions.arm;
-
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Timer;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.Arm;
-import frc.robot.Constants;
 
 public class StayTargetActions {
 	

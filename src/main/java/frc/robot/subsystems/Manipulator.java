@@ -8,7 +8,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import frc.lib.util.HIDHelper;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
-import frc.lib.util.Util;
 
 public class Manipulator extends Subsystem {
 	private static Manipulator instance = new Manipulator();
@@ -45,7 +44,7 @@ public class Manipulator extends Subsystem {
 		wristMotor.setNeutralMode(NeutralMode.Brake);
 		intakeMotor = new TalonFX(Constants.INTAKE_MOTOR_ID, "Default Name");
 		intakeMotor.setNeutralMode(NeutralMode.Brake);
-		// TODO: Add intake TOF and HID helper
+		// TODO: Add intake TOF
 	}
 
 	public void readPeriodicInputs() {

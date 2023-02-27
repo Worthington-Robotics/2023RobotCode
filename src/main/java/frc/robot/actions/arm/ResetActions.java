@@ -1,5 +1,4 @@
 package frc.robot.actions.arm;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Timer;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.Arm;
@@ -81,10 +80,7 @@ public class ResetActions {
 		}
 
 		@Override
-		public void onLoop() {
-			// TODO Auto-generated method stub
-			
-		}
+		public void onLoop() {}
 
 		@Override
 		public boolean isFinished() {
