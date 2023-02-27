@@ -13,25 +13,26 @@ import frc.lib.util.Util;
 public class Manipulator extends Subsystem {
 	private static Manipulator instance = new Manipulator();
 	public static Manipulator getInstance() { return instance; }
+	public ManipulatorIO periodic;
 
 	private TalonFX wristMotor;
 	private TalonFX intakeMotor;
+	public State state;
 
-	public enum ManipulatorMode {
+	public enum State {
 		OPEN_LOOP,
 		OPEN_CLOSED_LOOP,
 		CLOSED_LOOP
     }
 
-	public class ManipulatorIO extends Subsystem.PeriodicIO {
+	public class ManipulatorIO extends PeriodicIO {
 		// Motor demand to set intake speed
 		double wristMotorPower;
 		double intakeMotorPower;
 		double rawWristMotorPower;
 		double desiredWristEncoder;
+		double desiredArmLength;
 	}
-
-	private ManipulatorIO periodic;
 
 	public Manipulator() {
 		periodic = new ManipulatorIO();
@@ -67,12 +68,12 @@ public class Manipulator extends Subsystem {
 
 			@Override
 			public void onLoop(double timestamp) {
-				switch (periodic.currentMode) {
+				switch (state) {
 					case OPEN_LOOP:
 						setWristPower(periodic.rawWristMotorPower);
 						break;
 					case OPEN_CLOSED_LOOP:
-						periodic.desiredArmLength = convertRawExtensionIntoEncoder(periodic.rawWristMotorPower);
+						periodic.desiredArmLength = convertRawWristPowerIntoEncoder(periodic.rawWristMotorPower);
 						wristAnglePID();
 					case CLOSED_LOOP:
 						wristAnglePID();
@@ -90,7 +91,7 @@ public class Manipulator extends Subsystem {
 	}
 
 	//convert joystick values into motor powers
-	public void convertRawWristPowerIntoEncoder(double inputPower){
+	public double convertRawWristPowerIntoEncoder(double inputPower){
 		return inputPower * 1000;
 	}
 
@@ -106,7 +107,7 @@ public class Manipulator extends Subsystem {
 	//PID
 	
 	public void wristAnglePID(){
-		armMasterMotor.config_kP(0, Constants.WRIST_PIVOT_KP);
+		wristMotor.config_kP(0, Constants.WRIST_PIVOT_KP);
 	}
 
 

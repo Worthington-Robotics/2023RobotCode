@@ -148,12 +148,12 @@ public class Arm extends Subsystem {
 
 	public void writePeriodicOutputs() {
 		armMasterMotor.set(ControlMode.PercentOutput, periodic.pivotPower);
-		extensionMotor.set(ControlMode.PercentOutput, periodic.rextensionPower);
+		extensionMotor.set(ControlMode.PercentOutput, periodic.extensionPower);
 		turretMotor.set(ControlMode.PercentOutput, periodic.turretPower);
 		armSlaveMotor.set(ControlMode.Follower, Constants.ARM_ARM_M_ID);
 		
 		armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
-		armSlaveMotor.set(ControlMode.Position, periodic.desiredPivotEncoder)
+		armSlaveMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
 		extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
 	}
 
