@@ -13,9 +13,6 @@ import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.lib.util.Util;
 
-
-
-
 public class Arm extends Subsystem {
 	TalonFX extensionMotor, turretMotor, armMasterMotor, armSlaveMotor;
 
@@ -100,7 +97,6 @@ public class Arm extends Subsystem {
 		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), .5, -.5);
 		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), -.25, .25);
 		periodic.rawPivotPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), 1,0);
-
 	}
 
 

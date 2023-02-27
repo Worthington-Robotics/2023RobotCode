@@ -40,7 +40,9 @@ public class Lights extends Subsystem {
                 switch(state) {
                     case LIGHTS_RAINBOW:
                     for (int i = 0; i < ledBuffer.getLength(); i++) {
-                        double h = Math.abs(((timestamp - (0.1*i)) % 10.0) / 10);
+                        double speed = 10.0;
+                        double length = 0.1;
+                        double h = Math.abs(((timestamp - (length*i)) % speed) / speed);
                         ledBuffer.setHSV(i, (int)(h * 180.0), 255, 230);
                     }
                         break;
