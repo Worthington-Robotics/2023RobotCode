@@ -295,7 +295,6 @@ public class Arm extends Subsystem {
 	public void setExtensionPower(double power) {
 			periodic.extensionPower = power;
 	}
-
 	
 	// Logging
 
