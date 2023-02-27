@@ -22,7 +22,7 @@ public class StayTargetActions {
 
 		@Override
 		public void onStop() {
-			//Arm.getInstance().setTurretPower(0.0d);
+			// Arm.getInstance().setTurretPower(0.0d);
 		}
 
 		@Override

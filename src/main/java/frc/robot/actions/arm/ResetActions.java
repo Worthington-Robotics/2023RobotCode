@@ -76,7 +76,7 @@ public class ResetActions {
 
 		@Override
 		public void onStart() {
-			// Arm.getInstance().setDesiredTurretDegree(desiredAngle);	
+			Arm.getInstance().setDesiredTurret(desiredAngle);
 		}
 
 		@Override
