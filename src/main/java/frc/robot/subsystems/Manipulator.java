@@ -16,7 +16,6 @@ public class Manipulator extends Subsystem {
 
 	private TalonFX wristMotor;
 	private TalonFX intakeMotor;
-	public State state;
 
 	public enum State {
 		OPEN_LOOP,
@@ -25,6 +24,7 @@ public class Manipulator extends Subsystem {
     }
 
 	public class ManipulatorIO extends PeriodicIO {
+		public State state = State.OPEN_CLOSED_LOOP;
 		// Motor demand to set intake speed
 		double wristMotorPower;
 		double intakeMotorPower;
@@ -67,7 +67,7 @@ public class Manipulator extends Subsystem {
 
 			@Override
 			public void onLoop(double timestamp) {
-				switch (state) {
+				switch (periodic.state) {
 					case OPEN_LOOP:
 						setWristPower(periodic.rawWristMotorPower);
 						break;
@@ -111,7 +111,9 @@ public class Manipulator extends Subsystem {
 
 
 	public void reset() {
+
 	}
+
 
 	// ### Telemetry ###
 
