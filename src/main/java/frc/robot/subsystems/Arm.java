@@ -101,6 +101,8 @@ public class Arm extends Subsystem {
 		enabledLooper.register(new Loop() {
 			@Override
 			public void onStart(double timestamp) {
+				//TODO: Zero encoders on startup
+				resetEncoders();
 				reset();
 			}
 
