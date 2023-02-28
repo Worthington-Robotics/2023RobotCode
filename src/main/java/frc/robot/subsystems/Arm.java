@@ -227,12 +227,12 @@ public class Arm extends Subsystem {
 	}
 	
 	public double convertRawPivotIntoEncoder(double inputPower) {
-		return inputPower * 30000;
+		return inputPower * 588200;
 	}
 
 	public double convertRawExtensionIntoEncoder(double inputPower) {
 		if (inputPower >= 0) {
-			return inputPower * 125000;
+			return inputPower * 116200;
 		} else {
 			return 0;
 		}
@@ -256,9 +256,9 @@ public class Arm extends Subsystem {
 		if (periodic.turretButtonIsPressed) {
 			periodic.turretPower = periodic.rawTurretPower;
 		}
-		if (periodic.currentMode == ArmMode.CLOSED_LOOP) {
-			turretMotor.config_kP(0, Constants.TURRET_KP);
-		}
+		// if (periodic.currentMode == ArmMode.CLOSED_LOOP) {
+		// 	turretMotor.config_kP(0, Constants.TURRET_KP);
+		// }
 		//turretMotor.config_kP(0, Constants.TURRET_KP);
 		// turretMotor.config_kP(0, getLengthError())
 		// periodic.turretPower = periodic.turretError * Constants.TURRET_KP;

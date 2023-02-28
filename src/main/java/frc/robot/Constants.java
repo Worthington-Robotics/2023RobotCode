@@ -47,7 +47,7 @@ public class Constants {
     public static final double TURRET_ENCODER_PER_DEGREE = 218.56;
     public static final double ENCODER_PER_INCH = 3904.5;
 
-    public static final double ARM_PIVOT_KP = 1 / 2000.0; // TODO: Adjust all kps and mins and maxs for arm
+    public static final double ARM_PIVOT_KP = .014; // TODO: Adjust all kps and mins and maxs for arm
     public static final double PIVOT_ANGLE_ENCODER_ACCEPTANCE = 750.0; //TODO: change this value
     public static final double PIVOT_MIN_TIME =21.0;
 
@@ -55,7 +55,7 @@ public class Constants {
     public static final double TURRET_ANGLE_ENCODER_ACCEPTANCE = 500.0;
     public static final double TURRET_MIN_TIME = 1.5;
 
-    public static final double ARM_EXTENSION_KP = 1.0 / 800.0; //TODO: adjust this kp
+    public static final double ARM_EXTENSION_KP = .02; //TODO: adjust this kp
     public static final double EXTENSION_DISTANCE_ACCEPTED = 5000.0; //TODO: adjust this value
     public static final double EXTENSION_MIN_TIME = 1.5;
     
