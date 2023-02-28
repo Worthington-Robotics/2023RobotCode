@@ -191,6 +191,10 @@ public class Constants {
     public static final double PATH_LOOK_AHEAD_TIME = 0.4;  // seconds to look ahead along the path for steering
     public static final double PATH_MIN_LOOK_AHEAD_DISTANCE = 24.0;  // inches
 
+    // Turret Limelight Turn Constants
+    public static final double LIMELIGHT_ANGLE_ACCEPTANCE = 2.0;
+    public static final double LIMELIGHT_ANGLE_PID_MINIMUM_TIME = 0.5;
+
     // Electrical Constants
     public static final double DRIVE_VCOMP = 10.0; //V
     public static final double DRIVE_ENCODER_PPR_HIGH_GEAR = 14200; //Empir through the magic of tape and wheel rotations HIGH GEAR
