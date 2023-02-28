@@ -15,11 +15,11 @@ import frc.robot.Constants;
 		@Override
 		public void onStart() {
 			Arm.getInstance().setDesiredLength(desiredLength);	
+			Arm.getInstance().setClosedLoop();
 		}
 
 		@Override
 		public void onLoop() {
-			
 			
 		}
 
@@ -37,7 +37,6 @@ import frc.robot.Constants;
 
 		@Override
 		public void onStop() {
-			// TODO Auto-generated method stub
 			
 		}
 

@@ -21,7 +21,7 @@ public class RunIntakeAction extends Action {
 
     @Override
     public void onStop() {
-        Manipulator.getInstance().setIntakePower(0);
+        Manipulator.getInstance().setIntakePower(0.0);
     }
 
     @Override

@@ -17,7 +17,7 @@ public class Constants {
     public static final int DRIVE_TRANSMISSION_FORWARD = 1;
     public static final int DRIVE_TRANSMISSION_REVERSE = 0;
     
-    // Arm and Turret Constants
+    // Arm, Turret, Manipulator Constants
 
     // Arm Consants - IDs
     public static final int ARM_TURRET_ID = 9;
@@ -29,34 +29,34 @@ public class Constants {
     public static final int ARM_GRABBER_FWD_CHANNEL = 5;
     public static final int ARM_GRABBER_REV_CHANNEL = 4;
 
-    //Manipulator
+    //Manipulator Constants
     public static final int INTAKE_WHEEL_ID = 5;
     public static final int MANIPULATOR_TOF_ID = 1;
-    public static final double INTAKE_POWER = .7;
-    public static final double ANYTHING_OUT_POWER = -.7;
 
-    public static final double PIVOT_INCREMENT = 0.1;
-    public static final double MAX_PIVOT_POWER = 0.7;
-    public static final double MIN_PIVOT_POWER = 0;
+    public static final double INTAKE_POWER = .5;
+    public static final double ANYTHING_OUT_POWER = -.5;
+    public static final double INTAKE_ACCEPTANCE_RANGE = 100.0; //TODO: change this range value
 
-    public static final double WRIST_PIVOT_KP = 1.0; //TODO: change this kp
+    public static final double WRIST_PIVOT_KP = 1 / 1500.0; //TODO: change this kp
+    public static final double WRIST_MIN_TIME = 2.0;
+    public static final double WRIST_ANGLE_ENCODER_ACCEPTANCE = 500.0; //TODO: change this value
+    public static final double WRIST_ENCODER_PER_DEGREE = 400.0; //TODO: change this value
     
-    // Arm Constants - Measurements
+    // Arm Constants
     public static final double PIVOT_ENCODER_PER_DEGREE = 416.31;
     public static final double TURRET_ENCODER_PER_DEGREE = 218.56;
     public static final double ENCODER_PER_INCH = 3904.5;
 
-    // Arm Constants - PID 
-    public static final double ARM_PIVOT_KP = 1.9; // TODO: Adjust all kps and mins and maxs for arm
-    public static final double PIVOT_ANGLE_ACCEPTANCE = 2.0;
-    public static final double PIVOT_MIN_TIME = 1.0;
+    public static final double ARM_PIVOT_KP = 1 / 2000.0; // TODO: Adjust all kps and mins and maxs for arm
+    public static final double PIVOT_ANGLE_ENCODER_ACCEPTANCE = 750.0; //TODO: change this value
+    public static final double PIVOT_MIN_TIME =21.0;
 
-    public static final double TURRET_KP = 1.0 / 250.0;
-    public static final double TURRET_ANGLE_ACCEPTANCE = 2.0;
+    public static final double TURRET_KP = 1.0 / 250.0; //TODO: adjust this kp
+    public static final double TURRET_ANGLE_ENCODER_ACCEPTANCE = 500.0;
     public static final double TURRET_MIN_TIME = 1.5;
 
-    public static final double ARM_EXTENSION_KP = 1.0 / 100.0;
-    public static final double EXTENSION_DISTANCE_ACCEPTED = 2.0;
+    public static final double ARM_EXTENSION_KP = 1.0 / 800.0; //TODO: adjust this kp
+    public static final double EXTENSION_DISTANCE_ACCEPTED = 5000.0; //TODO: adjust this value
     public static final double EXTENSION_MIN_TIME = 1.5;
     
     

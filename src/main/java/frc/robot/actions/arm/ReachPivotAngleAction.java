@@ -16,6 +16,7 @@ public class ReachPivotAngleAction extends Action {
     @Override
     public void onStart() {
         Arm.getInstance().setDesiredPivot(desiredDegree);
+        Arm.getInstance().setClosedLoop();
     }
 
     @Override
@@ -26,7 +27,7 @@ public class ReachPivotAngleAction extends Action {
 
     @Override
     public boolean isFinished() {
-        if (Math.abs(Arm.getInstance().getPivotError()) < Constants.PIVOT_ANGLE_ACCEPTANCE
+        if (Math.abs(Arm.getInstance().getPivotError()) < Constants.PIVOT_ANGLE_ENCODER_ACCEPTANCE
             && Timer.getFPGATimestamp() - startTime > Constants.PIVOT_MIN_TIME){
             return true;
         }
@@ -37,7 +38,6 @@ public class ReachPivotAngleAction extends Action {
 
     @Override
     public void onStop() {
-        // TODO Auto-generated method stub
         
     }
 }

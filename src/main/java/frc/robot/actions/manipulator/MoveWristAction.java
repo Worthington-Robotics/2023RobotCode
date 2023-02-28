@@ -3,10 +3,10 @@ package frc.robot.actions.manipulator;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.Manipulator;
 
-public class MoveWrist extends Action {
+public class MoveWristAction extends Action {
 	
 	double power;
-	public MoveWrist(double power) {
+	public MoveWristAction(double power) {
 		this.power = power;
 	}
 

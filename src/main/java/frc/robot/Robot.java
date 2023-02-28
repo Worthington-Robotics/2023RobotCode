@@ -28,6 +28,7 @@ import frc.robot.actions.manipulator.RunIntakeAction;
 import frc.robot.actions.arm.AllowTurretPowerAction;
 import frc.robot.actions.arm.PivotMoveAction;
 import frc.robot.actions.arm.AllowExtensionPowerAction;
+import frc.robot.actions.manipulator.MoveWristAction;
 
 
 /**
@@ -59,6 +60,8 @@ public class Robot extends TimedRobot {
     private JoystickButton pivotUpHighButton = new JoystickButton(Constants.SECOND, 4);
     private JoystickButton pivotDownSlowButton = new JoystickButton(Constants.SECOND, 7);
     private JoystickButton pivotUpSlowButton = new JoystickButton(Constants.SECOND, 8);
+    private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 9);
+    private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 10);
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -204,12 +207,12 @@ public class Robot extends TimedRobot {
         limelightRotateButton.whileTrue(Action.toCommand(new DriveTurnActionLimelight()));
         resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
         gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
-        driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
+
 
         // intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
         // intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER)));
-        // wristUpButton.whileTrue(Action.toCommand(new MoveWrist(.3)));
-        // wristDownButton.whileTrue(Action.toCommand(new MoveWrist(-.3)));
+        wristUpButton.whileTrue(Action.toCommand(new MoveWristAction(.3)));
+        wristDownButton.whileTrue(Action.toCommand(new MoveWristAction(-.3)));
         turretButton.whileTrue(Action.toCommand(new AllowTurretPowerAction()));
         extensionButton.whileTrue(Action.toCommand(new AllowExtensionPowerAction()));
         pivotUpHighButton.whileTrue(Action.toCommand(new PivotMoveAction(.66)));
