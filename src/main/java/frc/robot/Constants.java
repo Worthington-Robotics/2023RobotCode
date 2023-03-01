@@ -141,15 +141,15 @@ public class Constants {
     public static final double DRIVE_TURN_MAXIMUM_SPEED = 0.5;
 
     // Move forward
-    public static final double DRIVE_FORWARD_ACCEPTED_ERROR = 2000.0;
+    public static final double DRIVE_FORWARD_ACCEPTED_ERROR = 5000.0;
     public static final double DRIVE_FORWARD_MINIMUM_SPEED = 0.09;
-    public static final double DRIVE_FORWARD_MAXIMUM_SPEED = 0.8;
+    public static final double DRIVE_FORWARD_MAXIMUM_SPEED = 0.6;
     public static final double DRIVE_FORWARD_MINIMUM_TIME = 0.01;
-    public static final double DRIVE_FORWARD_KP = 1.0 / 100000.0;
+    public static final double DRIVE_FORWARD_KP = 1.0 / 75000.0;
     public static final double DRIVE_FORWARD_KD = 0.0 / 10000.0;
     public static final double DRIVE_FORWARD_D_FILT = 2.5;
     // Heading correction when moving forward
-    public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 300.0;
+    public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 150.0;
 
     // Auto level
     public static final double DRIVE_LEVEL_KP = 1.0 / 90.0;

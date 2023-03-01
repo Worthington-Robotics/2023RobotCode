@@ -282,6 +282,10 @@ public class DriveTrain extends Subsystem {
         periodic.currentMode = DriveMode.OPEN_LOOP;
     }
 
+    public void setGyro(double heading) {
+        gyro.setFusedHeading(heading);
+    }
+
     public void setMoveForward(double distance) {
         periodic.currentMode = DriveMode.MOVE_FORWARD;
         setTargetDistance(distance);
