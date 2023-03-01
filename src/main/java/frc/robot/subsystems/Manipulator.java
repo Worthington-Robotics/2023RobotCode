@@ -64,6 +64,7 @@ public class Manipulator extends Subsystem {
 			@Override
 			public void onStart(double timestamp) {
 				reset();
+				wristAnglePID();
 			}
 
 			@Override
@@ -74,10 +75,8 @@ public class Manipulator extends Subsystem {
 						break;
 					case OPEN_CLOSED_LOOP:
 						periodic.desiredWristEncoder = convertRawWristPowerIntoEncoder(periodic.rawWristMotorPower);
-						wristAnglePID();
 						break;
 					case CLOSED_LOOP:
-						wristAnglePID();
 						break;
 				}
 			}
@@ -85,6 +84,7 @@ public class Manipulator extends Subsystem {
 			@Override
 			public void onStop(double timestamp) {
 				reset();
+				wristAnglePID();
 			}
 		});
 	}
@@ -108,9 +108,9 @@ public class Manipulator extends Subsystem {
 	}
 
 	// Set the desired angle of the wrist
-	public void setDesiredWristAngle(double theta) {
-		periodic.desiredWristDegree = theta;
-		periodic.desiredWristEncoder = theta * Constants.WRIST_ENCODER_PER_DEGREE;
+	public void setDesiredWristAngle(double thetaEncoder) {
+		periodic.desiredWristDegree = thetaEncoder / Constants.WRIST_ENCODER_PER_DEGREE;
+		periodic.desiredWristEncoder = thetaEncoder;
 		periodic.wristEncoderError = periodic.desiredWristEncoder - periodic.wristEncoder;
 	}
 

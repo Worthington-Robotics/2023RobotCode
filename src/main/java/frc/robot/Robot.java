@@ -209,8 +209,9 @@ public class Robot extends TimedRobot {
         gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
 
 
-        // intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
-        // intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER)));
+        //intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
+        //intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER)));
+
         wristUpButton.whileTrue(Action.toCommand(new MoveWristAction(.3)));
         wristDownButton.whileTrue(Action.toCommand(new MoveWristAction(-.3)));
         turretButton.whileTrue(Action.toCommand(new AllowTurretPowerAction()));

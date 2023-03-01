@@ -25,14 +25,14 @@ import frc.robot.Constants;
 
 		@Override
 		public boolean isFinished() {
-			if (Math.abs(Arm.getInstance().getLengthError()) < Constants.EXTENSION_DISTANCE_ACCEPTED
-				&& Timer.getFPGATimestamp() - startTime > Constants.EXTENSION_MIN_TIME){
-				return true;
-			}
-			else {
-				return false;
-			}
-	
+			// if (Math.abs(Arm.getInstance().getLengthError()) < Constants.EXTENSION_DISTANCE_ACCEPTED
+			// 	&& Timer.getFPGATimestamp() - startTime > Constants.EXTENSION_MIN_TIME){
+			// 	return true;
+			// }
+			// else {
+			// 	return false;
+			// }
+			return true;
 		}
 
 		@Override

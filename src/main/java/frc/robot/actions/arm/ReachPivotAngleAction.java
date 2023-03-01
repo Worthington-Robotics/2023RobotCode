@@ -7,7 +7,6 @@ import frc.robot.Constants;
 public class ReachPivotAngleAction extends Action {
     double desiredDegree = 0.0;
     double startTime = Timer.getFPGATimestamp();
-    // TODO: Add minimum times with error checking after merge
 
     public ReachPivotAngleAction (double theta) {
         this.desiredDegree = theta;
@@ -27,13 +26,14 @@ public class ReachPivotAngleAction extends Action {
 
     @Override
     public boolean isFinished() {
-        if (Math.abs(Arm.getInstance().getPivotError()) < Constants.PIVOT_ANGLE_ENCODER_ACCEPTANCE
-            && Timer.getFPGATimestamp() - startTime > Constants.PIVOT_MIN_TIME){
-            return true;
-        }
-        else {
-            return false;
-        }
+        // if (Math.abs(Arm.getInstance().getPivotError()) < Constants.PIVOT_ANGLE_ENCODER_ACCEPTANCE
+        //     && Timer.getFPGATimestamp() - startTime > Constants.PIVOT_MIN_TIME){
+        //     return true;
+        // }
+        // else {
+        //     return false;
+        // }
+        return true;
     }
 
     @Override
