@@ -54,7 +54,7 @@ public class Manipulator extends Subsystem {
 	public void writePeriodicOutputs() {
 		intakeMotor.set(ControlMode.PercentOutput, periodic.intakeMotorPower);
 		wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
-		if (periodic.currentMode == ManipulatorMode.CLOSED_LOOP) {
+		if (periodic.currentMode == ManipulatorMode.OPEN_LOOP) {
 			wristMotor.set(ControlMode.PercentOutput, periodic.wristMotorPower);
 		}
 	}
@@ -96,11 +96,11 @@ public class Manipulator extends Subsystem {
 
 	// Set the intake demand to the specified value
 	public void setIntakePower(double power) {
-		if (intakeTOF.getRange() <= Constants.INTAKE_ACCEPTANCE_RANGE) {
+		//if (intakeTOF.getRange() <= Constants.INTAKE_ACCEPTANCE_RANGE) {
 			periodic.intakeMotorPower = power;
-		} else {
-			periodic.intakeMotorPower = 0.0;
-		}
+		//} else {
+			//periodic.intakeMotorPower = 0.0;
+		//}
 	}
 
 	public void setWristPower(double power){

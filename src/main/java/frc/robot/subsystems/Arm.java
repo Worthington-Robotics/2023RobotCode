@@ -253,14 +253,6 @@ public class Arm extends Subsystem {
 	
 	// MainLoop Functions (Mostly PID) - Could be private
 
-	// public void armAnglePID() {
-	// 	// armMasterMotor.config_kP(0, Constants.ARM_PIVOT_KP);
-	// 	// armMasterMotor.config_kP(0, Constants.ARM_PIVOT_KP);
-	// 	// double leverLengthCoeff = periodic.armLength * Constants.ARM_EXTENSION_KP;
-	// 	// periodic.pivotPower = Math.sin(periodic.armDegree) * Constants.ARM_PIVOT_KP * leverLengthCoeff;
-	// 	// periodic.pivotPower = Util.clampSpeed(periodic.pivotPower, Constants.PIVOT_MIN_SPEED, Constants.PIVOT_MAX_SPEED);
-	// 	// periodic.arbitraryFeedForward = Math.sin(periodic.armDegree) * Constants.ARM_PIVOT_KP * leverLengthCoeff;
-	// }
 
 	public void turretAnglePID() {
 		if (periodic.turretButtonIsPressed) {
@@ -274,16 +266,6 @@ public class Arm extends Subsystem {
 		// periodic.turretPower = periodic.turretError * Constants.TURRET_KP;
 		// periodic.turretPower = Util.clampSpeed(periodic.turretPower, Constants.TURRET_MIN_SPEED, Constants.TURRET_MAX_SPEED);
 	}
-
-	// public void armExtensionPID() {
-	// 	if (periodic.extensionButtonIsPressed) {
-	// 		extensionMotor.config_kP(0, Constants.ARM_EXTENSION_KP);
-	// 	}
-	// 	//periodic.extensionPower = periodic.lengthError * Constants.ARM_EXTENSION_KP;
-	// 	//periodic.extensionPower = Util.clampSpeed(periodic.extensionPower, Constants.EXTENSION_MIN_SPEED, Constants.EXTENSION_MAX_SPEED);
-	// 	// periodic.extensionPower = safetyLimit(periodic.extensionPower, periodic.armLength, 
-	// 	// 	Constants.EXTENSION_WARNING_DISTANCE, Constants.MIN_ARM_LENGTH, Constants.MAX_ARM_LENGTH);
-	// }
 
 	public void setTurretButtonPressedTrue() {
 		periodic.turretButtonIsPressed = true;
