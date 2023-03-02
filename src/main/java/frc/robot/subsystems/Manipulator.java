@@ -25,7 +25,7 @@ public class Manipulator extends Subsystem {
     }
 
 	public class ManipulatorIO extends PeriodicIO {
-		public ManipulatorMode currentMode = ManipulatorMode.OPEN_CLOSED_LOOP;
+		public ManipulatorMode currentMode = ManipulatorMode.OPEN_LOOP;
 		double wristMotorPower;
 		double intakeMotorPower;
 		double rawWristMotorPower;
