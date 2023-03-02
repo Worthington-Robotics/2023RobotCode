@@ -27,6 +27,7 @@ import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
 import frc.robot.actions.arm.AllowTurretPowerAction;
 import frc.robot.actions.arm.PivotMoveAction;
+import frc.robot.actions.auto_poses.FormPoseAction;
 import frc.robot.actions.arm.AllowExtensionPowerAction;
 import frc.robot.actions.manipulator.MoveWristAction;
 
@@ -56,13 +57,15 @@ public class Robot extends TimedRobot {
 
     private JoystickButton turretButton = new JoystickButton(Constants.SECOND, 5);
     private JoystickButton extensionButton = new JoystickButton(Constants.SECOND, 6);
+    private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 3);
+    private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 4);
+    private JoystickButton poseOneButton = new JoystickButton(Constants.SECOND, 1);
+
 
     //private JoystickButton pivotDownHighButton = new JoystickButton(Constants.SECOND, 3);
     //private JoystickButton pivotUpHighButton = new JoystickButton(Constants.SECOND, 4);
    // private JoystickButton pivotDownSlowButton = new JoystickButton(Constants.SECOND, 7);
    // private JoystickButton pivotUpSlowButton = new JoystickButton(Constants.SECOND, 8);
-    //private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 9);
-    //private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 10);
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -85,6 +88,8 @@ public class Robot extends TimedRobot {
         DriveTrajectoryGenerator.getInstance();
         enabledLooper = new Looper();
         disabledLooper = new Looper();
+        Arm.getInstance().resetEncoders();
+        Manipulator.getInstance().resetManipulatorEncoder();
 
         // Register the looper threads to the manager to use for enabled and disabled
         manager.registerEnabledLoops(enabledLooper);
@@ -210,6 +215,7 @@ public class Robot extends TimedRobot {
 
         turretButton.whileTrue(Action.toCommand(new AllowTurretPowerAction()));
         extensionButton.whileTrue(Action.toCommand(new AllowExtensionPowerAction()));
-
+        wristUpButton.whileTrue(Action.toCommand(new MoveWristAction(.33)));
+        wristDownButton.whileTrue(Action.toCommand(new MoveWristAction(-.33)));
     }
 }

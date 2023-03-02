@@ -102,8 +102,8 @@ public class Arm extends Subsystem {
 			@Override
 			public void onStart(double timestamp) {
 				reset();
-				resetEncoders();
 				configPID();
+				//resetTurretExtensionEncoders();
 			}
 
 			@Override
@@ -222,6 +222,7 @@ public class Arm extends Subsystem {
 		armSlaveMotor.setSelectedSensorPosition(0);
 	}
 
+
 	public void configPID(){
 		armMasterMotor.config_kP(0, Constants.ARM_PIVOT_KP);
 		armMasterMotor.config_kI(0, 0);
@@ -236,12 +237,12 @@ public class Arm extends Subsystem {
 	}
 	
 	public double convertRawPivotIntoEncoder(double inputPower) {
-		return inputPower * 588200;
+		return inputPower * 800000;
 	}
 
 	public double convertRawExtensionIntoEncoder(double inputPower) {
 		if (inputPower >= 0) {
-			return inputPower * 116200;
+			return inputPower * 135000;
 		} else {
 			return 0;
 		}

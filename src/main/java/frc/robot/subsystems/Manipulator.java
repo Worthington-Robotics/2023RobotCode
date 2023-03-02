@@ -48,14 +48,16 @@ public class Manipulator extends Subsystem {
 	}
 
 	public void readPeriodicInputs() {
+		periodic.wristEncoder = wristMotor.getSelectedSensorPosition();
 		periodic.rawWristMotorPower = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(3), 1,0);
 	}
 
 	public void writePeriodicOutputs() {
 		intakeMotor.set(ControlMode.PercentOutput, periodic.intakeMotorPower);
-		wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
 		if (periodic.currentMode == ManipulatorMode.OPEN_LOOP) {
 			wristMotor.set(ControlMode.PercentOutput, periodic.wristMotorPower);
+		} else {
+			wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
 		}
 	}
 
@@ -140,7 +142,11 @@ public class Manipulator extends Subsystem {
 
 
 	public void reset() { 
-		periodic.currentMode = ManipulatorMode.OPEN_CLOSED_LOOP;
+		periodic.currentMode = ManipulatorMode.OPEN_LOOP;
+	}
+
+	public void resetManipulatorEncoder(){
+		wristMotor.setSelectedSensorPosition(0);
 	}
 
 	// ### Telemetry ###
@@ -150,6 +156,7 @@ public class Manipulator extends Subsystem {
 		SmartDashboard.putNumber("Manipulator/WristPower", periodic.wristMotorPower);
 		SmartDashboard.putNumber("Manipulator/RawWristMotorPower", periodic.rawWristMotorPower);
 		SmartDashboard.putNumber("Manipulator/DesiredWristEncoder", periodic.desiredWristEncoder);
+		SmartDashboard.putNumber("Manipulator/WristEncoder", periodic.wristEncoder);
 	}
 
 	public LogData getLogger() {

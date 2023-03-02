@@ -37,7 +37,7 @@ public class Constants {
     public static final double ANYTHING_OUT_POWER = -.5;
     public static final double INTAKE_ACCEPTANCE_RANGE = 5.0; //TODO: change this range value
 
-    public static final double WRIST_PIVOT_KP = 1 / 1500.0; //TODO: change this kp
+    public static final double WRIST_PIVOT_KP = 1 / 200.0; //TODO: change this kp
     public static final double WRIST_MIN_TIME = 1.5;
     public static final double WRIST_ANGLE_ENCODER_ACCEPTANCE = 500.0; //TODO: change this value
     public static final double WRIST_ENCODER_PER_DEGREE = 400.0; //TODO: change this value
