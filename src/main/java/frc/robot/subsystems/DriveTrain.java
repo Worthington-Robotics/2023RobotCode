@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.geometry.Rotation2d;
@@ -90,6 +91,10 @@ public class DriveTrain extends Subsystem {
 
         leftFilter = LinearFilter.singlePoleIIR(0.04, 0.02);
         rightFilter = LinearFilter.singlePoleIIR(0.04, 0.02);
+        forwardLeftMotor.setNeutralMode(NeutralMode.Brake);
+        forwardRightMotor.setNeutralMode(NeutralMode.Brake);
+        rearLeftMotor.setNeutralMode(NeutralMode.Brake);
+        rearRightMotor.setNeutralMode(NeutralMode.Brake);
     }
 
     public enum DriveMode {
