@@ -5,16 +5,16 @@ import frc.robot.subsystems.Arm;
 import frc.robot.Constants;
 
 public class ReachPivotAngleAction extends Action {
-    double desiredDegree = 0.0;
+    double desiredDegreeEncoder = 0.0;
     double startTime = Timer.getFPGATimestamp();
 
     public ReachPivotAngleAction (double theta) {
-        this.desiredDegree = theta;
+        this.desiredDegreeEncoder = theta;
     }
 
     @Override
     public void onStart() {
-        Arm.getInstance().setDesiredPivot(desiredDegree);
+        Arm.getInstance().setDesiredPivot(desiredDegreeEncoder);
         Arm.getInstance().setClosedLoop();
     }
 

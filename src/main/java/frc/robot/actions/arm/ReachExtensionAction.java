@@ -5,16 +5,16 @@ import frc.robot.subsystems.Arm;
 import frc.robot.Constants;
    
 	public class ReachExtensionAction extends Action {
-		double desiredLength = 0.0;
+		double desiredLengthEncoder = 0.0;
 		double startTime = Timer.getFPGATimestamp();
 
 		public ReachExtensionAction (double length) {
-			this.desiredLength = length;
+			this.desiredLengthEncoder = length;
 		}
 
 		@Override
 		public void onStart() {
-			Arm.getInstance().setDesiredLength(desiredLength);	
+			Arm.getInstance().setDesiredLength(desiredLengthEncoder);	
 			Arm.getInstance().setClosedLoop();
 		}
 

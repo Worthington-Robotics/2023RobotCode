@@ -190,7 +190,7 @@ public class Robot extends TimedRobot {
 
         wristUpButton.whileTrue(Action.toCommand(new MoveWristAction(-.33)));
         wristDownButton.whileTrue(Action.toCommand(new MoveWristAction(.33)));
-        poseOneButton.onTrue(Action.toCommand(new FormPoseAction(Constants.highGoalExtensionEncoder, kDefaultPeriod, kDefaultPeriod)));
+        poseOneButton.onTrue(Action.toCommand(new FormPoseAction(1)));
         cycleButton.whileTrue(Action.toCommand(new CycleArmAction()));
     }
 }

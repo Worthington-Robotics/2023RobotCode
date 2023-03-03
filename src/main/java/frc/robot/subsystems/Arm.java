@@ -33,6 +33,13 @@ public class Arm extends Subsystem {
 		CLOSED_LOOP
     }
 
+	public enum Pose {
+		POSE_NOTHING,
+		POSE_ONE,
+		POSE_TWO
+	}
+
+	public double[][] poseEncoderValues = { {1, 2, 3, 4}, {5, 6, 7} };
 
 	public class ArmIO extends PeriodicIO {
 		// Power Values
@@ -70,6 +77,7 @@ public class Arm extends Subsystem {
 
 		// State
 		public ArmMode currentMode = ArmMode.OPEN_LOOP;
+		public Pose currentPose = Pose.POSE_NOTHING;
 
 		// Arbitrary feed forward
 		public double arbitraryFeedForward;
@@ -97,7 +105,6 @@ public class Arm extends Subsystem {
 		enabledLooper.register(new Loop() {
 			@Override
 			public void onStart(double timestamp) {
-				//resetTurretExtensionEncoders();
 			}
 
 			@Override
@@ -165,6 +172,30 @@ public class Arm extends Subsystem {
 
 		SmartDashboard.putBoolean("Arm/turret button pressed", periodic.turretButtonIsPressed);
 		SmartDashboard.putBoolean("Arm/extension button pressed", periodic.extensionButtonIsPressed);
+	}
+
+	public void switchPose(){
+		switch (periodic.currentPose) {
+			case POSE_ONE:
+				setTurretPower(periodic.rawTurretPower);
+				setPivotPower(periodic.rawPivotPower);
+				setExtensionPower(periodic.rawExtensionPower);
+				break;
+			case OPEN_CLOSED_LOOP:
+				if(periodic.extensionButtonIsPressed){
+					periodic.desiredArmLengthEncoder = convertRawExtensionIntoEncoder(periodic.rawExtensionPower);
+				}
+				periodic.desiredPivotEncoder = convertRawPivotIntoEncoder(periodic.rawPivotPower);
+				setTurretPower(periodic.rawTurretPower);
+				
+				periodic.desiredArmLength = periodic.desiredArmLengthEncoder  / Constants.ENCODER_PER_INCH;
+				periodic.desiredPivotDegree = (periodic.desiredPivotEncoder / Constants.PIVOT_ENCODER_PER_DEGREE) + 25.0;
+				periodic.desiredTurretDegree = periodic.desiredTurretEncoder / Constants.TURRET_ENCODER_PER_DEGREE;
+
+				break;
+			case CLOSED_LOOP:
+				break;
+		}
 	}
 	
 
@@ -307,6 +338,20 @@ public class Arm extends Subsystem {
 	public void setClosedLoop() {
 		periodic.currentMode = ArmMode.CLOSED_LOOP;
 	}
+
+	public void setPoseNothing(){
+		periodic.currentPose = Pose.POSE_NOTHING;
+	}
+
+	public void setPoseOne(){
+		periodic.currentPose = Pose.POSE_ONE;
+	}
+
+	public void setPoseTwo(){
+		periodic.currentPose = Pose.POSE_TWO;
+	}
+
+	
 	
 	// Logging
 
