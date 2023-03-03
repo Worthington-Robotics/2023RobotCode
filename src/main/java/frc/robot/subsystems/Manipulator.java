@@ -94,7 +94,7 @@ public class Manipulator extends Subsystem {
 
 	// Convert joystick values into motor powers
 	public double convertRawWristPowerIntoEncoder(double inputPower) {
-		return inputPower * 700.0;
+		return inputPower * 80000.0;
 	}
 
 	// Set the intake demand to the specified value
@@ -146,7 +146,7 @@ public class Manipulator extends Subsystem {
 
 
 	public void reset() { 
-		periodic.currentMode = ManipulatorMode.OPEN_LOOP;
+		periodic.currentMode = ManipulatorMode.OPEN_CLOSED_LOOP;
 	}
 
 	public void resetManipulatorEncoder(){
