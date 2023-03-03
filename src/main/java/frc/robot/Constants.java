@@ -64,8 +64,8 @@ public class Constants {
     public static final double SIDE_WHEELS_MULTIPLIER = 1;
     // Constants for how much power each type of intake uses
     public static final double CONE_IN_POWER = 1;
-    public static final double CUBE_IN_POWER = .5; 
-    public static final double ANYTHING_OUT_POWER = -1;
+    public static final double CUBE_IN_POWER = .75; 
+    public static final double ANYTHING_OUT_POWER = -75;
     // Solenoid IDs
     public static final int INTAKE_SOLINIOD_REVERSE = 0;
     public static final int INTAKE_SOLINIOD_FORWARD = 1;
