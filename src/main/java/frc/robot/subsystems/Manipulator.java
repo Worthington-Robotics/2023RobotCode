@@ -10,6 +10,7 @@ import frc.lib.util.HIDHelper;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 
+
 public class Manipulator extends Subsystem {
 	private static Manipulator instance = new Manipulator();
 	public static Manipulator getInstance() { return instance; }
@@ -93,7 +94,7 @@ public class Manipulator extends Subsystem {
 
 	// Convert joystick values into motor powers
 	public double convertRawWristPowerIntoEncoder(double inputPower) {
-		return inputPower * 1000.0;
+		return inputPower * 700.0;
 	}
 
 	// Set the intake demand to the specified value
@@ -138,6 +139,9 @@ public class Manipulator extends Subsystem {
 	
 	public void wristAnglePID() {
 		wristMotor.config_kP(0, Constants.WRIST_PIVOT_KP);
+		wristMotor.config_kI(0,0);
+		wristMotor.config_kD(0,0);
+		wristMotor.config_kF(0,0);
 	}
 
 

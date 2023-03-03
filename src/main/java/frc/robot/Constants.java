@@ -30,7 +30,7 @@ public class Constants {
     public static final int ARM_GRABBER_REV_CHANNEL = 4;
 
     //Manipulator Constants
-    public static final int INTAKE_WHEEL_ID = 5;
+    public static final int INTAKE_WHEEL_ID = 5;   
     public static final int MANIPULATOR_TOF_ID = 1;
 
     public static final double INTAKE_POWER = .5;
@@ -47,37 +47,20 @@ public class Constants {
     public static final double TURRET_ENCODER_PER_DEGREE = 218.56;
     public static final double ENCODER_PER_INCH = 3904.5;
 
-    public static final double ARM_PIVOT_KP = .014; // TODO: Adjust all kps and mins and maxs for arm
-    public static final double PIVOT_ANGLE_ENCODER_ACCEPTANCE = 750.0; //TODO: change this value
+    public static final double ARM_PIVOT_KP = .014;
     public static final double PIVOT_MIN_TIME =21.0;
 
     public static final double TURRET_KP = 1.0 / 250.0; //TODO: adjust this kp
     public static final double TURRET_ANGLE_ENCODER_ACCEPTANCE = 500.0;
     public static final double TURRET_MIN_TIME = 1.5;
 
-    public static final double ARM_EXTENSION_KP = .02; //TODO: adjust this kp
-    public static final double EXTENSION_DISTANCE_ACCEPTED = 5000.0; //TODO: adjust this value
+    public static final double ARM_EXTENSION_KP = .02;
     public static final double EXTENSION_MIN_TIME = 1.5;
     
     
-    // Arm Constants - Safety
-    public static final double PIVOT_WARNING_ANGLE = 5.0; // Degrees(not ticks) from min or max when arm slows
-    public static final double MAX_PIVOT = 75.0; // TODO: Actual Value
-    public static final double MIN_PIVOT = 0.0; // Assume that arm moves slow enough to completely stop and reset when limit switch activated
-    public static final double PIVOT_MAX_SPEED = 0.7;
-    public static final double PIVOT_MIN_SPEED = 0.1;
-
-    public static final double EXTENSION_WARNING_DISTANCE = 5.0; // distance from min or max when arm slows, in inches
-    public static final double MAX_ARM_LENGTH = 50.0; // TODO: Actual value
-    public static final double MIN_ARM_LENGTH = 1.0;
-    public static final double EXTENSION_MAX_SPEED = 0.5;
-    public static final double EXTENSION_MIN_SPEED = 0.1;
-
-    public static final double TURRET_WARNING_DISTANCE = 5.0; // Degree
-    public static final double TURRET_MIN_ANGLE = -90.0;
-    public static final double TURRET_MAX_ANGLE = 90.0;
-    public static final double TURRET_MAX_SPEED = 0.75;
-    public static final double TURRET_MIN_SPEED = 0.05;
+    //Auto Pose Constants
+    public static final double highGoalExtensionEncoder = 150000.0;
+    public static final double mediumGoalExtensionEncoder = 120000.0;
 
     // ### Device ID declarations ###
 

@@ -117,7 +117,8 @@ public class Arm extends Subsystem {
 					case OPEN_CLOSED_LOOP:
 						periodic.desiredArmLengthEncoder = convertRawExtensionIntoEncoder(periodic.rawExtensionPower);
 						periodic.desiredPivotEncoder = convertRawPivotIntoEncoder(periodic.rawPivotPower);
-						periodic.desiredTurretEncoder = convertRawTurretIntoEncoder(periodic.rawTurretPower);
+						//periodic.desiredTurretEncoder = convertRawTurretIntoEncoder(periodic.rawTurretPower);
+						setTurretPower(periodic.rawTurretPower);
 						
 						periodic.desiredArmLength = periodic.desiredArmLengthEncoder  / Constants.ENCODER_PER_INCH;
 						periodic.desiredPivotDegree = (periodic.desiredPivotEncoder / Constants.PIVOT_ENCODER_PER_DEGREE) + 25.0;
@@ -147,6 +148,7 @@ public class Arm extends Subsystem {
 		armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
 		armSlaveMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
 		extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
+		turretMotor.set(ControlMode.PercentOutput, periodic.turretPower);
 	}
 
 	public void outputTelemetry() {
@@ -242,7 +244,7 @@ public class Arm extends Subsystem {
 
 	public double convertRawExtensionIntoEncoder(double inputPower) {
 		if (inputPower >= 0) {
-			return inputPower * 135000;
+			return inputPower * 150000;
 		} else {
 			return 0;
 		}

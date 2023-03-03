@@ -9,9 +9,9 @@ public class FormPoseAction extends Action{
     double[] inputVals = {0,0,0};
     double startTime = Timer.getFPGATimestamp();
 
-    public FormPoseAction(double pivotEncoder, double extensionEncoder, double turretEncoder){
-        inputVals[0] = pivotEncoder;
-        inputVals[1] = extensionEncoder;
+    public FormPoseAction(double extensionEncoder, double pivotEncoder, double turretEncoder){
+        inputVals[0] = extensionEncoder;
+        inputVals[1] = pivotEncoder;
         inputVals[2] = turretEncoder;
     }
 

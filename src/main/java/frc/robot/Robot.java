@@ -217,5 +217,6 @@ public class Robot extends TimedRobot {
         extensionButton.whileTrue(Action.toCommand(new AllowExtensionPowerAction()));
         wristUpButton.whileTrue(Action.toCommand(new MoveWristAction(.33)));
         wristDownButton.whileTrue(Action.toCommand(new MoveWristAction(-.33)));
+        poseOneButton.onTrue(Action.toCommand(new FormPoseAction(Constants.highGoalExtensionEncoder, kDefaultPeriod, kDefaultPeriod)));
     }
 }
