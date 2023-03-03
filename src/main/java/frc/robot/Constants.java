@@ -24,8 +24,8 @@ public class Constants {
     public static final int ARM_ARM_S_ID = 12;
     
     public static final int CTRE_PCM_ID = 0;
-    public static final int ARM_GRABBER_FWD_CHANNEL = 1;
-    public static final int ARM_GRABBER_REV_CHANNEL = 0;
+    public static final int ARM_GRABBER_FWD_CHANNEL = 6;
+    public static final int ARM_GRABBER_REV_CHANNEL = 7;
 
     // Superstructure
     public static final int BACKSTOP_TOF_ID = 0;
@@ -61,14 +61,14 @@ public class Constants {
     // Multipliers for how much of the power each motor of the intake gets
     public static final double CONVEYER_BELT_MULTIPLIER = 2;
     public static final double INTAKE_WHEEL_SPINNER_MULTIPLIER = .5;
-    public static final double SIDE_WHEELS_MULTIPLIER = 2;
+    public static final double SIDE_WHEELS_MULTIPLIER = 1;
     // Constants for how much power each type of intake uses
     public static final double CONE_IN_POWER = 1;
     public static final double CUBE_IN_POWER = .5; 
     public static final double ANYTHING_OUT_POWER = -1;
     // Solenoid IDs
-    public static final int INTAKE_SOLINIOD_REVERSE = 2;
-    public static final int INTAKE_SOLINIOD_FORWARD = 3;
+    public static final int INTAKE_SOLINIOD_REVERSE = 0;
+    public static final int INTAKE_SOLINIOD_FORWARD = 1;
     public static final int INTAKE_PNEUMATICS_ID = 0;
 
     // ### Drivetrain tuned values ###

@@ -318,8 +318,8 @@ public class DriveTrain extends Subsystem {
 
     // Sets motor demands in open loop
     private void openLoop() {
-        periodic.leftDemand = periodic.yValue + periodic.xValue;
-        periodic.rightDemand = periodic.yValue - periodic.xValue; 
+        periodic.leftDemand = -periodic.yValue + periodic.xValue;
+        periodic.rightDemand = -periodic.yValue - periodic.xValue; 
 
         // Normalize 
         periodic.leftDemand = clampDriveSpeed(periodic.leftDemand, 0.0, 1.0);

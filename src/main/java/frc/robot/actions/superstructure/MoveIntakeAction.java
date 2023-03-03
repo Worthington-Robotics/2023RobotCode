@@ -12,14 +12,16 @@ public class MoveIntakeAction extends Action {
 
 	@Override
 	public void onStart() {
-		SuperStructure.getInstance().setIntakePosition(position);
+		SuperStructure.getInstance().setIntakePosition(SuperStructure.IntakePosition.kUp);
 	}
-
+	
 	@Override
 	public void onLoop() {}
-
+	
 	@Override
-	public void onStop() {}
+	public void onStop() {
+		SuperStructure.getInstance().setIntakePosition(SuperStructure.IntakePosition.kDown);
+	}
 
 	@Override
 	public boolean isFinished() {

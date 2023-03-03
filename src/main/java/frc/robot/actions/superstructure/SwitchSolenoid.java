@@ -8,14 +8,16 @@ public class SwitchSolenoid extends Action {
 
 	@Override
 	public void onStart() {
-        SuperStructure.getInstance().setIntakeUp();
+		SuperStructure.getInstance().setIntakeUp();
 	}
 
 	@Override
 	public void onLoop() {}
 
 	@Override
-	public void onStop() {SuperStructure.getInstance().setIntakeDown();}
+	public void onStop() {
+		SuperStructure.getInstance().setIntakeDown();
+	}
 
 	@Override
 	public boolean isFinished() {

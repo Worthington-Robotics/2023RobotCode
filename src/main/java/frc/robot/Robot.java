@@ -9,6 +9,7 @@ package frc.robot;
 
 import java.util.Arrays;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -40,16 +41,16 @@ public class Robot extends TimedRobot {
     private Looper enabledLooper, disabledLooper;
 
     // Input bindings
-    private JoystickButton clawButton = new JoystickButton(Constants.SECOND, 1);
+    // private JoystickButton intakeUpButton = new JoystickButton(Constants.SECOND, 1);
     private JoystickButton transmissionButton = new JoystickButton(Constants.MASTER, 1);
-    private JoystickButton intakeSolenoidButton = new JoystickButton(Constants.MASTER, 6);
-    private JoystickButton intakeCubeButton = new JoystickButton(Constants.MASTER, 4);
-    private JoystickButton limelightRotateButton = new JoystickButton(Constants.MASTER, 6);
-    private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 7);
-    private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 2);
-    private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
-    private JoystickButton intakeDownButton = new JoystickButton(Constants.MASTER, 10);
-    private JoystickButton intakeUpButton = new JoystickButton(Constants.MASTER, 9);
+    private JoystickButton intakeSolenoidButton = new JoystickButton(Constants.SECOND, 1);
+    private JoystickButton intakeCubeButton = new JoystickButton(Constants.SECOND, 3);
+    // private JoystickButton limelightRotateButton = new JoystickButton(Constants.MASTER, 6);
+    private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 2);
+    // private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 2);
+    private JoystickButton intakeReverseButton = new JoystickButton(Constants.SECOND, 4);
+    // private JoystickButton intakeDownButton = new JoystickButton(Constants.MASTER, 10);
+    // private JoystickButton intakeUpButton = new JoystickButton(Constants.MASTER, 9);
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -82,6 +83,8 @@ public class Robot extends TimedRobot {
 
         initButtons();
         CommandScheduler.getInstance().enable();
+
+        CameraServer.startAutomaticCapture();
     }
 
     /**
@@ -178,14 +181,14 @@ public class Robot extends TimedRobot {
 
     public void initButtons() {
         transmissionButton.whileTrue(Action.toCommand(new GearChangeAction()));
-        intakeSolenoidButton.whileTrue(Action.toCommand(new SwitchSolenoid()));
-        clawButton.whileTrue(Action.toCommand(new OpenClaw()));
-        intakeConeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CONE_IN_POWER)));
+        intakeSolenoidButton.toggleOnTrue(Action.toCommand(new SwitchSolenoid()));
+        // clawButton.whileTrue(Action.toCommand(new OpenClaw()));
+        // intakeConeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CONE_IN_POWER)));
         intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
         intakeCubeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CUBE_IN_POWER)));
-        intakeUpButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kUp)));
-        intakeDownButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kDown)));
+        // intakeUpButton.onTrue(Action.toCommand(new SwitchSolenoid()));
+        // intakeDownButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kDown)));
         autoLevelButton.whileTrue(Action.toCommand(new DriveLevelAction()));
-        limelightRotateButton.whileTrue(Action.toCommand(new DriveTurnActionLimelight()));
+        // limelightRotateButton.whileTrue(Action.toCommand(new DriveTurnActionLimelight()));
     }
 }
