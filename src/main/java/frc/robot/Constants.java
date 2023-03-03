@@ -33,8 +33,8 @@ public class Constants {
     public static final int INTAKE_WHEEL_ID = 5;   
     public static final int MANIPULATOR_TOF_ID = 1;
 
-    public static final double INTAKE_POWER = .5;
-    public static final double ANYTHING_OUT_POWER = -.5;
+    public static final double INTAKE_POWER = .75;
+    public static final double ANYTHING_OUT_POWER = -1;
     public static final double INTAKE_ACCEPTANCE_RANGE = 5.0; //TODO: change this range value
 
     public static final double WRIST_PIVOT_KP = 1 / 100.0; //TODO: change this kp
@@ -54,7 +54,7 @@ public class Constants {
     public static final double TURRET_ANGLE_ENCODER_ACCEPTANCE = 500.0;
     public static final double TURRET_MIN_TIME = 1.5;
 
-    public static final double ARM_EXTENSION_KP = .02;
+    public static final double ARM_EXTENSION_KP = .03;
     public static final double EXTENSION_MIN_TIME = 1.5;
     
     

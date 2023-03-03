@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.subsystems.Arm.ArmMode;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -38,7 +40,7 @@ public class Manipulator extends Subsystem {
 
 	public Manipulator() {
 		periodic = new ManipulatorIO();
-
+		intakeTOF = new TimeOfFlight(1);
 		wristMotor = new TalonFX(Constants.WRIST_MOTOR_ID, "Default Name");
 		wristMotor.setNeutralMode(NeutralMode.Brake);
 
@@ -55,7 +57,7 @@ public class Manipulator extends Subsystem {
 
 	public void writePeriodicOutputs() {
 		intakeMotor.set(ControlMode.PercentOutput, periodic.intakeMotorPower);
-		if (periodic.currentMode == ManipulatorMode.OPEN_LOOP) {
+		if (Arm.getInstance().getMode().ordinal() < ArmMode.CLOSED_LOOP.ordinal() ) {
 			wristMotor.set(ControlMode.PercentOutput, periodic.wristMotorPower);
 		} else {
 			wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);

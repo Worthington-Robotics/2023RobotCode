@@ -292,6 +292,10 @@ public class Arm extends Subsystem {
 		System.out.print("Shit");
 	}
 
+	public ArmMode getMode() {
+		return periodic.currentMode;
+	}
+
 	public void setOpenLoop() {
 		periodic.currentMode = ArmMode.OPEN_LOOP;
 	}

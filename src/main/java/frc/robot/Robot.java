@@ -188,8 +188,8 @@ public class Robot extends TimedRobot {
         gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
 
 
-        wristUpButton.whileTrue(Action.toCommand(new MoveWristAction(.33)));
-        wristDownButton.whileTrue(Action.toCommand(new MoveWristAction(-.33)));
+        wristUpButton.whileTrue(Action.toCommand(new MoveWristAction(-.33)));
+        wristDownButton.whileTrue(Action.toCommand(new MoveWristAction(.33)));
         poseOneButton.onTrue(Action.toCommand(new FormPoseAction(Constants.highGoalExtensionEncoder, kDefaultPeriod, kDefaultPeriod)));
         cycleButton.whileTrue(Action.toCommand(new CycleArmAction()));
     }
