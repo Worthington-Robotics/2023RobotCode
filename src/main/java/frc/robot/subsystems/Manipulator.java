@@ -74,7 +74,6 @@ public class Manipulator extends Subsystem {
 			public void onLoop(double timestamp) {
 				switch (periodic.currentMode) {
 					case OPEN_LOOP:
-						setWristPower(periodic.rawWristMotorPower);
 						break;
 					case OPEN_CLOSED_LOOP:
 						periodic.desiredWristEncoder = convertRawWristPowerIntoEncoder(periodic.rawWristMotorPower);

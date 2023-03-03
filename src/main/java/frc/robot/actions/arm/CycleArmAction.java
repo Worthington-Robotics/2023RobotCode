@@ -1,12 +1,13 @@
 package frc.robot.actions.arm;
+
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.Arm;
 
-public class AllowTurretPowerAction extends Action{
+public class CycleArmAction extends Action {
 
     @Override
     public void onStart() {
-        Arm.getInstance().setTurretButtonPressedTrue();
+        Arm.getInstance().cycleMode();
     }
 
     @Override
@@ -20,7 +21,6 @@ public class AllowTurretPowerAction extends Action{
 
     @Override
     public void onStop() {
-        Arm.getInstance().setTurretButtonPressedFalse();
-        
     }
+    
 }

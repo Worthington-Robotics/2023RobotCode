@@ -10,25 +10,21 @@ import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 
 public class Arm extends Subsystem {
-	TalonFX extensionMotor, turretMotor, armMasterMotor, armSlaveMotor;
+	TalonFX extensionMotor, turretMotor, armMasterMotor;
 
 	private static Arm instance = new Arm();
 	public static Arm getInstance() { return instance; }
-	private ArmIO periodic;
+	private ArmIO periodic = new ArmIO();
 
 	public Arm() {
 		extensionMotor = new TalonFX(Constants.ARM_EXTENSION_ID, "Default Name");
 		turretMotor = new TalonFX(Constants.ARM_TURRET_ID, "Default Name");
 		armMasterMotor = new TalonFX(Constants.ARM_ARM_M_ID, "Default Name");
-		armSlaveMotor = new TalonFX(Constants.ARM_ARM_S_ID, "Default Name");
-
 		extensionMotor.setNeutralMode(NeutralMode.Brake);
 		turretMotor.setNeutralMode(NeutralMode.Brake);
 		armMasterMotor.setNeutralMode(NeutralMode.Brake);
-		armSlaveMotor.setNeutralMode(NeutralMode.Brake);
-		armSlaveMotor.setInverted(InvertType.FollowMaster);
+		reset();
 
-		periodic = new ArmIO();
 	}
 
 	public enum ArmMode {
@@ -101,8 +97,6 @@ public class Arm extends Subsystem {
 		enabledLooper.register(new Loop() {
 			@Override
 			public void onStart(double timestamp) {
-				reset();
-				configPID();
 				//resetTurretExtensionEncoders();
 			}
 
@@ -132,23 +126,20 @@ public class Arm extends Subsystem {
 
 			@Override
 			public void onStop(double timestamp) {
-				reset();
-				configPID();
 			}
 		});
 	}
 
 	public void writePeriodicOutputs() {
 		if(periodic.currentMode == ArmMode.OPEN_LOOP){
+			turretMotor.set(ControlMode.PercentOutput, periodic.rawTurretPower);
+			armMasterMotor.set(ControlMode.PercentOutput, periodic.rawPivotPower - .25);
+			extensionMotor.set(ControlMode.PercentOutput, periodic.rawExtensionPower);
+		} else {
+			armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
+			extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
 			turretMotor.set(ControlMode.PercentOutput, periodic.turretPower);
-			armMasterMotor.set(ControlMode.PercentOutput, periodic.pivotPower);
-			armSlaveMotor.set(ControlMode.Follower, Constants.ARM_ARM_M_ID);
-		
 		}
-		armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
-		armSlaveMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
-		extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
-		turretMotor.set(ControlMode.PercentOutput, periodic.turretPower);
 	}
 
 	public void outputTelemetry() {
@@ -169,6 +160,8 @@ public class Arm extends Subsystem {
 		SmartDashboard.putNumber("Arm/lengthOfExtension", periodic.armLength);
 		SmartDashboard.putNumber("Arm/extension encoder goal", periodic.desiredArmLengthEncoder);
 
+		SmartDashboard.putString("Arm/curMode", periodic.currentMode.toString());
+
 		SmartDashboard.putBoolean("Arm/turret button pressed", periodic.turretButtonIsPressed);
 		SmartDashboard.putBoolean("Arm/extension button pressed", periodic.extensionButtonIsPressed);
 	}
@@ -178,7 +171,10 @@ public class Arm extends Subsystem {
 		periodic.currentMode = ArmMode.OPEN_CLOSED_LOOP;
 		periodic.turretButtonIsPressed = false;
 		periodic.extensionButtonIsPressed = false;
+		configPID();
+		resetEncoders();
 	}
+	
 	
 	// Getters
 
@@ -221,7 +217,6 @@ public class Arm extends Subsystem {
 		extensionMotor.setSelectedSensorPosition(0);
 		turretMotor.setSelectedSensorPosition(0);
 		armMasterMotor.setSelectedSensorPosition(0);
-		armSlaveMotor.setSelectedSensorPosition(0);
 	}
 
 
@@ -239,7 +234,7 @@ public class Arm extends Subsystem {
 	}
 	
 	public double convertRawPivotIntoEncoder(double inputPower) {
-		return inputPower * 800000;
+		return inputPower * 700000;
 	}
 
 	public double convertRawExtensionIntoEncoder(double inputPower) {
@@ -256,36 +251,6 @@ public class Arm extends Subsystem {
 	
 	// MainLoop Functions (Mostly PID) - Could be private
 
-
-	public void turretAnglePID() {
-		if (periodic.turretButtonIsPressed) {
-			periodic.turretPower = periodic.rawTurretPower;
-		}
-		// if (periodic.currentMode == ArmMode.CLOSED_LOOP) {
-		// 	turretMotor.config_kP(0, Constants.TURRET_KP);
-		// }
-		//turretMotor.config_kP(0, Constants.TURRET_KP);
-		// turretMotor.config_kP(0, getLengthError())
-		// periodic.turretPower = periodic.turretError * Constants.TURRET_KP;
-		// periodic.turretPower = Util.clampSpeed(periodic.turretPower, Constants.TURRET_MIN_SPEED, Constants.TURRET_MAX_SPEED);
-	}
-
-	public void setTurretButtonPressedTrue() {
-		periodic.turretButtonIsPressed = true;
-	}
-
-	public void setExtensionButtonPressedTrue() {
-		periodic.extensionButtonIsPressed = true;
-	}
-
-	public void setTurretButtonPressedFalse() {
-		periodic.turretButtonIsPressed = false;
-	}
-
-	public void setExtensionButtonPressedFalse() {
-		periodic.extensionButtonIsPressed = false;
-	}
-
 	public void setTurretPower(double power) {
 		periodic.turretPower = power;
 	}
@@ -296,6 +261,12 @@ public class Arm extends Subsystem {
 
 	public void setExtensionPower(double power) {
 		periodic.extensionPower = power;
+	}
+
+	public void cycleMode() {
+		int nState = periodic.currentMode.ordinal() + 1;
+		periodic.currentMode = ArmMode.values()[nState % 3];
+		System.out.print("Shit");
 	}
 
 	public void setOpenLoop() {
