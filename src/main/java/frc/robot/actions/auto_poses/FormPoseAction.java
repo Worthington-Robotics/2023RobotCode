@@ -30,15 +30,7 @@ public class FormPoseAction extends Action{
 
     @Override
     public boolean isFinished() {
-    //     if (Math.abs(Arm.getInstance().getPivotError()) < Constants.PIVOT_ANGLE_ENCODER_ACCEPTANCE
-    //     && Math.abs(Arm.getInstance().getLengthError()) < Constants.EXTENSION_DISTANCE_ACCEPTED
-    //     && Math.abs(Arm.getInstance().getTurretError()) < Constants.TURRET_ANGLE_ENCODER_ACCEPTANCE
-    //     && Timer.getFPGATimestamp() - startTime > Constants.PIVOT_MIN_TIME){
-    //     return true;
-    // }
-    // else {
-    //     return false;
-    // }
+  
         return true;
     }
 

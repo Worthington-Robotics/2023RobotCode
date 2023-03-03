@@ -109,9 +109,10 @@ public class Arm extends Subsystem {
 						setExtensionPower(periodic.rawExtensionPower);
 						break;
 					case OPEN_CLOSED_LOOP:
-						periodic.desiredArmLengthEncoder = convertRawExtensionIntoEncoder(periodic.rawExtensionPower);
+						if(periodic.extensionButtonIsPressed){
+							periodic.desiredArmLengthEncoder = convertRawExtensionIntoEncoder(periodic.rawExtensionPower);
+						}
 						periodic.desiredPivotEncoder = convertRawPivotIntoEncoder(periodic.rawPivotPower);
-						//periodic.desiredTurretEncoder = convertRawTurretIntoEncoder(periodic.rawTurretPower);
 						setTurretPower(periodic.rawTurretPower);
 						
 						periodic.desiredArmLength = periodic.desiredArmLengthEncoder  / Constants.ENCODER_PER_INCH;
@@ -143,10 +144,10 @@ public class Arm extends Subsystem {
 	}
 
 	public void outputTelemetry() {
-		// SmartDashboard.putNumber("Arm/turretPower", periodic.turretPower);
+		SmartDashboard.putNumber("Arm/turretPower", periodic.turretPower);
 		SmartDashboard.putNumber("Arm/rawTurretPower", periodic.rawTurretPower);
 		SmartDashboard.putNumber("Arm/turretEncoder", periodic.turretEncoder);
-		SmartDashboard.putNumber("Arm/turretDegree", periodic.turretDegree);
+		//SmartDashboard.putNumber("Arm/turretDegree", periodic.turretDegree);
 
 		// SmartDashboard.putNumber("Arm/pivotPower", periodic.pivotPower);
 		SmartDashboard.putNumber("Arm/rawPivotPower", periodic.rawPivotPower);
@@ -154,10 +155,10 @@ public class Arm extends Subsystem {
 		SmartDashboard.putNumber("Arm/pivotDegree", periodic.pivotDegree);
 		SmartDashboard.putNumber("Arm/pivot encoder goal", periodic.desiredPivotEncoder);
 
-		// SmartDashboard.putNumber("Arm/extensionPower", periodic.extensionPower);
+		SmartDashboard.putNumber("Arm/extensionPower", periodic.extensionPower);
 		SmartDashboard.putNumber("Arm/rawExtensionPower", periodic.rawExtensionPower);
 		SmartDashboard.putNumber("Arm/lengthEncoder", periodic.lengthEncoder);
-		SmartDashboard.putNumber("Arm/lengthOfExtension", periodic.armLength);
+		//SmartDashboard.putNumber("Arm/lengthOfExtension", periodic.armLength);
 		SmartDashboard.putNumber("Arm/extension encoder goal", periodic.desiredArmLengthEncoder);
 
 		SmartDashboard.putString("Arm/curMode", periodic.currentMode.toString());
@@ -251,8 +252,28 @@ public class Arm extends Subsystem {
 	
 	// MainLoop Functions (Mostly PID) - Could be private
 
+
+
+	public void setTurretButtonPressedTrue() {
+		periodic.turretButtonIsPressed = true;
+	}
+
+	public void setExtensionButtonPressedTrue() {
+		periodic.extensionButtonIsPressed = true;
+	}
+
+	public void setTurretButtonPressedFalse() {
+		periodic.turretButtonIsPressed = false;
+	}
+
+	public void setExtensionButtonPressedFalse() {
+		periodic.extensionButtonIsPressed = false;
+	}
+
 	public void setTurretPower(double power) {
-		periodic.turretPower = power;
+		if (periodic.turretButtonIsPressed) {
+			periodic.turretPower = power;
+		}
 	}
 
 	public void setPivotPower(double power) {
@@ -260,7 +281,9 @@ public class Arm extends Subsystem {
 	}
 
 	public void setExtensionPower(double power) {
-		periodic.extensionPower = power;
+		if (periodic.extensionButtonIsPressed) {
+			periodic.extensionPower = power;
+		}
 	}
 
 	public void cycleMode() {
