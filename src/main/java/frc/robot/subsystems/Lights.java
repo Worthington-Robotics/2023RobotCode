@@ -27,7 +27,7 @@ public class Lights extends Subsystem {
         ledString = new AddressableLED(Constants.LIGHTS_ID);
         ledBuffer = new AddressableLEDBuffer(Constants.LIGHTS_LED_COUNT);
         ledString.setLength(ledBuffer.getLength());
-        state = State.LIGHTS_RAINBOW;
+        state = State.LIGHTS_WHITE;
         reset();
     }
 
@@ -66,7 +66,7 @@ public class Lights extends Subsystem {
                         break;
                     case LIGHTS_WHITE:
                     for (int i = 0; i < ledBuffer.getLength(); i++) {
-                        ledBuffer.setHSV(i, -255, -255, 255);
+                        ledBuffer.setHSV(i, 0, 0, 255);
                     }
                     case LIMELIGHT_TARGETING:
                         break;
@@ -88,13 +88,17 @@ public class Lights extends Subsystem {
         double timestamp = Timer.getFPGATimestamp();
         switch(state) {
             case LIGHTS_RAINBOW:
-            for (int i = 0; i < ledBuffer.getLength(); i++) {
-                double speed = 10.0;
-                double length = 0.1;
-                double h = Math.abs(((timestamp - (length*i)) % speed) / speed);
-                ledBuffer.setHSV(i, (int)(h * 180.0), 255, 230);
-            }
+                for (int i = 0; i < ledBuffer.getLength(); i++) {
+                    double speed = 10.0;
+                    double length = 0.1;
+                    double h = Math.abs(((timestamp - (length*i)) % speed) / speed);
+                    ledBuffer.setHSV(i, (int)(h * 180.0), 255, 230);
+                }
                 break;
+            case LIGHTS_WHITE:
+                for (int i = 0; i < ledBuffer.getLength(); i++) {
+                    ledBuffer.setHSV(i, 0, 0, 255);
+                }
             case LIMELIGHT_TARGETING:
                 break;
         }

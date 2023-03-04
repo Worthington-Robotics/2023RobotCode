@@ -3,15 +3,15 @@ package frc.robot.actions.arm;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.Arm;
 
-public class DisableLimitSwitchAction extends Action{
+public class EnableLimitSwitchAction extends Action{
 
     @Override
     public void onStart() {
-        Arm.getInstance().setDisabledLimitSwtich();
+        Arm.getInstance().setEnabledLimitSwitch();   
     }
 
     @Override
-    public void onLoop() { 
+    public void onLoop() {      
     }
 
     @Override
@@ -21,8 +21,6 @@ public class DisableLimitSwitchAction extends Action{
 
     @Override
     public void onStop() {
-        // TODO Auto-generated method stub
-        
     }
     
 }

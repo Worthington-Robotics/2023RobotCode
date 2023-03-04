@@ -252,6 +252,14 @@ public class Arm extends Subsystem {
 		periodic.desiredArmLengthEncoder = lengthEncoder;
 		periodic.lengthEncoderError = periodic.desiredArmLengthEncoder - periodic.lengthEncoder;
 	}
+
+	public void setDisabledLimitSwtich(){
+		turretMotor.overrideLimitSwitchesEnable(true);
+	}
+
+	public void setEnabledLimitSwitch(){
+		
+	}
 	 
 
 	public void resetEncoders() {
