@@ -1,15 +1,17 @@
-package frc.robot.actions.arm;
+package frc.robot.actions.drive;
 
 import frc.lib.statemachine.Action;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveTrain;
 
-public class OpenClaw extends Action {
-	public OpenClaw() {}
+public class DriveResetGyroAction extends Action {
+	double heading;
+	public DriveResetGyroAction(double heading) {
+		this.heading = heading;
+	}
 
 	@Override
 	public void onStart() {
-		Arm.getInstance().setClawClosed();
+		DriveTrain.getInstance().setGyro(0);
 	}
 
 	@Override
@@ -22,6 +24,5 @@ public class OpenClaw extends Action {
 
 	@Override
 	public void onStop() {
-		Arm.getInstance().setClawOpen();
 	}
 }

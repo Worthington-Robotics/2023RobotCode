@@ -1,8 +1,8 @@
 package frc.robot.subsystems;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.lib.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import java.lang.Math;
@@ -28,9 +28,10 @@ public class DriveTrain extends Subsystem {
     // Solenoid used to change gear
     private DoubleSolenoid transmissionSolenoid;
 
-    private DoubleSolenoid extraSolenoid;
     // Filters used for open loop drive
     private LinearFilter leftFilter, rightFilter;
+    // Filter for drive delta
+    public LinearFilter driveDeltaFilter;
 
     public class DriveIO extends PeriodicIO {
         // Read ticks from the left and right drivetrain encoders
@@ -40,7 +41,11 @@ public class DriveTrain extends Subsystem {
         // Motor demands for left and right sides
         public double leftDemand, rightDemand;
         // Error from desired distance for the left and right encoders
-        public double leftError, rightError;
+        public double leftError = 0;
+        public double rightError = 0;
+        public double averageError = 0;
+        public double integralError = 0;
+        public double forwardDerivativeError = 0;
         // The current facing direction of the robot
         public double heading, rawHeading;
         // The heading we are trying to reach
@@ -67,11 +72,13 @@ public class DriveTrain extends Subsystem {
         public double gyroTilt;
         // Delta from last gyro tilt, used for D term
         public double tiltDelta;
+        public boolean gyroLock = false;
     }
 
     public DriveTrain() {
         periodic = new DriveIO();
         transmissionSolenoid = new DoubleSolenoid(
+            0,
             PneumaticsModuleType.CTREPCM,
             Constants.DRIVE_TRANSMISSION_FORWARD, Constants.DRIVE_TRANSMISSION_REVERSE
         );
@@ -80,16 +87,20 @@ public class DriveTrain extends Subsystem {
         gyro = new PigeonIMU(Constants.PIGEON_ID);
 
         forwardRightMotor = new TalonFX(Constants.DRIVE_FRONT_RIGHT_ID);
+        forwardRightMotor.setNeutralMode(NeutralMode.Brake);
         rearRightMotor = new TalonFX(Constants.DRIVE_BACK_RIGHT_ID);
+        rearRightMotor.setNeutralMode(NeutralMode.Brake);
         forwardLeftMotor = new TalonFX(Constants.DRIVE_FRONT_LEFT_ID);
+        forwardLeftMotor.setNeutralMode(NeutralMode.Brake);
         rearLeftMotor = new TalonFX(Constants.DRIVE_BACK_LEFT_ID);
+        rearLeftMotor.setNeutralMode(NeutralMode.Brake);
 
-        // TODO: Use setInverted to follow to make sure that motors are going the same direction
         forwardLeftMotor.setInverted(true);
         rearLeftMotor.setInverted(true);
 
-        leftFilter = LinearFilter.singlePoleIIR(0.04, 0.02);
-        rightFilter = LinearFilter.singlePoleIIR(0.04, 0.02);
+        leftFilter = LinearFilter.singlePoleIIR(Constants.OPEN_LOOP_FILTER, 0.02);
+        rightFilter = LinearFilter.singlePoleIIR(Constants.OPEN_LOOP_FILTER, 0.02);
+        driveDeltaFilter = LinearFilter.singlePoleIIR(Constants.DRIVE_FORWARD_D_FILT, 0.02);
     }
 
     public enum DriveMode {
@@ -104,7 +115,8 @@ public class DriveTrain extends Subsystem {
     public void readPeriodicInputs() {
         final double lastTilt = periodic.gyroTilt;
         periodic.gyroTilt = gyro.getRoll() * -1.0;
-        periodic.tiltDelta = periodic.gyroTilt - lastTilt;
+        SmartDashboard.putNumber("Drive/Unfiltered Delta", periodic.gyroTilt - lastTilt);
+        // periodic.tiltDelta = tiltDeltaFilter.calculate(periodic.gyroTilt - lastTilt);
         periodic.rawHeading = gyro.getFusedHeading();
         periodic.heading = normalizeHeading(periodic.rawHeading);
 
@@ -115,14 +127,12 @@ public class DriveTrain extends Subsystem {
         periodic.yValue = periodic.operatorInput[1];
 
         // These are important derived values that are also read by actions so they should be updated here
-        
-        // Aligned target heading for auto leveling
-        if (periodic.currentMode == DriveMode.AUTO_LEVEL) {
-            periodic.targetHeading = getAlignedTargetHeading(periodic.rawHeading);
-        }
         periodic.headingError = normalizeHeadingError(periodic.targetHeading - periodic.heading);
+        double oldError = (periodic.leftError + periodic.rightError) / 2.0;
         periodic.leftError = periodic.targetDistance - periodic.leftEncoderTicks;
         periodic.rightError = periodic.targetDistance - periodic.rightEncoderTicks;
+        periodic.averageError = (periodic.leftError + periodic.rightError) / 2.0;
+        periodic.forwardDerivativeError = driveDeltaFilter.calculate(periodic.averageError - oldError);
     }
 
     @Override
@@ -155,6 +165,7 @@ public class DriveTrain extends Subsystem {
         SmartDashboard.putNumber("Drive/Total Right Encoder", periodic.totalRightEncoder);
         SmartDashboard.putNumber("Drive/Pitch", periodic.gyroTilt);
         SmartDashboard.putNumber("Drive/Heading", (-periodic.rawHeading + 360) % 360);
+        SmartDashboard.putNumber("Drive/Tilt Delta", periodic.tiltDelta);
     }
 
     @Override
@@ -167,6 +178,7 @@ public class DriveTrain extends Subsystem {
         periodic.rightDemand = 0;
 
         periodic.currentMode = DriveMode.STOPPED;
+        periodic.gyroLock = false;
 
         transmissionSolenoid.set(Value.kReverse);
         gyro.setFusedHeading(0);
@@ -242,12 +254,20 @@ public class DriveTrain extends Subsystem {
         transmissionSolenoid.set(Value.kReverse);
     }
 
+    public void setGyroLock(boolean locked) {
+        periodic.gyroLock = locked;
+    }
+
     public double getLeftEncoderDistance() {
         return periodic.totalLeftEncoder + periodic.leftEncoderTicks;
     }
 
-    public Rotation2d getHeading() {
-        return Rotation2d.fromDegrees(periodic.rawHeading);
+    public double getRawHeading() {
+        return periodic.rawHeading;
+    }
+
+    public double getNormalizedHeading() {
+        return periodic.heading;
     }
 
     public double getHeadingDegrees() {
@@ -260,6 +280,10 @@ public class DriveTrain extends Subsystem {
 
     public void setOpenLoop() {
         periodic.currentMode = DriveMode.OPEN_LOOP;
+    }
+
+    public void setGyro(double heading) {
+        gyro.setFusedHeading(heading);
     }
 
     public void setMoveForward(double distance) {
@@ -288,8 +312,10 @@ public class DriveTrain extends Subsystem {
 
     private void moveForward() {
         periodic.driveHeadingCorrect = 0.0;
-        periodic.leftDemand = periodic.leftError * Constants.DRIVE_FORWARD_KP;
-        periodic.rightDemand = periodic.rightError * Constants.DRIVE_FORWARD_KP;
+        periodic.leftDemand = periodic.leftError * Constants.DRIVE_FORWARD_KP
+            + periodic.forwardDerivativeError * Constants.DRIVE_FORWARD_KD;
+        periodic.rightDemand = periodic.rightError * Constants.DRIVE_FORWARD_KP
+            + periodic.forwardDerivativeError * Constants.DRIVE_FORWARD_KD;
         
         // Normalize power
         periodic.leftDemand = clampDriveSpeed(periodic.leftDemand, 
@@ -318,8 +344,16 @@ public class DriveTrain extends Subsystem {
 
     // Sets motor demands in open loop
     private void openLoop() {
-        periodic.leftDemand = periodic.yValue + periodic.xValue;
-        periodic.rightDemand = periodic.yValue - periodic.xValue; 
+        periodic.leftDemand = periodic.yValue;
+        periodic.rightDemand = periodic.yValue;
+        if (periodic.gyroLock) {
+            periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;
+            periodic.leftDemand -= periodic.driveHeadingCorrect;
+            periodic.rightDemand += periodic.driveHeadingCorrect;
+        } else {
+            periodic.leftDemand += periodic.xValue;
+            periodic.rightDemand -= periodic.xValue; 
+        }
 
         // Normalize 
         periodic.leftDemand = clampDriveSpeed(periodic.leftDemand, 0.0, 1.0);
@@ -333,8 +367,10 @@ public class DriveTrain extends Subsystem {
     // Auto-leveling mode for charge station
     private void autoLevel() {
         final double levelError = Constants.DRIVE_LEVEL_ZERO + periodic.gyroTilt;
-        periodic.leftDemand = levelError * Constants.DRIVE_LEVEL_KP;
-        periodic.rightDemand = levelError * Constants.DRIVE_LEVEL_KP;
+        final double power = (levelError * Constants.DRIVE_LEVEL_KP);
+            // - (periodic.tiltDelta * Constants.DRIVE_LEVEL_KD);
+        periodic.leftDemand = power;
+        periodic.rightDemand = power;
 
         // Correct for heading error
         periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;
@@ -389,7 +425,7 @@ public class DriveTrain extends Subsystem {
     public static double getAlignedTargetHeading(double currentHeading) {
         final double normalized = normalizeHeading(currentHeading);
         if (Math.abs(normalized) < 90) {
-            return 0;
+            return 0 * Math.signum(normalized);
         } else {
             return 180 * Math.signum(normalized);
         }
