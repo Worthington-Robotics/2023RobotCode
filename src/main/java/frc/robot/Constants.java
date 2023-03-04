@@ -47,10 +47,11 @@ public class Constants {
     public static final double TURRET_ENCODER_PER_DEGREE = 218.56;
     public static final double ENCODER_PER_INCH = 3904.5;
 
+    public static final double TURRET_KP = .384;
+
     public static final double ARM_PIVOT_KP = .014;
     public static final double PIVOT_MIN_TIME =21.0;
 
-    public static final double TURRET_KP = 1.0 / 250.0; //TODO: adjust this kp
     public static final double TURRET_ANGLE_ENCODER_ACCEPTANCE = 500.0;
     public static final double TURRET_MIN_TIME = 1.5;
 
@@ -135,7 +136,7 @@ public class Constants {
     public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 150.0;
 
     // Auto level
-    public static final double DRIVE_LEVEL_KP = 1.0 / 90.0;
+    public static final double DRIVE_LEVEL_KP = 1.0 / 90.0; //This value is negated as the tilt of the gyro is inverted on the comp bot
     public static final double DRIVE_LEVEL_KD = 1.0 / 1.0;
     public static final double DRIVE_LEVEL_D_FILTER = 0.2;
     public static final double DRIVE_LEVEL_MAX_SPEED = 0.6;

@@ -1,4 +1,6 @@
 package frc.robot.subsystems;
+import javax.lang.model.util.ElementScanner14;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -32,6 +34,21 @@ public class Arm extends Subsystem {
 		OPEN_CLOSED_LOOP,
 		CLOSED_LOOP
     }
+
+	public enum ArmPose {
+		STOWN,
+		UNSTOW,
+		CUBE_DROP,
+		CUBE_PICKUP
+	}
+
+	// Pivot, Extend, Wrist
+	public static double[][] ArmPoses = {
+		{0, 0, 0}, 
+		{300000, 10000, 0},
+		{400000, 35000, 10000},
+		{50000, 25000, -1660}
+	};
 
 
 	public class ArmIO extends PeriodicIO {
@@ -70,6 +87,7 @@ public class Arm extends Subsystem {
 
 		// State
 		public ArmMode currentMode = ArmMode.OPEN_LOOP;
+		public ArmPose currentPose = ArmPose.STOWN;
 
 		// Arbitrary feed forward
 		public double arbitraryFeedForward;
@@ -77,6 +95,11 @@ public class Arm extends Subsystem {
 		// Is pressed
 		public boolean turretButtonIsPressed = false;
 		public boolean extensionButtonIsPressed = false;
+
+		// Turret holds
+		public double turretHoldValue = 0;
+		public double extenHoldValue = 0;
+		public boolean turretIsHolding = false;
 	}
 
 	public void readPeriodicInputs() {
@@ -111,15 +134,17 @@ public class Arm extends Subsystem {
 					case OPEN_CLOSED_LOOP:
 						periodic.desiredArmLengthEncoder = convertRawExtensionIntoEncoder(periodic.rawExtensionPower);
 						periodic.desiredPivotEncoder = convertRawPivotIntoEncoder(periodic.rawPivotPower);
-						//periodic.desiredTurretEncoder = convertRawTurretIntoEncoder(periodic.rawTurretPower);
 						setTurretPower(periodic.rawTurretPower);
-						
+
 						periodic.desiredArmLength = periodic.desiredArmLengthEncoder  / Constants.ENCODER_PER_INCH;
 						periodic.desiredPivotDegree = (periodic.desiredPivotEncoder / Constants.PIVOT_ENCODER_PER_DEGREE) + 25.0;
 						periodic.desiredTurretDegree = periodic.desiredTurretEncoder / Constants.TURRET_ENCODER_PER_DEGREE;
 
 						break;
 					case CLOSED_LOOP:
+						periodic.desiredPivotEncoder = Arm.ArmPoses[periodic.currentPose.ordinal()][0];
+						periodic.desiredArmLengthEncoder = Arm.ArmPoses[periodic.currentPose.ordinal()][1];
+						setTurretPower(periodic.rawTurretPower);
 						break;
 				}
 			}
@@ -137,8 +162,13 @@ public class Arm extends Subsystem {
 			extensionMotor.set(ControlMode.PercentOutput, periodic.rawExtensionPower);
 		} else {
 			armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
-			extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
-			turretMotor.set(ControlMode.PercentOutput, periodic.turretPower);
+			if(!periodic.turretIsHolding) {
+				turretMotor.set(ControlMode.PercentOutput, periodic.rawTurretPower);
+				extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
+			} else {
+				turretMotor.set(ControlMode.Position, periodic.turretHoldValue);
+				extensionMotor.set(ControlMode.Position, periodic.extenHoldValue);
+			}
 		}
 	}
 
@@ -161,6 +191,10 @@ public class Arm extends Subsystem {
 		SmartDashboard.putNumber("Arm/extension encoder goal", periodic.desiredArmLengthEncoder);
 
 		SmartDashboard.putString("Arm/curMode", periodic.currentMode.toString());
+		SmartDashboard.putString("Arm/curPose", periodic.currentPose.toString());
+
+		SmartDashboard.putNumber("Arm/turretHoldVal", periodic.turretHoldValue);
+		SmartDashboard.putBoolean("Arm/turretIsHeld", periodic.turretIsHolding);
 
 		SmartDashboard.putBoolean("Arm/turret button pressed", periodic.turretButtonIsPressed);
 		SmartDashboard.putBoolean("Arm/extension button pressed", periodic.extensionButtonIsPressed);
@@ -191,6 +225,14 @@ public class Arm extends Subsystem {
 
 	public double getTurretError() {
 		return periodic.turretEncoderError;
+	}
+
+	public double getTurretEncoder() {
+		return periodic.turretEncoder;
+	}
+
+	public double getExtendEncoder() {
+		return periodic.lengthEncoder;
 	}
 
 	// For closed loop
@@ -231,6 +273,11 @@ public class Arm extends Subsystem {
 		extensionMotor.config_kD(0,0);
 		extensionMotor.config_kF(0,0);
 
+		turretMotor.config_kP(0,Constants.TURRET_KP);
+		turretMotor.config_kI(0,0);
+		turretMotor.config_kD(0,0);
+		turretMotor.config_kF(0,0);
+
 	}
 	
 	public double convertRawPivotIntoEncoder(double inputPower) {
@@ -266,11 +313,18 @@ public class Arm extends Subsystem {
 	public void cycleMode() {
 		int nState = periodic.currentMode.ordinal() + 1;
 		periodic.currentMode = ArmMode.values()[nState % 3];
-		System.out.print("Shit");
 	}
 
 	public ArmMode getMode() {
 		return periodic.currentMode;
+	}
+
+	public void setPose(ArmPose pose) {
+		periodic.currentPose = pose;
+	}
+
+	public ArmPose getPose() {
+		return periodic.currentPose;
 	}
 
 	public void setOpenLoop() {
@@ -289,5 +343,11 @@ public class Arm extends Subsystem {
 
 	public LogData getLogger() {
 		return periodic;
+	}
+
+	public void turretHoldLock(boolean enable, double Tlock, double Elock) {
+			periodic.turretHoldValue = Tlock;
+			periodic.extenHoldValue = Elock;
+			periodic.turretIsHolding = enable;
 	}
 }

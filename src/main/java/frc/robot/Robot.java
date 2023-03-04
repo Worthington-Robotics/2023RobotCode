@@ -18,6 +18,7 @@ import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
 import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Arm.ArmPose;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.drive.TeleopLevelAction;
 import frc.robot.actions.drive.GyroLockAction;
@@ -25,8 +26,10 @@ import frc.robot.actions.drive.SetPositionAction;
 import frc.robot.actions.drive.DriveTurnActionLimelight;
 import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
+import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.arm.CycleArmAction;
 import frc.robot.actions.arm.PivotMoveAction;
+import frc.robot.actions.arm.TurretHoldAction;
 import frc.robot.actions.auto_poses.FormPoseAction;
 import frc.robot.actions.manipulator.MoveWristAction;
 
@@ -54,12 +57,14 @@ public class Robot extends TimedRobot {
     private JoystickButton gyroLockButton = new JoystickButton(Constants.MASTER, 7);
 
 
-    private JoystickButton turretButton = new JoystickButton(Constants.SECOND, 5);
-    private JoystickButton extensionButton = new JoystickButton(Constants.SECOND, 6);
+    private JoystickButton stowButton = new JoystickButton(Constants.SECOND, 5);
+    private JoystickButton unstowButton = new JoystickButton(Constants.SECOND, 6);
+    private JoystickButton cubePickupButton = new JoystickButton(Constants.SECOND, 12);
+    private JoystickButton cubeDropButton = new JoystickButton(Constants.SECOND, 10);
     private JoystickButton cycleButton = new JoystickButton(Constants.SECOND, 11);
     private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 3);
     private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 4);
-    private JoystickButton poseOneButton = new JoystickButton(Constants.SECOND, 1);
+    private JoystickButton turretHold = new JoystickButton(Constants.SECOND, 1);
 
 
     //private JoystickButton pivotDownHighButton = new JoystickButton(Constants.SECOND, 3);
@@ -187,10 +192,13 @@ public class Robot extends TimedRobot {
         resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
         gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
 
-
+        stowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.STOWN)));
+        unstowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
+        cubeDropButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CUBE_DROP)));
+        cubePickupButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CUBE_PICKUP)));
         wristUpButton.whileTrue(Action.toCommand(new MoveWristAction(-.33)));
         wristDownButton.whileTrue(Action.toCommand(new MoveWristAction(.33)));
-        poseOneButton.onTrue(Action.toCommand(new FormPoseAction(Constants.highGoalExtensionEncoder, kDefaultPeriod, kDefaultPeriod)));
+        turretHold.whileTrue(Action.toCommand(new TurretHoldAction()));
         cycleButton.whileTrue(Action.toCommand(new CycleArmAction()));
     }
 }

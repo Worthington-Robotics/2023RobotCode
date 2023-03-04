@@ -46,8 +46,6 @@ public class Manipulator extends Subsystem {
 
 		intakeMotor = new TalonFX(Constants.INTAKE_MOTOR_ID, "Default Name");
 		intakeMotor.setNeutralMode(NeutralMode.Brake);
-
-		intakeTOF = new TimeOfFlight(Constants.BACKSTOP_TOF_ID);
 	}
 
 	public void readPeriodicInputs() {
@@ -81,6 +79,7 @@ public class Manipulator extends Subsystem {
 						periodic.desiredWristEncoder = convertRawWristPowerIntoEncoder(periodic.rawWristMotorPower);
 						break;
 					case CLOSED_LOOP:
+						periodic.desiredWristEncoder = Arm.ArmPoses[Arm.getInstance().getPose().ordinal()][2];
 						break;
 				}
 			}
@@ -100,11 +99,7 @@ public class Manipulator extends Subsystem {
 
 	// Set the intake demand to the specified value
 	public void setIntakePower(double power) {
-		//if (intakeTOF.getRange() <= Constants.INTAKE_ACCEPTANCE_RANGE) {
 			periodic.intakeMotorPower = power;
-		//} else {
-			//periodic.intakeMotorPower = 0.0;
-		//}
 	}
 
 	public void setWristPower(double power){
@@ -162,6 +157,7 @@ public class Manipulator extends Subsystem {
 		SmartDashboard.putNumber("Manipulator/RawWristMotorPower", periodic.rawWristMotorPower);
 		SmartDashboard.putNumber("Manipulator/DesiredWristEncoder", periodic.desiredWristEncoder);
 		SmartDashboard.putNumber("Manipulator/WristEncoder", periodic.wristEncoder);
+		SmartDashboard.putNumber("Manipulator/TOFDistance", intakeTOF.getRange());
 	}
 
 	public LogData getLogger() {
