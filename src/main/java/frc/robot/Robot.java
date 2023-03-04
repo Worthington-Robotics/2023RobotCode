@@ -18,18 +18,19 @@ import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
 import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Arm.ArmPose;
 import frc.lib.statemachine.Action;
-import frc.robot.actions.drive.DriveLevelAction;
 import frc.robot.actions.drive.TeleopLevelAction;
 import frc.robot.actions.drive.GyroLockAction;
 import frc.robot.actions.drive.SetPositionAction;
 import frc.robot.actions.drive.DriveTurnActionLimelight;
 import frc.robot.actions.drive.GearChangeAction;
-import frc.robot.actions.manipulator.MoveWrist;
 import frc.robot.actions.manipulator.RunIntakeAction;
-import frc.robot.actions.arm.AllowTurretPowerAction;
+import frc.robot.actions.arm.ArmPoseAction;
+import frc.robot.actions.arm.CycleArmAction;
 import frc.robot.actions.arm.PivotMoveAction;
-import frc.robot.actions.arm.AllowExtensionPowerAction;
+import frc.robot.actions.arm.TurretHoldAction;
+import frc.robot.actions.manipulator.MoveWristAction;
 
 
 /**
@@ -48,19 +49,27 @@ public class Robot extends TimedRobot {
     // Input bindings
     private JoystickButton driveGearButton = new JoystickButton(Constants.MASTER, 1);
     private JoystickButton intakeButton = new JoystickButton(Constants.MASTER, 2);
-    private JoystickButton shootButton = new JoystickButton(Constants.MASTER, 3);
+    private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 4);
-    private JoystickButton limelightRotateButton = new JoystickButton(Constants.MASTER, 5);
+    // private JoystickButton limelightRotateButton = new JoystickButton(Constants.MASTER, 5);
     private JoystickButton resetPoseButton = new JoystickButton(Constants.MASTER, 6);
     private JoystickButton gyroLockButton = new JoystickButton(Constants.MASTER, 7);
 
 
-    private JoystickButton turretButton = new JoystickButton(Constants.SECOND, 5);
-    private JoystickButton extensionButton = new JoystickButton(Constants.SECOND, 6);
-    private JoystickButton pivotDownHighButton = new JoystickButton(Constants.SECOND, 3);
-    private JoystickButton pivotUpHighButton = new JoystickButton(Constants.SECOND, 4);
-    private JoystickButton pivotDownSlowButton = new JoystickButton(Constants.SECOND, 7);
-    private JoystickButton pivotUpSlowButton = new JoystickButton(Constants.SECOND, 8);
+    private JoystickButton stowButton = new JoystickButton(Constants.SECOND, 5);
+    private JoystickButton unstowButton = new JoystickButton(Constants.SECOND, 6);
+    private JoystickButton cubePickupButton = new JoystickButton(Constants.SECOND, 12);
+    private JoystickButton cubeDropButton = new JoystickButton(Constants.SECOND, 10);
+    private JoystickButton cycleButton = new JoystickButton(Constants.SECOND, 11);
+    private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 3);
+    private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 4);
+    private JoystickButton turretHold = new JoystickButton(Constants.SECOND, 1);
+
+
+    //private JoystickButton pivotDownHighButton = new JoystickButton(Constants.SECOND, 3);
+    //private JoystickButton pivotUpHighButton = new JoystickButton(Constants.SECOND, 4);
+   // private JoystickButton pivotDownSlowButton = new JoystickButton(Constants.SECOND, 7);
+   // private JoystickButton pivotUpSlowButton = new JoystickButton(Constants.SECOND, 8);
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -68,6 +77,8 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        initButtons();
+        CommandScheduler.getInstance().enable();
         manager = new SubsystemManager(
             Arrays.asList(
                 Manipulator.getInstance(),
@@ -79,10 +90,9 @@ public class Robot extends TimedRobot {
             true
         );
 
-        // Create the master looper threads
-        DriveTrajectoryGenerator.getInstance();
         enabledLooper = new Looper();
         disabledLooper = new Looper();
+        Manipulator.getInstance().resetManipulatorEncoder();
 
         // Register the looper threads to the manager to use for enabled and disabled
         manager.registerEnabledLoops(enabledLooper);
@@ -91,8 +101,6 @@ public class Robot extends TimedRobot {
         // Add any additional logging sources for capture
         manager.addLoggingSource(Arrays.asList(StateMachine.getInstance()));
 
-        initButtons();
-        CommandScheduler.getInstance().enable();
         AutoChooser.getInstance().logAuto();
         AutoChooser.getInstance().printList();
     }
@@ -115,11 +123,7 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         enabledLooper.stop();
 
-        StateMachine.getInstance().assertStop();
-        DriveTrain.getInstance().reset();
-        PoseEstimator.getInstance().reset();
-        Manipulator.getInstance().reset();
-        Lights.getInstance().reset();
+        //StateMachine.getInstance().assertStop();
 
         disabledLooper.start();
     }
@@ -138,13 +142,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         disabledLooper.stop();
-
-        // Reset anything here
-        DriveTrain.getInstance().reset();
-        Arm.getInstance().reset();
         enabledLooper.start();
-        Lights.getInstance().reset();
-        Manipulator.getInstance().reset();;
 
         AutoChooser.getInstance().run_from_selection();
     }
@@ -160,13 +158,7 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
 
         // Reset anything here
-        initButtons();
-        Lights.getInstance().reset();
-        DriveTrain.getInstance().reset();
-        Manipulator.getInstance().reset();
         DriveTrain.getInstance().setOpenLoop();
-        PoseEstimator.getInstance().reset();
-        Arm.getInstance().reset();
         enabledLooper.start();
     }
 
@@ -181,11 +173,6 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
 
         // Reset anything here
-        Dummy.getInstance().reset();
-        DriveTrain.getInstance().reset();
-        Manipulator.getInstance().reset();
-        DriveTrain.getInstance().reset();
-        Arm.getInstance().reset();
 
         enabledLooper.start();
     }
@@ -198,25 +185,19 @@ public class Robot extends TimedRobot {
 
     public void initButtons() {
         driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
-        shootButton.whileTrue(Action.toCommand(new RunIntakeAction(-.5)));
-        intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(.5)));
-        // wristUpButton.whileTrue(Action.toCommand(new MoveWrist(-.3)));
-        // writstDownButton.whileTrue(Action.toCommand(new MoveWrist(.3)));
+        intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
+        intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER)));
         autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
-        limelightRotateButton.whileTrue(Action.toCommand(new DriveTurnActionLimelight()));
         resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
         gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
-        driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
 
-        // intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
-        // intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER)));
-        // wristUpButton.whileTrue(Action.toCommand(new MoveWrist(.3)));
-        // wristDownButton.whileTrue(Action.toCommand(new MoveWrist(-.3)));
-        turretButton.whileTrue(Action.toCommand(new AllowTurretPowerAction()));
-        extensionButton.whileTrue(Action.toCommand(new AllowExtensionPowerAction()));
-        pivotUpHighButton.whileTrue(Action.toCommand(new PivotMoveAction(.66)));
-        pivotDownHighButton.whileTrue(Action.toCommand(new PivotMoveAction(-.66)));
-        pivotUpSlowButton.whileTrue(Action.toCommand(new PivotMoveAction(.33)));
-        pivotDownSlowButton.whileTrue(Action.toCommand(new PivotMoveAction(-.33)));
+        stowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.STOWN)));
+        unstowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
+        cubeDropButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CUBE_DROP)));
+        cubePickupButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CUBE_PICKUP)));
+        wristUpButton.whileTrue(Action.toCommand(new MoveWristAction(-.33)));
+        wristDownButton.whileTrue(Action.toCommand(new MoveWristAction(.33)));
+        turretHold.whileTrue(Action.toCommand(new TurretHoldAction()));
+        cycleButton.whileTrue(Action.toCommand(new CycleArmAction()));
     }
 }

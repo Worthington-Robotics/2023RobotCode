@@ -17,7 +17,7 @@ public class Constants {
     public static final int DRIVE_TRANSMISSION_FORWARD = 1;
     public static final int DRIVE_TRANSMISSION_REVERSE = 0;
     
-    // Arm and Turret Constants
+    // Arm, Turret, Manipulator Constants
 
     // Arm Consants - IDs
     public static final int ARM_TURRET_ID = 9;
@@ -29,53 +29,39 @@ public class Constants {
     public static final int ARM_GRABBER_FWD_CHANNEL = 5;
     public static final int ARM_GRABBER_REV_CHANNEL = 4;
 
-    //Manipulator
-    public static final int INTAKE_WHEEL_ID = 5;
+    //Manipulator Constants
+    public static final int INTAKE_WHEEL_ID = 5;   
     public static final int MANIPULATOR_TOF_ID = 1;
-    public static final double INTAKE_POWER = .7;
-    public static final double ANYTHING_OUT_POWER = -.7;
 
-    public static final double PIVOT_INCREMENT = 0.1;
-    public static final double MAX_PIVOT_POWER = 0.7;
-    public static final double MIN_PIVOT_POWER = 0;
+    public static final double INTAKE_POWER = .75;
+    public static final double ANYTHING_OUT_POWER = -1;
+    public static final double INTAKE_ACCEPTANCE_RANGE = 5.0; //TODO: change this range value
+
+    public static final double WRIST_PIVOT_KP = 1 / 100.0; //TODO: change this kp
+    public static final double WRIST_MIN_TIME = 1.5;
+    public static final double WRIST_ANGLE_ENCODER_ACCEPTANCE = 500.0; //TODO: change this value
+    public static final double WRIST_ENCODER_PER_DEGREE = 400.0; //TODO: change this value
     
-    // Arm Constants - Measurements
+    // Arm Constants
     public static final double PIVOT_ENCODER_PER_DEGREE = 416.31;
     public static final double TURRET_ENCODER_PER_DEGREE = 218.56;
     public static final double ENCODER_PER_INCH = 3904.5;
 
-    // Arm Constants - PID 
-    public static final double ARM_PIVOT_KP = 1.9; // TODO: Adjust all kps and mins and maxs for arm
-    public static final double PIVOT_ANGLE_ACCEPTANCE = 2.0;
-    public static final double PIVOT_MIN_TIME = 1.0;
+    public static final double TURRET_KP = .384;
 
-    public static final double TURRET_KP = 1.0 / 250.0;
-    public static final double TURRET_ANGLE_ACCEPTANCE = 2.0;
+    public static final double ARM_PIVOT_KP = .014;
+    public static final double PIVOT_MIN_TIME =21.0;
+
+    public static final double TURRET_ANGLE_ENCODER_ACCEPTANCE = 500.0;
     public static final double TURRET_MIN_TIME = 1.5;
 
-    public static final double ARM_EXTENSION_KP = 1.0 / 100.0;
-    public static final double EXTENSION_DISTANCE_ACCEPTED = 2.0;
+    public static final double ARM_EXTENSION_KP = .03;
     public static final double EXTENSION_MIN_TIME = 1.5;
     
     
-    // Arm Constants - Safety
-    public static final double PIVOT_WARNING_ANGLE = 5.0; // Degrees(not ticks) from min or max when arm slows
-    public static final double MAX_PIVOT = 75.0; // TODO: Actual Value
-    public static final double MIN_PIVOT = 0.0; // Assume that arm moves slow enough to completely stop and reset when limit switch activated
-    public static final double PIVOT_MAX_SPEED = 0.7;
-    public static final double PIVOT_MIN_SPEED = 0.1;
-
-    public static final double EXTENSION_WARNING_DISTANCE = 5.0; // distance from min or max when arm slows, in inches
-    public static final double MAX_ARM_LENGTH = 50.0; // TODO: Actual value
-    public static final double MIN_ARM_LENGTH = 1.0;
-    public static final double EXTENSION_MAX_SPEED = 0.5;
-    public static final double EXTENSION_MIN_SPEED = 0.1;
-
-    public static final double TURRET_WARNING_DISTANCE = 5.0; // Degree
-    public static final double TURRET_MIN_ANGLE = -90.0;
-    public static final double TURRET_MAX_ANGLE = 90.0;
-    public static final double TURRET_MAX_SPEED = 0.75;
-    public static final double TURRET_MIN_SPEED = 0.05;
+    //Auto Pose Constants
+    public static final double highGoalExtensionEncoder = 150000.0;
+    public static final double mediumGoalExtensionEncoder = 120000.0;
 
     // ### Device ID declarations ###
 
@@ -129,7 +115,7 @@ public class Constants {
 
     //Lights Constants
     public static final int LIGHTS_ID = 9;
-    public static final int LIGHTS_LED_COUNT = 36;
+    public static final int LIGHTS_LED_COUNT = 200;
     
     // Angle PID
     public static final double TURN_KP = 1.0 / 120.0;
@@ -139,18 +125,18 @@ public class Constants {
     public static final double DRIVE_TURN_MAXIMUM_SPEED = 0.5;
 
     // Move forward
-    public static final double DRIVE_FORWARD_ACCEPTED_ERROR = 2000.0;
+    public static final double DRIVE_FORWARD_ACCEPTED_ERROR = 5000.0;
     public static final double DRIVE_FORWARD_MINIMUM_SPEED = 0.09;
-    public static final double DRIVE_FORWARD_MAXIMUM_SPEED = 0.8;
+    public static final double DRIVE_FORWARD_MAXIMUM_SPEED = 0.6;
     public static final double DRIVE_FORWARD_MINIMUM_TIME = 0.01;
-    public static final double DRIVE_FORWARD_KP = 1.0 / 100000.0;
+    public static final double DRIVE_FORWARD_KP = 1.0 / 75000.0;
     public static final double DRIVE_FORWARD_KD = 0.0 / 10000.0;
     public static final double DRIVE_FORWARD_D_FILT = 2.5;
     // Heading correction when moving forward
-    public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 300.0;
+    public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 150.0;
 
     // Auto level
-    public static final double DRIVE_LEVEL_KP = 1.0 / 90.0;
+    public static final double DRIVE_LEVEL_KP = 1.0 / 90.0; //This value is negated as the tilt of the gyro is inverted on the comp bot
     public static final double DRIVE_LEVEL_KD = 1.0 / 1.0;
     public static final double DRIVE_LEVEL_D_FILTER = 0.2;
     public static final double DRIVE_LEVEL_MAX_SPEED = 0.6;
@@ -188,6 +174,10 @@ public class Constants {
     public static final double Path_Kx = 4.0;  //
     public static final double PATH_LOOK_AHEAD_TIME = 0.4;  // seconds to look ahead along the path for steering
     public static final double PATH_MIN_LOOK_AHEAD_DISTANCE = 24.0;  // inches
+
+    // Turret Limelight Turn Constants
+    public static final double LIMELIGHT_ANGLE_ACCEPTANCE = 2.0;
+    public static final double LIMELIGHT_ANGLE_PID_MINIMUM_TIME = 0.5;
 
     // Electrical Constants
     public static final double DRIVE_VCOMP = 10.0; //V
