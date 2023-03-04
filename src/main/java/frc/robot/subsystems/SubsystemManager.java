@@ -177,6 +177,7 @@ public class SubsystemManager implements ILooper, Loggable {
     }
 
     public void registerDisabledLoops(Looper disabledLooper) {
+        Lights.getInstance().registerDisabledLoops(this);
         disabledLooper.register(new DisabledLoop());
     }
 

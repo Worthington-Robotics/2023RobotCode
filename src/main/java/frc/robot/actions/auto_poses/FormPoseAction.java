@@ -6,22 +6,21 @@ import frc.robot.Constants;
 
 public class FormPoseAction extends Action{
 
-    double[] inputVals = {0,0,0};
-    double startTime = Timer.getFPGATimestamp();
+    double buttonNumber;
 
-    public FormPoseAction(double extensionEncoder, double pivotEncoder, double turretEncoder){
-        inputVals[0] = extensionEncoder;
-        inputVals[1] = pivotEncoder;
-        inputVals[2] = turretEncoder;
+    public FormPoseAction(double number){
+        buttonNumber = number;
     }
 
     @Override
     public void onStart() {
-        Arm.getInstance().setDesiredPivot(inputVals[0]);
-        Arm.getInstance().setDesiredLength(inputVals[1]);
-        Arm.getInstance().setDesiredTurret(inputVals[2]);
-        Arm.getInstance().setClosedLoop();
-        
+       if (buttonNumber == 1) {
+            Arm.getInstance().setPoseOne();
+       } else if (buttonNumber == 2){
+            Arm.getInstance().setPoseTwo();
+        } else{
+            Arm.getInstance().setPoseNothing();
+        }
     }
 
     @Override
@@ -30,15 +29,6 @@ public class FormPoseAction extends Action{
 
     @Override
     public boolean isFinished() {
-    //     if (Math.abs(Arm.getInstance().getPivotError()) < Constants.PIVOT_ANGLE_ENCODER_ACCEPTANCE
-    //     && Math.abs(Arm.getInstance().getLengthError()) < Constants.EXTENSION_DISTANCE_ACCEPTED
-    //     && Math.abs(Arm.getInstance().getTurretError()) < Constants.TURRET_ANGLE_ENCODER_ACCEPTANCE
-    //     && Timer.getFPGATimestamp() - startTime > Constants.PIVOT_MIN_TIME){
-    //     return true;
-    // }
-    // else {
-    //     return false;
-    // }
         return true;
     }
 
