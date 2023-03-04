@@ -19,6 +19,7 @@ import frc.robot.subsystems.*;
 import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Arm.ArmPose;
+import frc.robot.subsystems.VisionLink.LimelightPipeline;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.drive.TeleopLevelAction;
 import frc.robot.actions.drive.GyroLockAction;
@@ -26,6 +27,7 @@ import frc.robot.actions.drive.SetPositionAction;
 import frc.robot.actions.drive.DriveTurnActionLimelight;
 import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
+import frc.robot.actions.vision.SetPipelineAction;
 import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.arm.CycleArmAction;
 import frc.robot.actions.arm.LimelightTurretCorrectionAction;
@@ -66,6 +68,8 @@ public class Robot extends TimedRobot {
     private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 4);
     private JoystickButton turretHold = new JoystickButton(Constants.SECOND, 1);
     private JoystickButton limelightTarget = new JoystickButton(Constants.SECOND, 2);
+    private JoystickButton setHighGoalButton = new JoystickButton(Constants.SECOND, 7);
+    private JoystickButton setLowGoalButton = new JoystickButton(Constants.SECOND, 9);
 
 
     //private JoystickButton pivotDownHighButton = new JoystickButton(Constants.SECOND, 3);
@@ -203,5 +207,7 @@ public class Robot extends TimedRobot {
         turretHold.whileTrue(Action.toCommand(new TurretHoldAction()));
         cycleButton.whileTrue(Action.toCommand(new CycleArmAction()));
         limelightTarget.whileTrue(Action.toCommand(new LimelightTurretCorrectionAction()));
+        setHighGoalButton.whileTrue(Action.toCommand(new SetPipelineAction(LimelightPipeline.High)));
+        setLowGoalButton.whileTrue(Action.toCommand(new SetPipelineAction(LimelightPipeline.Low)));
     }
 }
