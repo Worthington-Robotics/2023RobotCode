@@ -28,6 +28,7 @@ import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
 import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.arm.CycleArmAction;
+import frc.robot.actions.arm.LimelightTurretCorrectionAction;
 import frc.robot.actions.arm.PivotMoveAction;
 import frc.robot.actions.arm.TurretHoldAction;
 import frc.robot.actions.manipulator.MoveWristAction;
@@ -64,6 +65,7 @@ public class Robot extends TimedRobot {
     private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 3);
     private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 4);
     private JoystickButton turretHold = new JoystickButton(Constants.SECOND, 1);
+    private JoystickButton limelightTarget = new JoystickButton(Constants.SECOND, 2);
 
 
     //private JoystickButton pivotDownHighButton = new JoystickButton(Constants.SECOND, 3);
@@ -200,5 +202,6 @@ public class Robot extends TimedRobot {
         wristDownButton.whileTrue(Action.toCommand(new MoveWristAction(.33)));
         turretHold.whileTrue(Action.toCommand(new TurretHoldAction()));
         cycleButton.whileTrue(Action.toCommand(new CycleArmAction()));
+        limelightTarget.whileTrue(Action.toCommand(new LimelightTurretCorrectionAction()));
     }
 }
