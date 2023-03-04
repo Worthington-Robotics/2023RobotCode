@@ -4,10 +4,14 @@ import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
 
 public class DriveLevelAction extends Action {
-	public DriveLevelAction() {}
+	double desiredHeading;
+	public DriveLevelAction(double desiredHeading) {
+		this.desiredHeading = desiredHeading;
+	}
 
 	@Override
 	public void onStart() {
+		DriveTrain.getInstance().setDesiredHeading(desiredHeading);
 		DriveTrain.getInstance().setAutoLevel();
 	}
 
@@ -20,7 +24,5 @@ public class DriveLevelAction extends Action {
 	}
 
 	@Override
-	public void onStop() {
-		DriveTrain.getInstance().setOpenLoop();
-	}
+	public void onStop() {}
 }
