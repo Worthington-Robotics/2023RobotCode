@@ -125,7 +125,11 @@ public class Constants {
     public static final double DEAD_ZONE = 0.05;
     public static final double OPEN_LOOP_FILTER = 0.3;
     
-  
+    // ### Vision values ###
+    public static final String LIMELIGHT_NETWORK_ID = "limelight-worbots";
+    public static final int LIMELIGHT_LOW_PIPELINE = 0;
+    public static final int LIMELIGHT_HIGH_PIPELINE = 1;
+    public static final double VISION_SNAPSHOT_INTERVAL = 1;
 
     //Lights Constants
     public static final int LIGHTS_ID = 9;

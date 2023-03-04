@@ -12,7 +12,7 @@ import frc.robot.subsystems.DriveTrain;
 public class DriveTurnActionLimelight extends Action {
     ErrorChecker checker = new ErrorChecker(Constants.ANGLE_ACCEPTANCE, Constants.ANGLE_PID_MINIMUM_TIME);
 		NetworkTableInstance inst = NetworkTableInstance.getDefault();
-		NetworkTable lime = inst.getTable("limelight-worbots");
+		NetworkTable lime = inst.getTable(Constants.LIMELIGHT_NETWORK_ID);
 
     public DriveTurnActionLimelight() {}
 
