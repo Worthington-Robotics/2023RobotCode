@@ -55,7 +55,7 @@ public class SuperStructure extends Subsystem {
 		intakeWheelSpinner.setInverted(true);
 
 		intakeSolenoid = new DoubleSolenoid(Constants.INTAKE_PNEUMATICS_ID, PneumaticsModuleType.CTREPCM, Constants.INTAKE_SOLINIOD_REVERSE, Constants.INTAKE_SOLINIOD_FORWARD);
-		//intakeSolenoid.set(Value.kReverse);
+		intakeSolenoid.set(Value.kReverse);
 
 		tof = new TimeOfFlight(1);
 		tof.setRangingMode(RangingMode.Short, 40);
