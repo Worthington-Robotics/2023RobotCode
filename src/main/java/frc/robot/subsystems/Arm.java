@@ -200,31 +200,6 @@ public class Arm extends Subsystem {
 		SmartDashboard.putBoolean("Arm/extension button pressed", periodic.extensionButtonIsPressed);
 	}
 
-	public void switchPose(){
-		switch (periodic.currentPose) {
-			case POSE_ONE:
-				setTurretPower(periodic.rawTurretPower);
-				setPivotPower(periodic.rawPivotPower);
-				setExtensionPower(periodic.rawExtensionPower);
-				break;
-			case OPEN_CLOSED_LOOP:
-				if(periodic.extensionButtonIsPressed){
-					periodic.desiredArmLengthEncoder = convertRawExtensionIntoEncoder(periodic.rawExtensionPower);
-				}
-				periodic.desiredPivotEncoder = convertRawPivotIntoEncoder(periodic.rawPivotPower);
-				setTurretPower(periodic.rawTurretPower);
-				
-				periodic.desiredArmLength = periodic.desiredArmLengthEncoder  / Constants.ENCODER_PER_INCH;
-				periodic.desiredPivotDegree = (periodic.desiredPivotEncoder / Constants.PIVOT_ENCODER_PER_DEGREE) + 25.0;
-				periodic.desiredTurretDegree = periodic.desiredTurretEncoder / Constants.TURRET_ENCODER_PER_DEGREE;
-
-				break;
-			case CLOSED_LOOP:
-				break;
-		}
-	}
-	
-
 	public void reset() {
 		periodic.currentMode = ArmMode.OPEN_CLOSED_LOOP;
 		periodic.turretButtonIsPressed = false;
@@ -384,20 +359,6 @@ public class Arm extends Subsystem {
 	public void setClosedLoop() {
 		periodic.currentMode = ArmMode.CLOSED_LOOP;
 	}
-
-	public void setPoseNothing(){
-		periodic.currentPose = Pose.POSE_NOTHING;
-	}
-
-	public void setPoseOne(){
-		periodic.currentPose = Pose.POSE_ONE;
-	}
-
-	public void setPoseTwo(){
-		periodic.currentPose = Pose.POSE_TWO;
-	}
-
-	
 	
 	// Logging
 
