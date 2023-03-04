@@ -51,8 +51,7 @@ public class Lights extends Subsystem {
                     case LIMELIGHT_TARGETING:
                         for (int i = 0; i < ledBuffer.getLength(); i++) {
                             if (VisionLink.getInstance().hasTarget()) {
-                                final double error = DriveTrain.getInstance().getHeadingDegrees()
-                                    - VisionLink.getInstance().getTurretOffset();
+                                final double error = Arm.getInstance().getTurretError();
                                 if (error <= Constants.ANGLE_ACCEPTANCE) {
                                     ledBuffer.setRGB(i, 174, 255, 54);
                                 } else {
