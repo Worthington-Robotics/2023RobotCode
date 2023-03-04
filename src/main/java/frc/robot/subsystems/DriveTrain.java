@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -96,7 +95,6 @@ public class DriveTrain extends Subsystem {
         rearLeftMotor = new TalonFX(Constants.DRIVE_BACK_LEFT_ID);
         rearLeftMotor.setNeutralMode(NeutralMode.Brake);
 
-        // TODO: Use setInverted to follow to make sure that motors are going the same direction
         forwardLeftMotor.setInverted(true);
         rearLeftMotor.setInverted(true);
 
@@ -282,6 +280,10 @@ public class DriveTrain extends Subsystem {
 
     public void setOpenLoop() {
         periodic.currentMode = DriveMode.OPEN_LOOP;
+    }
+
+    public void setGyro(double heading) {
+        gyro.setFusedHeading(heading);
     }
 
     public void setMoveForward(double distance) {
