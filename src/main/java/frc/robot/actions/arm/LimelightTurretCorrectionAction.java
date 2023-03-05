@@ -19,6 +19,7 @@ public class LimelightTurretCorrectionAction extends Action {
     @Override
     public void onStart() {
         double heading = Arm.getInstance().getTurretAngle();
+        Arm.getInstance().setLimelightCorrection();
         Arm.getInstance().setDesiredTurret(heading - VisionLink.getInstance().getTurretOffset());
     }
 
@@ -31,5 +32,7 @@ public class LimelightTurretCorrectionAction extends Action {
     }
 
     @Override
-    public void onStop() {}
+    public void onStop() {
+        Arm.getInstance().setLimelightCorrectionOff();
+    }
 }

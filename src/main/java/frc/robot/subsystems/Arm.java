@@ -99,6 +99,8 @@ public class Arm extends Subsystem {
 		public double turretHoldValue = 0;
 		public double extenHoldValue = 0;
 		public boolean turretIsHolding = false;
+
+		public boolean limelightCorrectTurret = false;
 	}
 
 	public void readPeriodicInputs() {
@@ -165,8 +167,13 @@ public class Arm extends Subsystem {
 		} else {
 			armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
 			if(!periodic.turretIsHolding) {
-				turretMotor.set(ControlMode.PercentOutput, periodic.rawTurretPower);
-				extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
+				if(periodic.limelightCorrectTurret){
+					turretMotor.set(ControlMode.Position, periodic.desiredTurretEncoder);
+					extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
+				} else {
+					turretMotor.set(ControlMode.PercentOutput, periodic.rawTurretPower);
+					extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
+				}
 			} else {
 				turretMotor.set(ControlMode.Position, periodic.turretHoldValue);
 				extensionMotor.set(ControlMode.Position, periodic.extenHoldValue);
@@ -254,7 +261,14 @@ public class Arm extends Subsystem {
 		periodic.desiredArmLengthEncoder = lengthEncoder;
 		periodic.lengthEncoderError = periodic.desiredArmLengthEncoder - periodic.lengthEncoder;
 	}
-	 
+	
+	public void setLimelightCorrection() {
+		periodic.limelightCorrectTurret = true;
+	}
+
+	public void setLimelightCorrectionOff() {
+		periodic.limelightCorrectTurret = false;
+	}
 
 	public void resetEncoders() {
 		extensionMotor.setSelectedSensorPosition(0);
@@ -294,7 +308,7 @@ public class Arm extends Subsystem {
 	}
 
 	public double convertRawTurretIntoEncoder(double inputPower) {
-		return inputPower * 22000;
+		return inputPower * 88000;
 	}
 	
 	// MainLoop Functions (Mostly PID) - Could be private
