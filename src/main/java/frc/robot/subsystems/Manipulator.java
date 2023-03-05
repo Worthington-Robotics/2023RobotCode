@@ -72,7 +72,7 @@ public class Manipulator extends Subsystem {
 
 			@Override
 			public void onLoop(double timestamp) {
-				switch (periodic.currentMode) {
+				switch (Arm.getInstance().getMode()) {
 					case OPEN_LOOP:
 						break;
 					case OPEN_CLOSED_LOOP:
@@ -104,13 +104,6 @@ public class Manipulator extends Subsystem {
 
 	public void setWristPower(double power){
 		periodic.wristMotorPower = power;
-	}
-
-	// Set the desired angle of the wrist
-	public void setDesiredWristAngle(double thetaEncoder) {
-		periodic.desiredWristDegree = thetaEncoder / Constants.WRIST_ENCODER_PER_DEGREE;
-		periodic.desiredWristEncoder = thetaEncoder;
-		periodic.wristEncoderError = periodic.desiredWristEncoder - periodic.wristEncoder;
 	}
 
 	public void setOpenLoop() {
@@ -156,9 +149,10 @@ public class Manipulator extends Subsystem {
 		SmartDashboard.putNumber("Manipulator/WristPower", periodic.wristMotorPower);
 		SmartDashboard.putNumber("Manipulator/RawWristMotorPower", periodic.rawWristMotorPower);
 		SmartDashboard.putNumber("Manipulator/DesiredWristEncoder", periodic.desiredWristEncoder);
-		SmartDashboard.putNumber("Manipulator/WristEncoder", periodic.wristEncoder);
+		SmartDashboard.putNumber("Arm/encoder/wrist", periodic.wristEncoder);
 		SmartDashboard.putNumber("Manipulator/TOFDistance", intakeTOF.getRange());
 	}
+
 
 	public LogData getLogger() {
 		return periodic;

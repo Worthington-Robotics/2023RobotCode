@@ -28,6 +28,7 @@ import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
 import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.arm.CycleArmAction;
+import frc.robot.actions.arm.PinToggleAction;
 import frc.robot.actions.arm.PivotMoveAction;
 import frc.robot.actions.arm.TurretHoldAction;
 import frc.robot.actions.manipulator.MoveWristAction;
@@ -59,8 +60,10 @@ public class Robot extends TimedRobot {
     private JoystickButton stowButton = new JoystickButton(Constants.SECOND, 5);
     private JoystickButton unstowButton = new JoystickButton(Constants.SECOND, 6);
     private JoystickButton cubePickupButton = new JoystickButton(Constants.SECOND, 12);
+    //private JoystickButton cubePickupButton = new JoystickButton(Constants.SECOND, 9);
     private JoystickButton cubeDropButton = new JoystickButton(Constants.SECOND, 10);
     private JoystickButton cycleButton = new JoystickButton(Constants.SECOND, 11);
+    private JoystickButton coneDropButton = new JoystickButton(Constants.SECOND, 8);
     private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 3);
     private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 4);
     private JoystickButton turretHold = new JoystickButton(Constants.SECOND, 1);
@@ -143,7 +146,7 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         disabledLooper.stop();
         enabledLooper.start();
-
+        Arm.getInstance().clearPin();
         AutoChooser.getInstance().run_from_selection();
     }
 
@@ -160,6 +163,7 @@ public class Robot extends TimedRobot {
         // Reset anything here
         DriveTrain.getInstance().setOpenLoop();
         enabledLooper.start();
+        Arm.getInstance().clearPin();
     }
 
     /**
@@ -172,7 +176,7 @@ public class Robot extends TimedRobot {
     public void testInit() {
         disabledLooper.stop();
 
-        // Reset anything here
+        Arm.getInstance().setPin();
 
         enabledLooper.start();
     }
@@ -191,10 +195,13 @@ public class Robot extends TimedRobot {
         resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
         gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
 
+
+        //Copy and paste armPoseAction line and change the armPose to the next arm Pose
         stowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.STOWN)));
         unstowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
-        cubeDropButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CUBE_DROP)));
-        cubePickupButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CUBE_PICKUP)));
+        cubeDropButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CUBE_MID)));
+        coneDropButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_MID)));
+        cubePickupButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.INTAKE)));
         wristUpButton.whileTrue(Action.toCommand(new MoveWristAction(-.33)));
         wristDownButton.whileTrue(Action.toCommand(new MoveWristAction(.33)));
         turretHold.whileTrue(Action.toCommand(new TurretHoldAction()));
