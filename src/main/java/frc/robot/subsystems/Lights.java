@@ -93,11 +93,11 @@ public class Lights extends Subsystem {
     }
 
     public void setLimelightTargetColor() {
-        state = STATE.LIMELIGHT_TARGETING;
+        state = State.LIMELIGHT_TARGETING;
     }
 
     public void setRainbowLights() {
-        state = STATE.LIGHTS_RAINBOW;
+        state = State.LIGHTS_RAINBOW;
     }
 
     public void reset() {
