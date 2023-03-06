@@ -19,9 +19,9 @@ public class LimelightTurretCorrectionAction extends Action {
     @Override
     public void onStart() {
 			DoubleTopic txNet = limelight.getDoubleTopic("tx");
-			double heading = Arm.getInstance().getTurretAngle();
+			//double heading = Arm.getInstance().getTurretAngle();
 			DoubleSubscriber tx = txNet.subscribe(0.0);
-            Arm.getInstance().setDesiredTurret(heading - tx.get());
+            //Arm.getInstance().setDesiredTurret(heading - tx.get());
     }
 
     @Override

@@ -12,7 +12,7 @@ public class VisionLink extends Subsystem {
 	}
 
 	public void readPeriodicInputs() {
-		periodic.turretAngle = Arm.getInstance().getTurretAngle();
+		//periodic.turretAngle = Arm.getInstance().getTurretAngle();
         //need to get turret angle from arm subsystem
         //also read smartdashboard for vision values
     }
