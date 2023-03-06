@@ -48,48 +48,6 @@ public class Lights extends Subsystem {
         });
     }
     
-    public void registerDisabledLoops(ILooper disabledLooper) {
-        disabledLooper.register(new Loop() {
-            @Override
-            public void onStart(double timestamp) {
-                state = State.LIGHTS_WHITE;
-            }
-            @Override
-            public void onLoop(double timestamp) {
-                switch(state) {
-                    case LIGHTS_RAINBOW:
-                        for (int i = 0; i < ledBuffer.getLength(); i++) {
-                            double h = Math.abs(((timestamp - (0.1*i)) % 10.0) / 10);
-                            ledBuffer.setHSV(i, (int)(h * 180.0), 255, 230);
-                        }
-                        break;
-                    case LIGHTS_WHITE:
-                        for (int i = 0; i < ledBuffer.getLength(); i++) {
-                            ledBuffer.setHSV(i, 0, 0, 255);
-                        }
-                        break;
-                    case LIMELIGHT_TARGETING:
-                        for (int i = 0; i < ledBuffer.getLength(); i++) {
-                            if (VisionLink.getInstance().hasTarget()) {
-                                final double error = Arm.getInstance().getTurretError();
-                                if (error <= Constants.ANGLE_ACCEPTANCE) {
-                                    ledBuffer.setRGB(i, 174, 255, 54);
-                                } else {
-                                    ledBuffer.setRGB(i, 255, 200, 0);
-                                }
-                            } else {
-                                ledBuffer.setRGB(i, 250, 78, 35);
-                            }
-                        }
-                        break;
-                }
-            }
-            @Override
-            public void onStop(double timestamp) {
-
-            }
-        });
-    }
 
     public void readPeriodicInputs() {}
 
@@ -98,6 +56,9 @@ public class Lights extends Subsystem {
 
     public void outputTelemetry() {
         double timestamp = Timer.getFPGATimestamp();
+        if(DriverStation.isDisabled()){
+            state = State.LIGHTS_WHITE;
+        }
         switch(state) {
             case LIGHTS_RAINBOW:
             for (int i = 0; i < ledBuffer.getLength(); i++) {
@@ -107,11 +68,36 @@ public class Lights extends Subsystem {
                 ledBuffer.setHSV(i, (int)(h * 180.0), 255, 230);
             }
                 break;
+            case LIGHTS_WHITE:
+                for (int i = 0; i < ledBuffer.getLength(); i++) {
+                    ledBuffer.setHSV(i, 0, 0, 255);
+                }
+                break;
             case LIMELIGHT_TARGETING:
+                for (int i = 0; i < ledBuffer.getLength(); i++) {
+                    if (VisionLink.getInstance().hasTarget()) {
+                        final double error = Arm.getInstance().getTurretError();
+                        if (error <= Constants.ANGLE_ACCEPTANCE) {
+                            ledBuffer.setRGB(i, 174, 255, 54);
+                        } else {
+                            ledBuffer.setRGB(i, 255, 200, 0);
+                        }
+                    } else {
+                        ledBuffer.setRGB(i, 250, 78, 35);
+                    }
+                }
                 break;
         }
         ledString.setData(ledBuffer);
 
+    }
+
+    public void setLimelightTargetColor() {
+        state = STATE.LIMELIGHT_TARGETING;
+    }
+
+    public void setRainbowLights() {
+        state = STATE.LIGHTS_RAINBOW;
     }
 
     public void reset() {

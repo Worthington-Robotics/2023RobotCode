@@ -169,11 +169,10 @@ public class Arm extends Subsystem {
 			if(!periodic.turretIsHolding) {
 				if(periodic.limelightCorrectTurret){
 					turretMotor.set(ControlMode.Position, periodic.desiredTurretEncoder);
-					extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
 				} else {
 					turretMotor.set(ControlMode.PercentOutput, periodic.rawTurretPower);
-					extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
 				}
+				extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
 			} else {
 				turretMotor.set(ControlMode.Position, periodic.turretHoldValue);
 				extensionMotor.set(ControlMode.Position, periodic.extenHoldValue);

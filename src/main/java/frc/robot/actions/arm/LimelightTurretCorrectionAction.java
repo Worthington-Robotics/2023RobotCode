@@ -8,19 +8,19 @@ import frc.lib.control.ErrorChecker;
 import frc.lib.statemachine.Action;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.VisionLink;
 
 public class LimelightTurretCorrectionAction extends Action {
     ErrorChecker checker = new ErrorChecker(Constants.LIMELIGHT_ANGLE_ACCEPTANCE,
         Constants.LIMELIGHT_ANGLE_PID_MINIMUM_TIME);
 
-    public LimelightTurretCorrectionAction() {}
-
     @Override
     public void onStart() {
         double heading = Arm.getInstance().getTurretAngle();
         Arm.getInstance().setLimelightCorrection();
         Arm.getInstance().setDesiredTurret(heading - VisionLink.getInstance().getTurretOffset());
+        Lights.getInstance().setLimelightTargetColor();
     }
 
     @Override
@@ -34,5 +34,6 @@ public class LimelightTurretCorrectionAction extends Action {
     @Override
     public void onStop() {
         Arm.getInstance().setLimelightCorrectionOff();
+        Lights.getInstance().setRainbowLights();
     }
 }
