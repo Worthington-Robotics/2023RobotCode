@@ -18,8 +18,8 @@ public class LimelightTurretCorrectionAction extends Action {
     @Override
     public void onStart() {
         double heading = Arm.getInstance().getTurretAngle();
-        Arm.getInstance().setLimelightCorrection();
         Arm.getInstance().setDesiredTurret(heading - VisionLink.getInstance().getTurretOffset());
+        Arm.getInstance().setLimelightCorrection();
         Lights.getInstance().setLimelightTargetColor();
     }
 
@@ -28,7 +28,7 @@ public class LimelightTurretCorrectionAction extends Action {
 
     @Override
     public boolean isFinished() {
-        return checker.check(Arm.getInstance().getTurretError() / Constants.TURRET_ENCODER_PER_DEGREE);
+        return false;
     }
 
     @Override

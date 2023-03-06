@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
     private JoystickButton intakeButton = new JoystickButton(Constants.MASTER, 2);
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 4);
-    // private JoystickButton limelightRotateButton = new JoystickButton(Constants.MASTER, 5);
+    private JoystickButton limelightRotateButton = new JoystickButton(Constants.MASTER, 5);
     private JoystickButton resetPoseButton = new JoystickButton(Constants.MASTER, 6);
     private JoystickButton gyroLockButton = new JoystickButton(Constants.MASTER, 7);
 
@@ -197,6 +197,7 @@ public class Robot extends TimedRobot {
         autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
         resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
         gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
+        limelightRotateButton.onTrue(Action.toCommand(new LimelightTurretCorrectionAction()));
 
         stowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.STOWN)));
         unstowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
