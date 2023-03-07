@@ -247,6 +247,13 @@ public class Arm extends Subsystem {
 		periodic.turretEncoderError = periodic.desiredTurretEncoder - periodic.turretEncoder;
 	}
 	 
+	public void setDisabledLimitSwtich() {
+		turretMotor.overrideLimitSwitchesEnable(true);
+	}
+
+	public void setEnabledLimitSwtich() {
+		turretMotor.overrideLimitSwitchesEnable(false);
+	}
 
 	public void resetEncoders() {
 		extensionMotor.setSelectedSensorPosition(0);

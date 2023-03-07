@@ -23,7 +23,8 @@ public class VisionLink extends Subsystem {
     //add getters for vision values, so other subsystems dont need to get values from smartdash
 
 	public void outputTelemetry() {
-		SmartDashboard.putNumber("VisionData/TurretAngle", periodic.turretAngle);
+		//Turret angle is inverted for positive Z axis rotation 
+		SmartDashboard.putNumber("VisionData/TurretAngle", -periodic.turretAngle);
 	}
 
 	public void reset() {

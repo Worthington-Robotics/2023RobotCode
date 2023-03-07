@@ -155,6 +155,7 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
         enabledLooper.start();
         Arm.getInstance().clearPin();
+        Arm.getInstance().setDisabledLimitSwtich();
         AutoChooser.getInstance().run_from_selection();
     }
 
@@ -172,6 +173,7 @@ public class Robot extends TimedRobot {
         DriveTrain.getInstance().setOpenLoop();
         enabledLooper.start();
         Arm.getInstance().clearPin();
+        Arm.getInstance().setEnabledLimitSwtich();
     }
 
     /**

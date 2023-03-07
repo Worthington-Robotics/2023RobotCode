@@ -369,8 +369,8 @@ public class DriveTrain extends Subsystem {
         final double levelError = Constants.DRIVE_LEVEL_ZERO + periodic.gyroTilt;
         final double power = (levelError * Constants.DRIVE_LEVEL_KP);
             // - (periodic.tiltDelta * Constants.DRIVE_LEVEL_KD);
-        periodic.leftDemand = power;
-        periodic.rightDemand = power;
+        periodic.leftDemand = -power;
+        periodic.rightDemand = -power;
 
         // Correct for heading error
         periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;

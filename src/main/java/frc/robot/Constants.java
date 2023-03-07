@@ -44,7 +44,7 @@ public class Constants {
     
     // Arm Constants
     public static final double PIVOT_ENCODER_PER_DEGREE = 416.31;
-    public static final double TURRET_ENCODER_PER_DEGREE = 218.56;
+    public static final double TURRET_ENCODER_PER_DEGREE = 227.56;
     public static final double ENCODER_PER_INCH = 3904.5;
 
     public static final double TURRET_KP = .07;
