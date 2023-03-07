@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.robot.Constants;
@@ -50,8 +51,7 @@ public class Lights extends Subsystem {
 
     public void readPeriodicInputs() {}
 
-    public void writePeriodicOutputs() {
-    }
+    public void writePeriodicOutputs() {}
 
     public void outputTelemetry() {
         double timestamp = Timer.getFPGATimestamp();
@@ -71,7 +71,7 @@ public class Lights extends Subsystem {
                 break;
             case LIGHTS_WHITE:
                 for (int i = 0; i < ledBuffer.getLength(); i++) {
-                    ledBuffer.setHSV(i, 0, 0, 255);
+                    ledBuffer.setLED(i, Color.kWhite);
                 }
                 break;
         }

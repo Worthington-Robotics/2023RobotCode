@@ -146,7 +146,11 @@ public class Constants {
     // Correction for pigeon pitch inaccuracy
     public static final double DRIVE_LEVEL_ZERO = -2.5;
 
-
+    // ### Vision values ###
+    public static final String LIMELIGHT_NETWORK_ID = "limelight-worbots";
+    public static final int LIMELIGHT_LOW_PIPELINE = 0;
+    public static final int LIMELIGHT_HIGH_PIPELINE = 1;
+    public static final double VISION_SNAPSHOT_INTERVAL = 1;
 
     // ### Constants kept around for compatability with library code ###
     
