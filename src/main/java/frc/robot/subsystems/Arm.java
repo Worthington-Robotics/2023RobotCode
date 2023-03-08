@@ -83,9 +83,9 @@ public class Arm extends Subsystem {
 		public double turretEncoder;
 
 		// Desired values
-		public double desiredPivotDegree; // from 25 to the maximum extension of the arm 
-		public double desiredArmLength; // inches
-		public double desiredTurretDegree; // scale of -135 to 135
+		public double desiredPivotDegree; 
+		public double desiredArmLength;
+		public double desiredTurretDegree;
 		public double desiredPivotEncoder;
 		public double desiredArmLengthEncoder;
 		public double desiredTurretEncoder;
@@ -133,9 +133,6 @@ public class Arm extends Subsystem {
 			public void onLoop(double timestamp) {
 				switch (periodic.currentMode) {
 					case OPEN_LOOP:
-						setTurretPower(periodic.rawTurretPower);
-						setPivotPower(periodic.rawPivotPower);
-						setExtensionPower(periodic.rawExtensionPower);
 						break;
 					case OPEN_CLOSED_LOOP:
 						periodic.desiredArmLengthEncoder = convertRawExtensionIntoEncoder(periodic.rawExtensionPower);
@@ -234,18 +231,6 @@ public class Arm extends Subsystem {
 		return periodic.lengthEncoder;
 	}
 
-	// For closed loop
-	public void setDesiredPivot(double thetaEncoder) {
-		periodic.desiredPivotDegree = thetaEncoder / Constants.PIVOT_ENCODER_PER_DEGREE;
-		periodic.desiredPivotEncoder = thetaEncoder;
-		periodic.pivotEncoderError = periodic.desiredPivotEncoder - periodic.pivotEncoder;
-	}
-
-	public void setDesiredTurret(double thetaEncoder) {
-		periodic.desiredTurretDegree = thetaEncoder / Constants.TURRET_ENCODER_PER_DEGREE;;
-		periodic.desiredTurretEncoder = thetaEncoder;
-		periodic.turretEncoderError = periodic.desiredTurretEncoder - periodic.turretEncoder;
-	}
 	 
 	public void setDisabledLimitSwtich() {
 		turretMotor.overrideLimitSwitchesEnable(true);
@@ -302,14 +287,6 @@ public class Arm extends Subsystem {
 
 	public void setTurretPower(double power) {
 			periodic.turretPower = power;
-	}
-
-	public void setPivotPower(double power) {
-		periodic.pivotPower = power;
-	}
-
-	public void setExtensionPower(double power) {
-			periodic.extensionPower = power;
 	}
 
 	public void cycleMode() {

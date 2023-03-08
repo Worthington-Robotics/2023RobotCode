@@ -1,4 +1,4 @@
-package frc.robot.actions.arm;
+package frc.robot.actions.time;
 
 import frc.lib.statemachine.Action;
 

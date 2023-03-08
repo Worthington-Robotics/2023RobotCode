@@ -1,11 +1,11 @@
 
-package frc.robot.actions.drive;
+package frc.robot.actions.time;
 
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
 
 
-public class WaitAction extends Action {
+public class DriveWaitAction extends Action {
     
     @Override
     public void onStart() {
