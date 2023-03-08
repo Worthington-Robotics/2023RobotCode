@@ -97,7 +97,8 @@ public class DriveTrain extends Subsystem {
 
         forwardLeftMotor.setInverted(true);
         rearLeftMotor.setInverted(true);
-
+        transmissionSolenoid.set(Value.kReverse);
+        
         leftFilter = LinearFilter.singlePoleIIR(Constants.OPEN_LOOP_FILTER, 0.02);
         rightFilter = LinearFilter.singlePoleIIR(Constants.OPEN_LOOP_FILTER, 0.02);
         driveDeltaFilter = LinearFilter.singlePoleIIR(Constants.DRIVE_FORWARD_D_FILT, 0.02);
@@ -317,16 +318,16 @@ public class DriveTrain extends Subsystem {
         periodic.rightDemand = periodic.rightError * Constants.DRIVE_FORWARD_KP
             + periodic.forwardDerivativeError * Constants.DRIVE_FORWARD_KD;
         
-        // Normalize power
+       // Normalize power
         periodic.leftDemand = clampDriveSpeed(periodic.leftDemand, 
             Constants.DRIVE_FORWARD_MINIMUM_SPEED, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
         periodic.rightDemand = clampDriveSpeed(periodic.rightDemand, 
             Constants.DRIVE_FORWARD_MINIMUM_SPEED, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
 
         // Correct for heading error
-        periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;
-        periodic.leftDemand -= periodic.driveHeadingCorrect;
-        periodic.rightDemand += periodic.driveHeadingCorrect;
+        //periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;
+        //periodic.leftDemand -= periodic.driveHeadingCorrect;
+        //periodic.rightDemand += periodic.driveHeadingCorrect;
 
         // Final clamp put in as a safety check
         periodic.leftDemand = clampDriveSpeed(periodic.leftDemand, 0.0, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);

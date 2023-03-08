@@ -34,7 +34,7 @@ public class AutoChooser {
 				StateMachine.getInstance().runMachine(new AutoOne());
 				break;
 			case Two:
-				StateMachine.getInstance().runMachine(new AutoTwo());
+				StateMachine.getInstance().runMachine(new AutoTwoFromRookie());
 				break;
 			case Test:
 				StateMachine.getInstance().runMachine(new TestAuto());

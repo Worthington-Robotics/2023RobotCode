@@ -300,22 +300,6 @@ public class Arm extends Subsystem {
 
 
 
-	public void setTurretButtonPressedTrue() {
-		periodic.turretButtonIsPressed = true;
-	}
-
-	public void setExtensionButtonPressedTrue() {
-		periodic.extensionButtonIsPressed = true;
-	}
-
-	public void setTurretButtonPressedFalse() {
-		periodic.turretButtonIsPressed = false;
-	}
-
-	public void setExtensionButtonPressedFalse() {
-		periodic.extensionButtonIsPressed = false;
-	}
-
 	public void setTurretPower(double power) {
 			periodic.turretPower = power;
 	}
@@ -344,6 +328,7 @@ public class Arm extends Subsystem {
 	public ArmPose getPose() {
 		return periodic.currentPose;
 	}
+
 
 	public void setOpenLoop() {
 		periodic.currentMode = ArmMode.OPEN_LOOP;

@@ -5,8 +5,8 @@ import frc.robot.actions.drive.DriveTurnAction;
 import frc.robot.actions.drive.MoveForwardAction;
 import frc.robot.actions.drive.WaitAction;
 
-public class AutoTwo extends StateMachineDescriptor {
-    public AutoTwo() {
+public class AutoTwoFromRookie extends StateMachineDescriptor {
+    public AutoTwoFromRookie() {
         addSequential(new WaitAction(), 1000);//place cone
         addSequential(new MoveForwardAction(81020, 0), 4000);   //move forwards until barrier
         addSequential(new DriveTurnAction(90), 3000);                                  //turn left to face cone

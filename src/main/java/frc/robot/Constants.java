@@ -14,8 +14,8 @@ public class Constants {
     public static final int DRIVE_BACK_LEFT_ID = 2;
     public static final int DRIVE_BACK_RIGHT_ID = 4;
 
-    public static final int DRIVE_TRANSMISSION_FORWARD = 1;
-    public static final int DRIVE_TRANSMISSION_REVERSE = 0;
+    public static final int DRIVE_TRANSMISSION_FORWARD = 5;
+    public static final int DRIVE_TRANSMISSION_REVERSE = 4;
     
     // Arm, Turret, Manipulator Constants
 
@@ -52,7 +52,7 @@ public class Constants {
 
     public static final double TURRET_TPD = 227.5;
 
-    public static final double ARM_PIVOT_KP = .014;
+    public static final double ARM_PIVOT_KP = .02;
     public static final double PIVOT_MIN_TIME =21.0;
 
     public static final double TURRET_ANGLE_ENCODER_ACCEPTANCE = 500.0;

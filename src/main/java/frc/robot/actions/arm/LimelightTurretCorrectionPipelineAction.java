@@ -17,8 +17,11 @@ public class LimelightTurretCorrectionPipelineAction extends Action {
     ErrorChecker checker = new ErrorChecker(Constants.LIMELIGHT_ANGLE_ACCEPTANCE, Constants.LIMELIGHT_ANGLE_PID_MINIMUM_TIME);
 	NetworkTableInstance inst = NetworkTableInstance.getDefault();
 	NetworkTable limelight = inst.getTable("limelight-worbots");
+    LimelightPipeline pipeline;
 
-    public LimelightTurretCorrectionPipelineAction() {}
+    public LimelightTurretCorrectionPipelineAction(LimelightPipeline pipe) {
+        this.pipeline = pipe;
+    }
 
     @Override
     public void onStart() {
@@ -26,6 +29,7 @@ public class LimelightTurretCorrectionPipelineAction extends Action {
 			//double heading = Arm.getInstance().getTurretAngle();
 			DoubleSubscriber tx = txNet.subscribe(0.0);
             //Arm.getInstance().setDesiredTurret(heading - tx.get());
+            VisionLink.getInstance().setPipeline(pipeline);
     }
 
     @Override
