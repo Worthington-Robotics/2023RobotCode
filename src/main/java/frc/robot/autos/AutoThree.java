@@ -6,8 +6,7 @@ import frc.robot.actions.drive.MoveForwardAction;
 import frc.robot.actions.drive.DriveTurnAction;
 import frc.robot.actions.drive.WaitAction;
 import frc.robot.actions.arm.ArmPoseAction;
-import frc.robot.actions.arm.LimelightTurretCorrectionAction;
-import frc.robot.actions.arm.LimelightTurretCorrectionPipelineAction;
+import frc.robot.actions.arm.LLHoldPipelineAction;
 import frc.robot.actions.arm.RotateTurretAction;
 import frc.robot.actions.arm.TurretHoldAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
@@ -25,7 +24,7 @@ public class AutoThree extends StateMachineDescriptor {
         addSequential(new ArmPoseAction(ArmPose.CONE_HIGH), 3000); //put the robot into the set pose
         addSequential(new MoveForwardAction(46854, 0), 2000); //move forward 1 foot to get to the target
         addSequential(new RotateTurretAction(3413), 3000); //rotate turret 15 degrees left
-        addSequential(new LimelightTurretCorrectionPipelineAction(LimelightPipeline.High), 2000); //use limelight for correction
+        addSequential(new LLHoldPipelineAction(LimelightPipeline.High), 2000); //use limelight for correction
         addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 500); //release cone
         addSequential(new RotateTurretAction(0), 3000); //rotate turret back to center
         addSequential(new MoveForwardAction(-46854, 0), 2000); //back up 1 foot

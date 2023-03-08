@@ -4,14 +4,10 @@ import frc.lib.statemachine.Action;
 import frc.lib.statemachine.StateMachineDescriptor;
 import frc.robot.actions.drive.MoveForwardAction;
 import frc.robot.actions.drive.DriveTurnAction;
-import frc.robot.actions.drive.WaitAction;
 import frc.robot.actions.arm.ArmPoseAction;
-import frc.robot.actions.arm.LimelightTurretCorrectionAction;
-import frc.robot.actions.arm.LimelightTurretCorrectionPipelineAction;
+import frc.robot.actions.arm.LLHoldPipelineAction;
 import frc.robot.actions.arm.RotateTurretAction;
-import frc.robot.actions.arm.TurretHoldAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Arm.ArmPose;
 import frc.robot.subsystems.VisionLink.LimelightPipeline;
 import frc.robot.Constants;
@@ -26,7 +22,7 @@ public class AutoOne extends StateMachineDescriptor {
         addSequential(new ArmPoseAction(ArmPose.CONE_HIGH), 8000); //put the robot into the set pose
         addSequential(new MoveForwardAction(46854, 0), 6000); //move forward 1 foot to get to the target
         addSequential(new RotateTurretAction(-(15) * Constants.TURRET_ENCODER_PER_DEGREE), 3000); //rotate turret 15 degrees right
-        addSequential(new LimelightTurretCorrectionPipelineAction(LimelightPipeline.High), 3000); //use limelight for correction
+        addSequential(new LLHoldPipelineAction(LimelightPipeline.High), 3000); //use limelight for correction
         addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 500); //release cone
         addSequential(new RotateTurretAction(90 * Constants.TURRET_ENCODER_PER_DEGREE), 3000); //rotate turret back to center
         addSequential(new MoveForwardAction(-46854, 0), 2000); //back up 1 foot
