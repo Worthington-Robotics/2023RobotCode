@@ -11,7 +11,7 @@ public class DriveLevelAction extends Action {
 
 	@Override
 	public void onStart() {
-		DriveTrain.getInstance().setDesiredHeading(desiredHeading);
+		//DriveTrain.getInstance().setDesiredHeading(desiredHeading);
 		DriveTrain.getInstance().setAutoLevel();
 	}
 

@@ -120,7 +120,7 @@ public class Arm extends Subsystem {
 		periodic.turretEncoder = turretMotor.getSelectedSensorPosition();
 
 		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), 1, -1);
-		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), .25, -.25);
+		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), 1, -1);
 		periodic.rawPivotPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), 1,0);
 	}
 
@@ -163,8 +163,7 @@ public class Arm extends Subsystem {
 			turretMotor.set(ControlMode.Disabled, 0);
 			armMasterMotor.set(ControlMode.Disabled, 0);
 			extensionMotor.set(ControlMode.Disabled, 0);
-		}
-		if(periodic.currentMode == ArmMode.OPEN_LOOP){
+		} else if(periodic.currentMode == ArmMode.OPEN_LOOP){
 			turretMotor.set(ControlMode.PercentOutput, periodic.rawTurretPower);
 			armMasterMotor.set(ControlMode.PercentOutput, periodic.rawPivotPower - .25);
 			extensionMotor.set(ControlMode.PercentOutput, periodic.rawExtensionPower);
@@ -279,7 +278,7 @@ public class Arm extends Subsystem {
 		turretMotor.config_kP(0,Constants.TURRET_KP);
 		turretMotor.config_kI(0,0);
 		turretMotor.config_kD(0,Constants.TURRET_KD);
-		turretMotor.config_kF(0,0);
+		turretMotor.config_kF(0,Constants.TURRET_KF);
 
 	}
 	

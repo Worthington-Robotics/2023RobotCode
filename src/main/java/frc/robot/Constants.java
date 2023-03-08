@@ -47,8 +47,9 @@ public class Constants {
     public static final double TURRET_ENCODER_PER_DEGREE = 218.56;
     public static final double ENCODER_PER_INCH = 3904.5;
 
-    public static final double TURRET_KP = .05;
+    public static final double TURRET_KP = 0;
     public static final double TURRET_KD = 0;
+    public static final double TURRET_KF = 0.00125;
 
     public static final double TURRET_TPD = 227.5;
 

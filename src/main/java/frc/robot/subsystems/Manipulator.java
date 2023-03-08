@@ -125,6 +125,10 @@ public class Manipulator extends Subsystem {
 		periodic.currentMode = ManipulatorMode.CLOSED_LOOP;
 	}
 
+	public void resWrist() {
+		periodic.wristOffset = 0;
+	}
+
 	public void incWrist() {
 		periodic.wristOffset += 2000;
 	}
