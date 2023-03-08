@@ -324,11 +324,6 @@ public class DriveTrain extends Subsystem {
         periodic.rightDemand = clampDriveSpeed(periodic.rightDemand, 
             Constants.DRIVE_FORWARD_MINIMUM_SPEED, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
 
-        // Correct for heading error
-        //periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;
-        //periodic.leftDemand -= periodic.driveHeadingCorrect;
-        //periodic.rightDemand += periodic.driveHeadingCorrect;
-
         // Final clamp put in as a safety check
         periodic.leftDemand = clampDriveSpeed(periodic.leftDemand, 0.0, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
         periodic.rightDemand = clampDriveSpeed(periodic.rightDemand, 0.0, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);

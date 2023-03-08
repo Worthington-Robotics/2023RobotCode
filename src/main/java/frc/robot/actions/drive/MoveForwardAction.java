@@ -20,6 +20,7 @@ public class MoveForwardAction extends Action {
     public void onStart() {
         DriveTrain.getInstance().setDesiredHeading(desiredHeading);
         DriveTrain.getInstance().setMoveForward(targetDistance);
+        DriveTrain.getInstance().setGyroLock(true);
     }
 
     @Override
@@ -34,5 +35,6 @@ public class MoveForwardAction extends Action {
     public void onStop() {
         DriveTrain.getInstance().resetEncoders();
         DriveTrain.getInstance().setStopped();
+        DriveTrain.getInstance().setGyroLock(false);
     }
 }
