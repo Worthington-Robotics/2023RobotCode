@@ -172,7 +172,11 @@ public class Arm extends Subsystem {
 			if(!periodic.turretIsHolding) {
 				turretMotor.set(ControlMode.PercentOutput, periodic.rawTurretPower);
 			} else {
-				turretMotor.set(ControlMode.Velocity, periodic.turretHoldValue);
+				if(Math.abs(periodic.turretHoldValue - periodic.turretEncoder) < 10 * Constants.TURRET_TPD) {
+					turretMotor.set(ControlMode.Position, periodic.turretHoldValue);
+				} else {
+					turretMotor.set(ControlMode.PercentOutput, Math.signum(periodic.turretHoldValue - periodic.turretEncoder) * .3);
+				}
 			}
 			if(!periodic.extendIsHolding) {
 				extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
@@ -276,9 +280,9 @@ public class Arm extends Subsystem {
 		extensionMotor.config_kF(0,0);
 
 		turretMotor.config_kP(0,Constants.TURRET_KP);
-		turretMotor.config_kI(0,0);
+		turretMotor.config_kI(0,Constants.TURRET_KI);
 		turretMotor.config_kD(0,Constants.TURRET_KD);
-		turretMotor.config_kF(0,Constants.TURRET_KF);
+		turretMotor.config_kF(0,0);
 
 	}
 	
