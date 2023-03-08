@@ -1,7 +1,9 @@
 package frc.robot.actions.manipulator;
 
 import frc.lib.statemachine.Action;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Arm.ArmMode;
 
 public class MoveWristAction extends Action {
 	
@@ -12,7 +14,13 @@ public class MoveWristAction extends Action {
 
 	@Override
 	public void onStart() {
-		Manipulator.getInstance().setWristPower(power);
+		if(Arm.getInstance().getMode() != ArmMode.CLOSED_LOOP)
+			Manipulator.getInstance().setWristPower(power);
+		else if(power > 0) {
+			Manipulator.getInstance().incWrist();
+		} else {
+			Manipulator.getInstance().decWrist();
+		}
 	}
 
 	@Override

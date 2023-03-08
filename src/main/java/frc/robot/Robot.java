@@ -19,6 +19,7 @@ import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
 import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Arm.ArmMode;
 import frc.robot.subsystems.Arm.ArmPose;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.drive.TeleopLevelAction;
@@ -155,6 +156,7 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
         enabledLooper.start();
         Arm.getInstance().clearPin();
+        Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
         AutoChooser.getInstance().run_from_selection();
     }
 
@@ -172,6 +174,7 @@ public class Robot extends TimedRobot {
         DriveTrain.getInstance().setOpenLoop();
         enabledLooper.start();
         Arm.getInstance().clearPin();
+        Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
     }
 
     /**
@@ -185,6 +188,7 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
 
         Arm.getInstance().setPin();
+        Arm.getInstance().setMode(ArmMode.DISABLED);
 
         enabledLooper.start();
     }
@@ -216,8 +220,8 @@ public class Robot extends TimedRobot {
         slideButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SLIDE)));
 
         pos0Button.whileTrue(Action.toCommand(new TurretHoldAction(0)));
-        pos90Button.whileTrue(Action.toCommand(new TurretHoldAction(20480)));
-        pos270Button.whileTrue(Action.toCommand(new TurretHoldAction(-20480)));
+        pos90Button.whileTrue(Action.toCommand(new TurretHoldAction(-20480)));
+        pos270Button.whileTrue(Action.toCommand(new TurretHoldAction(20480)));
         LLButton.whileTrue(Action.toCommand(new LLHoldAction()));
 
         wristUpButton.whileTrue(Action.toCommand(new MoveWristAction(-.33)));

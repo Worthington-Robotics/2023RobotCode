@@ -29,6 +29,7 @@ public class Manipulator extends Subsystem {
 
 	public class ManipulatorIO extends PeriodicIO {
 		public ManipulatorMode currentMode = ManipulatorMode.OPEN_LOOP;
+		double TimeOfFlightDistance;
 		double wristMotorPower;
 		double intakeMotorPower;
 		double rawWristMotorPower;
@@ -36,6 +37,7 @@ public class Manipulator extends Subsystem {
 		double desiredWristDegree;
 		double wristEncoderError;
 		double wristEncoder;
+		double wristOffset;
 	}
 
 	public Manipulator() {
@@ -49,12 +51,17 @@ public class Manipulator extends Subsystem {
 	}
 
 	public void readPeriodicInputs() {
+		periodic.TimeOfFlightDistance = intakeTOF.getRange();
 		periodic.wristEncoder = wristMotor.getSelectedSensorPosition();
 		periodic.rawWristMotorPower = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(3), 1,0);
 	}
 
 	public void writePeriodicOutputs() {
-		intakeMotor.set(ControlMode.PercentOutput, periodic.intakeMotorPower);
+		if((periodic.TimeOfFlightDistance > 200 && periodic.TimeOfFlightDistance != 0) || periodic.intakeMotorPower < 0) {
+			intakeMotor.set(ControlMode.PercentOutput, periodic.intakeMotorPower);
+		} else {
+			intakeMotor.set(ControlMode.PercentOutput, .15);
+		}
 		if (Arm.getInstance().getMode().ordinal() < ArmMode.CLOSED_LOOP.ordinal() ) {
 			wristMotor.set(ControlMode.PercentOutput, periodic.wristMotorPower);
 		} else {
@@ -79,7 +86,7 @@ public class Manipulator extends Subsystem {
 						periodic.desiredWristEncoder = convertRawWristPowerIntoEncoder(periodic.rawWristMotorPower);
 						break;
 					case CLOSED_LOOP:
-						periodic.desiredWristEncoder = Arm.ArmPoses[Arm.getInstance().getPose().ordinal()][2];
+						periodic.desiredWristEncoder = Arm.ArmPoses[Arm.getInstance().getPose().ordinal()][2] + periodic.wristOffset;
 						break;
 				}
 			}
@@ -118,6 +125,14 @@ public class Manipulator extends Subsystem {
 		periodic.currentMode = ManipulatorMode.CLOSED_LOOP;
 	}
 
+	public void incWrist() {
+		periodic.wristOffset += 2000;
+	}
+
+	public void decWrist() {
+		periodic.wristOffset -= 2000;
+	}
+
 	// Getters
 
 	public double getWristEncoderError(){
@@ -150,7 +165,7 @@ public class Manipulator extends Subsystem {
 		SmartDashboard.putNumber("Manipulator/RawWristMotorPower", periodic.rawWristMotorPower);
 		SmartDashboard.putNumber("Manipulator/DesiredWristEncoder", periodic.desiredWristEncoder);
 		SmartDashboard.putNumber("Arm/encoder/wrist", periodic.wristEncoder);
-		SmartDashboard.putNumber("Manipulator/TOFDistance", intakeTOF.getRange());
+		SmartDashboard.putNumber("Manipulator/TOFDistance", periodic.TimeOfFlightDistance);
 	}
 
 

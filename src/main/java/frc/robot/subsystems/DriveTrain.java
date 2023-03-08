@@ -228,6 +228,7 @@ public class DriveTrain extends Subsystem {
         forwardRightMotor.setSelectedSensorPosition(0);
         rearLeftMotor.setSelectedSensorPosition(0);
         rearRightMotor.setSelectedSensorPosition(0);
+        gyro.setFusedHeading(0);
     }
 
     public void setDesiredHeading(double theta) {

@@ -36,6 +36,7 @@ public class Arm extends Subsystem {
 	}
 
 	public enum ArmMode {
+		DISABLED,
 		OPEN_LOOP,
 		OPEN_CLOSED_LOOP,
 		CLOSED_LOOP
@@ -58,7 +59,7 @@ public class Arm extends Subsystem {
 		{0, 0, 0}, 
 		{300000, 10000, 0},
 		{113000, 3920, 11250},
-		{88330, 49170, 27500},
+		{88330, 49170, 25000},
 		{206000, 0, 64000},
 		{455200, 0, 4000},
 		{515000, 63200, -3000},
@@ -119,7 +120,7 @@ public class Arm extends Subsystem {
 		periodic.turretEncoder = turretMotor.getSelectedSensorPosition();
 
 		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), 1, -1);
-		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), -.25, .25);
+		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), .25, -.25);
 		periodic.rawPivotPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), 1,0);
 	}
 
@@ -144,9 +145,10 @@ public class Arm extends Subsystem {
 						break;
 					case CLOSED_LOOP:
 						periodic.desiredPivotEncoder = Arm.ArmPoses[periodic.currentPose.ordinal()][0];
-						periodic.desiredArmLengthEncoder = Arm.ArmPoses[periodic.currentPose.ordinal()][1] + (periodic.rawExtensionPower * 10000);
+						periodic.desiredArmLengthEncoder = Arm.ArmPoses[periodic.currentPose.ordinal()][1] + (periodic.rawExtensionPower * 20000);
 						setTurretPower(periodic.rawTurretPower);
 						break;
+					default:
 				}
 			}
 
@@ -157,6 +159,11 @@ public class Arm extends Subsystem {
 	}
 
 	public void writePeriodicOutputs() {
+		if(periodic.currentMode == ArmMode.DISABLED) {
+			turretMotor.set(ControlMode.Disabled, 0);
+			armMasterMotor.set(ControlMode.Disabled, 0);
+			extensionMotor.set(ControlMode.Disabled, 0);
+		}
 		if(periodic.currentMode == ArmMode.OPEN_LOOP){
 			turretMotor.set(ControlMode.PercentOutput, periodic.rawTurretPower);
 			armMasterMotor.set(ControlMode.PercentOutput, periodic.rawPivotPower - .25);
@@ -166,7 +173,7 @@ public class Arm extends Subsystem {
 			if(!periodic.turretIsHolding) {
 				turretMotor.set(ControlMode.PercentOutput, periodic.rawTurretPower);
 			} else {
-				turretMotor.set(ControlMode.Position, periodic.turretHoldValue);
+				turretMotor.set(ControlMode.Velocity, periodic.turretHoldValue);
 			}
 			if(!periodic.extendIsHolding) {
 				extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
@@ -205,6 +212,9 @@ public class Arm extends Subsystem {
 	
 	
 	// Getters
+	public void setTVComp(double volts) {
+		turretMotor.configVoltageCompSaturation(volts);
+	}
 
 	public void clearPin() {
 		pinSolenoid.set(Value.kReverse);
@@ -326,12 +336,17 @@ public class Arm extends Subsystem {
 		periodic.currentMode = ArmMode.values()[nState % 3];
 	}
 
+	public void setMode(ArmMode mode) {
+		periodic.currentMode = mode;
+	}
+
 	public ArmMode getMode() {
 		return periodic.currentMode;
 	}
 
 	public void setPose(ArmPose pose) {
-		periodic.currentPose = pose;
+		if(periodic.currentPose != ArmPose.STOWN || pose == ArmPose.UNSTOW)
+			periodic.currentPose = pose;
 	}
 
 	public ArmPose getPose() {
