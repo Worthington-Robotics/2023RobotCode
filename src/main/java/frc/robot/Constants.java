@@ -49,17 +49,18 @@ public class Constants {
 
     public static final double TURRET_KP = .07;
     public static final double TURRET_KD = 0;
-
     public static final double TURRET_TPD = 227.5;
 
     public static final double ARM_PIVOT_KP = .02;
     public static final double PIVOT_MIN_TIME =21.0;
+    public static final double PIVOT_ENCODER_ERROR_ACCEPTANCE = 500.0;
 
-    public static final double TURRET_ANGLE_ENCODER_ACCEPTANCE = 500.0;
+    public static final double TURRET_ENCODER_ERROR_ACCEPTANCE = 500.0;
     public static final double TURRET_MIN_TIME = 1.5;
 
     public static final double ARM_EXTENSION_KP = .08;
     public static final double EXTENSION_MIN_TIME = 1.5;
+    public static final double EXTENSION_ENCODER_ERROR_ACCEPTANCE = 500.0;
     
     
     //Auto Pose Constants

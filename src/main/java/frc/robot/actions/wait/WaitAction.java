@@ -1,5 +1,5 @@
 
-package frc.robot.actions.drive;
+package frc.robot.actions.wait;
 
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
@@ -9,7 +9,7 @@ public class WaitAction extends Action {
     
     @Override
     public void onStart() {
-        DriveTrain.getInstance().setStopped();  
+        DriveTrain.getInstance().setStopped();
     }
 
     @Override

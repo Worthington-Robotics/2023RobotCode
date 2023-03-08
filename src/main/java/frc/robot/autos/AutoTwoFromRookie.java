@@ -3,7 +3,7 @@ package frc.robot.autos;
 import frc.lib.statemachine.StateMachineDescriptor;
 import frc.robot.actions.drive.DriveTurnAction;
 import frc.robot.actions.drive.MoveForwardAction;
-import frc.robot.actions.drive.WaitAction;
+import frc.robot.actions.wait.WaitAction;
 
 public class AutoTwoFromRookie extends StateMachineDescriptor {
     public AutoTwoFromRookie() {

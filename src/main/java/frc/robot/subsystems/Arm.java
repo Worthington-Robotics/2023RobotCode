@@ -83,17 +83,17 @@ public class Arm extends Subsystem {
 		public double turretEncoder;
 
 		// Desired values
-		public double desiredPivotDegree; // from 25 to the maximum extension of the arm 
-		public double desiredArmLength; // inches
-		public double desiredTurretDegree; // scale of -135 to 135
+		public double desiredPivotDegree;
+		public double desiredArmLength;
+		public double desiredTurretDegree; 
 		public double desiredPivotEncoder;
 		public double desiredArmLengthEncoder;
 		public double desiredTurretEncoder;
 
 		// Error Values
 		public double pivotEncoderError; //in ticks
-		public double lengthEncoderError;
-		public double turretEncoderError;
+		public double lengthEncoderError; //in ticks
+		public double turretEncoderError; //in ticks
 
 		// State
 		public ArmMode currentMode = ArmMode.CLOSED_LOOP;
@@ -133,19 +133,24 @@ public class Arm extends Subsystem {
 			public void onLoop(double timestamp) {
 				switch (periodic.currentMode) {
 					case OPEN_LOOP:
-						setTurretPower(periodic.rawTurretPower);
-						setPivotPower(periodic.rawPivotPower);
-						setExtensionPower(periodic.rawExtensionPower);
 						break;
 					case OPEN_CLOSED_LOOP:
 						periodic.desiredArmLengthEncoder = convertRawExtensionIntoEncoder(periodic.rawExtensionPower);
 						periodic.desiredPivotEncoder = convertRawPivotIntoEncoder(periodic.rawPivotPower);
 						setTurretPower(periodic.rawTurretPower);
+
+						periodic.pivotEncoderError = periodic.desiredPivotEncoder - periodic.pivotEncoder;
+						periodic.lengthEncoderError = periodic.desiredArmLengthEncoder - periodic.lengthEncoder;
+						periodic.turretEncoderError = periodic.desiredTurretEncoder - periodic.turretEncoder;
 						break;
 					case CLOSED_LOOP:
 						periodic.desiredPivotEncoder = Arm.ArmPoses[periodic.currentPose.ordinal()][0];
 						periodic.desiredArmLengthEncoder = Arm.ArmPoses[periodic.currentPose.ordinal()][1] + (periodic.rawExtensionPower * 10000);
 						setTurretPower(periodic.rawTurretPower);
+
+						periodic.pivotEncoderError = periodic.desiredPivotEncoder - periodic.pivotEncoder;
+						periodic.lengthEncoderError = periodic.desiredArmLengthEncoder - periodic.lengthEncoder;
+						periodic.turretEncoderError = periodic.desiredTurretEncoder - periodic.turretEncoder;
 						break;
 				}
 			}
@@ -204,7 +209,6 @@ public class Arm extends Subsystem {
 	}
 	
 	
-	// Getters
 
 	public void clearPin() {
 		pinSolenoid.set(Value.kReverse);
@@ -212,18 +216,6 @@ public class Arm extends Subsystem {
 
 	public void setPin() {
 		pinSolenoid.set(Value.kForward);
-	}
-
-	public double getPivotError() {
-		return periodic.pivotEncoderError;
-	}
-
-	public double getLengthError() {
-		return periodic.lengthEncoderError;
-	}
-
-	public double getTurretError() {
-		return periodic.turretEncoderError;
 	}
 
 	public double getTurretEncoder() {
@@ -234,17 +226,25 @@ public class Arm extends Subsystem {
 		return periodic.lengthEncoder;
 	}
 
-	// For closed loop
-	public void setDesiredPivot(double thetaEncoder) {
-		periodic.desiredPivotDegree = thetaEncoder / Constants.PIVOT_ENCODER_PER_DEGREE;
-		periodic.desiredPivotEncoder = thetaEncoder;
-		periodic.pivotEncoderError = periodic.desiredPivotEncoder - periodic.pivotEncoder;
+	public double getPivotEncoder() {
+		return periodic.pivotEncoder;
 	}
 
+	public double getTurretEncoderError() {
+		return periodic.turretEncoderError;
+	}
+
+	public double getPivotEncoderError() {
+		return periodic.pivotEncoderError;
+	}
+
+	public double getExtendEncoderError() {
+		return periodic.lengthEncoderError;
+	}
+
+
 	public void setDesiredTurret(double thetaEncoder) {
-		periodic.desiredTurretDegree = thetaEncoder / Constants.TURRET_ENCODER_PER_DEGREE;;
 		periodic.desiredTurretEncoder = thetaEncoder;
-		periodic.turretEncoderError = periodic.desiredTurretEncoder - periodic.turretEncoder;
 	}
 	 
 	public void setDisabledLimitSwtich() {
@@ -301,7 +301,7 @@ public class Arm extends Subsystem {
 
 
 	public void setTurretPower(double power) {
-			periodic.turretPower = power;
+		periodic.turretPower = power;
 	}
 
 	public void setPivotPower(double power) {
@@ -309,7 +309,7 @@ public class Arm extends Subsystem {
 	}
 
 	public void setExtensionPower(double power) {
-			periodic.extensionPower = power;
+		periodic.extensionPower = power;
 	}
 
 	public void cycleMode() {
