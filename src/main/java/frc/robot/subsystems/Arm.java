@@ -83,9 +83,15 @@ public class Arm extends Subsystem {
 		public double turretEncoder;
 
 		// Desired values
+<<<<<<< HEAD
 		public double desiredPivotDegree;
 		public double desiredArmLength;
 		public double desiredTurretDegree; 
+=======
+		public double desiredPivotDegree; 
+		public double desiredArmLength;
+		public double desiredTurretDegree;
+>>>>>>> 3f0bcf81d9c2615c6f2a78dc7ae6120af60cbf3c
 		public double desiredPivotEncoder;
 		public double desiredArmLengthEncoder;
 		public double desiredTurretEncoder;
@@ -226,6 +232,7 @@ public class Arm extends Subsystem {
 		return periodic.lengthEncoder;
 	}
 
+<<<<<<< HEAD
 	public double getPivotEncoder() {
 		return periodic.pivotEncoder;
 	}
@@ -246,6 +253,8 @@ public class Arm extends Subsystem {
 	public void setDesiredTurret(double thetaEncoder) {
 		periodic.desiredTurretEncoder = thetaEncoder;
 	}
+=======
+>>>>>>> 3f0bcf81d9c2615c6f2a78dc7ae6120af60cbf3c
 	 
 	public void setDisabledLimitSwtich() {
 		turretMotor.overrideLimitSwitchesEnable(true);
@@ -304,6 +313,7 @@ public class Arm extends Subsystem {
 		periodic.turretPower = power;
 	}
 
+<<<<<<< HEAD
 	public void setPivotPower(double power) {
 		periodic.pivotPower = power;
 	}
@@ -312,6 +322,8 @@ public class Arm extends Subsystem {
 		periodic.extensionPower = power;
 	}
 
+=======
+>>>>>>> 3f0bcf81d9c2615c6f2a78dc7ae6120af60cbf3c
 	public void cycleMode() {
 		int nState = periodic.currentMode.ordinal() + 1;
 		periodic.currentMode = ArmMode.values()[nState % 3];
