@@ -177,7 +177,7 @@ public class DriveTrain extends Subsystem {
         periodic.leftDemand = 0;
         periodic.rightDemand = 0;
 
-        periodic.currentMode = DriveMode.STOPPED;
+        periodic.currentMode = DriveMode.OPEN_LOOP;
         periodic.gyroLock = false;
 
         transmissionSolenoid.set(Value.kReverse);

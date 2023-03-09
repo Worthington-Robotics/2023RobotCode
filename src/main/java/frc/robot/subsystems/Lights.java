@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.robot.Constants;
@@ -19,8 +20,7 @@ public class Lights extends Subsystem {
 
     public enum State {
         LIGHTS_RAINBOW,
-        LIGHTS_WHITE,
-        LIMELIGHT_TARGETING
+        LIGHTS_WHITE
     }
 
     private Lights() {
@@ -47,37 +47,6 @@ public class Lights extends Subsystem {
         });
     }
     
-    public void registerDisabledLoops(ILooper disabledLooper) {
-        disabledLooper.register(new Loop() {
-            @Override
-            public void onStart(double timestamp) {
-                state = State.LIGHTS_WHITE;
-            }
-            @Override
-            public void onLoop(double timestamp) {
-                switch(state) {
-                    case LIGHTS_RAINBOW:
-                    for (int i = 0; i < ledBuffer.getLength(); i++) {
-                        double speed = 10.0;
-                        double length = 0.1;
-                        double h = Math.abs(((timestamp - (length*i)) % speed) / speed);
-                        ledBuffer.setHSV(i, (int)(h * 180.0), 255, 230);
-                    }
-                        break;
-                    case LIGHTS_WHITE:
-                    for (int i = 0; i < ledBuffer.getLength(); i++) {
-                        ledBuffer.setHSV(i, -255, -255, 255);
-                    }
-                    case LIMELIGHT_TARGETING:
-                        break;
-                }
-            }
-            @Override
-            public void onStop(double timestamp) {
-
-            }
-        });
-    }
 
     public void readPeriodicInputs() {}
 
@@ -86,6 +55,11 @@ public class Lights extends Subsystem {
 
     public void outputTelemetry() {
         double timestamp = Timer.getFPGATimestamp();
+        if(DriverStation.isDisabled()){
+            state = State.LIGHTS_WHITE;
+        } else {
+            state = State.LIGHTS_RAINBOW;
+        }
         switch(state) {
             case LIGHTS_RAINBOW:
             for (int i = 0; i < ledBuffer.getLength(); i++) {
@@ -95,7 +69,10 @@ public class Lights extends Subsystem {
                 ledBuffer.setHSV(i, (int)(h * 180.0), 255, 230);
             }
                 break;
-            case LIMELIGHT_TARGETING:
+            case LIGHTS_WHITE:
+                for (int i = 0; i < ledBuffer.getLength(); i++) {
+                    ledBuffer.setLED(i, Color.kWhite);
+                }
                 break;
         }
         ledString.setData(ledBuffer);

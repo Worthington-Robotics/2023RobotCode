@@ -84,9 +84,11 @@ public class Manipulator extends Subsystem {
 						break;
 					case OPEN_CLOSED_LOOP:
 						periodic.desiredWristEncoder = convertRawWristPowerIntoEncoder(periodic.rawWristMotorPower);
+						periodic.wristEncoderError = periodic.desiredWristEncoder - periodic.wristEncoder;
 						break;
 					case CLOSED_LOOP:
 						periodic.desiredWristEncoder = Arm.ArmPoses[Arm.getInstance().getPose().ordinal()][2] + periodic.wristOffset;
+						periodic.wristEncoderError = periodic.desiredWristEncoder - periodic.wristEncoder;
 						break;
 				}
 			}
@@ -170,6 +172,7 @@ public class Manipulator extends Subsystem {
 		SmartDashboard.putNumber("Manipulator/DesiredWristEncoder", periodic.desiredWristEncoder);
 		SmartDashboard.putNumber("Arm/encoder/wrist", periodic.wristEncoder);
 		SmartDashboard.putNumber("Manipulator/TOFDistance", periodic.TimeOfFlightDistance);
+		SmartDashboard.putNumber("Arm/error/wrist error", periodic.wristEncoderError);
 	}
 
 

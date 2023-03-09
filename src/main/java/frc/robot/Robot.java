@@ -155,8 +155,10 @@ public class Robot extends TimedRobot {
     public void autonomousInit() {
         disabledLooper.stop();
         enabledLooper.start();
+        Arm.getInstance().reset();
         Arm.getInstance().clearPin();
         Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
+        DriveTrain.getInstance().reset();
         AutoChooser.getInstance().run_from_selection();
     }
 
@@ -172,6 +174,7 @@ public class Robot extends TimedRobot {
 
         // Reset anything here
         DriveTrain.getInstance().setOpenLoop();
+        DriveTrain.getInstance().reset();
         enabledLooper.start();
         Arm.getInstance().clearPin();
         Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);

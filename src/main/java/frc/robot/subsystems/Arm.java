@@ -84,9 +84,9 @@ public class Arm extends Subsystem {
 		public double turretEncoder;
 
 		// Desired values
-		public double desiredPivotDegree; // from 25 to the maximum extension of the arm 
-		public double desiredArmLength; // inches
-		public double desiredTurretDegree; // scale of -135 to 135
+		public double desiredPivotDegree;  
+		public double desiredArmLength;
+		public double desiredTurretDegree;
 		public double desiredPivotEncoder;
 		public double desiredArmLengthEncoder;
 		public double desiredTurretEncoder;
@@ -142,11 +142,19 @@ public class Arm extends Subsystem {
 						periodic.desiredArmLengthEncoder = convertRawExtensionIntoEncoder(periodic.rawExtensionPower);
 						periodic.desiredPivotEncoder = convertRawPivotIntoEncoder(periodic.rawPivotPower);
 						setTurretPower(periodic.rawTurretPower);
+
+						periodic.lengthEncoderError = periodic.desiredArmLengthEncoder - periodic.lengthEncoder;
+						periodic.pivotEncoderError = periodic.desiredPivotEncoder - periodic.pivotEncoder;
+						periodic.turretEncoderError = periodic.desiredTurretEncoder - periodic.turretEncoder;
 						break;
 					case CLOSED_LOOP:
 						periodic.desiredPivotEncoder = Arm.ArmPoses[periodic.currentPose.ordinal()][0];
 						periodic.desiredArmLengthEncoder = Arm.ArmPoses[periodic.currentPose.ordinal()][1] + (periodic.rawExtensionPower * 20000);
 						setTurretPower(periodic.rawTurretPower);
+
+						periodic.lengthEncoderError = periodic.desiredArmLengthEncoder - periodic.lengthEncoder;
+						periodic.pivotEncoderError = periodic.desiredPivotEncoder - periodic.pivotEncoder;
+						periodic.turretEncoderError = periodic.desiredTurretEncoder - periodic.turretEncoder;
 						break;
 					default:
 				}
@@ -202,6 +210,10 @@ public class Arm extends Subsystem {
 		SmartDashboard.putBoolean("Arm/turretIsHeld", periodic.turretIsHolding);
 		SmartDashboard.putBoolean("Arm/turret button pressed", periodic.turretButtonIsPressed);
 		SmartDashboard.putBoolean("Arm/extension button pressed", periodic.extensionButtonIsPressed);
+
+		SmartDashboard.putNumber("Arm/error/pivot error", periodic.pivotEncoderError);
+		SmartDashboard.putNumber("Arm/error/length error", periodic.lengthEncoderError);
+		
 	}
 
 	public void reset() {

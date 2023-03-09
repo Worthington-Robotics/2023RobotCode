@@ -39,16 +39,16 @@ public class Constants {
 
     public static final double WRIST_PIVOT_KP = 1 / 30.0; //TODO: change this kp
     public static final double WRIST_MIN_TIME = 1.5;
-    public static final double WRIST_ANGLE_ENCODER_ACCEPTANCE = 500.0; //TODO: change this value
+    public static final double WRIST_ENCODER_ERROR= 200.0; //TODO: change this value
     public static final double WRIST_ENCODER_PER_DEGREE = 400.0; //TODO: change this value
     
     // Arm Constants
     public static final double PIVOT_ENCODER_PER_DEGREE = 416.31;
     public static final double TURRET_ENCODER_PER_DEGREE = 218.56;
-    public static final double ENCODER_PER_INCH = 3904.5;
+    public static final double ENCODER_PER_INCH = 1833.33;
 
-    public static final double TURRET_KP = .05;
-    public static final double TURRET_KI = .0001;
+    public static final double TURRET_KP = .025;
+    public static final double TURRET_KI = .00001;
     public static final double TURRET_KD = 0;
 
     public static final double TURRET_TPD = 227.5;
@@ -61,6 +61,15 @@ public class Constants {
 
     public static final double ARM_EXTENSION_KP = .08;
     public static final double EXTENSION_MIN_TIME = 1.5;
+
+    public static final double EXTENSION_ENCODER_ERROR_ACCEPTANCE = 5000;
+    public static final double PIVOT_ENCODER_ERROR_ACCEPTANCE = 28000;
+
+    // ### Vision values ###
+    public static final String LIMELIGHT_NETWORK_ID = "limelight-worbots";
+    public static final int LIMELIGHT_LOW_PIPELINE = 0;
+    public static final int LIMELIGHT_HIGH_PIPELINE = 1;
+    public static final double VISION_SNAPSHOT_INTERVAL = 1;
     
     
     //Auto Pose Constants
