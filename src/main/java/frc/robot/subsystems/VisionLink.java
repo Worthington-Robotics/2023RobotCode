@@ -62,7 +62,11 @@ public class VisionLink extends Subsystem {
 	public void outputTelemetry() {
 		SmartDashboard.putNumber("Vision/Turret Offset", periodic.turretOffset);
 		SmartDashboard.putNumber("Vision/Angle Offset", periodic.angleOffset);
-		SmartDashboard.putString("Vision/Limelight Pipeline", periodic.pipeline.toString());
+		if(periodic.pipeline == LimelightPipeline.High){
+			SmartDashboard.putNumber("Vision/Limelight Pipeline", 1);
+		} else {
+			SmartDashboard.putNumber("Vision/Limelight Pipeline", 0);
+		}
 	}
 
 	// Pull data from the Limelight

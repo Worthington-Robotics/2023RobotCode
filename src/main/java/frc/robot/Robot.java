@@ -21,6 +21,7 @@ import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Arm.ArmMode;
 import frc.robot.subsystems.Arm.ArmPose;
+import frc.robot.subsystems.VisionLink.LimelightPipeline;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.drive.TeleopLevelAction;
 import frc.robot.actions.drive.GyroLockAction;
@@ -28,6 +29,7 @@ import frc.robot.actions.drive.SetPositionAction;
 import frc.robot.actions.drive.DriveTurnActionLimelight;
 import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
+import frc.robot.actions.vision.SetPipelineAction;
 import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.arm.CycleArmAction;
 import frc.robot.actions.arm.LLHoldAction;
@@ -59,6 +61,8 @@ public class Robot extends TimedRobot {
     private JoystickButton resetPoseButton = new JoystickButton(Constants.MASTER, 6);
     private JoystickButton gyroLockButton = new JoystickButton(Constants.MASTER, 7);
     private JoystickButton cycleButton = new JoystickButton(Constants.MASTER, 9);
+    private JoystickButton shieldMidButton = new JoystickButton(Constants.MASTER, 10);
+    private JoystickButton shieldUpButton = new JoystickButton(Constants.MASTER, 12);
 
 
     private JoystickButton turretHold = new JoystickButton(Constants.SECOND, 1);
@@ -209,7 +213,8 @@ public class Robot extends TimedRobot {
         autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
         resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
         gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
-
+        shieldMidButton.onTrue(Action.toCommand(new SetPipelineAction(LimelightPipeline.High)));
+        shieldUpButton.onTrue(Action.toCommand(new SetPipelineAction(LimelightPipeline.Low)));
 
         //Copy and paste armPoseAction line and change the armPose to the next arm Pose
         stowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.STOWN)));
