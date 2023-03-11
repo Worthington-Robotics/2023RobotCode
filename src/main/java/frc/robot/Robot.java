@@ -21,6 +21,7 @@ import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Arm.ArmMode;
 import frc.robot.subsystems.Arm.ArmPose;
+import frc.robot.subsystems.VisionLink.LimelightPipeline;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.drive.TeleopLevelAction;
 import frc.robot.actions.drive.GyroLockAction;
@@ -28,6 +29,7 @@ import frc.robot.actions.drive.SetPositionAction;
 import frc.robot.actions.drive.DriveTurnActionLimelight;
 import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
+import frc.robot.actions.vision.SetPipelineAction;
 import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.arm.CycleArmAction;
 import frc.robot.actions.arm.LLHoldAction;
@@ -35,6 +37,7 @@ import frc.robot.actions.arm.PinToggleAction;
 import frc.robot.actions.arm.TEHoldAction;
 import frc.robot.actions.arm.TurretHoldAction;
 import frc.robot.actions.manipulator.MoveWristAction;
+import frc.robot.subsystems.VisionLink.LimelightPipeline;
 
 
 /**
@@ -55,11 +58,17 @@ public class Robot extends TimedRobot {
     private JoystickButton intakeButton = new JoystickButton(Constants.MASTER, 2);
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 4);
-    // private JoystickButton limelightRotateButton = new JoystickButton(Constants.MASTER, 5);
+    private JoystickButton changePipelineButton = new JoystickButton(Constants.MASTER, 5);
     private JoystickButton resetPoseButton = new JoystickButton(Constants.MASTER, 6);
     private JoystickButton gyroLockButton = new JoystickButton(Constants.MASTER, 7);
     private JoystickButton cycleButton = new JoystickButton(Constants.MASTER, 9);
+<<<<<<< HEAD
+    private JoystickButton firstMoveButton = new JoystickButton(Constants.MASTER, 12);
+=======
+    private JoystickButton shieldMidButton = new JoystickButton(Constants.MASTER, 10);
+    private JoystickButton shieldUpButton = new JoystickButton(Constants.MASTER, 12);
 
+>>>>>>> c2aec83e56e319ffe7203bd744b1e0a85f51523f
 
     private JoystickButton turretHold = new JoystickButton(Constants.SECOND, 1);
     private JoystickButton transButton = new JoystickButton(Constants.SECOND, 2);
@@ -135,7 +144,7 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         enabledLooper.stop();
 
-        //StateMachine.getInstance().assertStop();
+        StateMachine.getInstance().assertStop();
 
         disabledLooper.start();
     }
@@ -209,14 +218,21 @@ public class Robot extends TimedRobot {
         autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
         resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
         gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
+<<<<<<< HEAD
+        changePipelineButton.onTrue(Action.toCommand(new SetPipelineAction()));
 
+=======
+        shieldMidButton.onTrue(Action.toCommand(new SetPipelineAction(LimelightPipeline.High)));
+        shieldUpButton.onTrue(Action.toCommand(new SetPipelineAction(LimelightPipeline.Low)));
+>>>>>>> c2aec83e56e319ffe7203bd744b1e0a85f51523f
 
         //Copy and paste armPoseAction line and change the armPose to the next arm Pose
         stowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.STOWN)));
+        firstMoveButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.FIRST_MOVE)));
         unstowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
         transButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.TRANSIT)));
         cubeMedButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CUBE_MID)));
-        coneMedButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_MID)));
+        coneMedButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_MID_FRONT)));
         cubeHighButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CUBE_HIGH)));
         coneHighButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_HIGH)));
         cubePickupButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.INTAKE)));
@@ -225,7 +241,7 @@ public class Robot extends TimedRobot {
         pos0Button.whileTrue(Action.toCommand(new TurretHoldAction(0)));
         pos90Button.whileTrue(Action.toCommand(new TurretHoldAction(-20480)));
         pos270Button.whileTrue(Action.toCommand(new TurretHoldAction(20480)));
-        LLButton.whileTrue(Action.toCommand(new LLHoldAction()));
+        LLButton.whileTrue(Action.toCommand(new LLHoldAction(false)));
 
         wristUpButton.whileTrue(Action.toCommand(new MoveWristAction(-.33)));
         wristDownButton.whileTrue(Action.toCommand(new MoveWristAction(.33)));

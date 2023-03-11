@@ -6,6 +6,9 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -18,6 +21,10 @@ import frc.lib.loops.Loop;
 public class Arm extends Subsystem {
 	TalonFX extensionMotor, turretMotor, armMasterMotor;
 	DoubleSolenoid pinSolenoid;
+
+	public static NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-worbots");
+	public static NetworkTableEntry tx = table.getEntry("tx");
+	public static NetworkTableEntry tv = table.getEntry("tv");
 
 	private static Arm instance = new Arm();
 	public static Arm getInstance() { return instance; }
@@ -32,7 +39,9 @@ public class Arm extends Subsystem {
 		turretMotor.setNeutralMode(NeutralMode.Brake);
 		armMasterMotor.setNeutralMode(NeutralMode.Brake);
 		reset();
-
+		extensionMotor.configVoltageCompSaturation(11);
+		turretMotor.configVoltageCompSaturation(11);
+		armMasterMotor.configVoltageCompSaturation(11);
 	}
 
 	public enum ArmMode {
@@ -44,12 +53,15 @@ public class Arm extends Subsystem {
 
 	public enum ArmPose {
 		STOWN,
+		FIRST_MOVE,
 		UNSTOW,
 		TRANSIT,
 		INTAKE,
 		SLIDE,
 		CUBE_MID,
+		CUBE_MID_FRONT,
 		CONE_MID,
+		CONE_MID_FRONT,
 		CUBE_HIGH,
 		CONE_HIGH,
 	}
@@ -58,13 +70,16 @@ public class Arm extends Subsystem {
 	public static double[][] ArmPoses = {
 		{0, 0, 0}, 
 		{300000, 10000, 0},
-		{113000, 3920, 11250},
-		{88330, 49170, 25000},
-		{206000, 0, 64000},
-		{455200, 0, 4000},
-		{515000, 63200, -3000},
-		{563100, 122000, -15600},
-		{626000, 125500, -3000}
+		{300000, 10000, 25000},
+		{175000, 1000, -7600},
+		{88330, 55000, 25000},
+		{206000, 0, 54000},
+		{455200, 0, -13780},
+		{455200, 0, 20000},
+		{515000, 61000, -39500},
+		{535000, 83000, -35000},
+		{520000, 122000, -29400},
+		{626000, 125500, -27090},
 	};
 
 	public class ArmIO extends PeriodicIO {
@@ -99,9 +114,8 @@ public class Arm extends Subsystem {
 		// State
 		public ArmMode currentMode = ArmMode.CLOSED_LOOP;
 		public ArmPose currentPose = ArmPose.STOWN;
+		public boolean poseAccepted = false;
 
-		// Arbitrary feed forward
-		public double arbitraryFeedForward;
 
 		// Is pressed
 		public boolean turretButtonIsPressed = false;
@@ -112,6 +126,10 @@ public class Arm extends Subsystem {
 		public double extenHoldValue = 0;
 		public boolean turretIsHolding = false;
 		public boolean extendIsHolding = false;
+
+		// Limelights
+		public double LL_tx = 0;
+		public double LL_tv = 0;
 	}
 
 	public void readPeriodicInputs() {
@@ -122,6 +140,9 @@ public class Arm extends Subsystem {
 		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), 1, -1);
 		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), 1, -1);
 		periodic.rawPivotPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), 1,0);
+
+		periodic.LL_tv = tv.getDouble(0.0);
+		periodic.LL_tx = tx.getDouble(0.0);
 	}
 
 	public void registerEnabledLoops(ILooper enabledLooper) {
@@ -137,6 +158,7 @@ public class Arm extends Subsystem {
 						setTurretPower(periodic.rawTurretPower);
 						setPivotPower(periodic.rawPivotPower);
 						setExtensionPower(periodic.rawExtensionPower);
+						periodic.poseAccepted = true;
 						break;
 					case OPEN_CLOSED_LOOP:
 						periodic.desiredArmLengthEncoder = convertRawExtensionIntoEncoder(periodic.rawExtensionPower);
@@ -145,7 +167,10 @@ public class Arm extends Subsystem {
 
 						periodic.lengthEncoderError = periodic.desiredArmLengthEncoder - periodic.lengthEncoder;
 						periodic.pivotEncoderError = periodic.desiredPivotEncoder - periodic.pivotEncoder;
-						periodic.turretEncoderError = periodic.desiredTurretEncoder - periodic.turretEncoder;
+
+						periodic.poseAccepted = (Math.abs(periodic.lengthEncoderError) < Constants.EXTENSION_ENCODER_ERROR_ACCEPTANCE) &&
+						(Math.abs(periodic.pivotEncoderError) < Constants.PIVOT_ENCODER_ERROR_ACCEPTANCE) && 
+						(Math.abs(periodic.turretEncoderError) < Constants.WRIST_ENCODER_ERROR_ACCEPTANCE);
 						break;
 					case CLOSED_LOOP:
 						periodic.desiredPivotEncoder = Arm.ArmPoses[periodic.currentPose.ordinal()][0];
@@ -154,9 +179,13 @@ public class Arm extends Subsystem {
 
 						periodic.lengthEncoderError = periodic.desiredArmLengthEncoder - periodic.lengthEncoder;
 						periodic.pivotEncoderError = periodic.desiredPivotEncoder - periodic.pivotEncoder;
-						periodic.turretEncoderError = periodic.desiredTurretEncoder - periodic.turretEncoder;
+
+						periodic.poseAccepted = (Math.abs(periodic.lengthEncoderError) < Constants.EXTENSION_ENCODER_ERROR_ACCEPTANCE) &&
+						(Math.abs(periodic.pivotEncoderError) < Constants.PIVOT_ENCODER_ERROR_ACCEPTANCE) && 
+						(Math.abs(Manipulator.getInstance().getWristEncoderError()) < Constants.WRIST_ENCODER_ERROR_ACCEPTANCE);
 						break;
 					default:
+					break;
 				}
 			}
 
@@ -171,7 +200,7 @@ public class Arm extends Subsystem {
 			turretMotor.set(ControlMode.Disabled, 0);
 			armMasterMotor.set(ControlMode.Disabled, 0);
 			extensionMotor.set(ControlMode.Disabled, 0);
-		} else if(periodic.currentMode == ArmMode.OPEN_LOOP){
+		} else if (periodic.currentMode == ArmMode.OPEN_LOOP){
 			turretMotor.set(ControlMode.PercentOutput, periodic.rawTurretPower);
 			armMasterMotor.set(ControlMode.PercentOutput, periodic.rawPivotPower - .25);
 			extensionMotor.set(ControlMode.PercentOutput, periodic.rawExtensionPower);
@@ -199,12 +228,13 @@ public class Arm extends Subsystem {
 		SmartDashboard.putNumber("Arm/encoder/pivot", periodic.pivotEncoder);
 		SmartDashboard.putNumber("Arm/encoder/extend", periodic.lengthEncoder);
 		
-		SmartDashboard.putNumber("Arm/encoder/turret-D", periodic.turretEncoder);
+		SmartDashboard.putNumber("Arm/encoder/turret-D", periodic.turretHoldValue);
 		SmartDashboard.putNumber("Arm/encoder/pivot-D", periodic.desiredPivotEncoder);
 		SmartDashboard.putNumber("Arm/encoder/extend-D", periodic.desiredArmLengthEncoder);
 
 		SmartDashboard.putString("Arm/curMode", periodic.currentMode.toString());
 		SmartDashboard.putString("Arm/curPose", periodic.currentPose.toString());
+		SmartDashboard.putBoolean("Arm/error/accpeted", periodic.poseAccepted);
 
 		SmartDashboard.putNumber("Arm/turretHoldVal", periodic.turretHoldValue);
 		SmartDashboard.putBoolean("Arm/turretIsHeld", periodic.turretIsHolding);
@@ -213,6 +243,9 @@ public class Arm extends Subsystem {
 
 		SmartDashboard.putNumber("Arm/error/pivot error", periodic.pivotEncoderError);
 		SmartDashboard.putNumber("Arm/error/length error", periodic.lengthEncoderError);
+
+		SmartDashboard.putNumber("Limelight/tx", periodic.LL_tx);
+		SmartDashboard.putNumber("Limelight/tv", periodic.LL_tv);
 		
 	}
 
@@ -239,16 +272,12 @@ public class Arm extends Subsystem {
 		pinSolenoid.set(Value.kForward);
 	}
 
-	public double getPivotError() {
-		return periodic.pivotEncoderError;
-	}
-
-	public double getLengthError() {
-		return periodic.lengthEncoderError;
+	public boolean getAccepted() {
+		return periodic.poseAccepted;
 	}
 
 	public double getTurretError() {
-		return periodic.turretEncoderError;
+		return periodic.turretHoldValue - periodic.turretEncoder;
 	}
 
 	public double getTurretEncoder() {
@@ -259,17 +288,15 @@ public class Arm extends Subsystem {
 		return periodic.lengthEncoder;
 	}
 
+	public double[] getLLVals() {
+		return new double[] {periodic.LL_tx, periodic.LL_tv};
+	}
+
 	// For closed loop
 	public void setDesiredPivot(double thetaEncoder) {
 		periodic.desiredPivotDegree = thetaEncoder / Constants.PIVOT_ENCODER_PER_DEGREE;
 		periodic.desiredPivotEncoder = thetaEncoder;
 		periodic.pivotEncoderError = periodic.desiredPivotEncoder - periodic.pivotEncoder;
-	}
-
-	public void setDesiredTurret(double thetaEncoder) {
-		periodic.desiredTurretDegree = thetaEncoder / Constants.TURRET_ENCODER_PER_DEGREE;;
-		periodic.desiredTurretEncoder = thetaEncoder;
-		periodic.turretEncoderError = periodic.desiredTurretEncoder - periodic.turretEncoder;
 	}
 	 
 
@@ -360,7 +387,7 @@ public class Arm extends Subsystem {
 	}
 
 	public void setPose(ArmPose pose) {
-		if(periodic.currentPose != ArmPose.STOWN || pose == ArmPose.UNSTOW)
+		if(periodic.currentPose != ArmPose.STOWN || pose == ArmPose.FIRST_MOVE)
 			periodic.currentPose = pose;
 	}
 

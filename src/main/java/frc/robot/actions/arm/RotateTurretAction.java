@@ -25,6 +25,7 @@ public class RotateTurretAction extends Action{
     
         @Override
         public void onStop() {
+            //Arm.getInstance().turretHoldLock(false, 0);
         }
     
     } 

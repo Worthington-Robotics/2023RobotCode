@@ -29,7 +29,7 @@ public class LimelightTurretCorrectionAction extends Action {
 
     @Override
     public boolean isFinished() {
-			return checker.check(Arm.getInstance().getTurretError() / Constants.TURRET_ENCODER_PER_DEGREE);
+			return checker.check(Arm.getInstance().getTurretError() / Constants.TURRET_TPD);
     }
 
     @Override

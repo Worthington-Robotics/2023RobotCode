@@ -1,33 +1,49 @@
 package frc.robot.actions.arm;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.statemachine.Action;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
+import frc.lib.util.TimerBoolean;
+
 public class LLHoldAction extends Action{
-        private static NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-worbots");
-        private static NetworkTableEntry tx = table.getEntry("tx");
-        private static NetworkTableEntry tv = table.getEntry("tv");
+        boolean search;
+        boolean kill;
+        TimerBoolean finished = new TimerBoolean(.3);
+        double[] vals;
+
+        public LLHoldAction(boolean search) {
+            vals = Arm.getInstance().getLLVals();
+            this.search = search;
+            kill = false;
+        }
+
+        public LLHoldAction(boolean search, boolean kill) {
+            vals = Arm.getInstance().getLLVals();
+            this.search = search;
+            this.kill = kill;
+        }
 
         @Override
         public void onStart() {
-            Arm.getInstance().turretHoldLock(true, Arm.getInstance().getTurretEncoder() -  (tx.getDouble(0.0) * Constants.TURRET_TPD));
-            System.out.println(tx.getDouble(1000));
-            System.out.println(tv.getDouble(1000));
-            System.out.println(table.getPath());
+            Arm.getInstance().turretHoldLock(true, Arm.getInstance().getTurretEncoder() -  (vals[0] * Constants.TURRET_TPD));
+            
         }
     
         @Override
         public void onLoop() {
-            Arm.getInstance().turretHoldLock(true, Arm.getInstance().getTurretEncoder() -  (tx.getDouble(0.0) * Constants.TURRET_TPD)); 
+            vals = Arm.getInstance().getLLVals();
+            Arm.getInstance().turretHoldLock(true, Arm.getInstance().getTurretEncoder() -  (vals[0] * Constants.TURRET_TPD)); 
+            if((kill ? (vals[1] > 0 && Math.abs(vals[0]) < 1.5) : false) 
+            || !search && vals[1] < 1) {
+                finished.start();
+            } else {
+                finished.stop();
+            }
         }
     
         @Override
         public boolean isFinished() {
-            return tv.getDouble(0.0) < 1;
+            return finished.getBoolean();
         }
     
         @Override

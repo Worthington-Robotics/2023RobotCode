@@ -326,8 +326,8 @@ public class DriveTrain extends Subsystem {
 
         // Correct for heading error
         periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;
-        periodic.leftDemand -= periodic.driveHeadingCorrect;
-        periodic.rightDemand += periodic.driveHeadingCorrect;
+        periodic.leftDemand += periodic.driveHeadingCorrect;
+        periodic.rightDemand -= periodic.driveHeadingCorrect;
 
         // Final clamp put in as a safety check
         periodic.leftDemand = clampDriveSpeed(periodic.leftDemand, 0.0, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
@@ -349,8 +349,8 @@ public class DriveTrain extends Subsystem {
         periodic.rightDemand = periodic.yValue;
         if (periodic.gyroLock) {
             periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;
-            periodic.leftDemand -= periodic.driveHeadingCorrect;
-            periodic.rightDemand += periodic.driveHeadingCorrect;
+            periodic.leftDemand += periodic.driveHeadingCorrect;
+            periodic.rightDemand -= periodic.driveHeadingCorrect;
         } else {
             periodic.leftDemand += periodic.xValue;
             periodic.rightDemand -= periodic.xValue; 
@@ -369,20 +369,40 @@ public class DriveTrain extends Subsystem {
     private void autoLevel() {
         final double levelError = Constants.DRIVE_LEVEL_ZERO + periodic.gyroTilt;
         final double power = (levelError * Constants.DRIVE_LEVEL_KP);
+        double minPower = 0;
+
+<<<<<<< HEAD
+        periodic.leftDemand = - power;
+        periodic.rightDemand = - power;
+=======
             // - (periodic.tiltDelta * Constants.DRIVE_LEVEL_KD);
-        periodic.leftDemand = power;
-        periodic.rightDemand = power;
+        periodic.leftDemand = - power;
+        periodic.rightDemand = - power;
 
-        // Correct for heading error
-        periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;
-        periodic.leftDemand -= periodic.driveHeadingCorrect;
-        periodic.rightDemand += periodic.driveHeadingCorrect;
+        if (periodic.gyroLock) {
+            periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;
+            periodic.leftDemand += periodic.driveHeadingCorrect;
+            periodic.rightDemand -= periodic.driveHeadingCorrect;
+        } 
+>>>>>>> c2aec83e56e319ffe7203bd744b1e0a85f51523f
 
+        if(periodic.gyroLock) {
+            periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;
+            periodic.leftDemand += periodic.driveHeadingCorrect;
+            periodic.rightDemand -= periodic.driveHeadingCorrect;
+        }
+
+        if(Math.abs(levelError) > 3.0){
+            minPower = 0.07;
+        }
         // Normalize power
+        if(Math.abs(levelError) > 3.0){
+            minPower = 0.07;
+        }
         periodic.leftDemand = clampDriveSpeed(periodic.leftDemand,
-            0.0, Constants.DRIVE_LEVEL_MAX_SPEED);
+            minPower, Constants.DRIVE_LEVEL_MAX_SPEED);
         periodic.rightDemand = clampDriveSpeed(periodic.rightDemand,
-            0.0, Constants.DRIVE_LEVEL_MAX_SPEED);
+            minPower, Constants.DRIVE_LEVEL_MAX_SPEED);
     }
 
     public static double clampDriveSpeed(double demand, double min, double max) {

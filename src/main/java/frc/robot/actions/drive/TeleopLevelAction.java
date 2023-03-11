@@ -9,9 +9,7 @@ public class TeleopLevelAction extends Action {
 
 	@Override
 	public void onStart() {
-		final double levelTargetHeading = DriveTrain.getAlignedTargetHeading(
-			PoseEstimator.getInstance().getAbsoluteHeading());
-		DriveTrain.getInstance().setDesiredHeading(levelTargetHeading);
+		DriveTrain.getInstance().setDesiredHeading(DriveTrain.getInstance().getNormalizedHeading());
 		DriveTrain.getInstance().setAutoLevel();
 	}
 

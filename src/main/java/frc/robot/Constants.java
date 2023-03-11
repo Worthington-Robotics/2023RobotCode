@@ -37,33 +37,32 @@ public class Constants {
     public static final double ANYTHING_OUT_POWER = -1;
     public static final double INTAKE_ACCEPTANCE_RANGE = 5.0; //TODO: change this range value
 
-    public static final double WRIST_PIVOT_KP = 1 / 30.0; //TODO: change this kp
+    public static final double WRIST_PIVOT_KP = 1 / 60.0; //TODO: change this kp
     public static final double WRIST_MIN_TIME = 1.5;
-    public static final double WRIST_ENCODER_ERROR= 200.0; //TODO: change this value
     public static final double WRIST_ENCODER_PER_DEGREE = 400.0; //TODO: change this value
     
     // Arm Constants
     public static final double PIVOT_ENCODER_PER_DEGREE = 416.31;
-    public static final double TURRET_ENCODER_PER_DEGREE = 218.56;
     public static final double ENCODER_PER_INCH = 1833.33;
 
-    public static final double TURRET_KP = .025;
-    public static final double TURRET_KI = .00001;
-    public static final double TURRET_KD = 0;
+    public static final double TURRET_KP = .08;
+    public static final double TURRET_KI = 0;
+    public static final double TURRET_KD = 0.3;
 
     public static final double TURRET_TPD = 227.5;
 
     public static final double ARM_PIVOT_KP = .014;
     public static final double PIVOT_MIN_TIME =21.0;
 
-    public static final double TURRET_ANGLE_ENCODER_ACCEPTANCE = 500.0;
+    public static final double TURRET_ANGLE_ENCODER_ACCEPTANCE = TURRET_TPD * 2;
     public static final double TURRET_MIN_TIME = 1.5;
 
     public static final double ARM_EXTENSION_KP = .08;
     public static final double EXTENSION_MIN_TIME = 1.5;
 
-    public static final double EXTENSION_ENCODER_ERROR_ACCEPTANCE = 5000;
-    public static final double PIVOT_ENCODER_ERROR_ACCEPTANCE = 28000;
+    public static final double EXTENSION_ENCODER_ERROR_ACCEPTANCE = 1000;
+    public static final double PIVOT_ENCODER_ERROR_ACCEPTANCE = 3000;
+    public static final double WRIST_ENCODER_ERROR_ACCEPTANCE = 3000; //TODO: change this value
 
     // ### Vision values ###
     public static final String LIMELIGHT_NETWORK_ID = "limelight-worbots";
@@ -146,7 +145,7 @@ public class Constants {
     public static final double DRIVE_FORWARD_KD = 0.0 / 10000.0;
     public static final double DRIVE_FORWARD_D_FILT = 2.5;
     // Heading correction when moving forward
-    public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 150.0;
+    public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 100.0;
 
     // Auto level
     public static final double DRIVE_LEVEL_KP = 1.0 / 90.0; //This value is negated as the tilt of the gyro is inverted on the comp bot
@@ -154,7 +153,7 @@ public class Constants {
     public static final double DRIVE_LEVEL_D_FILTER = 0.2;
     public static final double DRIVE_LEVEL_MAX_SPEED = 0.6;
     // Correction for pigeon pitch inaccuracy
-    public static final double DRIVE_LEVEL_ZERO = -2.5;
+    public static final double DRIVE_LEVEL_ZERO = -1.45;
 
 
 
