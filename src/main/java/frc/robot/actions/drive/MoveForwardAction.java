@@ -8,8 +8,6 @@ import frc.robot.Constants;
 public class MoveForwardAction extends Action {
     double targetDistance;
     double desiredHeading;
-    ErrorChecker checker = new ErrorChecker(
-        Constants.DRIVE_FORWARD_ACCEPTED_ERROR, Constants.DRIVE_FORWARD_MINIMUM_TIME);
 
     public MoveForwardAction (double targetDistance, double desiredHeading){
         this.targetDistance = targetDistance;
@@ -27,12 +25,9 @@ public class MoveForwardAction extends Action {
 
     @Override
     public boolean isFinished() {
-        return checker.check(DriveTrain.getInstance().getEncoderError());
     }
 
     @Override
     public void onStop() {
-        DriveTrain.getInstance().resetEncoders();
-        DriveTrain.getInstance().setStopped();
     }
 }

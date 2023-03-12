@@ -73,6 +73,7 @@ public class DriveTrain extends Subsystem {
         // Delta from last gyro tilt, used for D term
         public double tiltDelta;
         public boolean gyroLock = false;
+        public double driveAccepted = false;
     }
 
     public DriveTrain() {
@@ -197,16 +198,24 @@ public class DriveTrain extends Subsystem {
                 switch (periodic.currentMode) {
                     case OPEN_LOOP:
                         openLoop();
+                        periodic.driveAccepted = false;
                         break;
                     case TURN:
                         turn();
+                        periodic.driveAccepted = false;
                         break;
                     case MOVE_FORWARD:
                         moveForward();
+                        if(Math.abs(getEncoderError()) < Constants.DRIVE_FORWARD_ACCEPTED_ERROR){
+                            periodic.driveAccepted = true;
+                        } else {
+                            periodic.driveAccepted = false;
+                        }
                         break;
                     case STOPPED:
                         periodic.leftDemand = 0;
                         periodic.rightDemand = 0;
+                        periodic.driveAccepted = false;
                         break;
                     case AUTO_LEVEL:
                         autoLevel();
@@ -332,6 +341,14 @@ public class DriveTrain extends Subsystem {
         // Final clamp put in as a safety check
         periodic.leftDemand = clampDriveSpeed(periodic.leftDemand, 0.0, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
         periodic.rightDemand = clampDriveSpeed(periodic.rightDemand, 0.0, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
+    }
+
+    public boolean getDriveAccepted(){
+        return periodic.driveAccepted;
+    }
+
+    public void setDriveAccepted(boolean acceptedState){
+        periodic.driveAccepted = acceptedState;
     }
 
     public double getHeadingError() {
