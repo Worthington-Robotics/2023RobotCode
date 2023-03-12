@@ -73,6 +73,7 @@ public class DriveTrain extends Subsystem {
         // Delta from last gyro tilt, used for D term
         public double tiltDelta;
         public boolean gyroLock = false;
+        public boolean driveLevelAccepted = false;
     }
 
     public DriveTrain() {
@@ -197,19 +198,28 @@ public class DriveTrain extends Subsystem {
                 switch (periodic.currentMode) {
                     case OPEN_LOOP:
                         openLoop();
+                        periodic.driveLevelAccepted = false;
                         break;
                     case TURN:
                         turn();
+                        periodic.driveLevelAccepted = false;
                         break;
                     case MOVE_FORWARD:
                         moveForward();
+                        periodic.driveLevelAccepted = false;
                         break;
                     case STOPPED:
                         periodic.leftDemand = 0;
                         periodic.rightDemand = 0;
+                        periodic.driveLevelAccepted = false;
                         break;
                     case AUTO_LEVEL:
                         autoLevel();
+                        if(getLevelError() < 1.0){
+                            periodic.driveLevelAccepted = true;
+                        } else {
+                            periodic.driveLevelAccepted = false;
+                        }
                         break;
                 }
             }
@@ -277,6 +287,10 @@ public class DriveTrain extends Subsystem {
 
     public double getRightEncoderDistance() {
         return periodic.totalRightEncoder + periodic.rightEncoderTicks;
+    }
+
+    public boolean getDriveLevelAccepted() {
+        return periodic.driveLevelAccepted;
     }
 
     public void setOpenLoop() {

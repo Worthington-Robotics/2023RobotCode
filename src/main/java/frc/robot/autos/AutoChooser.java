@@ -14,7 +14,8 @@ public class AutoChooser {
 		None,
 		One,
 		Two,
-		Test
+		Test,
+		ChargeStation
 	}
 
 	// The currently chosen autonomous routine
@@ -38,6 +39,9 @@ public class AutoChooser {
 				break;
 			case Test:
 				StateMachine.getInstance().runMachine(new TestAuto());
+				break;
+			case ChargeStation:
+				StateMachine.getInstance().runMachine(new ChargeStationAuto());
 				break;
 		}
 	}
