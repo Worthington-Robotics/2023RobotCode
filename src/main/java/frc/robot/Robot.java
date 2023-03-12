@@ -220,7 +220,7 @@ public class Robot extends TimedRobot {
         unstowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
         transButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.TRANSIT)));
         cubeMedButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CUBE_MID)));
-        coneMedButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_MID)));
+        coneMedButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_MID_FRONT)));
         cubeHighButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CUBE_HIGH)));
         coneHighButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_HIGH)));
         cubePickupButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.INTAKE)));

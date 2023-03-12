@@ -293,6 +293,14 @@ public class DriveTrain extends Subsystem {
         return periodic.driveLevelAccepted;
     }
 
+    public double getEncoderTicks() {
+        return (periodic.leftEncoderTicks + periodic.rightEncoderTicks) / 2.0;
+    }
+
+    public double getTargetDistance() {
+        return periodic.targetDistance;
+    }
+
     public void setOpenLoop() {
         periodic.currentMode = DriveMode.OPEN_LOOP;
     }

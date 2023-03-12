@@ -148,7 +148,7 @@ public class Constants {
     public static final double DRIVE_FORWARD_KD = 0.0 / 10000.0;
     public static final double DRIVE_FORWARD_D_FILT = 2.5;
     // Heading correction when moving forward
-    public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 100.0;
+    public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 150.0;
 
     // Auto level
     public static final double DRIVE_LEVEL_KP = 1.0 / 90.0; //This value is negated as the tilt of the gyro is inverted on the comp bot
