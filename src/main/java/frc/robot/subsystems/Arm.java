@@ -80,7 +80,7 @@ public class Arm extends Subsystem {
 		{475000, 0, 23000},
 		{515000, 61000, -39500},
 		{585000, 85000, -35000},
-		{520000, 122000, -29400},
+		{525000, 122000, -29400},
 		{626000, 125500, -27090},
 	};
 
@@ -215,7 +215,7 @@ public class Arm extends Subsystem {
 				if(Math.abs(periodic.turretHoldValue - periodic.turretEncoder) < 10 * Constants.TURRET_TPD) {
 					turretMotor.set(ControlMode.Position, periodic.turretHoldValue);
 				} else {
-					turretMotor.set(ControlMode.PercentOutput, Math.signum(periodic.turretHoldValue - periodic.turretEncoder) * Math.max(.05, Math.min(periodic.turretRamp, .6)));
+					turretMotor.set(ControlMode.PercentOutput, Math.signum(periodic.turretHoldValue - periodic.turretEncoder) * Math.max(.07, Math.min(periodic.turretRamp, .6)));
 				}
 			}
 			if(!periodic.extendIsHolding) {

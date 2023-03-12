@@ -24,7 +24,7 @@ public class RotateTurretAction extends Action{
             || (Arm.getInstance().getTurretEncoder() < (goal - delta / 2) && delta < 0)) {
                 Arm.getInstance().incrRamp(-.037);
             } else {
-                Arm.getInstance().incrRamp(.01);
+                Arm.getInstance().incrRamp(.012);
             }
         }
     
@@ -35,7 +35,6 @@ public class RotateTurretAction extends Action{
     
         @Override
         public void onStop() {
-            Arm.getInstance().clearRamp();
         }
     
     } 

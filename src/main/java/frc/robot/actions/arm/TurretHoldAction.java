@@ -23,12 +23,11 @@ public class TurretHoldAction extends Action{
     
         @Override
         public boolean isFinished() {
-            return false;
+            return true;
         }
     
         @Override
         public void onStop() {
-            Arm.getInstance().turretHoldLock(false, 0);
         }
     
     }  

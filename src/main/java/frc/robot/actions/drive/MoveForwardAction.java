@@ -32,7 +32,7 @@ public class MoveForwardAction extends Action {
 
     @Override
     public void onStop() {
-        DriveTrain.getInstance().resetEncoders();
         DriveTrain.getInstance().setStopped();
+        DriveTrain.getInstance().resetEncoders();
     }
 }
