@@ -57,6 +57,7 @@ public class Arm extends Subsystem {
 		UNSTOW,
 		TRANSIT,
 		INTAKE,
+		INTAKE_LITE,
 		SLIDE,
 		CUBE_MID,
 		CUBE_MID_FRONT,
@@ -73,11 +74,12 @@ public class Arm extends Subsystem {
 		{300000, 10000, 25000},
 		{175000, 1000, -7600},
 		{88330, 55000, 25000},
+		{93330, 0, 25000},
 		{206000, 0, 54000},
 		{455200, 0, -13780},
-		{455200, 0, 20000},
+		{475000, 0, 23000},
 		{515000, 61000, -39500},
-		{535000, 83000, -35000},
+		{585000, 85000, -35000},
 		{520000, 122000, -29400},
 		{626000, 125500, -27090},
 	};
@@ -85,6 +87,7 @@ public class Arm extends Subsystem {
 	public class ArmIO extends PeriodicIO {
 		// Power Values
 		public double turretPower = 0;
+		public double turretRamp = 0;
 		public double pivotPower = 0;
 		public double extensionPower = 0;
 
@@ -212,7 +215,7 @@ public class Arm extends Subsystem {
 				if(Math.abs(periodic.turretHoldValue - periodic.turretEncoder) < 10 * Constants.TURRET_TPD) {
 					turretMotor.set(ControlMode.Position, periodic.turretHoldValue);
 				} else {
-					turretMotor.set(ControlMode.PercentOutput, Math.signum(periodic.turretHoldValue - periodic.turretEncoder) * .3);
+					turretMotor.set(ControlMode.PercentOutput, Math.signum(periodic.turretHoldValue - periodic.turretEncoder) * Math.max(.05, Math.min(periodic.turretRamp, .6)));
 				}
 			}
 			if(!periodic.extendIsHolding) {
@@ -224,6 +227,9 @@ public class Arm extends Subsystem {
 	}
 
 	public void outputTelemetry() {
+
+		SmartDashboard.putNumber("Arm/turretRamp", periodic.turretRamp);
+
 		SmartDashboard.putNumber("Arm/encoder/turret", periodic.turretEncoder);
 		SmartDashboard.putNumber("Arm/encoder/pivot", periodic.pivotEncoder);
 		SmartDashboard.putNumber("Arm/encoder/extend", periodic.lengthEncoder);
@@ -262,6 +268,14 @@ public class Arm extends Subsystem {
 	// Getters
 	public void setTVComp(double volts) {
 		turretMotor.configVoltageCompSaturation(volts);
+	}
+
+	public void incrRamp(double ramp) {
+		periodic.turretRamp += ramp;
+	}
+
+	public void clearRamp() {
+		periodic.turretRamp = 0;
 	}
 
 	public void clearPin() {
@@ -322,6 +336,7 @@ public class Arm extends Subsystem {
 		turretMotor.config_kI(0,Constants.TURRET_KI);
 		turretMotor.config_kD(0,Constants.TURRET_KD);
 		turretMotor.config_kF(0,0);
+		turretMotor.configMaxIntegralAccumulator(0, Constants.TURRET_IMAX);
 
 	}
 	
@@ -389,6 +404,7 @@ public class Arm extends Subsystem {
 	public void setPose(ArmPose pose) {
 		if(periodic.currentPose != ArmPose.STOWN || pose == ArmPose.FIRST_MOVE)
 			periodic.currentPose = pose;
+		periodic.poseAccepted = false;
 	}
 
 	public ArmPose getPose() {

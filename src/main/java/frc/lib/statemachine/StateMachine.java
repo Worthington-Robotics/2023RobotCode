@@ -2,6 +2,7 @@ package frc.lib.statemachine;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.util.Loggable;
@@ -62,9 +63,12 @@ public class StateMachine implements Loggable{
 
                 // Wait for the state to complete exectuing
                 while (!data.currentState.isFinished() && !data.wantStop.get()) {
-                    data.t_start = Timer.getFPGATimestamp();
+                    data.t_start = RobotController.getFPGATime();
                     data.currentState.onLoop();
-                    Timer.delay(delay - (Timer.getFPGATimestamp() - data.t_start));
+                    double sleepTime = (delay - (RobotController.getFPGATime() - data.t_start) / 1000000.0);
+                    Timer.delay(Math.max(0, sleepTime));
+                    if (sleepTime < 0)   
+                        DriverStation.reportWarning("Internal state overran looper time delay with overrun " + sleepTime, false);
                 }
 
                 // When complete stop the state and increment the state counter
@@ -178,6 +182,6 @@ public class StateMachine implements Loggable{
         public final AtomicBoolean wantStop = new AtomicBoolean(true);
         public final AtomicBoolean stateLock = new AtomicBoolean(false);
         public volatile ActionGroup currentState;
-        public volatile double t_start;
+        public volatile long t_start;
     }
 }

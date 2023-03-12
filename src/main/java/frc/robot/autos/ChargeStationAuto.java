@@ -10,7 +10,7 @@ import frc.robot.actions.drive.DriveLevelAction;
 import frc.robot.actions.drive.MoveForwardAction;
 import frc.robot.actions.wait.PoseWaitAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
-import frc.robot.actions.vision.SetPipelineAction;
+import frc.robot.actions.vision.AutoPipelineAction;
 import frc.robot.actions.wait.TimeWaitAction;
 import frc.robot.actions.wait.TurretWaitAction;
 import frc.robot.subsystems.Arm.ArmPose;
@@ -18,28 +18,20 @@ import frc.robot.subsystems.VisionLink.LimelightPipeline;
 
 public class ChargeStationAuto extends StateMachineDescriptor{
     public ChargeStationAuto(){
-        addSequential(new ArmPoseAction(ArmPose.UNSTOW), 3000);
-        addSequential(new PoseWaitAction(), 7000);
-        addSequential(new ArmPoseAction(ArmPose.CONE_MID),3000); //put the robot into the set pose
-        addSequential(new PoseWaitAction(), 7000);
-    
-        addSequential(new MoveForwardAction(20 * Constants.ENCODER_PER_INCH, 0), 5000); //move forward to get to the target
-<<<<<<< HEAD
-        addSequential(new RotateTurretAction(-(15) * Constants.TURRET_TPD), 3000); //rotate turret 15 degrees right
-        //addSequential(new SetPipelineAction(LimelightPipeline.Low), 4000);
-        addSequential(new TurretWaitAction(), 7000);
-        addSequential(new LLHoldAction(true), 4000); //use limelight for correction
-=======
-        addSequential(new RotateTurretAction(-(15) * Constants.TURRET_ENCODER_PER_DEGREE), 3000); //rotate turret 15 degrees right
-        addSequential(new SetPipelineAction(LimelightPipeline.Low), 4000);
-        addSequential(new TurretWaitAction(), 7000);
-        addSequential(new LLHoldAction(), 4000); //use limelight for correction
->>>>>>> c2aec83e56e319ffe7203bd744b1e0a85f51523f
-        addSequential(new TimeWaitAction(), 2000);
-        addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 500); //release cone
-        addSequential(new RotateTurretAction(0), 8000); //rotate turret back to center
-        addSequential(new TurretWaitAction(), 7000);
-    
+        addSequential(new MoveForwardAction(-25 * Constants.ENCODER_PER_INCH, 0), 6000); //move forward to get to the target
+        addSequential(new ArmPoseAction(ArmPose.FIRST_MOVE), 200);
+        addSequential(new PoseWaitAction(), 2000);
+        addSequential(new ArmPoseAction(ArmPose.CONE_MID_FRONT), 200); //put the robot into the set pose
+        addSequential(new PoseWaitAction(), 2000);
+        addSequential(new TimeWaitAction(), 500);
+
+        addSequential(new MoveForwardAction(25 * Constants.ENCODER_PER_INCH, 0), 6000); //move forward to get to the target
+        addSequential(new RotateTurretAction(-(15) * Constants.TURRET_TPD), 200); //rotate turret 15 degrees right 6
+        addSequential(new TurretWaitAction(), 2000);
+        addSequential(new AutoPipelineAction(LimelightPipeline.Low), 200);
+        addSequential(new LLHoldAction(true, true), 4000);
+        addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 500);
+
         addSequential(new ArmPoseAction(ArmPose.UNSTOW), 3000);
         addSequential(new PoseWaitAction(), 7000);
         addSequential(new ArmPoseAction(ArmPose.STOWN), 3000);

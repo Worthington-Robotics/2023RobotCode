@@ -101,6 +101,10 @@ public class Manipulator extends Subsystem {
 		});
 	}
 
+	public boolean isObject() {
+		return (periodic.TimeOfFlightDistance < 200 && periodic.TimeOfFlightDistance != 0);
+	}
+
 	// Convert joystick values into motor powers
 	public double convertRawWristPowerIntoEncoder(double inputPower) {
 		return inputPower * 80000.0;

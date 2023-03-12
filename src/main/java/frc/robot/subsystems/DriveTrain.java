@@ -301,8 +301,8 @@ public class DriveTrain extends Subsystem {
     }
 
     private void turn() {
-        periodic.leftDemand = periodic.headingError * -Constants.ANGLE_KP;
-        periodic.rightDemand = periodic.headingError * Constants.ANGLE_KP;
+        periodic.leftDemand = periodic.headingError * Constants.ANGLE_KP;
+        periodic.rightDemand = periodic.headingError * - Constants.ANGLE_KP;
 
         // Normalize power
         periodic.leftDemand = clampDriveSpeed(periodic.leftDemand,
@@ -371,20 +371,8 @@ public class DriveTrain extends Subsystem {
         final double power = (levelError * Constants.DRIVE_LEVEL_KP);
         double minPower = 0;
 
-<<<<<<< HEAD
         periodic.leftDemand = - power;
         periodic.rightDemand = - power;
-=======
-            // - (periodic.tiltDelta * Constants.DRIVE_LEVEL_KD);
-        periodic.leftDemand = - power;
-        periodic.rightDemand = - power;
-
-        if (periodic.gyroLock) {
-            periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;
-            periodic.leftDemand += periodic.driveHeadingCorrect;
-            periodic.rightDemand -= periodic.driveHeadingCorrect;
-        } 
->>>>>>> c2aec83e56e319ffe7203bd744b1e0a85f51523f
 
         if(periodic.gyroLock) {
             periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;
@@ -403,6 +391,10 @@ public class DriveTrain extends Subsystem {
             minPower, Constants.DRIVE_LEVEL_MAX_SPEED);
         periodic.rightDemand = clampDriveSpeed(periodic.rightDemand,
             minPower, Constants.DRIVE_LEVEL_MAX_SPEED);
+    }
+
+    public double getLevelError() {
+        return Constants.DRIVE_LEVEL_ZERO + periodic.gyroTilt;
     }
 
     public static double clampDriveSpeed(double demand, double min, double max) {

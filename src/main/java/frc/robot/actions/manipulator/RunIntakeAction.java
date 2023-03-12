@@ -26,6 +26,6 @@ public class RunIntakeAction extends Action {
 
     @Override
     public boolean isFinished() {
-        return false;
+        return (power > 0) && Manipulator.getInstance().isObject();
     }
 }

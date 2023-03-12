@@ -8,7 +8,7 @@ import frc.lib.util.TimerBoolean;
 public class LLHoldAction extends Action{
         boolean search;
         boolean kill;
-        TimerBoolean finished = new TimerBoolean(.3);
+        TimerBoolean finished = new TimerBoolean(.25);
         double[] vals;
 
         public LLHoldAction(boolean search) {
@@ -33,11 +33,13 @@ public class LLHoldAction extends Action{
         public void onLoop() {
             vals = Arm.getInstance().getLLVals();
             Arm.getInstance().turretHoldLock(true, Arm.getInstance().getTurretEncoder() -  (vals[0] * Constants.TURRET_TPD)); 
-            if((kill ? (vals[1] > 0 && Math.abs(vals[0]) < 1.5) : false) 
+            if((kill ? (vals[1] > 0 && Math.abs(vals[0]) < 2) : false) 
             || !search && vals[1] < 1) {
-                finished.start();
+                if(!finished.isStarted())
+                    finished.start();
             } else {
                 finished.stop();
+                System.out.println("stopped /w " + vals[0] + " and " + vals[1] + " and " + kill);
             }
         }
     

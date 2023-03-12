@@ -16,6 +16,8 @@ public class Constants {
 
     public static final int DRIVE_TRANSMISSION_FORWARD = 1;
     public static final int DRIVE_TRANSMISSION_REVERSE = 0;
+
+    
     
     // Arm, Turret, Manipulator Constants
 
@@ -30,7 +32,7 @@ public class Constants {
     public static final int ARM_GRABBER_REV_CHANNEL = 4;
 
     //Manipulator Constants
-    public static final int INTAKE_WHEEL_ID = 5;   
+    public static final int INTAKE_WHEEL_ID = 5;  
     public static final int MANIPULATOR_TOF_ID = 1;
 
     public static final double INTAKE_POWER = .75;
@@ -45,13 +47,14 @@ public class Constants {
     public static final double PIVOT_ENCODER_PER_DEGREE = 416.31;
     public static final double ENCODER_PER_INCH = 1833.33;
 
-    public static final double TURRET_KP = .08;
+    public static final double TURRET_KP = .12;
     public static final double TURRET_KI = 0;
-    public static final double TURRET_KD = 0.3;
+    public static final double TURRET_IMAX = 0;
+    public static final double TURRET_KD = 8;
 
     public static final double TURRET_TPD = 227.5;
 
-    public static final double ARM_PIVOT_KP = .014;
+    public static final double ARM_PIVOT_KP = .017;
     public static final double PIVOT_MIN_TIME =21.0;
 
     public static final double TURRET_ANGLE_ENCODER_ACCEPTANCE = TURRET_TPD * 2;
@@ -60,9 +63,9 @@ public class Constants {
     public static final double ARM_EXTENSION_KP = .08;
     public static final double EXTENSION_MIN_TIME = 1.5;
 
-    public static final double EXTENSION_ENCODER_ERROR_ACCEPTANCE = 1000;
-    public static final double PIVOT_ENCODER_ERROR_ACCEPTANCE = 3000;
-    public static final double WRIST_ENCODER_ERROR_ACCEPTANCE = 3000; //TODO: change this value
+    public static final double EXTENSION_ENCODER_ERROR_ACCEPTANCE = 2000;
+    public static final double PIVOT_ENCODER_ERROR_ACCEPTANCE = 10000;
+    public static final double WRIST_ENCODER_ERROR_ACCEPTANCE = 5000; //TODO: change this value
 
     // ### Vision values ###
     public static final String LIMELIGHT_NETWORK_ID = "limelight-worbots";
@@ -154,6 +157,7 @@ public class Constants {
     public static final double DRIVE_LEVEL_MAX_SPEED = 0.6;
     // Correction for pigeon pitch inaccuracy
     public static final double DRIVE_LEVEL_ZERO = -1.45;
+    public static final double DRIVE_LEVEL_ERROR = 1.5;
 
 
 

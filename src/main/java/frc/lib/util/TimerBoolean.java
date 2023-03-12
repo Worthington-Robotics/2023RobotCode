@@ -20,6 +20,7 @@ public class TimerBoolean {
      */
     public TimerBoolean(double waitDuration) {
         this.waitDuration = waitDuration;
+        started = false;
     }
 
     /**
@@ -36,6 +37,7 @@ public class TimerBoolean {
     public void start() {
         startTimestamp = Timer.getFPGATimestamp();
         started = true;
+        System.out.println("started!");
     }
 
     /**
