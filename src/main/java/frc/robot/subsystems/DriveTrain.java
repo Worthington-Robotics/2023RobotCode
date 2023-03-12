@@ -73,7 +73,6 @@ public class DriveTrain extends Subsystem {
         // Delta from last gyro tilt, used for D term
         public double tiltDelta;
         public boolean gyroLock = false;
-        public boolean driveAccepted = false;
         public boolean driveLevelAccepted = false;
     }
 
@@ -198,28 +197,20 @@ public class DriveTrain extends Subsystem {
             public void onLoop(double timestamp) {
                 switch (periodic.currentMode) {
                     case OPEN_LOOP:
-                        periodic.driveAccepted = false;
                         periodic.driveLevelAccepted = false;
                         openLoop();
                         break;
                     case TURN:
                         turn();
-                        periodic.driveAccepted = false;
                         periodic.driveLevelAccepted = false;
                         break;
                     case MOVE_FORWARD:
                         moveForward();
-                        if(Math.abs(getEncoderError()) < Constants.DRIVE_FORWARD_ACCEPTED_ERROR){
-                            periodic.driveAccepted = true;
-                        } else {
-                            periodic.driveAccepted = false;
-                        }
                         periodic.driveLevelAccepted = false;
                         break;
                     case STOPPED:
                         periodic.leftDemand = 0;
                         periodic.rightDemand = 0;
-                        periodic.driveAccepted = false;
                         periodic.driveLevelAccepted = false;
                         break;
                     case AUTO_LEVEL:
@@ -353,10 +344,6 @@ public class DriveTrain extends Subsystem {
         periodic.rightDemand = clampDriveSpeed(periodic.rightDemand, 0.0, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
     }
 
-    public boolean getDriveAccepted() {
-        return periodic.driveAccepted;
-    }
-
     public boolean getDriveLevelAccepted() {
         return periodic.driveLevelAccepted;
     }
@@ -369,9 +356,17 @@ public class DriveTrain extends Subsystem {
         return Math.abs(Constants.DRIVE_LEVEL_ZERO - periodic.gyroTilt);
     }
 
+    public double getEncoderTicks(){
+        return (periodic.leftEncoderTicks + periodic.rightEncoderTicks) /2.0;
+    }
+
     // Gets average error from the encoders
     public double getEncoderError() {
         return (periodic.rightError + periodic.leftError) / 2.0;
+    }
+
+    public double getTargetDistance() {
+        return periodic.targetDistance;
     }
 
     // Sets motor demands in open loop

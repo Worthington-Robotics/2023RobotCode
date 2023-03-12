@@ -22,7 +22,8 @@ public class ChargeStationAuto extends StateMachineDescriptor{
         addSequential(new PoseWaitAction(), 300);
         //addSequential(new ArmPoseAction(ArmPose.CONE_MID_FRONT), 200);  // **going to be put on a different branch
         addSequential(new PoseWaitAction(), 1750);
-        //addParallel(new Action[] {new MoveForwardAction(25 * Constants.ENCODER_PER_INCH, 0), new RotateTurretAction(-(15) * Constants.TURRET_TPD), new AutoPipelineAction(LimelightPipeline.Low)}, 6000); //move forward to get to the target
+        addSequential(new MoveForwardAction(15 * Constants.ENCODER_PER_INCH, 0), 5000);
+        
        // addSequential(new LLHoldAction(true, true), 3000); //use limelight for correction 9 // **going to be put on a different branch
         addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 250); //release cone
         addSequential(new MoveForwardAction(- 80 * Constants.ENCODER_PER_INCH, 0), 6000);
