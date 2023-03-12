@@ -19,7 +19,7 @@ public class DriveTurnActionLimelight extends Action {
     @Override
     public void onStart() {
 			DoubleTopic txNet = lime.getDoubleTopic("tx");
-			double heading = DriveTrain.getInstance().getHeadingDegrees();
+			double heading = DriveTrain.getInstance().getNormalizedHeading();
 			DoubleSubscriber tx = txNet.subscribe(0.0);
 			DriveTrain.getInstance().setTurning(heading - tx.get());
     }

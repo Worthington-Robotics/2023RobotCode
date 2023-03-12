@@ -25,6 +25,7 @@ public class MoveForwardAction extends Action {
 
     @Override
     public boolean isFinished() {
+        return true;
     }
 
     @Override

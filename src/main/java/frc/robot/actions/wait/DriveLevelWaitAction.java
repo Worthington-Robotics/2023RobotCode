@@ -4,7 +4,7 @@ import frc.robot.subsystems.DriveTrain;
 import frc.lib.statemachine.Action;
 import frc.robot.Constants;
 
-public class DriveWaitAction extends Action{
+public class DriveLevelWaitAction extends Action{
 
     @Override
     public void onStart() {
@@ -16,7 +16,7 @@ public class DriveWaitAction extends Action{
 
     @Override
     public boolean isFinished() {
-        return DriveTrain.getInstance().getDriveAccepted();
+        return DriveTrain.getInstance().getDriveLevelAccepted();
     }
 
     @Override
