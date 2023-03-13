@@ -52,7 +52,7 @@ public class PitTest extends StateMachineDescriptor {
         addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), this.patience); // Spit out cube
         
         // Intake Cone
-        addSequential(new ArmPoseAction(ArmPose.INTAKE), this.patience); // Move to cone intake position
+        addSequential(new ArmPoseAction(ArmPose.INTAKE_LITE), this.patience); // Move to cone intake position
         addSequential(new PoseWaitAction(), this.pose_patience);
         addSequential(new RunIntakeAction(Constants.INTAKE_POWER), this.patience); // intake cone
         addSequential(new TimeWaitAction(), this.intake_patience);
@@ -68,7 +68,11 @@ public class PitTest extends StateMachineDescriptor {
         addSequential(new DriveTurnAction(90), this.drive_patience);
         addSequential(new TimeWaitAction(), this.drive_patience);
         addParallel(new Action[] {new GearChangeAction(),new UnblockingMoveAction(100 * Constants.ENCODER_PER_INCH, 90)}, this.drive_patience);
-        // UnblockMoveAction, TeleopLevelAction, Gyrolock, Limelight
+        // UnblockMoveAction, TeleopLevelAction, Gyrolock, Limelight, Autolevel
+        
         // Stow and Pin
+        addSequential(new ArmPoseAction(ArmPose.STOWN), this.patience);
+        addSequential(new PoseWaitAction(), this.pose_patience);
+        // Switch to teleop and pin
     }
 }
