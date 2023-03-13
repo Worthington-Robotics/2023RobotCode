@@ -136,11 +136,11 @@ public class Manipulator extends Subsystem {
 	}
 
 	public void incWrist() {
-		periodic.wristOffset += 2000;
+		periodic.wristOffset += 5000;
 	}
 
 	public void decWrist() {
-		periodic.wristOffset -= 2000;
+		periodic.wristOffset -= 5000;
 	}
 
 	// Getters

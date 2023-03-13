@@ -6,9 +6,10 @@ import frc.robot.subsystems.Arm;
 public class RotateTurretAction extends Action{
         double goal;
         double delta;
-        int dir;
-        public RotateTurretAction(double angle) {
+        boolean unlock;
+        public RotateTurretAction(double angle, boolean unlock) {
             this.goal = angle;
+            this.unlock = unlock;
         }
 
         @Override
@@ -30,11 +31,13 @@ public class RotateTurretAction extends Action{
     
         @Override
         public boolean isFinished() {
-            return Math.abs(Arm.getInstance().getTurretEncoder() - goal) < 500;
+            return !unlock && Math.abs(Arm.getInstance().getTurretEncoder() - goal) < 500;
         }
     
         @Override
         public void onStop() {
+            if(unlock)    
+                Arm.getInstance().turretHoldLock(false, 0);
         }
     
     } 

@@ -58,11 +58,13 @@ public class Robot extends TimedRobot {
     private JoystickButton driveGearButton = new JoystickButton(Constants.MASTER, 1);
     private JoystickButton intakeButton = new JoystickButton(Constants.MASTER, 2);
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
+    private JoystickButton gyroLockButton = new JoystickButton(Constants.MASTER, 4);
+    private JoystickButton limelightPipeButton = new JoystickButton(Constants.MASTER, 5);
+    private JoystickButton firstMoveButton = new JoystickButton(Constants.MASTER, 6);
     private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 7);
     private JoystickButton resetPoseButton = new JoystickButton(Constants.MASTER, 10);
-    private JoystickButton gyroLockButton = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton cycleButton = new JoystickButton(Constants.MASTER, 9);
-    private JoystickButton firstMoveButton = new JoystickButton(Constants.MASTER, 6);
+
 
     private JoystickButton turretHold = new JoystickButton(Constants.SECOND, 1);
     private JoystickButton transButton = new JoystickButton(Constants.SECOND, 2);
@@ -139,6 +141,7 @@ public class Robot extends TimedRobot {
         enabledLooper.stop();
 
         StateMachine.getInstance().assertStop();
+        Arm.getInstance().turretHoldLock(false, 0);
 
         disabledLooper.start();
     }
@@ -212,6 +215,7 @@ public class Robot extends TimedRobot {
         autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
         resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
         gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
+        limelightPipeButton.onTrue(Action.toCommand(new SetPipelineAction()));
 
 
         //Copy and paste armPoseAction line and change the armPose to the next arm Pose
@@ -220,15 +224,15 @@ public class Robot extends TimedRobot {
         unstowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
         transButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.TRANSIT)));
         cubeMedButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CUBE_MID)));
-        coneMedButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_MID_FRONT)));
+        coneMedButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_MID)));
         cubeHighButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CUBE_HIGH)));
         coneHighButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_HIGH)));
         cubePickupButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.INTAKE)));
         slideButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SLIDE)));
 
-        pos0Button.whileTrue(Action.toCommand(new RotateTurretAction(0)));
-        pos90Button.whileTrue(Action.toCommand(new RotateTurretAction(-20480)));
-        pos270Button.whileTrue(Action.toCommand(new RotateTurretAction(20480)));
+        pos0Button.whileTrue(Action.toCommand(new RotateTurretAction(0, true)));
+        pos90Button.whileTrue(Action.toCommand(new RotateTurretAction(-20480, true)));
+        pos270Button.whileTrue(Action.toCommand(new RotateTurretAction(20480, true)));
         LLButton.whileTrue(Action.toCommand(new LLHoldAction(true)));
 
         wristUpButton.whileTrue(Action.toCommand(new MoveWristAction(-.33)));

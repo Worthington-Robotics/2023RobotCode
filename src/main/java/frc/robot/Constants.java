@@ -14,8 +14,8 @@ public class Constants {
     public static final int DRIVE_BACK_LEFT_ID = 2;
     public static final int DRIVE_BACK_RIGHT_ID = 4;
 
-    public static final int DRIVE_TRANSMISSION_FORWARD = 1;
-    public static final int DRIVE_TRANSMISSION_REVERSE = 0;
+    public static final int DRIVE_TRANSMISSION_FORWARD = 5;
+    public static final int DRIVE_TRANSMISSION_REVERSE = 4;
 
     
     

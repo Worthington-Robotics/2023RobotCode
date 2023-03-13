@@ -19,14 +19,14 @@ public class TestAuto extends StateMachineDescriptor {
         addSequential(new PoseWaitAction(), 300);
         addSequential(new ArmPoseAction(ArmPose.CONE_MID_FRONT), 200); //put the robot into the set pose
         addSequential(new PoseWaitAction(), 1750);
-        addParallel(new Action[] {new MoveForwardAction(25 * Constants.ENCODER_PER_INCH, 0), new RotateTurretAction(-(15) * Constants.TURRET_TPD), new AutoPipelineAction(LimelightPipeline.Low)}, 6000); //move forward to get to the target
+        addParallel(new Action[] {new MoveForwardAction(25 * Constants.ENCODER_PER_INCH, 0), new RotateTurretAction(-(15) * Constants.TURRET_TPD, false), new AutoPipelineAction(LimelightPipeline.Low)}, 6000); //move forward to get to the target
         addSequential(new LLHoldAction(true, true), 3000); //use limelight for correction 9
         addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 250); //release cone
-        addParallel(new Action[] {new ArmPoseAction(ArmPose.INTAKE_LITE), new RotateTurretAction(182 * Constants.TURRET_TPD)}, 3000);
+        addParallel(new Action[] {new ArmPoseAction(ArmPose.INTAKE_LITE), new RotateTurretAction(182 * Constants.TURRET_TPD, false)}, 3000);
         //END CONE
         addParallel(new Action[] {new MoveForwardAction(-150 * Constants.ENCODER_PER_INCH, 0)}, 8000);
         addParallel(new Action[] {new MoveForwardAction(-30 * Constants.ENCODER_PER_INCH, 0), new ArmPoseAction(ArmPose.INTAKE), new RunIntakeAction(Constants.INTAKE_POWER)}, 3000);
-        addParallel(new Action[] {new MoveForwardAction(166 * Constants.ENCODER_PER_INCH, 0), new RotateTurretAction(7 * Constants.TURRET_TPD), new ArmPoseAction(ArmPose.TRANSIT)}, 6000);
+        addParallel(new Action[] {new MoveForwardAction(166 * Constants.ENCODER_PER_INCH, 0), new RotateTurretAction(7 * Constants.TURRET_TPD, false), new ArmPoseAction(ArmPose.TRANSIT)}, 6000);
 
         addSequential(new ArmPoseAction(ArmPose.CUBE_MID_FRONT),50); //put the robot into the set pose
         addSequential(new PoseWaitAction(), 1500);
