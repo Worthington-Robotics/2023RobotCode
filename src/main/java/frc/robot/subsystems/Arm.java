@@ -395,6 +395,11 @@ public class Arm extends Subsystem {
 
 	public void setMode(ArmMode mode) {
 		periodic.currentMode = mode;
+		if(mode == ArmMode.DISABLED) {
+			turretMotor.set(ControlMode.Disabled, 0);
+			armMasterMotor.set(ControlMode.Disabled, 0);
+			extensionMotor.set(ControlMode.Disabled, 0);
+		}
 	}
 
 	public ArmMode getMode() {

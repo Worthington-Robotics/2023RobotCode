@@ -138,10 +138,17 @@ public class DriveTrain extends Subsystem {
 
     @Override
     public void writePeriodicOutputs() {
-        forwardLeftMotor.set(ControlMode.PercentOutput, periodic.leftDemand);
-        rearLeftMotor.set(ControlMode.Follower, Constants.DRIVE_FRONT_LEFT_ID);
-        forwardRightMotor.set(ControlMode.PercentOutput, periodic.rightDemand);
-        rearRightMotor.set(ControlMode.Follower, Constants.DRIVE_FRONT_RIGHT_ID);
+        if(periodic.currentMode != DriveMode.STOPPED) {
+            forwardLeftMotor.set(ControlMode.PercentOutput, periodic.leftDemand);
+            rearLeftMotor.set(ControlMode.Follower, Constants.DRIVE_FRONT_LEFT_ID);
+            forwardRightMotor.set(ControlMode.PercentOutput, periodic.rightDemand);
+            rearRightMotor.set(ControlMode.Follower, Constants.DRIVE_FRONT_RIGHT_ID);
+        } else {
+            forwardLeftMotor.set(ControlMode.Disabled, 0);
+            rearLeftMotor.set(ControlMode.Disabled, 0);
+            forwardRightMotor.set(ControlMode.Disabled, 0);
+            rearRightMotor.set(ControlMode.Disabled, 0);
+        }
     }
 
     @Override
@@ -238,7 +245,6 @@ public class DriveTrain extends Subsystem {
         forwardRightMotor.setSelectedSensorPosition(0);
         rearLeftMotor.setSelectedSensorPosition(0);
         rearRightMotor.setSelectedSensorPosition(0);
-        gyro.setFusedHeading(0);
     }
 
     public void setDesiredHeading(double theta) {
@@ -247,6 +253,7 @@ public class DriveTrain extends Subsystem {
     }
 
     public void setTargetDistance(double distance) {
+        resetEncoders();
         periodic.targetDistance = distance;
         periodic.leftError = distance;
         periodic.rightError = distance;

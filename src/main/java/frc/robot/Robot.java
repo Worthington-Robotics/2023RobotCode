@@ -194,11 +194,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-        disabledLooper.stop();
-
-        Arm.getInstance().setPin();
         Arm.getInstance().setMode(ArmMode.DISABLED);
-
+        Arm.getInstance().setPin();
+        disabledLooper.stop();
         enabledLooper.start();
     }
 

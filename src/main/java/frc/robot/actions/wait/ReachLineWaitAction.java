@@ -6,7 +6,13 @@ import frc.robot.Constants;
 
 public class ReachLineWaitAction extends Action{
 
-    boolean crossedLine = false;
+    boolean isFwd;
+    double line;
+
+    public ReachLineWaitAction(boolean isFwd, double line) {
+        this.isFwd = isFwd;
+        this.line = line;
+    }
 
     @Override
     public void onStart() {
@@ -14,22 +20,16 @@ public class ReachLineWaitAction extends Action{
 
     @Override
     public void onLoop() {
-        if(DriveTrain.getInstance().getEncoderTicks() < DriveTrain.getInstance().getTargetDistance()){
-            crossedLine = true;
-        } else {
-            crossedLine = false;
-        }
     }
 
     @Override
     public boolean isFinished() {
-        return crossedLine;
+        return (DriveTrain.getInstance().getEncoderTicks() < line && !isFwd)
+        || (DriveTrain.getInstance().getEncoderTicks() > line && isFwd);
     }
 
     @Override
     public void onStop() {
-        DriveTrain.getInstance().setStopped();
-        DriveTrain.getInstance().resetEncoders();
     }
     
 }
