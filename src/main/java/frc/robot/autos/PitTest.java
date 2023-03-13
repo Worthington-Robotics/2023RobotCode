@@ -9,6 +9,7 @@ import frc.lib.statemachine.Action;
 import frc.robot.actions.drive.DriveTurnAction;
 import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.drive.MoveForwardAction;
+import frc.robot.actions.drive.UnblockingMoveAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm.ArmPose;
@@ -59,16 +60,15 @@ public class PitTest extends StateMachineDescriptor {
 
         // Test Turret
 
-        // Stow and Pin
-
         // Test Drivetrain (add waits)
-        addSequential(new MoveForwardAction(100 * Constants.ENCODER_PER_INCH, 0), this.drive_patience);
+        addSequential(new UnblockingMoveAction(100 * Constants.ENCODER_PER_INCH, 0), this.drive_patience);
         addSequential(new TimeWaitAction(), this.drive_patience);
         addSequential(new DriveLevelAction(0), this.drive_patience);
         addSequential(new TimeWaitAction(), this.drive_patience);
         addSequential(new DriveTurnAction(90), this.drive_patience);
         addSequential(new TimeWaitAction(), this.drive_patience);
-        addParallel(new Action[] {new GearChangeAction(),new MoveForwardAction(100 * Constants.ENCODER_PER_INCH, 90)}, this.drive_patience);
+        addParallel(new Action[] {new GearChangeAction(),new UnblockingMoveAction(100 * Constants.ENCODER_PER_INCH, 90)}, this.drive_patience);
         // UnblockMoveAction, TeleopLevelAction, Gyrolock, Limelight
+        // Stow and Pin
     }
 }
