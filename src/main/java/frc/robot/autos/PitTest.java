@@ -63,7 +63,7 @@ public class PitTest extends StateMachineDescriptor {
         // Test Drivetrain (add waits)
         addSequential(new UnblockingMoveAction(100 * Constants.ENCODER_PER_INCH, 0), this.drive_patience);
         addSequential(new TimeWaitAction(), this.drive_patience);
-        addSequential(new DriveLevelAction(0), this.drive_patience);
+        //addSequential(new DriveLevelAction(0), this.drive_patience);
         addSequential(new TimeWaitAction(), this.drive_patience);
         addSequential(new DriveTurnAction(90), this.drive_patience);
         addSequential(new TimeWaitAction(), this.drive_patience);

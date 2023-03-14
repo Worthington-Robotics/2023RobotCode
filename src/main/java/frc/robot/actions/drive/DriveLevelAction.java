@@ -5,14 +5,16 @@ import frc.robot.subsystems.DriveTrain;
 
 public class DriveLevelAction extends Action {
 	double desiredHeading;
-	public DriveLevelAction(double desiredHeading) {
+	boolean moveForward;
+	public DriveLevelAction(double desiredHeading, boolean moveForward) {
 		this.desiredHeading = desiredHeading;
+		this.moveForward = moveForward;
 	}
 
 	@Override
 	public void onStart() {
 		DriveTrain.getInstance().setDesiredHeading(desiredHeading);
-		DriveTrain.getInstance().setAutoLevel();
+		DriveTrain.getInstance().setAutoLevel(moveForward);
 	}
 
 	@Override

@@ -74,6 +74,8 @@ public class DriveTrain extends Subsystem {
         public double tiltDelta;
         public boolean gyroLock = false;
         public boolean driveLevelAccepted = false;
+        public double inputDrivePower;
+        public boolean moveForward = true;
     }
 
     public DriveTrain() {
@@ -109,7 +111,8 @@ public class DriveTrain extends Subsystem {
         TURN,
         MOVE_FORWARD,
         STOPPED,
-        AUTO_LEVEL
+        AUTO_LEVEL,
+        FOLLOW_MOTOR_POWER
     }
 
     @Override
@@ -221,12 +224,12 @@ public class DriveTrain extends Subsystem {
                         periodic.driveLevelAccepted = false;
                         break;
                     case AUTO_LEVEL:
-                        autoLevel();
-                        if(getLevelError() < 1.0){
-                            periodic.driveLevelAccepted = true;
-                        } else {
-                            periodic.driveLevelAccepted = false;
-                        }
+                        autoLevel(periodic.moveForward);
+                        break;
+                    case FOLLOW_MOTOR_POWER:
+                        periodic.leftDemand = periodic.inputDrivePower;
+                        periodic.rightDemand = periodic.inputDrivePower;
+                        periodic.driveLevelAccepted = false;
                         break;
                 }
             }
@@ -321,8 +324,9 @@ public class DriveTrain extends Subsystem {
         setTargetDistance(distance);
     }
 
-    public void setAutoLevel() {
+    public void setAutoLevel(boolean moveForward) {
         periodic.currentMode = DriveMode.AUTO_LEVEL;
+        periodic.moveForward = moveForward;
     }
 
     public void setStopped() {
@@ -363,6 +367,11 @@ public class DriveTrain extends Subsystem {
         periodic.rightDemand = clampDriveSpeed(periodic.rightDemand, 0.0, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
     }
 
+    public void setMotorPower(double motorPower){
+        periodic.currentMode = DriveMode.FOLLOW_MOTOR_POWER;
+        periodic.inputDrivePower = motorPower;
+    }
+
     public double getHeadingError() {
         return periodic.headingError;
     }
@@ -395,13 +404,26 @@ public class DriveTrain extends Subsystem {
     }
 
     // Auto-leveling mode for charge station
-    private void autoLevel() {
-        final double levelError = Constants.DRIVE_LEVEL_ZERO + periodic.gyroTilt;
-        final double power = (levelError * Constants.DRIVE_LEVEL_KP);
-        double minPower = 0;
+    private void autoLevel(boolean isForward) {
+        // double sign = Math.signum(periodic.gyroTilt);
+        double levelError = Constants.DRIVE_LEVEL_ZERO + periodic.gyroTilt;
+        double power;
+        if(levelError > 8){
+            power = 0.1;
+        } else if (levelError < -8){
+            power = -0.1;
+        } else {
+            power = 0;
+        }
 
-        periodic.leftDemand = - power;
-        periodic.rightDemand = - power;
+        if(!isForward){
+            power *= -1;
+        }
+        // final double power = (levelError * Constants.DRIVE_LEVEL_KP);
+        // double minPower = 0;
+
+        // periodic.leftDemand = - power;
+        // periodic.rightDemand = - power;
 
         if(periodic.gyroLock) {
             periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;
@@ -409,17 +431,17 @@ public class DriveTrain extends Subsystem {
             periodic.rightDemand -= periodic.driveHeadingCorrect;
         }
 
-        if(Math.abs(levelError) > 3.0){
-            minPower = 0.07;
-        }
-        // Normalize power
-        if(Math.abs(levelError) > 3.0){
-            minPower = 0.07;
-        }
-        periodic.leftDemand = clampDriveSpeed(periodic.leftDemand,
-            minPower, Constants.DRIVE_LEVEL_MAX_SPEED);
-        periodic.rightDemand = clampDriveSpeed(periodic.rightDemand,
-            minPower, Constants.DRIVE_LEVEL_MAX_SPEED);
+        periodic.rightDemand = power;
+        periodic.leftDemand = power;
+
+        // if(Math.abs(levelError) > 3.0){
+        //     minPower = 0.07;
+        // }
+        
+        // periodic.leftDemand = clampDriveSpeed(periodic.leftDemand,
+        //     minPower, Constants.DRIVE_LEVEL_MAX_SPEED);
+        // periodic.rightDemand = clampDriveSpeed(periodic.rightDemand,
+        //     minPower, Constants.DRIVE_LEVEL_MAX_SPEED);
     }
 
     public double getLevelError() {

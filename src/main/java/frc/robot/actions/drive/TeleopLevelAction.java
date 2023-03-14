@@ -5,12 +5,15 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.PoseEstimator;
 
 public class TeleopLevelAction extends Action {
-	public TeleopLevelAction() {}
+	boolean moveForward;
+	public TeleopLevelAction(boolean moveForward) {
+		this.moveForward = moveForward;
+	}
 
 	@Override
 	public void onStart() {
 		DriveTrain.getInstance().setDesiredHeading(DriveTrain.getInstance().getNormalizedHeading());
-		DriveTrain.getInstance().setAutoLevel();
+		DriveTrain.getInstance().setAutoLevel(moveForward);
 	}
 
 	@Override

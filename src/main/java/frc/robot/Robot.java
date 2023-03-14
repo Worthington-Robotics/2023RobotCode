@@ -61,9 +61,10 @@ public class Robot extends TimedRobot {
     private JoystickButton gyroLockButton = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton limelightPipeButton = new JoystickButton(Constants.MASTER, 5);
     private JoystickButton firstMoveButton = new JoystickButton(Constants.MASTER, 6);
-    private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 7);
+    private JoystickButton forwardAutoLevelButton = new JoystickButton(Constants.MASTER, 7);
     private JoystickButton resetPoseButton = new JoystickButton(Constants.MASTER, 10);
     private JoystickButton cycleButton = new JoystickButton(Constants.MASTER, 9);
+    private JoystickButton backwardAutoLevelButton = new JoystickButton(Constants.MASTER, 12);
 
 
     private JoystickButton turretHold = new JoystickButton(Constants.SECOND, 1);
@@ -210,7 +211,8 @@ public class Robot extends TimedRobot {
         driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
         intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
         intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER)));
-        autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
+        forwardAutoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction(true)));
+        backwardAutoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction(false)));
         resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
         gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
         limelightPipeButton.onTrue(Action.toCommand(new SetPipelineAction()));
