@@ -14,31 +14,25 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.lib.loops.Looper;
-import frc.lib.models.DriveTrajectoryGenerator;
 import frc.lib.statemachine.StateMachine;
 import frc.robot.subsystems.*;
 import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Arm.ArmMode;
 import frc.robot.subsystems.Arm.ArmPose;
-import frc.robot.subsystems.VisionLink.LimelightPipeline;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.drive.TeleopLevelAction;
 import frc.robot.actions.drive.GyroLockAction;
 import frc.robot.actions.drive.SetPositionAction;
-import frc.robot.actions.drive.DriveTurnActionLimelight;
 import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
 import frc.robot.actions.vision.SetPipelineAction;
 import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.arm.CycleArmAction;
 import frc.robot.actions.arm.LLHoldAction;
-import frc.robot.actions.arm.PinToggleAction;
 import frc.robot.actions.arm.RotateTurretAction;
 import frc.robot.actions.arm.TEHoldAction;
-import frc.robot.actions.arm.TurretHoldAction;
 import frc.robot.actions.manipulator.MoveWristAction;
-import frc.robot.subsystems.VisionLink.LimelightPipeline;
 
 
 /**
@@ -69,7 +63,8 @@ public class Robot extends TimedRobot {
 
     private JoystickButton turretHold = new JoystickButton(Constants.SECOND, 1);
     private JoystickButton transButton = new JoystickButton(Constants.SECOND, 2);
-    private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 3);
+    private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 
+    3);
     private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 4);
     private JoystickButton stowButton = new JoystickButton(Constants.SECOND, 5);
     private JoystickButton unstowButton = new JoystickButton(Constants.SECOND, 6);

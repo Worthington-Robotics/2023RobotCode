@@ -12,9 +12,8 @@ public class AutoChooser {
 	
 	public enum AutoType {
 		None,
-		One,
-		Two,
-		Test,
+		RightSide,
+		LeftSide,
 		ChargeStation
 	}
 
@@ -22,7 +21,7 @@ public class AutoChooser {
 	private AutoType chosen;
 
 	private AutoChooser() {
-		change(AutoType.Two);	
+		change(AutoType.RightSide);	
 	}
 
 	// Run the currently selected autonomous
@@ -31,14 +30,11 @@ public class AutoChooser {
 			case None:
 				DebugLogger.getInstance().debugError(DebugLevel.kNone, "No autonomous is currently selected!");
 				break;
-			case One:
-				StateMachine.getInstance().runMachine(new AutoOne());
+			case RightSide:
+				StateMachine.getInstance().runMachine(new RightSideAuto());
 				break;
-			case Two:
-				StateMachine.getInstance().runMachine(new AutoTwo());
-				break;
-			case Test:
-				StateMachine.getInstance().runMachine(new TestAuto());
+			case LeftSide:
+				StateMachine.getInstance().runMachine(new LeftSideAuto());
 				break;
 			case ChargeStation:
 				StateMachine.getInstance().runMachine(new ChargeStationAuto());

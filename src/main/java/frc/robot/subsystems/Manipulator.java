@@ -34,7 +34,6 @@ public class Manipulator extends Subsystem {
 		double intakeMotorPower;
 		double rawWristMotorPower;
 		double desiredWristEncoder;
-		double desiredWristDegree;
 		double wristEncoderError;
 		double wristEncoder;
 		double wristOffset;

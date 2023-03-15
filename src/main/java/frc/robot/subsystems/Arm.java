@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
-import javax.lang.model.util.ElementScanner14;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
@@ -85,11 +83,9 @@ public class Arm extends Subsystem {
 	};
 
 	public class ArmIO extends PeriodicIO {
-		// Power Values
+		// turret power
 		public double turretPower = 0;
 		public double turretRamp = 0;
-		public double pivotPower = 0;
-		public double extensionPower = 0;
 
 		//values taken from HID helper
 		public double rawTurretPower = 0;
@@ -101,10 +97,7 @@ public class Arm extends Subsystem {
 		public double lengthEncoder;
 		public double turretEncoder;
 
-		// Desired values
-		public double desiredPivotDegree;  
-		public double desiredArmLength;
-		public double desiredTurretDegree;
+		// Desired values 
 		public double desiredPivotEncoder;
 		public double desiredArmLengthEncoder;
 		public double desiredTurretEncoder;
@@ -119,12 +112,7 @@ public class Arm extends Subsystem {
 		public ArmPose currentPose = ArmPose.STOWN;
 		public boolean poseAccepted = false;
 
-
-		// Is pressed
-		public boolean turretButtonIsPressed = false;
-		public boolean extensionButtonIsPressed = false;
-
-		// Turret holds
+		// Turret and extend holds
 		public double turretHoldValue = 0;
 		public double extenHoldValue = 0;
 		public boolean turretIsHolding = false;
@@ -158,9 +146,6 @@ public class Arm extends Subsystem {
 			public void onLoop(double timestamp) {
 				switch (periodic.currentMode) {
 					case OPEN_LOOP:
-						setTurretPower(periodic.rawTurretPower);
-						setPivotPower(periodic.rawPivotPower);
-						setExtensionPower(periodic.rawExtensionPower);
 						periodic.poseAccepted = true;
 						break;
 					case OPEN_CLOSED_LOOP:
@@ -218,10 +203,10 @@ public class Arm extends Subsystem {
 					turretMotor.set(ControlMode.PercentOutput, Math.signum(periodic.turretHoldValue - periodic.turretEncoder) * Math.max(.07, Math.min(periodic.turretRamp, .6)));
 				}
 			}
-			if(!periodic.extendIsHolding) {
-				extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
-			} else {
+			if(periodic.extendIsHolding && periodic.currentMode == ArmMode.OPEN_CLOSED_LOOP) {
 				extensionMotor.set(ControlMode.Position, periodic.extenHoldValue);
+			} else {
+				extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
 			}
 		}
 	}
@@ -244,8 +229,6 @@ public class Arm extends Subsystem {
 
 		SmartDashboard.putNumber("Arm/turretHoldVal", periodic.turretHoldValue);
 		SmartDashboard.putBoolean("Arm/turretIsHeld", periodic.turretIsHolding);
-		SmartDashboard.putBoolean("Arm/turret button pressed", periodic.turretButtonIsPressed);
-		SmartDashboard.putBoolean("Arm/extension button pressed", periodic.extensionButtonIsPressed);
 
 		SmartDashboard.putNumber("Arm/error/pivot error", periodic.pivotEncoderError);
 		SmartDashboard.putNumber("Arm/error/length error", periodic.lengthEncoderError);
@@ -257,8 +240,6 @@ public class Arm extends Subsystem {
 
 	public void reset() {
 		periodic.currentMode = ArmMode.CLOSED_LOOP;
-		periodic.turretButtonIsPressed = false;
-		periodic.extensionButtonIsPressed = false;
 		pinSolenoid.set(Value.kForward);
 		configPID();
 		resetEncoders();
@@ -308,7 +289,6 @@ public class Arm extends Subsystem {
 
 	// For closed loop
 	public void setDesiredPivot(double thetaEncoder) {
-		periodic.desiredPivotDegree = thetaEncoder / Constants.PIVOT_ENCODER_PER_DEGREE;
 		periodic.desiredPivotEncoder = thetaEncoder;
 		periodic.pivotEncoderError = periodic.desiredPivotEncoder - periodic.pivotEncoder;
 	}
@@ -358,34 +338,8 @@ public class Arm extends Subsystem {
 	
 	// MainLoop Functions (Mostly PID) - Could be private
 
-
-
-	public void setTurretButtonPressedTrue() {
-		periodic.turretButtonIsPressed = true;
-	}
-
-	public void setExtensionButtonPressedTrue() {
-		periodic.extensionButtonIsPressed = true;
-	}
-
-	public void setTurretButtonPressedFalse() {
-		periodic.turretButtonIsPressed = false;
-	}
-
-	public void setExtensionButtonPressedFalse() {
-		periodic.extensionButtonIsPressed = false;
-	}
-
 	public void setTurretPower(double power) {
 			periodic.turretPower = power;
-	}
-
-	public void setPivotPower(double power) {
-		periodic.pivotPower = power;
-	}
-
-	public void setExtensionPower(double power) {
-			periodic.extensionPower = power;
 	}
 
 	public void cycleMode() {

@@ -14,7 +14,6 @@ import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.arm.LLHoldAction;
 import frc.robot.actions.vision.AutoPipelineAction;
 import frc.robot.subsystems.Arm.ArmPose;
-import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.VisionLink.LimelightPipeline;
 
 public class ChargeStationAuto extends StateMachineDescriptor{
@@ -31,7 +30,7 @@ public class ChargeStationAuto extends StateMachineDescriptor{
         addSequential(new UnblockingMoveAction(- 5 * Constants.ENCODER_PER_INCH, 0), 300);
         addSequential(new ReachLineWaitAction(false, - 5 * Constants.ENCODER_PER_INCH), 6000);
         addSequential(new ArmPoseAction(ArmPose.TRANSIT), 3000);
-        addSequential(new SetDrivePowerAction(0, -0.3), 2800);
+        addSequential(new SetDrivePowerAction(0, -0.3), 3000);
         addSequential(new DriveLevelAction(0, false), 7000);
 
 

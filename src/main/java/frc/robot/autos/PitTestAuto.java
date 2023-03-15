@@ -1,30 +1,25 @@
 package frc.robot.autos;
 
-import com.fasterxml.jackson.databind.jsontype.impl.AsDeductionTypeDeserializer;
-
 import frc.lib.statemachine.StateMachineDescriptor;
 import frc.robot.actions.arm.ArmPoseAction;
-import frc.robot.actions.drive.DriveLevelAction;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.drive.DriveTurnAction;
 import frc.robot.actions.drive.GearChangeAction;
-import frc.robot.actions.drive.MoveForwardAction;
 import frc.robot.actions.drive.UnblockingMoveAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm.ArmPose;
 import frc.robot.actions.wait.TimeWaitAction;
 import frc.robot.actions.wait.PoseWaitAction;
-import frc.robot.actions.drive.DriveLevelAction;
 
-public class PitTest extends StateMachineDescriptor {
+public class PitTestAuto extends StateMachineDescriptor {
     // TODO: Adjust these values so its not 10 seconds between each pose
     int patience = 5000;
     int pose_patience = 5000;
     int intake_patience = 5000;
     int drive_patience = 2000;
 
-    public PitTest() {
+    public PitTestAuto() {
         // Test Arm Poses
         addSequential(new ArmPoseAction(ArmPose.FIRST_MOVE), this.patience);
         addSequential(new PoseWaitAction(), this.pose_patience);

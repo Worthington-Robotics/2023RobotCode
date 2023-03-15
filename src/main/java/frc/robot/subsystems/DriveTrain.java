@@ -44,10 +44,9 @@ public class DriveTrain extends Subsystem {
         public double leftError = 0;
         public double rightError = 0;
         public double averageError = 0;
-        public double integralError = 0;
         public double forwardDerivativeError = 0;
         // The current facing direction of the robot
-        public double heading, rawHeading;
+        public double normalizedHeading, rawHeading;
         // The heading we are trying to reach
         public double targetHeading;
         // Error from desired heading
@@ -68,13 +67,16 @@ public class DriveTrain extends Subsystem {
         public double leftEncoderPrevDistance;
         // Right encoder previous distance
         public double rightEncoderPrevDistance;
-        // Delta right encoder
         public double gyroTilt;
         // Delta from last gyro tilt, used for D term
         public double tiltDelta;
+        //declare whether it is gyro locked or not
         public boolean gyroLock = false;
+        //for auto leveling to determine when to stop
         public boolean driveLevelAccepted = false;
+        //when a raw input power is put in the mtoros
         public double inputDrivePower;
+        //for the autolevel to determine the robot orientation
         public boolean moveForward = true;
     }
 
@@ -122,7 +124,7 @@ public class DriveTrain extends Subsystem {
         SmartDashboard.putNumber("Drive/Unfiltered Delta", periodic.gyroTilt - lastTilt);
         // periodic.tiltDelta = tiltDeltaFilter.calculate(periodic.gyroTilt - lastTilt);
         periodic.rawHeading = gyro.getFusedHeading();
-        periodic.heading = normalizeHeading(periodic.rawHeading);
+        periodic.normalizedHeading = normalizeHeading(periodic.rawHeading);
 
         periodic.leftEncoderTicks = forwardLeftMotor.getSelectedSensorPosition();
         periodic.rightEncoderTicks = forwardRightMotor.getSelectedSensorPosition();
@@ -131,7 +133,7 @@ public class DriveTrain extends Subsystem {
         periodic.yValue = periodic.operatorInput[1];
 
         // These are important derived values that are also read by actions so they should be updated here
-        periodic.headingError = normalizeHeadingError(periodic.targetHeading - periodic.heading);
+        periodic.headingError = normalizeHeadingError(periodic.targetHeading - periodic.normalizedHeading);
         double oldError = (periodic.leftError + periodic.rightError) / 2.0;
         periodic.leftError = periodic.targetDistance - periodic.leftEncoderTicks;
         periodic.rightError = periodic.targetDistance - periodic.rightEncoderTicks;
@@ -167,16 +169,15 @@ public class DriveTrain extends Subsystem {
         SmartDashboard.putNumber("Drive/Target Distance", periodic.targetDistance);
         SmartDashboard.putString("Drive/Mode", periodic.currentMode.toString());
         SmartDashboard.putNumber("Drive/Average Encoder Error", getEncoderError());
-        SmartDashboard.putNumber("Drive/Normalized Heading", periodic.heading);
+        SmartDashboard.putNumber("Drive/Normalized Heading", periodic.normalizedHeading);
         SmartDashboard.putNumber("Drive/Raw Heading", periodic.rawHeading);
         SmartDashboard.putNumber("Drive/Heading Error", periodic.headingError);
         SmartDashboard.putNumber("Drive/Target Heading", periodic.targetHeading);
         SmartDashboard.putNumber("Drive/Heading Correction", periodic.driveHeadingCorrect);
-        SmartDashboard.putNumber("Drive/Total Left Encoder", periodic.totalLeftEncoder);
-        SmartDashboard.putNumber("Drive/Total Right Encoder", periodic.totalRightEncoder);
         SmartDashboard.putNumber("Drive/Pitch", periodic.gyroTilt);
         SmartDashboard.putNumber("Drive/Heading", (-periodic.rawHeading + 360) % 360);
         SmartDashboard.putNumber("Drive/Tilt Delta", periodic.tiltDelta);
+        SmartDashboard.putBoolean("Drive/Moving Forward", periodic.moveForward);
     }
 
     @Override
@@ -242,12 +243,28 @@ public class DriveTrain extends Subsystem {
     }
 
     public void resetEncoders() {
-        periodic.totalLeftEncoder += periodic.leftEncoderTicks;
-        periodic.totalRightEncoder += periodic.rightEncoderTicks;
         forwardLeftMotor.setSelectedSensorPosition(0);
         forwardRightMotor.setSelectedSensorPosition(0);
         rearLeftMotor.setSelectedSensorPosition(0);
         rearRightMotor.setSelectedSensorPosition(0);
+    }
+
+    public void setOpenLoop() {
+        periodic.currentMode = DriveMode.OPEN_LOOP;
+    }
+
+    public void setMoveForward(double distance) {
+        periodic.currentMode = DriveMode.MOVE_FORWARD;
+        setTargetDistance(distance);
+    }
+
+    public void setAutoLevel(boolean moveForward) {
+        periodic.currentMode = DriveMode.AUTO_LEVEL;
+        periodic.moveForward = moveForward;
+    }
+
+    public void setStopped() {
+        periodic.currentMode = DriveMode.STOPPED;
     }
 
     public void setDesiredHeading(double theta) {
@@ -279,8 +296,9 @@ public class DriveTrain extends Subsystem {
         periodic.gyroLock = locked;
     }
 
-    public double getLeftEncoderDistance() {
-        return periodic.totalLeftEncoder + periodic.leftEncoderTicks;
+    
+    public void setGyro(double heading) {
+        gyro.setFusedHeading(heading);
     }
 
     public double getRawHeading() {
@@ -288,16 +306,9 @@ public class DriveTrain extends Subsystem {
     }
 
     public double getNormalizedHeading() {
-        return periodic.heading;
+        return periodic.normalizedHeading;
     }
 
-    public double getHeadingDegrees() {
-        return periodic.heading;
-    }
-
-    public double getRightEncoderDistance() {
-        return periodic.totalRightEncoder + periodic.rightEncoderTicks;
-    }
 
     public boolean getDriveLevelAccepted() {
         return periodic.driveLevelAccepted;
@@ -311,28 +322,15 @@ public class DriveTrain extends Subsystem {
         return periodic.targetDistance;
     }
 
-    public void setOpenLoop() {
-        periodic.currentMode = DriveMode.OPEN_LOOP;
+    public double getRightEncoderDistance() {
+        return periodic.totalRightEncoder + periodic.rightEncoderTicks;
     }
 
-    public void setGyro(double heading) {
-        gyro.setFusedHeading(heading);
+    public double getLeftEncoderDistance() {
+        return periodic.totalLeftEncoder + periodic.leftEncoderTicks;
     }
 
-    public void setMoveForward(double distance) {
-        periodic.currentMode = DriveMode.MOVE_FORWARD;
-        setTargetDistance(distance);
-    }
-
-    public void setAutoLevel(boolean moveForward) {
-        periodic.currentMode = DriveMode.AUTO_LEVEL;
-        periodic.moveForward = moveForward;
-    }
-
-    public void setStopped() {
-        periodic.currentMode = DriveMode.STOPPED;
-    }
-
+  
     private void turn() {
         periodic.leftDemand = periodic.headingError * Constants.ANGLE_KP;
         periodic.rightDemand = periodic.headingError * - Constants.ANGLE_KP;
@@ -405,25 +403,21 @@ public class DriveTrain extends Subsystem {
 
     // Auto-leveling mode for charge station
     private void autoLevel(boolean isForward) {
-        // double sign = Math.signum(periodic.gyroTilt);
         double levelError = Constants.DRIVE_LEVEL_ZERO + periodic.gyroTilt;
         double power;
-        if(levelError > 8){
+        if(levelError > 9){
             power = 0.1;
-        } else if (levelError < -8){
+            if(!isForward){
+                power *= -1;
+            }
+        } else if (levelError < -9){
             power = -0.1;
+            if(!isForward){
+                power *= -1;
+            }
         } else {
             power = 0;
         }
-
-        if(!isForward){
-            power *= -1;
-        }
-        // final double power = (levelError * Constants.DRIVE_LEVEL_KP);
-        // double minPower = 0;
-
-        // periodic.leftDemand = - power;
-        // periodic.rightDemand = - power;
 
         if(periodic.gyroLock) {
             periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;
@@ -431,17 +425,10 @@ public class DriveTrain extends Subsystem {
             periodic.rightDemand -= periodic.driveHeadingCorrect;
         }
 
+
+
         periodic.rightDemand = power;
         periodic.leftDemand = power;
-
-        // if(Math.abs(levelError) > 3.0){
-        //     minPower = 0.07;
-        // }
-        
-        // periodic.leftDemand = clampDriveSpeed(periodic.leftDemand,
-        //     minPower, Constants.DRIVE_LEVEL_MAX_SPEED);
-        // periodic.rightDemand = clampDriveSpeed(periodic.rightDemand,
-        //     minPower, Constants.DRIVE_LEVEL_MAX_SPEED);
     }
 
     public double getLevelError() {
@@ -482,16 +469,6 @@ public class DriveTrain extends Subsystem {
             }
         } else {
             return error;
-        }
-    }
-
-    // Gets a target heading which is the closest between 0 and 180
-    public static double getAlignedTargetHeading(double currentHeading) {
-        final double normalized = normalizeHeading(currentHeading);
-        if (Math.abs(normalized) < 90) {
-            return 0 * Math.signum(normalized);
-        } else {
-            return 180 * Math.signum(normalized);
         }
     }
 
