@@ -9,12 +9,15 @@ package frc.robot;
 
 import java.util.Arrays;
 
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.lib.loops.Looper;
 import frc.lib.statemachine.StateMachine;
+import frc.lib.util.ReflectingLogger;
 import frc.robot.subsystems.*;
 import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.Manipulator;
@@ -23,13 +26,15 @@ import frc.robot.subsystems.Arm.ArmPose;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.drive.TeleopLevelAction;
 import frc.robot.actions.drive.GyroLockAction;
-import frc.robot.actions.drive.SetPositionAction;
+import frc.robot.actions.drive.DriveTurnAction;
 import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
 import frc.robot.actions.vision.SetPipelineAction;
+import frc.robot.actions.vision.SnapshotAction;
 import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.arm.CycleArmAction;
 import frc.robot.actions.arm.LLHoldAction;
+import frc.robot.actions.arm.RotateOneEighty;
 import frc.robot.actions.arm.RotateTurretAction;
 import frc.robot.actions.arm.TEHoldAction;
 import frc.robot.actions.manipulator.MoveWristAction;
@@ -56,9 +61,15 @@ public class Robot extends TimedRobot {
     private JoystickButton limelightPipeButton = new JoystickButton(Constants.MASTER, 5);
     private JoystickButton firstMoveButton = new JoystickButton(Constants.MASTER, 6);
     private JoystickButton forwardAutoLevelButton = new JoystickButton(Constants.MASTER, 7);
-    private JoystickButton resetPoseButton = new JoystickButton(Constants.MASTER, 10);
     private JoystickButton cycleButton = new JoystickButton(Constants.MASTER, 9);
+    private JoystickButton stowButton = new JoystickButton(Constants.MASTER, 10);
     private JoystickButton backwardAutoLevelButton = new JoystickButton(Constants.MASTER, 12);
+    private JoystickButton testPose = new JoystickButton(Constants.MASTER, 11);
+    
+    private POVButton pos0MButton = new POVButton(Constants.MASTER, 0);
+    private POVButton pos270MButton = new POVButton(Constants.MASTER, 270);
+    private POVButton pos90MButton = new POVButton(Constants.MASTER, 90);
+    private POVButton pos180MButton = new POVButton(Constants.MASTER, 180);
 
 
     private JoystickButton turretHold = new JoystickButton(Constants.SECOND, 1);
@@ -66,7 +77,7 @@ public class Robot extends TimedRobot {
     private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 
     3);
     private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 4);
-    private JoystickButton stowButton = new JoystickButton(Constants.SECOND, 5);
+    private JoystickButton LLTargetButton = new JoystickButton(Constants.SECOND, 5);
     private JoystickButton unstowButton = new JoystickButton(Constants.SECOND, 6);
     private JoystickButton coneMedButton = new JoystickButton(Constants.SECOND, 9);
     private JoystickButton coneHighButton = new JoystickButton(Constants.SECOND, 10);
@@ -90,18 +101,24 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        //Start the RoboRIO kernal file system nonsense
+        try {    
+            ReflectingLogger.getMount("XDLOL");
+        } catch (Exception e) {}
         initButtons();
         CommandScheduler.getInstance().enable();
         manager = new SubsystemManager(
             Arrays.asList(
                 Manipulator.getInstance(),
-                PoseEstimator.getInstance(),
                 Arm.getInstance(),
                 DriveTrain.getInstance(),
                 Lights.getInstance()
             ),
             true
         );
+
+        DataLogManager.start();
+        DriverStation.startDataLog(DataLogManager.getLog());
 
         enabledLooper = new Looper();
         disabledLooper = new Looper();
@@ -156,11 +173,10 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         disabledLooper.stop();
-        enabledLooper.start();
-        Arm.getInstance().reset();
         Arm.getInstance().clearPin();
         Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
         DriveTrain.getInstance().reset();
+        enabledLooper.start();
         AutoChooser.getInstance().run_from_selection();
     }
 
@@ -205,12 +221,18 @@ public class Robot extends TimedRobot {
     public void initButtons() {
         driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
         intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
-        intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER)));
+        intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER, false)));
         forwardAutoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction(true)));
         backwardAutoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction(false)));
-        resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
+        LLTargetButton.whileTrue(Action.toCommand(new LLHoldAction(true, true, false)));
+        //resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
         gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
         limelightPipeButton.onTrue(Action.toCommand(new SetPipelineAction()));
+        //Reversed because of starting pose
+        pos0MButton.whileTrue(Action.toCommand(new DriveTurnAction(180)));
+        pos270MButton.whileTrue(Action.toCommand(new DriveTurnAction(90)));
+        pos90MButton.whileTrue(Action.toCommand(new DriveTurnAction(270)));
+        pos180MButton.whileTrue(Action.toCommand(new DriveTurnAction(0)));
 
 
         //Copy and paste armPoseAction line and change the armPose to the next arm Pose
@@ -224,11 +246,12 @@ public class Robot extends TimedRobot {
         coneHighButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_HIGH)));
         cubePickupButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.INTAKE)));
         slideButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SLIDE)));
+        testPose.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_MID_FRONT)));
 
         pos0Button.whileTrue(Action.toCommand(new RotateTurretAction(0, true)));
         pos90Button.whileTrue(Action.toCommand(new RotateTurretAction(-20480, true)));
         pos270Button.whileTrue(Action.toCommand(new RotateTurretAction(20480, true)));
-        LLButton.whileTrue(Action.toCommand(new LLHoldAction(true)));
+        LLButton.whileTrue(Action.toCommand(new RotateOneEighty(true)));
 
         wristUpButton.whileTrue(Action.toCommand(new MoveWristAction(-.33)));
         wristDownButton.whileTrue(Action.toCommand(new MoveWristAction(.33)));

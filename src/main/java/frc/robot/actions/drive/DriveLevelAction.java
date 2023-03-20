@@ -18,7 +18,8 @@ public class DriveLevelAction extends Action {
 	}
 
 	@Override
-	public void onLoop() {}
+	public void onLoop() {
+	}
 
 	@Override
 	public boolean isFinished() {

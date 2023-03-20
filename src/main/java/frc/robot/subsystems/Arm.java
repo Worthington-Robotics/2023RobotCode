@@ -23,6 +23,8 @@ public class Arm extends Subsystem {
 	public static NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-worbots");
 	public static NetworkTableEntry tx = table.getEntry("tx");
 	public static NetworkTableEntry tv = table.getEntry("tv");
+    public static NetworkTableEntry snapshots = table.getEntry("snapshot");
+    public static NetworkTableEntry pipeline = table.getEntry("pipeline");
 
 	private static Arm instance = new Arm();
 	public static Arm getInstance() { return instance; }
@@ -76,10 +78,10 @@ public class Arm extends Subsystem {
 		{206000, 0, 54000},
 		{455200, 0, -13780},
 		{475000, 0, 23000},
-		{515000, 61000, -39500},
-		{585000, 85000, -35000},
+		{545000, 61000, -39500},
+		{535000, 85000, -27000},
 		{525000, 122000, -29400},
-		{626000, 125500, -27090},
+		{621000, 125500, -27090},
 	};
 
 	public class ArmIO extends PeriodicIO {
@@ -129,7 +131,7 @@ public class Arm extends Subsystem {
 		periodic.turretEncoder = turretMotor.getSelectedSensorPosition();
 
 		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), 1, -1);
-		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), 1, -1);
+		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), .3, -.3);
 		periodic.rawPivotPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), 1,0);
 
 		periodic.LL_tv = tv.getDouble(0.0);
@@ -158,10 +160,10 @@ public class Arm extends Subsystem {
 
 						periodic.poseAccepted = (Math.abs(periodic.lengthEncoderError) < Constants.EXTENSION_ENCODER_ERROR_ACCEPTANCE) &&
 						(Math.abs(periodic.pivotEncoderError) < Constants.PIVOT_ENCODER_ERROR_ACCEPTANCE) && 
-						(Math.abs(periodic.turretEncoderError) < Constants.WRIST_ENCODER_ERROR_ACCEPTANCE);
+						(Math.abs(periodic.turretEncoderError) < Constants.TURRET_ANGLE_ENCODER_ACCEPTANCE);
 						break;
 					case CLOSED_LOOP:
-						periodic.desiredPivotEncoder = Arm.ArmPoses[periodic.currentPose.ordinal()][0];
+						periodic.desiredPivotEncoder = Arm.ArmPoses[periodic.currentPose.ordinal()][0] + (periodic.rawPivotPower * 70000);
 						periodic.desiredArmLengthEncoder = Arm.ArmPoses[periodic.currentPose.ordinal()][1] + (periodic.rawExtensionPower * 20000);
 						setTurretPower(periodic.rawTurretPower);
 
@@ -200,7 +202,7 @@ public class Arm extends Subsystem {
 				if(Math.abs(periodic.turretHoldValue - periodic.turretEncoder) < 10 * Constants.TURRET_TPD) {
 					turretMotor.set(ControlMode.Position, periodic.turretHoldValue);
 				} else {
-					turretMotor.set(ControlMode.PercentOutput, Math.signum(periodic.turretHoldValue - periodic.turretEncoder) * Math.max(.07, Math.min(periodic.turretRamp, .6)));
+					turretMotor.set(ControlMode.PercentOutput, Math.signum(periodic.turretHoldValue - periodic.turretEncoder) * Math.max(.12, Math.min(periodic.turretRamp, .6)));
 				}
 			}
 			if(periodic.extendIsHolding && periodic.currentMode == ArmMode.OPEN_CLOSED_LOOP) {
@@ -302,21 +304,20 @@ public class Arm extends Subsystem {
 
 
 	public void configPID(){
-		armMasterMotor.config_kP(0, Constants.ARM_PIVOT_KP);
-		armMasterMotor.config_kI(0, 0);
-		armMasterMotor.config_kD(0, 0);
-		armMasterMotor.config_kF(0, 0);
+		armMasterMotor.config_kP(0, Constants.ARM_PIVOT_KP, 10);
+		armMasterMotor.config_kI(0, 0, 10);
+		armMasterMotor.config_kD(0, 0, 10);
+		armMasterMotor.config_kF(0, 0, 10);
 
-		extensionMotor.config_kP(0,Constants.ARM_EXTENSION_KP);
-		extensionMotor.config_kI(0,0);
-		extensionMotor.config_kD(0,0);
-		extensionMotor.config_kF(0,0);
+		extensionMotor.config_kP(0,Constants.ARM_EXTENSION_KP, 10);
+		extensionMotor.config_kI(0,0, 10);
+		extensionMotor.config_kD(0,0, 10);
+		extensionMotor.config_kF(0,0, 10);
 
-		turretMotor.config_kP(0,Constants.TURRET_KP);
-		turretMotor.config_kI(0,Constants.TURRET_KI);
-		turretMotor.config_kD(0,Constants.TURRET_KD);
-		turretMotor.config_kF(0,0);
-		turretMotor.configMaxIntegralAccumulator(0, Constants.TURRET_IMAX);
+		turretMotor.config_kP(0,Constants.TURRET_KP, 10);
+		turretMotor.config_kI(0,Constants.TURRET_KI, 10);
+		turretMotor.config_kD(0,Constants.TURRET_KD, 10);
+		turretMotor.config_kF(0,0, 10);
 
 	}
 	
@@ -361,7 +362,7 @@ public class Arm extends Subsystem {
 	}
 
 	public void setPose(ArmPose pose) {
-		if(periodic.currentPose != ArmPose.STOWN || pose == ArmPose.FIRST_MOVE)
+		if(periodic.currentMode == ArmMode.CLOSED_LOOP && (periodic.currentPose != ArmPose.STOWN || pose == ArmPose.FIRST_MOVE) && (pose != ArmPose.STOWN || periodic.currentPose == ArmPose.FIRST_MOVE))
 			periodic.currentPose = pose;
 		periodic.poseAccepted = false;
 	}

@@ -16,7 +16,7 @@ public class Lights extends Subsystem {
     public AddressableLED ledString;
     public AddressableLEDBuffer ledBuffer;
     public State state;
-    public double h;
+    public int rain;
 
     public enum State {
         LIGHTS_RAINBOW,
@@ -35,7 +35,6 @@ public class Lights extends Subsystem {
         enabledLooper.register(new Loop() {
             @Override
             public void onStart(double timestamp) {
-                state = State.LIGHTS_RAINBOW;
             }
             @Override
             public void onLoop(double timestamp) {
@@ -54,7 +53,8 @@ public class Lights extends Subsystem {
     }
 
     public void outputTelemetry() {
-        double timestamp = Timer.getFPGATimestamp();
+        rain++;
+        rain = rain % 180;
         if(DriverStation.isDisabled()){
             state = State.LIGHTS_WHITE;
         } else {
@@ -63,10 +63,7 @@ public class Lights extends Subsystem {
         switch(state) {
             case LIGHTS_RAINBOW:
             for (int i = 0; i < ledBuffer.getLength(); i++) {
-                double speed = 10.0;
-                double length = 0.1;
-                double h = Math.abs(((timestamp - (length*i)) % speed) / speed);
-                ledBuffer.setHSV(i, (int)(h * 180.0), 255, 230);
+                ledBuffer.setHSV(i, rain, 255, 230);
             }
                 break;
             case LIGHTS_WHITE:

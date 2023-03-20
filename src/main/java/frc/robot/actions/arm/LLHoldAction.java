@@ -3,17 +3,20 @@ package frc.robot.actions.arm;
 import frc.lib.statemachine.Action;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Manipulator;
 import frc.lib.util.TimerBoolean;
 
 public class LLHoldAction extends Action{
         boolean search;
         boolean kill;
+        boolean fire;
         TimerBoolean finished = new TimerBoolean(.25);
         double[] vals;
 
         public LLHoldAction(boolean search) {
             vals = Arm.getInstance().getLLVals();
             this.search = search;
+            fire = false;
             kill = false;
         }
 
@@ -21,6 +24,14 @@ public class LLHoldAction extends Action{
             vals = Arm.getInstance().getLLVals();
             this.search = search;
             this.kill = kill;
+            fire = false;
+        }
+
+        public LLHoldAction(boolean search, boolean kill, boolean fire) {
+            vals = Arm.getInstance().getLLVals();
+            this.search = search;
+            this.kill = kill;
+            this.fire = fire;
         }
 
         @Override
@@ -50,6 +61,9 @@ public class LLHoldAction extends Action{
     
         @Override
         public void onStop() {
+            if(fire && finished.getBoolean()) {
+                Manipulator.getInstance().setIntakePower(-1);
+            } 
             Arm.getInstance().turretHoldLock(false, 0);
         }
     

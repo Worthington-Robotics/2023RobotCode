@@ -87,7 +87,6 @@ public class DriveTrain extends Subsystem {
             PneumaticsModuleType.CTREPCM,
             Constants.DRIVE_TRANSMISSION_FORWARD, Constants.DRIVE_TRANSMISSION_REVERSE
         );
-        // extraSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 2, 3);
         
         gyro = new PigeonIMU(Constants.PIGEON_ID);
 
@@ -102,6 +101,9 @@ public class DriveTrain extends Subsystem {
 
         forwardLeftMotor.setInverted(true);
         rearLeftMotor.setInverted(true);
+
+        
+        reset();
 
         leftFilter = LinearFilter.singlePoleIIR(Constants.OPEN_LOOP_FILTER, 0.02);
         rightFilter = LinearFilter.singlePoleIIR(Constants.OPEN_LOOP_FILTER, 0.02);
@@ -237,7 +239,6 @@ public class DriveTrain extends Subsystem {
 
             @Override
             public void onStop(double timestamp) {
-                reset();
             }
         });
     }
@@ -245,8 +246,6 @@ public class DriveTrain extends Subsystem {
     public void resetEncoders() {
         forwardLeftMotor.setSelectedSensorPosition(0);
         forwardRightMotor.setSelectedSensorPosition(0);
-        rearLeftMotor.setSelectedSensorPosition(0);
-        rearRightMotor.setSelectedSensorPosition(0);
     }
 
     public void setOpenLoop() {

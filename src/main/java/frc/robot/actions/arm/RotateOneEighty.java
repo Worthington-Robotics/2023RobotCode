@@ -4,17 +4,17 @@ import frc.lib.statemachine.Action;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm;
 
-public class RotateTurretAction extends Action{
+public class RotateOneEighty extends Action{
         double goal;
         double delta;
         boolean unlock;
-        public RotateTurretAction(double angle, boolean unlock) {
-            this.goal = angle;
+        public RotateOneEighty(boolean unlock) {
             this.unlock = unlock;
         }
 
         @Override
         public void onStart() {
+            goal = Math.signum(Arm.getInstance().getTurretEncoder()) * 180 * Constants.TURRET_TPD;
             Arm.getInstance().turretHoldLock(true, goal);
             delta = goal - Arm.getInstance().getTurretEncoder();
             Arm.getInstance().clearRamp();
@@ -32,7 +32,7 @@ public class RotateTurretAction extends Action{
     
         @Override
         public boolean isFinished() {
-            return !unlock && Math.abs(Arm.getInstance().getTurretEncoder() - goal) < Constants.TURRET_TPD * 2;
+            return !unlock && Math.abs(Arm.getInstance().getTurretEncoder() - goal) < 500;
         }
     
         @Override

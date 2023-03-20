@@ -21,14 +21,7 @@ public class Manipulator extends Subsystem {
 	private TalonFX wristMotor, intakeMotor;
 	private TimeOfFlight intakeTOF;
 
-	public enum ManipulatorMode {
-		OPEN_LOOP,
-		OPEN_CLOSED_LOOP,
-		CLOSED_LOOP
-    }
-
 	public class ManipulatorIO extends PeriodicIO {
-		public ManipulatorMode currentMode = ManipulatorMode.OPEN_LOOP;
 		double TimeOfFlightDistance;
 		double wristMotorPower;
 		double intakeMotorPower;
@@ -44,9 +37,9 @@ public class Manipulator extends Subsystem {
 		intakeTOF = new TimeOfFlight(1);
 		wristMotor = new TalonFX(Constants.WRIST_MOTOR_ID, "Default Name");
 		wristMotor.setNeutralMode(NeutralMode.Brake);
-
 		intakeMotor = new TalonFX(Constants.INTAKE_MOTOR_ID, "Default Name");
 		intakeMotor.setNeutralMode(NeutralMode.Brake);
+		wristAnglePID();
 	}
 
 	public void readPeriodicInputs() {
@@ -59,7 +52,7 @@ public class Manipulator extends Subsystem {
 		if((periodic.TimeOfFlightDistance > 200 && periodic.TimeOfFlightDistance != 0) || periodic.intakeMotorPower < 0) {
 			intakeMotor.set(ControlMode.PercentOutput, periodic.intakeMotorPower);
 		} else {
-			intakeMotor.set(ControlMode.PercentOutput, .15);
+			intakeMotor.set(ControlMode.PercentOutput, Math.max(.15, periodic.intakeMotorPower));
 		}
 		if (Arm.getInstance().getMode().ordinal() < ArmMode.CLOSED_LOOP.ordinal() ) {
 			wristMotor.set(ControlMode.PercentOutput, periodic.wristMotorPower);
@@ -72,8 +65,6 @@ public class Manipulator extends Subsystem {
 		enabledLooper.register(new Loop() {
 			@Override
 			public void onStart(double timestamp) {
-				reset();
-				wristAnglePID();
 			}
 
 			@Override
@@ -94,8 +85,6 @@ public class Manipulator extends Subsystem {
 
 			@Override
 			public void onStop(double timestamp) {
-				reset();
-				wristAnglePID();
 			}
 		});
 	}
@@ -116,18 +105,6 @@ public class Manipulator extends Subsystem {
 
 	public void setWristPower(double power){
 		periodic.wristMotorPower = power;
-	}
-
-	public void setOpenLoop() {
-		periodic.currentMode = ManipulatorMode.OPEN_LOOP;
-	}
-
-	public void setOpenClosedLoop() {
-		periodic.currentMode = ManipulatorMode.OPEN_CLOSED_LOOP;
-	}
-
-	public void setClosedLoop() {
-		periodic.currentMode = ManipulatorMode.CLOSED_LOOP;
 	}
 
 	public void resWrist() {
@@ -159,7 +136,6 @@ public class Manipulator extends Subsystem {
 
 
 	public void reset() { 
-		periodic.currentMode = ManipulatorMode.OPEN_CLOSED_LOOP;
 	}
 
 	public void resetManipulatorEncoder(){

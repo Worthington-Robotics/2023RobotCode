@@ -35,7 +35,7 @@ public class Constants {
     public static final int INTAKE_WHEEL_ID = 5;  
     public static final int MANIPULATOR_TOF_ID = 1;
 
-    public static final double INTAKE_POWER = .75;
+    public static final double INTAKE_POWER = .6;
     public static final double ANYTHING_OUT_POWER = -1;
     public static final double INTAKE_ACCEPTANCE_RANGE = 5.0; //TODO: change this range value
 

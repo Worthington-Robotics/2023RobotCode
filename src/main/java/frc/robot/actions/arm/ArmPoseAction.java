@@ -17,6 +17,11 @@ public class ArmPoseAction extends Action {
     public void onStart() {
         Arm.getInstance().setPose(pose);
         Manipulator.getInstance().resWrist();
+        if(pose == ArmPose.CONE_HIGH || pose == ArmPose.CUBE_HIGH) {
+			Arm.pipeline.setDouble(1);
+        } else {
+			Arm.pipeline.setDouble(0);
+        }
     }
 
     @Override

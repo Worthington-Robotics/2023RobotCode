@@ -25,7 +25,6 @@ public class PinToggleAction extends Action{
 
     @Override
     public void onStop() {
-        Arm.getInstance().clearPin();
     }
     
 }
