@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import java.lang.Math;
+import java.util.Currency;
+
 import frc.lib.util.HIDHelper;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import com.ctre.phoenix.sensors.PigeonIMU;
@@ -123,8 +125,9 @@ public class DriveTrain extends Subsystem {
     public void readPeriodicInputs() {
         final double lastTilt = periodic.gyroTilt;
         periodic.gyroTilt = gyro.getRoll() * -1.0;
+        periodic.tiltDelta = periodic.gyroTilt - lastTilt;
         SmartDashboard.putNumber("Drive/Unfiltered Delta", periodic.gyroTilt - lastTilt);
-        // periodic.tiltDelta = tiltDeltaFilter.calculate(periodic.gyroTilt - lastTilt);
+        //periodic.tiltDelta = tiltDeltaFilter.calculate(periodic.gyroTilt - lastTilt);
         periodic.rawHeading = gyro.getFusedHeading();
         periodic.normalizedHeading = normalizeHeading(periodic.rawHeading);
 
@@ -424,8 +427,6 @@ public class DriveTrain extends Subsystem {
             periodic.rightDemand -= periodic.driveHeadingCorrect;
         }
 
-
-
         periodic.rightDemand = power;
         periodic.leftDemand = power;
     }
@@ -474,4 +475,17 @@ public class DriveTrain extends Subsystem {
     public LogData getLogger() {
 		return periodic;
 	}
+
+    public boolean getDeltaPitchAccepted(boolean moveForward) {
+        if(moveForward) { // Verify that battery above horizon is positive tilt
+            periodic.tiltDelta *= -1.0;
+        }
+
+        if(periodic.tiltDelta < 0.0) { // return periodic.tiltDelta < 0.0 // delta should change based on pigin accuracy
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }
