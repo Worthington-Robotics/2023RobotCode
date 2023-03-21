@@ -134,7 +134,7 @@ public class DriveTrain extends Subsystem {
         periodic.leftEncoderTicks = forwardLeftMotor.getSelectedSensorPosition();
         periodic.rightEncoderTicks = forwardRightMotor.getSelectedSensorPosition();
         periodic.operatorInput = HIDHelper.getAdjStick(Constants.MASTER_STICK);
-        periodic.xValue = periodic.operatorInput[0];
+        periodic.xValue = periodic.operatorInput[0] * (0.7);
         periodic.yValue = periodic.operatorInput[1];
 
         // These are important derived values that are also read by actions so they should be updated here
@@ -167,6 +167,7 @@ public class DriveTrain extends Subsystem {
         SmartDashboard.putNumber("Drive/Joystick Y", periodic.yValue);
         SmartDashboard.putNumber("Drive/Right Encoder", periodic.rightEncoderTicks);
         SmartDashboard.putNumber("Drive/Left Encoder", periodic.leftEncoderTicks);
+        SmartDashboard.putNumber("Drive/Raw Heading", periodic.rawHeading);
         SmartDashboard.putNumber("Drive/Right Demand", periodic.rightDemand);
         SmartDashboard.putNumber("Drive/Left Demand", periodic.leftDemand);
         SmartDashboard.putNumber("Drive/Right Error", periodic.rightError);
@@ -175,7 +176,6 @@ public class DriveTrain extends Subsystem {
         SmartDashboard.putString("Drive/Mode", periodic.currentMode.toString());
         SmartDashboard.putNumber("Drive/Average Encoder Error", getEncoderError());
         SmartDashboard.putNumber("Drive/Normalized Heading", periodic.normalizedHeading);
-        SmartDashboard.putNumber("Drive/Raw Heading", periodic.rawHeading);
         SmartDashboard.putNumber("Drive/Heading Error", periodic.headingError);
         SmartDashboard.putNumber("Drive/Target Heading", periodic.targetHeading);
         SmartDashboard.putNumber("Drive/Heading Correction", periodic.driveHeadingCorrect);
@@ -213,6 +213,7 @@ public class DriveTrain extends Subsystem {
             public void onLoop(double timestamp) {
                 switch (periodic.currentMode) {
                     case OPEN_LOOP:
+                       // setGyroLock(true);
                         openLoop();
                         periodic.driveLevelAccepted = false;
                         break;
