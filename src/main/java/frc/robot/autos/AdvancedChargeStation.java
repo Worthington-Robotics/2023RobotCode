@@ -29,10 +29,12 @@ public class AdvancedChargeStation extends StateMachineDescriptor{
         //addParallel(new Action[] {new ArmPoseAction(ArmPose.TRANSIT), new ReachLineWaitAction(false, - 88 * Constants.ENCODER_PER_INCH)}, 200);
         addSequential(new UnblockingMoveAction(- 5 * Constants.ENCODER_PER_INCH, 0), 300);
         addSequential(new ReachLineWaitAction(false, - 5 * Constants.ENCODER_PER_INCH), 6000);
-        addSequential(new ArmPoseAction(ArmPose.TRANSIT), 3000);
+        addSequential(new ArmPoseAction(ArmPose.UNSTOW), 3000);
         // Autolevel (UNTESTED)
-        addSequential(new UnblockingMoveAction(- 2000 * Constants.ENCODER_PER_INCH, 0), 300);
-        addSequential(new DeltaPitchWaitAction(false), 5000);
+        addSequential(new UnblockingMoveAction(- 120 * Constants.ENCODER_PER_INCH, 0), 300);
+        addSequential(new ReachLineWaitAction(false, - 120 * Constants.ENCODER_PER_INCH), 6000);
+        addSequential(new UnblockingMoveAction(120 * Constants.ENCODER_PER_INCH, 0), 300);
+        addSequential(new DeltaPitchWaitAction(true), 5000);
         addSequential(new DriveLevelAction(0, false), 7000);
 
 
