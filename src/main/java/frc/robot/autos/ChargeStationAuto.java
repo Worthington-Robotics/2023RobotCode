@@ -5,8 +5,8 @@ import frc.lib.statemachine.StateMachineDescriptor;
 import frc.robot.Constants;
 import frc.robot.actions.drive.DriveLevelAction;
 import frc.robot.actions.drive.MoveForwardAction;
-import frc.robot.actions.drive.SetDrivePowerAction;
-import frc.robot.actions.drive.UnblockingMoveAction;
+import frc.robot.actions.drive.BlockingSetDrivePowerAction;
+import frc.robot.actions.drive.NonblockingMoveAction;
 import frc.robot.actions.wait.PoseWaitAction;
 import frc.robot.actions.wait.ReachLineWaitAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
@@ -26,10 +26,10 @@ public class ChargeStationAuto extends StateMachineDescriptor{
         addParallel(new Action[] {new RunIntakeAction(Constants.ANYTHING_OUT_POWER), new SnapshotAction()}, 250);
         //addParallel(new Action[] {new UnblockingMoveAction(- 100 * Constants.ENCODER_PER_INCH, 0), new ReachLineWaitAction(false, - 12 * Constants.ENCODER_PER_INCH)}, 6000);
         //addParallel(new Action[] {new ArmPoseAction(ArmPose.TRANSIT), new ReachLineWaitAction(false, - 88 * Constants.ENCODER_PER_INCH)}, 200);
-        addSequential(new UnblockingMoveAction(- 5 * Constants.ENCODER_PER_INCH, 0), 300);
+        addSequential(new NonblockingMoveAction(- 5 * Constants.ENCODER_PER_INCH, 0), 300);
         addSequential(new ReachLineWaitAction(false, - 5 * Constants.ENCODER_PER_INCH), 6000);
         addSequential(new ArmPoseAction(ArmPose.TRANSIT), 3000);
-        addSequential(new SetDrivePowerAction(0, -0.3), 2500);
+        addSequential(new BlockingSetDrivePowerAction(0, -0.3), 2500);
         addSequential(new DriveLevelAction(0, false), 7000);
 
 

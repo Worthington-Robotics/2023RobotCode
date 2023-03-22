@@ -66,8 +66,6 @@ public class DriveTrain extends Subsystem {
         public double tiltDelta;
         //declare whether it is gyro locked or not
         public boolean gyroLock = false;
-        //for auto leveling to determine when to stop
-        public boolean driveLevelAccepted = false;
         //when a raw input power is put in the mtoros
         public double inputDrivePower;
         //for the autolevel to determine the robot orientation
@@ -221,6 +219,7 @@ public class DriveTrain extends Subsystem {
                     case FOLLOW_MOTOR_POWER:
                         periodic.leftDemand = periodic.inputDrivePower;
                         periodic.rightDemand = periodic.inputDrivePower;
+                        lockGyro();
                         break;
                 }
             }
@@ -294,10 +293,6 @@ public class DriveTrain extends Subsystem {
 
     public double getNormalizedHeading() {
         return periodic.normalizedHeading;
-    }
-
-    public boolean getDriveLevelAccepted() {
-        return periodic.driveLevelAccepted;
     }
 
     public double getEncoderTicks() {
@@ -386,7 +381,6 @@ public class DriveTrain extends Subsystem {
             }
         } else {
             power = 0;
-            periodic.driveLevelAccepted = true;
         }
 
         if(periodic.gyroLock) {

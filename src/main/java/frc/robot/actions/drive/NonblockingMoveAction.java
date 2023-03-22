@@ -3,11 +3,11 @@ package frc.robot.actions.drive;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
 
-public class UnblockingMoveAction extends Action {
+public class NonblockingMoveAction extends Action {
     double targetDistance;
     double desiredHeading;
 
-    public UnblockingMoveAction (double targetDistance, double desiredHeading){
+    public NonblockingMoveAction (double targetDistance, double desiredHeading){
         this.targetDistance = targetDistance;
         this.desiredHeading = desiredHeading;
     }
