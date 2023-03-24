@@ -15,7 +15,7 @@ public class DriveTurnAction extends Action {
 
     @Override
     public void onStart() {
-        DriveTrain.getInstance().setTurning(heading);
+        DriveTrain.getInstance().setTurn(heading);
     }
 
     @Override

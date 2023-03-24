@@ -3,11 +3,11 @@ package frc.robot.actions.drive;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
 
-public class SetDrivePowerAction extends Action{
+public class BlockingSetDrivePowerAction extends Action{
     double desiredHeading;
     double motorPower;
 
-	public SetDrivePowerAction(double desiredHeading, double motorPower) {
+	public BlockingSetDrivePowerAction(double desiredHeading, double motorPower) {
 		this.desiredHeading = desiredHeading;
         this.motorPower = motorPower;
 	}

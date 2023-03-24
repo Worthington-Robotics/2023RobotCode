@@ -8,7 +8,7 @@ import frc.robot.actions.arm.LLHoldAction;
 import frc.robot.actions.arm.RotateTurretAction;
 import frc.robot.actions.drive.DriveLevelAction;
 import frc.robot.actions.drive.DriveTurnAction;
-import frc.robot.actions.drive.MoveForwardAction;
+import frc.robot.actions.drive.BlockingMoveAction;
 import frc.robot.actions.drive.NonblockingMoveAction;
 import frc.robot.actions.drive.NonblockingSetDrivePowerAction;
 import frc.robot.actions.wait.PoseWaitAction;
@@ -39,13 +39,13 @@ public class CubeAndChargeStationAuto extends StateMachineDescriptor{
         addParallel(new Action[] {new ArmPoseAction(ArmPose.INTAKE), new RunIntakeAction(Constants.INTAKE_POWER)}, 9000);
         addSequential(new ArmPoseAction(ArmPose.TRANSIT), 200);
         addParallel(new Action[] {new PoseWaitAction(), new DriveTurnAction(90)}, 2000);
-        addSequential(new MoveForwardAction(15 * Constants.ENCODER_PER_INCH, 0), 5000);
+        addSequential(new BlockingMoveAction(15 * Constants.ENCODER_PER_INCH, 0), 5000);
         addSequential(new DriveTurnAction(90), 1500);
 
         addSequential(new NonblockingSetDrivePowerAction(0, 0.5), 200);
         addSequential(new PositivePitchWaitAction(), 3000);
 
-        addSequential(new DriveLevelAction(0, false), 7000);
+        addSequential(new DriveLevelAction(0), 7000);
 
     }
 }

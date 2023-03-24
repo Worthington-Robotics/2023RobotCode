@@ -5,13 +5,13 @@ import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.Constants;
 
-public class MoveForwardAction extends Action {
+public class BlockingMoveAction extends Action {
     double targetDistance;
     double desiredHeading;
     ErrorChecker checker = new ErrorChecker(
         Constants.DRIVE_FORWARD_ACCEPTED_ERROR, Constants.DRIVE_FORWARD_MINIMUM_TIME);
 
-    public MoveForwardAction (double targetDistance, double desiredHeading){
+    public BlockingMoveAction (double targetDistance, double desiredHeading){
         this.targetDistance = targetDistance;
         this.desiredHeading = desiredHeading;
     }

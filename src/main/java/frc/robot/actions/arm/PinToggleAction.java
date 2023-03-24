@@ -8,7 +8,7 @@ public class PinToggleAction extends Action{
 
     @Override
     public void onStart() {
-        Arm.getInstance().setPin();
+        //Arm.getInstance().setPin();
     }
 
     @Override

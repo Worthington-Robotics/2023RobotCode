@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import java.lang.Math;
-import java.util.Currency;
 
 import frc.lib.util.HIDHelper;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -68,8 +67,6 @@ public class DriveTrain extends Subsystem {
         public boolean gyroLock = false;
         //when a raw input power is put in the mtoros
         public double inputDrivePower;
-        //for the autolevel to determine the robot orientation
-        public boolean moveForward = true;
     }
 
     public DriveTrain() {
@@ -171,7 +168,6 @@ public class DriveTrain extends Subsystem {
         SmartDashboard.putNumber("Drive/Pitch", periodic.gyroTilt);
         SmartDashboard.putNumber("Drive/Heading", (-periodic.rawHeading + 360) % 360);
         SmartDashboard.putNumber("Drive/Tilt Delta", periodic.tiltDelta);
-        SmartDashboard.putBoolean("Drive/Moving Forward", periodic.moveForward);
     }
 
     @Override
@@ -200,7 +196,6 @@ public class DriveTrain extends Subsystem {
             public void onLoop(double timestamp) {
                 switch (periodic.currentMode) {
                     case OPEN_LOOP:
-                       // setGyroLock(true);
                         openLoop();
                         break;
                     case TURN:
@@ -214,7 +209,7 @@ public class DriveTrain extends Subsystem {
                         periodic.rightDemand = 0;
                         break;
                     case AUTO_LEVEL:
-                        autoLevel(periodic.moveForward);
+                        autoLevel();
                         break;
                     case FOLLOW_MOTOR_POWER:
                         periodic.leftDemand = periodic.inputDrivePower;
@@ -244,9 +239,13 @@ public class DriveTrain extends Subsystem {
         setTargetDistance(distance);
     }
 
-    public void setAutoLevel(boolean moveForward) {
+    public void setAutoLevel() {
         periodic.currentMode = DriveMode.AUTO_LEVEL;
-        periodic.moveForward = moveForward;
+    }
+
+    public void setTurn(double theta) {
+        periodic.currentMode = DriveMode.TURN;
+        setDesiredHeading(theta);
     }
 
     public void setStopped() {
@@ -265,9 +264,9 @@ public class DriveTrain extends Subsystem {
         periodic.rightError = distance;
     }
 
-    public void setTurning(double theta) {
-        periodic.currentMode = DriveMode.TURN;
-        setDesiredHeading(theta);
+    public void setMotorPower(double motorPower){
+        periodic.currentMode = DriveMode.FOLLOW_MOTOR_POWER;
+        periodic.inputDrivePower = motorPower;
     }
 
     public void setHighGear() {
@@ -297,6 +296,14 @@ public class DriveTrain extends Subsystem {
 
     public double getEncoderTicks() {
         return (periodic.leftEncoderTicks + periodic.rightEncoderTicks) / 2.0;
+    }
+
+    public double getHeadingError() {
+        return periodic.headingError;
+    }
+
+    public double getEncoderError() {
+        return (periodic.rightError + periodic.leftError) / 2.0;
     }
 
     private void turn() {
@@ -331,19 +338,6 @@ public class DriveTrain extends Subsystem {
         periodic.rightDemand = clampDriveSpeed(periodic.rightDemand, 0.0, Constants.DRIVE_FORWARD_MAXIMUM_SPEED);
     }
 
-    public void setMotorPower(double motorPower){
-        periodic.currentMode = DriveMode.FOLLOW_MOTOR_POWER;
-        periodic.inputDrivePower = motorPower;
-    }
-
-    public double getHeadingError() {
-        return periodic.headingError;
-    }
-
-    // Gets average error from the encoders
-    public double getEncoderError() {
-        return (periodic.rightError + periodic.leftError) / 2.0;
-    }
 
     // Sets motor demands in open loop
     private void openLoop() {
@@ -366,19 +360,13 @@ public class DriveTrain extends Subsystem {
     }
 
     // Auto-leveling mode for charge station
-    private void autoLevel(boolean isForward) {
+    private void autoLevel() {
         double levelError = Constants.DRIVE_LEVEL_ZERO + periodic.gyroTilt;
         double power;
         if(levelError > 9){
-            power = 0.1;
-            if(!isForward){
-                power *= -1;
-            }
+            power = - 0.1;
         } else if (levelError < -9){
-            power = -0.1;
-            if(!isForward){
-                power *= -1;
-            }
+            power = 0.1;
         } else {
             power = 0;
         }
@@ -386,7 +374,6 @@ public class DriveTrain extends Subsystem {
         if(periodic.gyroLock) {
             lockGyro();
         }
-
 
         periodic.rightDemand = power;
         periodic.leftDemand = power;

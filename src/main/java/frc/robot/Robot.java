@@ -60,10 +60,9 @@ public class Robot extends TimedRobot {
     private JoystickButton gyroLockButton = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton limelightPipeButton = new JoystickButton(Constants.MASTER, 5);
     private JoystickButton firstMoveButton = new JoystickButton(Constants.MASTER, 6);
-    private JoystickButton forwardAutoLevelButton = new JoystickButton(Constants.MASTER, 7);
     private JoystickButton cycleButton = new JoystickButton(Constants.MASTER, 9);
     private JoystickButton stowButton = new JoystickButton(Constants.MASTER, 10);
-    private JoystickButton backwardAutoLevelButton = new JoystickButton(Constants.MASTER, 12);
+    private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 12);
     private JoystickButton testPose = new JoystickButton(Constants.MASTER, 11);
     
     private POVButton pos0MButton = new POVButton(Constants.MASTER, 0);
@@ -74,8 +73,7 @@ public class Robot extends TimedRobot {
 
     private JoystickButton turretHold = new JoystickButton(Constants.SECOND, 1);
     private JoystickButton transButton = new JoystickButton(Constants.SECOND, 2);
-    private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 
-    3);
+    private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 3);
     private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 4);
     private JoystickButton LLTargetButton = new JoystickButton(Constants.SECOND, 5);
     private JoystickButton unstowButton = new JoystickButton(Constants.SECOND, 6);
@@ -173,7 +171,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         disabledLooper.stop();
-        Arm.getInstance().clearPin();
+        //Arm.getInstance().clearPin();
         Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
         DriveTrain.getInstance().reset();
         enabledLooper.start();
@@ -194,8 +192,8 @@ public class Robot extends TimedRobot {
         DriveTrain.getInstance().setOpenLoop();
         DriveTrain.getInstance().reset();
         enabledLooper.start();
-        Arm.getInstance().clearPin();
-        Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
+       // Arm.getInstance().clearPin();
+        Arm.getInstance().setMode(ArmMode.OPEN_LOOP);
     }
 
     /**
@@ -207,7 +205,7 @@ public class Robot extends TimedRobot {
     @Override
     public void testInit() {
         Arm.getInstance().setMode(ArmMode.DISABLED);
-        Arm.getInstance().setPin();
+        ///Arm.getInstance().setPin();
         disabledLooper.stop();
         enabledLooper.start();
     }
@@ -222,8 +220,7 @@ public class Robot extends TimedRobot {
         driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
         intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
         intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER, false)));
-        forwardAutoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction(true)));
-        backwardAutoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction(false)));
+        autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
         LLTargetButton.whileTrue(Action.toCommand(new LLHoldAction(true, true, false)));
         //resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
         gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));

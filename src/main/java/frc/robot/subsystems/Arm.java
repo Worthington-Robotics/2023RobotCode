@@ -18,7 +18,7 @@ import frc.lib.loops.Loop;
 
 public class Arm extends Subsystem {
 	TalonFX extensionMotor, turretMotor, armMasterMotor;
-	DoubleSolenoid pinSolenoid;
+	//DoubleSolenoid pinSolenoid;
 
 	public static NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-worbots");
 	public static NetworkTableEntry tx = table.getEntry("tx");
@@ -34,7 +34,7 @@ public class Arm extends Subsystem {
 		extensionMotor = new TalonFX(Constants.ARM_EXTENSION_ID, "Default Name");
 		turretMotor = new TalonFX(Constants.ARM_TURRET_ID, "Default Name");
 		armMasterMotor = new TalonFX(Constants.ARM_ARM_M_ID, "Default Name");
-		pinSolenoid = new DoubleSolenoid(0, PneumaticsModuleType.CTREPCM, 7, 6);
+		// pinSolenoid = new DoubleSolenoid(0, PneumaticsModuleType.CTREPCM, 7, 6);
 		extensionMotor.setNeutralMode(NeutralMode.Brake);
 		turretMotor.setNeutralMode(NeutralMode.Brake);
 		armMasterMotor.setNeutralMode(NeutralMode.Brake);
@@ -105,7 +105,7 @@ public class Arm extends Subsystem {
 		public double desiredTurretEncoder;
 
 		// Error Values
-		public double pivotEncoderError; //in ticks
+		public double pivotEncoderError;
 		public double lengthEncoderError;
 		public double turretEncoderError;
 
@@ -130,9 +130,9 @@ public class Arm extends Subsystem {
 		periodic.lengthEncoder = extensionMotor.getSelectedSensorPosition();
 		periodic.turretEncoder = turretMotor.getSelectedSensorPosition();
 
-		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), 1, -1);
+		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), -.2, .2);
 		periodic.rawTurretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), .3, -.3);
-		periodic.rawPivotPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), 1,0);
+		periodic.rawPivotPower =  HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), -1,1);
 
 		periodic.LL_tv = tv.getDouble(0.0);
 		periodic.LL_tx = tx.getDouble(0.0);
@@ -192,7 +192,7 @@ public class Arm extends Subsystem {
 			extensionMotor.set(ControlMode.Disabled, 0);
 		} else if (periodic.currentMode == ArmMode.OPEN_LOOP){
 			turretMotor.set(ControlMode.PercentOutput, periodic.rawTurretPower);
-			armMasterMotor.set(ControlMode.PercentOutput, periodic.rawPivotPower - .25);
+			armMasterMotor.set(ControlMode.PercentOutput, periodic.rawPivotPower);
 			extensionMotor.set(ControlMode.PercentOutput, periodic.rawExtensionPower);
 		} else {
 			armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
@@ -220,6 +220,8 @@ public class Arm extends Subsystem {
 		SmartDashboard.putNumber("Arm/encoder/turret", periodic.turretEncoder);
 		SmartDashboard.putNumber("Arm/encoder/pivot", periodic.pivotEncoder);
 		SmartDashboard.putNumber("Arm/encoder/extend", periodic.lengthEncoder);
+		SmartDashboard.putNumber("Arm/rawPower/pivot", periodic.rawPivotPower);
+		SmartDashboard.putNumber("Arm/rawPower/extend", periodic.rawExtensionPower);
 		
 		SmartDashboard.putNumber("Arm/encoder/turret-D", periodic.turretHoldValue);
 		SmartDashboard.putNumber("Arm/encoder/pivot-D", periodic.desiredPivotEncoder);
@@ -242,7 +244,7 @@ public class Arm extends Subsystem {
 
 	public void reset() {
 		periodic.currentMode = ArmMode.CLOSED_LOOP;
-		pinSolenoid.set(Value.kForward);
+		//pinSolenoid.set(Value.kForward);
 		configPID();
 		resetEncoders();
 	}
@@ -261,13 +263,13 @@ public class Arm extends Subsystem {
 		periodic.turretRamp = 0;
 	}
 
-	public void clearPin() {
-		pinSolenoid.set(Value.kReverse);
-	}
+	// public void clearPin() {
+	// 	pinSolenoid.set(Value.kReverse);
+	// }
 
-	public void setPin() {
-		pinSolenoid.set(Value.kForward);
-	}
+	// public void setPin() {
+	// 	pinSolenoid.set(Value.kForward);
+	// }
 
 	public boolean getAccepted() {
 		return periodic.poseAccepted;
@@ -287,12 +289,6 @@ public class Arm extends Subsystem {
 
 	public double[] getLLVals() {
 		return new double[] {periodic.LL_tx, periodic.LL_tv};
-	}
-
-	// For closed loop
-	public void setDesiredPivot(double thetaEncoder) {
-		periodic.desiredPivotEncoder = thetaEncoder;
-		periodic.pivotEncoderError = periodic.desiredPivotEncoder - periodic.pivotEncoder;
 	}
 	 
 
@@ -337,10 +333,9 @@ public class Arm extends Subsystem {
 		return inputPower * 22000;
 	}
 	
-	// MainLoop Functions (Mostly PID) - Could be private
 
 	public void setTurretPower(double power) {
-			periodic.turretPower = power;
+		periodic.turretPower = power;
 	}
 
 	public void cycleMode() {

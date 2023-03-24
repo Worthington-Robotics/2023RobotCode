@@ -24,7 +24,7 @@ public class AdvancedChargeStation extends StateMachineDescriptor{
         addSequential(new PoseWaitAction(), 3000);
         addSequential(new ArmPoseAction(ArmPose.CONE_MID_FRONT), 200);
         addSequential(new PoseWaitAction(), 3000);
-        addParallel(new Action[] {new RotateTurretAction(-182 * Constants.TURRET_TPD, false), new AutoPipelineAction(1)}, 4000);
+        addParallel(new Action[] {new RotateTurretAction(-180 * Constants.TURRET_TPD, false), new AutoPipelineAction(1)}, 4000);
         addParallel(new Action[] {new RunIntakeAction(Constants.ANYTHING_OUT_POWER), new SnapshotAction()}, 250);
         addSequential(new RotateTurretAction(0, false), 4000);
 
@@ -36,13 +36,13 @@ public class AdvancedChargeStation extends StateMachineDescriptor{
 
         addSequential(new NonblockingSetDrivePowerAction(0, 0.5), 200);
         addSequential(new LevelPitchWaitAction(), 3000);
-        addSequential(new BlockingSetDrivePowerAction(0, .3), 200);
+        addSequential(new BlockingSetDrivePowerAction(0, .3), 500);
 
         addSequential(new TimeWaitAction(), 200);
         addSequential(new NonblockingSetDrivePowerAction(0, - 0.5), 200);
         addSequential(new PositivePitchWaitAction(), 3000);
 
-        addSequential(new DriveLevelAction(0, false), 7000);
+        addSequential(new DriveLevelAction(0), 7000);
 
     }
  

@@ -4,15 +4,11 @@ import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
 
 public class TeleopLevelAction extends Action {
-	boolean moveForward;
-	public TeleopLevelAction(boolean moveForward) {
-		this.moveForward = moveForward;
-	}
-
+	
 	@Override
 	public void onStart() {
 		DriveTrain.getInstance().setDesiredHeading(DriveTrain.getInstance().getNormalizedHeading());
-		DriveTrain.getInstance().setAutoLevel(moveForward);
+		DriveTrain.getInstance().setAutoLevel();
 	}
 
 	@Override

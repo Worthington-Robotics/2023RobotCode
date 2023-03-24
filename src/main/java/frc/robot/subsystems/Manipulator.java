@@ -80,6 +80,8 @@ public class Manipulator extends Subsystem {
 						periodic.desiredWristEncoder = Arm.ArmPoses[Arm.getInstance().getPose().ordinal()][2] + periodic.wristOffset;
 						periodic.wristEncoderError = periodic.desiredWristEncoder - periodic.wristEncoder;
 						break;
+					case DISABLED:
+						break;
 				}
 			}
 
