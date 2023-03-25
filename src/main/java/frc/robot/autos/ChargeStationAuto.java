@@ -17,9 +17,9 @@ import frc.robot.subsystems.Arm.ArmPose;
 
 public class ChargeStationAuto extends StateMachineDescriptor{
     public ChargeStationAuto(){
-        addSequential(new ArmPoseAction(ArmPose.FIRST_MOVE), 200);
+        addSequential(new ArmPoseAction(ArmPose.TRANSIT), 200);
         addSequential(new PoseWaitAction(), 300);
-        addSequential(new ArmPoseAction(ArmPose.CONE_MID_FRONT), 200);
+        addSequential(new ArmPoseAction(ArmPose.MID), 200);
         addSequential(new PoseWaitAction(), 3000);
         addParallel(new Action[] {new BlockingMoveAction(15.5 * Constants.ENCODER_PER_INCH, 0), new AutoPipelineAction(0)}, 4000);
         //addParallel(new Action[] {new LLHoldAction(true, true), new SnapshotAction()}, 500); //use limelight for correction 9

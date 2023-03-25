@@ -22,56 +22,56 @@ public class PitTestAuto extends StateMachineDescriptor {
 
     public PitTestAuto() {
         // Test Arm Poses
-        addSequential(new ArmPoseAction(ArmPose.FIRST_MOVE), this.patience);
-        addSequential(new PoseWaitAction(), this.pose_patience);
-        addSequential(new TimeWaitAction(), pose_patience);
-        addSequential(new ArmPoseAction(ArmPose.TRANSIT), this.patience);
-        addSequential(new PoseWaitAction(), this.pose_patience);
-        addSequential(new TimeWaitAction(), pose_patience);
-        addSequential(new ArmPoseAction(ArmPose.UNSTOW), this.patience);
-        addSequential(new PoseWaitAction(), this.pose_patience);
-        addSequential(new TimeWaitAction(), pose_patience);
+        // addSequential(new ArmPoseAction(ArmPose.FIRST_MOVE), this.patience);
+        // addSequential(new PoseWaitAction(), this.pose_patience);
+        // addSequential(new TimeWaitAction(), pose_patience);
+        // addSequential(new ArmPoseAction(ArmPose.TRANSIT), this.patience);
+        // addSequential(new PoseWaitAction(), this.pose_patience);
+        // addSequential(new TimeWaitAction(), pose_patience);
+        // addSequential(new ArmPoseAction(ArmPose.UNSTOW), this.patience);
+        // addSequential(new PoseWaitAction(), this.pose_patience);
+        // addSequential(new TimeWaitAction(), pose_patience);
 
 
-        addSequential(new ArmPoseAction(ArmPose.INTAKE), this.patience);
-        addSequential(new PoseWaitAction(), this.pose_patience);
-        addSequential(new TimeWaitAction(), pose_patience);
-        addSequential(new RunIntakeAction(1), drive_patience);
+        // addSequential(new ArmPoseAction(ArmPose.INTAKE), this.patience);
+        // addSequential(new PoseWaitAction(), this.pose_patience);
+        // addSequential(new TimeWaitAction(), pose_patience);
+        // addSequential(new RunIntakeAction(1), drive_patience);
 
 
-        addSequential(new ArmPoseAction(ArmPose.CUBE_MID), this.patience);
-        addSequential(new PoseWaitAction(), this.pose_patience);
-        addSequential(new TimeWaitAction(), pose_patience);
-        addSequential(new ArmPoseAction(ArmPose.CUBE_MID_FRONT), this.patience);
-        addSequential(new PoseWaitAction(), this.pose_patience);
-        addSequential(new TimeWaitAction(), pose_patience);
-        addSequential(new ArmPoseAction(ArmPose.UNSTOW), this.patience);
-        addSequential(new PoseWaitAction(), this.pose_patience);
-        addSequential(new TimeWaitAction(), pose_patience);
-        addSequential(new ArmPoseAction(ArmPose.CUBE_HIGH), this.patience);
-        addSequential(new PoseWaitAction(), this.pose_patience);
-        addSequential(new TimeWaitAction(), pose_patience);
-        addSequential(new RunIntakeAction(-1), patience);
+        // addSequential(new ArmPoseAction(ArmPose.CUBE_MID), this.patience);
+        // addSequential(new PoseWaitAction(), this.pose_patience);
+        // addSequential(new TimeWaitAction(), pose_patience);
+        // addSequential(new ArmPoseAction(ArmPose.CUBE_MID_FRONT), this.patience);
+        // addSequential(new PoseWaitAction(), this.pose_patience);
+        // addSequential(new TimeWaitAction(), pose_patience);
+        // addSequential(new ArmPoseAction(ArmPose.UNSTOW), this.patience);
+        // addSequential(new PoseWaitAction(), this.pose_patience);
+        // addSequential(new TimeWaitAction(), pose_patience);
+        // addSequential(new ArmPoseAction(ArmPose.CUBE_HIGH), this.patience);
+        // addSequential(new PoseWaitAction(), this.pose_patience);
+        // addSequential(new TimeWaitAction(), pose_patience);
+        // addSequential(new RunIntakeAction(-1), patience);
 
-        addSequential(new ArmPoseAction(ArmPose.CONE_MID), this.patience);
-        addSequential(new PoseWaitAction(), this.pose_patience);
-        addSequential(new TimeWaitAction(), pose_patience);
-        addSequential(new ArmPoseAction(ArmPose.CONE_MID_FRONT), this.patience);
-        addSequential(new PoseWaitAction(), this.pose_patience);
-        addSequential(new TimeWaitAction(), pose_patience);
-        addSequential(new ArmPoseAction(ArmPose.UNSTOW), this.patience);
-        addSequential(new PoseWaitAction(), this.pose_patience);
-        addSequential(new TimeWaitAction(), pose_patience);
-        addSequential(new ArmPoseAction(ArmPose.CONE_HIGH), this.patience);
-        addSequential(new PoseWaitAction(), this.pose_patience);
-        addSequential(new TimeWaitAction(), pose_patience);
-        addSequential(new ArmPoseAction(ArmPose.FIRST_MOVE), this.patience);
-        addSequential(new PoseWaitAction(), this.pose_patience);
-        addSequential(new TimeWaitAction(), pose_patience);
-        addSequential(new ArmPoseAction(ArmPose.STOWN), this.patience);
-        addSequential(new PoseWaitAction(), this.pose_patience);
-        addSequential(new TimeWaitAction(), pose_patience);
-        addSequential(new PinToggleAction(), this.pose_patience);
+        // addSequential(new ArmPoseAction(ArmPose.CONE_MID), this.patience);
+        // addSequential(new PoseWaitAction(), this.pose_patience);
+        // addSequential(new TimeWaitAction(), pose_patience);
+        // addSequential(new ArmPoseAction(ArmPose.CONE_MID_FRONT), this.patience);
+        // addSequential(new PoseWaitAction(), this.pose_patience);
+        // addSequential(new TimeWaitAction(), pose_patience);
+        // addSequential(new ArmPoseAction(ArmPose.UNSTOW), this.patience);
+        // addSequential(new PoseWaitAction(), this.pose_patience);
+        // addSequential(new TimeWaitAction(), pose_patience);
+        // addSequential(new ArmPoseAction(ArmPose.CONE_HIGH), this.patience);
+        // addSequential(new PoseWaitAction(), this.pose_patience);
+        // addSequential(new TimeWaitAction(), pose_patience);
+        // addSequential(new ArmPoseAction(ArmPose.FIRST_MOVE), this.patience);
+        // addSequential(new PoseWaitAction(), this.pose_patience);
+        // addSequential(new TimeWaitAction(), pose_patience);
+        // addSequential(new ArmPoseAction(ArmPose.STOWN), this.patience);
+        // addSequential(new PoseWaitAction(), this.pose_patience);
+        // addSequential(new TimeWaitAction(), pose_patience);
+        // addSequential(new PinToggleAction(), this.pose_patience);
 
         /* 
         // Intake Cube (Consider Intaking During Easier Pose)

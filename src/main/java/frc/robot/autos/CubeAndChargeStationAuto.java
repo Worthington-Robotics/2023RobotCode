@@ -23,15 +23,15 @@ import frc.robot.subsystems.Arm.ArmPose;
 public class CubeAndChargeStationAuto extends StateMachineDescriptor{
     
     public CubeAndChargeStationAuto(){
-        addSequential(new ArmPoseAction(ArmPose.FIRST_MOVE), 200);
+        addSequential(new ArmPoseAction(ArmPose.TRANSIT), 200);
         addSequential(new PoseWaitAction(), 300);
-        addSequential(new ArmPoseAction(ArmPose.CONE_MID_FRONT), 200); //put the robot into the set pose
+        addSequential(new ArmPoseAction(ArmPose.MID), 200); //put the robot into the set pose
         addSequential(new PoseWaitAction(), 1750);
         addParallel(new Action[] {new RotateTurretAction(-190 * Constants.TURRET_TPD, false), new AutoPipelineAction(0)}, 0);
         addParallel(new Action[] {new LLHoldAction(true, true), new SnapshotAction()}, 3000); //use limelight for correction 9
         addParallel(new Action[] {new RunIntakeAction(Constants.ANYTHING_OUT_POWER), new SnapshotAction()}, 250);
         addSequential(new RotateTurretAction(0, false), 2000);
-        addSequential(new ArmPoseAction(ArmPose.INTAKE_LITE), 0);
+        addSequential(new ArmPoseAction(ArmPose.TRANSIT), 0);
         addSequential(new PoseWaitAction(), 1750);
         addSequential(new TimeWaitAction(), 250);
         //END CONE

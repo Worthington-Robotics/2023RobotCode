@@ -30,7 +30,6 @@ import frc.robot.actions.drive.DriveTurnAction;
 import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
 import frc.robot.actions.vision.SetPipelineAction;
-import frc.robot.actions.vision.SnapshotAction;
 import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.arm.CycleArmAction;
 import frc.robot.actions.arm.LLHoldAction;
@@ -59,11 +58,10 @@ public class Robot extends TimedRobot {
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton gyroLockButton = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton limelightPipeButton = new JoystickButton(Constants.MASTER, 5);
-    private JoystickButton firstMoveButton = new JoystickButton(Constants.MASTER, 6);
+    private JoystickButton unStowButton = new JoystickButton(Constants.MASTER, 6);
+    private JoystickButton zeroPoseButton = new JoystickButton(Constants.MASTER, 7);
     private JoystickButton cycleButton = new JoystickButton(Constants.MASTER, 9);
-    private JoystickButton stowButton = new JoystickButton(Constants.MASTER, 10);
     private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 12);
-    private JoystickButton testPose = new JoystickButton(Constants.MASTER, 11);
     
     private POVButton pos0MButton = new POVButton(Constants.MASTER, 0);
     private POVButton pos270MButton = new POVButton(Constants.MASTER, 270);
@@ -73,16 +71,17 @@ public class Robot extends TimedRobot {
 
     private JoystickButton turretHold = new JoystickButton(Constants.SECOND, 1);
     private JoystickButton transButton = new JoystickButton(Constants.SECOND, 2);
-    private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 3);
-    private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 4);
-    private JoystickButton LLTargetButton = new JoystickButton(Constants.SECOND, 5);
-    private JoystickButton unstowButton = new JoystickButton(Constants.SECOND, 6);
-    private JoystickButton coneMedButton = new JoystickButton(Constants.SECOND, 9);
-    private JoystickButton coneHighButton = new JoystickButton(Constants.SECOND, 10);
-    private JoystickButton cubeMedButton = new JoystickButton(Constants.SECOND, 7);
-    private JoystickButton cubeHighButton = new JoystickButton(Constants.SECOND, 8);
-    private JoystickButton slideButton = new JoystickButton(Constants.SECOND, 11);
-    private JoystickButton cubePickupButton = new JoystickButton(Constants.SECOND, 12);
+    private JoystickButton intakeSpitButton = new JoystickButton(Constants.SECOND, 3);
+    private JoystickButton LLTargetButton = new JoystickButton(Constants.SECOND, 4);
+    private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 5);
+    private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 6);
+    private JoystickButton poseMidButton = new JoystickButton(Constants.SECOND, 7);
+    private JoystickButton poseHighButton = new JoystickButton(Constants.SECOND, 8);
+    private JoystickButton poseShelfButton = new JoystickButton(Constants.SECOND, 9);
+    private JoystickButton poseSlideButton = new JoystickButton(Constants.SECOND, 10);
+    private JoystickButton poseConeUpButton = new JoystickButton(Constants.SECOND, 11);
+    private JoystickButton poseIntakeButton = new JoystickButton(Constants.SECOND, 12);
+
     private POVButton pos0Button = new POVButton(Constants.SECOND, 0);
     private POVButton pos270Button = new POVButton(Constants.SECOND, 270);
     private POVButton pos90Button = new POVButton(Constants.SECOND, 90);
@@ -193,7 +192,7 @@ public class Robot extends TimedRobot {
         DriveTrain.getInstance().reset();
         enabledLooper.start();
        // Arm.getInstance().clearPin();
-        Arm.getInstance().setMode(ArmMode.OPEN_LOOP);
+        Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
     }
 
     /**
@@ -219,31 +218,30 @@ public class Robot extends TimedRobot {
     public void initButtons() {
         driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
         intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
+        intakeSpitButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
         intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER, false)));
         autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
         LLTargetButton.whileTrue(Action.toCommand(new LLHoldAction(true, true, false)));
-        //resetPoseButton.onTrue(Action.toCommand(new SetPositionAction(0, 0, 0)));
         gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
         limelightPipeButton.onTrue(Action.toCommand(new SetPipelineAction()));
-        //Reversed because of starting pose
+        unStowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
+        zeroPoseButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.ZERO)));
+ 
+
         pos0MButton.whileTrue(Action.toCommand(new DriveTurnAction(180)));
         pos270MButton.whileTrue(Action.toCommand(new DriveTurnAction(90)));
         pos90MButton.whileTrue(Action.toCommand(new DriveTurnAction(270)));
         pos180MButton.whileTrue(Action.toCommand(new DriveTurnAction(0)));
 
 
-        //Copy and paste armPoseAction line and change the armPose to the next arm Pose
-        stowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.STOWN)));
-        firstMoveButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.FIRST_MOVE)));
-        unstowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
         transButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.TRANSIT)));
-        cubeMedButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CUBE_MID)));
-        coneMedButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_MID)));
-        cubeHighButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CUBE_HIGH)));
-        coneHighButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_HIGH)));
-        cubePickupButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.INTAKE)));
-        slideButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SLIDE)));
-        testPose.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_MID_FRONT)));
+        poseMidButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.MID)));
+        poseHighButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.HIGH)));
+        poseShelfButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SHELF)));
+        poseSlideButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SLIDE)));
+        poseConeUpButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_UP)));
+        poseIntakeButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.INTAKE)));
+        
 
         pos0Button.whileTrue(Action.toCommand(new RotateTurretAction(0, true)));
         pos90Button.whileTrue(Action.toCommand(new RotateTurretAction(-20480, true)));

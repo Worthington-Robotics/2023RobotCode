@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm.ArmMode;
+import frc.robot.subsystems.Arm.ArmPose;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -30,6 +31,7 @@ public class Manipulator extends Subsystem {
 		double wristEncoderError;
 		double wristEncoder;
 		double wristOffset;
+		double prevDesiredWrist;
 	}
 
 	public Manipulator() {
@@ -57,7 +59,23 @@ public class Manipulator extends Subsystem {
 		if (Arm.getInstance().getMode().ordinal() < ArmMode.CLOSED_LOOP.ordinal() ) {
 			wristMotor.set(ControlMode.PercentOutput, periodic.wristMotorPower);
 		} else {
-			wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
+			if(Math.abs(Arm.getInstance().getDesiredPivot()) >= Math.abs(Arm.getInstance().getPivotEncoder())){ //pivot going up
+				// if(Math.abs(Arm.getInstance().getPivotEncoderError()) < (0.2 * Math.abs(Arm.getInstance().getDesiredPivot()))){
+				// 	wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
+				// } else if (Arm.getInstance().getPose() == ArmPose.ZERO && Math.abs(Arm.getInstance().getPivotEncoderError()) < 1000){
+                //     wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
+				// }
+				if(Math.abs(Arm.getInstance().getPivotEncoderError()) < 3500){
+					wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
+				}
+			} else { //pivot going down
+				// if(Math.abs(Arm.getInstance().getExtendEncoderError()) < (0.2 * Math.abs(Arm.getInstance().getDesiredExtension()))){
+				// 	wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
+				// } else if (Arm.getInstance().getPose() == ArmPose.ZERO && Math.abs(Arm.getInstance().getExtendEncoderError()) < 1000){
+                //     wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
+				// }
+				wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
+			}
 		}
 	}
 
@@ -123,8 +141,20 @@ public class Manipulator extends Subsystem {
 
 	// Getters
 
+	public double getWristEncoder(){
+		return periodic.wristEncoder;
+	}
+
+	public double getDesiredWrist() {
+		return periodic.desiredWristEncoder;
+	}
+
 	public double getWristEncoderError(){
 		return periodic.wristEncoderError;
+	}
+
+	public double getPrevDesiredWrist() {
+		return periodic.prevDesiredWrist;
 	}
 
 	// PID
@@ -150,10 +180,10 @@ public class Manipulator extends Subsystem {
 		SmartDashboard.putNumber("Manipulator/IntakePower", periodic.intakeMotorPower);
 		SmartDashboard.putNumber("Manipulator/WristPower", periodic.wristMotorPower);
 		SmartDashboard.putNumber("Manipulator/RawWristMotorPower", periodic.rawWristMotorPower);
-		SmartDashboard.putNumber("Manipulator/DesiredWristEncoder", periodic.desiredWristEncoder);
 		SmartDashboard.putNumber("Arm/encoder/wrist", periodic.wristEncoder);
 		SmartDashboard.putNumber("Manipulator/TOFDistance", periodic.TimeOfFlightDistance);
 		SmartDashboard.putNumber("Arm/error/wrist error", periodic.wristEncoderError);
+		SmartDashboard.putNumber("Arm/encoder/wrist-D", periodic.desiredWristEncoder);
 	}
 
 

@@ -20,13 +20,18 @@ import frc.robot.subsystems.Arm.ArmPose;
 
 public class AdvancedChargeStation extends StateMachineDescriptor{
     public AdvancedChargeStation(){
-        addSequential(new ArmPoseAction(ArmPose.FIRST_MOVE), 200);
+        addSequential(new ArmPoseAction(ArmPose.TRANSIT), 200);
         addSequential(new PoseWaitAction(), 3000);
-        addSequential(new ArmPoseAction(ArmPose.CONE_MID_FRONT), 200);
+        addSequential(new ArmPoseAction(ArmPose.UNSTOW), 200);
         addSequential(new PoseWaitAction(), 3000);
-        addParallel(new Action[] {new RotateTurretAction(-180 * Constants.TURRET_TPD, false), new AutoPipelineAction(1)}, 4000);
+        addSequential(new ArmPoseAction(ArmPose.MID), 200);
+        addSequential(new PoseWaitAction(), 3000);
+
+        addSequential(new RotateTurretAction(-180 * Constants.TURRET_TPD, false), 2000);
         addParallel(new Action[] {new RunIntakeAction(Constants.ANYTHING_OUT_POWER), new SnapshotAction()}, 250);
         addSequential(new RotateTurretAction(0, false), 4000);
+        addSequential(new ArmPoseAction(ArmPose.UNSTOW), 200);
+        addSequential(new PoseWaitAction(), 3000);
 
         addSequential(new NonblockingSetDrivePowerAction(0, 0.5), 200);
         addSequential(new NegativePitchWaitAction(), 3000);
