@@ -15,8 +15,7 @@ public class PositivePitchWaitAction extends Action{
     @Override
     public void onLoop() {
         double pitch = DriveTrain.getInstance().getLevelError();
-        if(pitch < 3.0){
-    
+        if(pitch < 5.0){
             timer.reset();
         }
     }

@@ -15,7 +15,7 @@ public class LevelPitchWaitAction extends Action{
     @Override
     public void onLoop() {
         double pitch = DriveTrain.getInstance().getLevelError();
-        if(Math.abs(pitch) > 1.0){
+        if(Math.abs(pitch) > 2.0){
             timer.reset();
         }
     }

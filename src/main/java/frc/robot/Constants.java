@@ -156,7 +156,7 @@ public class Constants {
     public static final double DRIVE_LEVEL_D_FILTER = 0.2;
     public static final double DRIVE_LEVEL_MAX_SPEED = 0.6;
     // Correction for pigeon pitch inaccuracy
-    public static final double DRIVE_LEVEL_ZERO = -1.45;
+    public static final double DRIVE_LEVEL_ZERO = 1;
     public static final double DRIVE_LEVEL_ERROR = 1.5;
 
 

@@ -65,12 +65,12 @@ public class Arm extends Subsystem {
 	public static double[][] ArmPoses = {
 		{0,0,0},
 		{-109000, 0, 0},
-		{-15384, -10000, 26361},
-		{1775, 9100, 26361},
-		{-78431, -56300, -38520},
-		{-98372, -6800, -48600},
-		{-238165, -53000, -115200},
-		{-275000, -133700, -99000},
+		{-15384, -10000, 29290},
+		{1775, 9100, 29290},
+		{-78431, -56300, -42800},
+		{-98372, -6800, -54000},
+		{-260000, -53000, -128000},
+		{-278000, -159000, -111000},
 		{0,0,0}
 	};
 
@@ -196,9 +196,6 @@ public class Arm extends Subsystem {
 				if(Math.abs(periodic.lengthEncoderError) <= 3500 && Math.abs(Manipulator.getInstance().getWristEncoderError()) <= 3500){
 					armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
 			    }
-				// } else if(periodic.currentPose == ArmPose.ZERO && Math.abs(periodic.lengthEncoderError) <= 1000 && Math.abs(Manipulator.getInstance().getWristEncoderError()) <= 1000){
-				// 	armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
-				// }
 			}
 			//set turret
 			if(!periodic.turretIsHolding) {
@@ -207,20 +204,14 @@ public class Arm extends Subsystem {
 				if(Math.abs(periodic.turretHoldValue - periodic.turretEncoder) < 10 * Constants.TURRET_TPD) {
 					turretMotor.set(ControlMode.Position, periodic.turretHoldValue);
 				} else {
-					turretMotor.set(ControlMode.PercentOutput, Math.signum(periodic.turretHoldValue - periodic.turretEncoder) * Math.max(.12, Math.min(periodic.turretRamp, .6)));
+					turretMotor.set(ControlMode.PercentOutput, Math.signum(periodic.turretHoldValue - periodic.turretEncoder) * Math.max(.12, Math.min(periodic.turretRamp, .4)));
 				}
 			}
 			//set extension
 			if(periodic.extendIsHolding && periodic.currentMode == ArmMode.OPEN_CLOSED_LOOP) {
 				extensionMotor.set(ControlMode.Position, periodic.extenHoldValue);
 			} else {
-				if(Math.abs(periodic.desiredPivotEncoder) >= Math.abs(getPivotEncoder())){ //pivot is going up
-					// if(Math.abs(periodic.pivotEncoderError) <= (0.2 * Math.abs(periodic.desiredPivotEncoder)) 
-					// && Math.abs(Manipulator.getInstance().getWristEncoderError()) <= (0.2 * Math.abs(Manipulator.getInstance().getDesiredWrist()))){
-					// 	extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
-					// } else if(periodic.currentPose == ArmPose.ZERO && Math.abs(periodic.lengthEncoderError) <= 1000 && Math.abs(Manipulator.getInstance().getWristEncoderError()) <= 1000){
-					//     extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
-				    // } 
+				if(Math.abs(periodic.desiredPivotEncoder) >= Math.abs(getPivotEncoder())){ 
 					if(Math.abs(periodic.pivotEncoderError) <= 3500){
 						extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
 					}

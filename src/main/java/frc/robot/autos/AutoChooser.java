@@ -35,13 +35,13 @@ public class AutoChooser {
 				DebugLogger.getInstance().debugError(DebugLevel.kNone, "No autonomous is currently selected!");
 				break;
 			case RedOne:
-				StateMachine.getInstance().runMachine(new RedRightSideAuto());
+				StateMachine.getInstance().runMachine(new AdvRedRightSideAuto());
 				break;
 			case RedTwo:
-				StateMachine.getInstance().runMachine(new ChargeStationAuto());
+				StateMachine.getInstance().runMachine(new AdvancedChargeStation());
 				break;
 			case RedThree:
-				StateMachine.getInstance().runMachine(new RedLeftSideAuto());
+				StateMachine.getInstance().runMachine(new AdvRedLeftSideAuto());
 				break;
 			case BlueOne:
 				StateMachine.getInstance().runMachine(new BlueLeftSideAuto());
