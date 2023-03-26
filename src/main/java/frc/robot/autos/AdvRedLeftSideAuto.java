@@ -18,17 +18,17 @@ import frc.robot.subsystems.Arm.ArmPose;
 
 public class AdvRedLeftSideAuto extends StateMachineDescriptor {
     public AdvRedLeftSideAuto() {
-        addSequential(new ArmPoseAction(ArmPose.UNSTOW), 200);
-        addSequential(new PoseWaitAction(), 1000);
         addSequential(new ArmPoseAction(ArmPose.MID), 200); //put the robot into the set pose
         addSequential(new PoseWaitAction(), 1750);
-        addParallel(new Action[] {new RotateTurretAction(-180 * Constants.TURRET_TPD, false), new AutoPipelineAction(0)}, 2000);
-        addParallel(new Action[] {new LLHoldAction(true, true), new SnapshotAction()}, 3000); //use limelight for correction 9
-        addParallel(new Action[] {new RunIntakeAction(Constants.ANYTHING_OUT_POWER), new SnapshotAction()}, 250);
-        
-        addSequential(new RotateTurretAction(0, false), 2000);
-        addSequential(new ArmPoseAction(ArmPose.UNSTOW), 200);
-        addSequential(new PoseWaitAction(), 1000);
+        addSequential(new RotateTurretAction(-180 * Constants.TURRET_TPD, false), 4000);
+        addSequential(new ArmPoseAction(ArmPose.HIGH), 200); //put the robot into the set pose
+        addSequential(new PoseWaitAction(), 1750);
+        addSequential(new LLHoldAction(true, true), 1000);
+        addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 250);
+        addSequential(new ArmPoseAction(ArmPose.MID), 200); //put the robot into the set pose
+        addSequential(new PoseWaitAction(), 1750);
+    
+        addSequential(new RotateTurretAction(-20 * Constants.TURRET_TPD, false), 4000);
         addSequential(new ArmPoseAction(ArmPose.TRANSIT), 200);
         addSequential(new PoseWaitAction(), 1750);
         addSequential(new TimeWaitAction(), 250);

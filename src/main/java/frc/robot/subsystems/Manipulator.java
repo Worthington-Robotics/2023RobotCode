@@ -51,7 +51,7 @@ public class Manipulator extends Subsystem {
 	}
 
 	public void writePeriodicOutputs() {
-		if((periodic.TimeOfFlightDistance > 200 && periodic.TimeOfFlightDistance != 0) || periodic.intakeMotorPower < 0) {
+		if((periodic.TimeOfFlightDistance > 200 || periodic.TimeOfFlightDistance == 0) || periodic.intakeMotorPower < 0) {
 			intakeMotor.set(ControlMode.PercentOutput, periodic.intakeMotorPower);
 		} else {
 			intakeMotor.set(ControlMode.PercentOutput, Math.max(.15, periodic.intakeMotorPower));
@@ -60,20 +60,10 @@ public class Manipulator extends Subsystem {
 			wristMotor.set(ControlMode.PercentOutput, periodic.wristMotorPower);
 		} else {
 			if(Math.abs(Arm.getInstance().getDesiredPivot()) >= Math.abs(Arm.getInstance().getPivotEncoder())){ //pivot going up
-				// if(Math.abs(Arm.getInstance().getPivotEncoderError()) < (0.2 * Math.abs(Arm.getInstance().getDesiredPivot()))){
-				// 	wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
-				// } else if (Arm.getInstance().getPose() == ArmPose.ZERO && Math.abs(Arm.getInstance().getPivotEncoderError()) < 1000){
-                //     wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
-				// }
-				if(Math.abs(Arm.getInstance().getPivotEncoderError()) < 3500){
+				if(Math.abs(Arm.getInstance().getPivotEncoderError()) < 10000){
 					wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
 				}
 			} else { //pivot going down
-				// if(Math.abs(Arm.getInstance().getExtendEncoderError()) < (0.2 * Math.abs(Arm.getInstance().getDesiredExtension()))){
-				// 	wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
-				// } else if (Arm.getInstance().getPose() == ArmPose.ZERO && Math.abs(Arm.getInstance().getExtendEncoderError()) < 1000){
-                //     wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
-				// }
 				wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
 			}
 		}

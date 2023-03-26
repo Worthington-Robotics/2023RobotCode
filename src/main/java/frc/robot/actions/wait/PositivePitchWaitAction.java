@@ -1,34 +1,28 @@
 package frc.robot.actions.wait;
 
 import frc.robot.subsystems.DriveTrain;
-import edu.wpi.first.wpilibj.Timer;
 import frc.lib.statemachine.Action;
 
 public class PositivePitchWaitAction extends Action{
-    Timer timer;
+    double pitch;
 
     @Override
     public void onStart() {
-        timer.start();
+        pitch = DriveTrain.getInstance().getLevelError();
     }
 
     @Override
     public void onLoop() {
-        double pitch = DriveTrain.getInstance().getLevelError();
-        if(pitch < 5.0){
-            timer.reset();
-        }
+        pitch = DriveTrain.getInstance().getLevelError();
     }
 
     @Override
     public boolean isFinished() {
-       return timer.get() > 0.5;
+       return pitch >= 8;
     }
 
     @Override
     public void onStop() {
-        DriveTrain.getInstance().resetEncoders();
-        DriveTrain.getInstance().setStopped();
     }
     
 }

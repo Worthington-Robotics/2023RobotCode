@@ -65,7 +65,7 @@ public class Constants {
 
     public static final double EXTENSION_ENCODER_ERROR_ACCEPTANCE = 2000;
     public static final double PIVOT_ENCODER_ERROR_ACCEPTANCE = 10000;
-    public static final double WRIST_ENCODER_ERROR_ACCEPTANCE = 5000; //TODO: change this value
+    public static final double WRIST_ENCODER_ERROR_ACCEPTANCE = 5000;
 
     // ### Vision values ###
     public static final String LIMELIGHT_NETWORK_ID = "limelight-worbots";
@@ -147,6 +147,7 @@ public class Constants {
     public static final double DRIVE_FORWARD_KP = 1.0 / 75000.0;
     public static final double DRIVE_FORWARD_KD = 0.0 / 10000.0;
     public static final double DRIVE_FORWARD_D_FILT = 2.5;
+
     // Heading correction when moving forward
     public static final double DRIVE_FORWARD_HEADING_KP = 1.0 / 150.0;
 
@@ -155,6 +156,7 @@ public class Constants {
     public static final double DRIVE_LEVEL_KD = 1.0 / 1.0;
     public static final double DRIVE_LEVEL_D_FILTER = 0.2;
     public static final double DRIVE_LEVEL_MAX_SPEED = 0.6;
+
     // Correction for pigeon pitch inaccuracy
     public static final double DRIVE_LEVEL_ZERO = 1;
     public static final double DRIVE_LEVEL_ERROR = 1.5;

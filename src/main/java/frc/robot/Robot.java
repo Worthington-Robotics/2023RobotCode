@@ -36,6 +36,7 @@ import frc.robot.actions.arm.LLHoldAction;
 import frc.robot.actions.arm.RotateOneEighty;
 import frc.robot.actions.arm.RotateTurretAction;
 import frc.robot.actions.arm.TEHoldAction;
+import frc.robot.actions.arm.TwoPoseAction;
 import frc.robot.actions.manipulator.MoveWristAction;
 
 
@@ -237,7 +238,7 @@ public class Robot extends TimedRobot {
         transButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.TRANSIT)));
         poseMidButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.MID)));
         poseHighButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.HIGH)));
-        poseShelfButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SHELF)));
+        poseShelfButton.onTrue(Action.toCommand(new TwoPoseAction(ArmPose.SHELF_BEGIN, ArmPose.SHELF_END)));
         poseSlideButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SLIDE)));
         poseConeUpButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_UP)));
         poseIntakeButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.INTAKE)));

@@ -23,6 +23,8 @@ public class Arm extends Subsystem {
 	public static NetworkTableEntry tv = table.getEntry("tv");
     public static NetworkTableEntry snapshots = table.getEntry("snapshot");
     public static NetworkTableEntry pipeline = table.getEntry("pipeline");
+	public static NetworkTableEntry aprilTag = table.getEntry("targetpose_cameraspace");
+    public static double[] aprilTagDistances = aprilTag.getDoubleArray(new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
 
 	private static Arm instance = new Arm();
 	public static Arm getInstance() { return instance; }
@@ -32,7 +34,6 @@ public class Arm extends Subsystem {
 		extensionMotor = new TalonFX(Constants.ARM_EXTENSION_ID, "Default Name");
 		turretMotor = new TalonFX(Constants.ARM_TURRET_ID, "Default Name");
 		armMasterMotor = new TalonFX(Constants.ARM_ARM_M_ID, "Default Name");
-		// pinSolenoid = new DoubleSolenoid(0, PneumaticsModuleType.CTREPCM, 7, 6);
 		extensionMotor.setNeutralMode(NeutralMode.Brake);
 		turretMotor.setNeutralMode(NeutralMode.Brake);
 		armMasterMotor.setNeutralMode(NeutralMode.Brake);
@@ -40,6 +41,7 @@ public class Arm extends Subsystem {
 		extensionMotor.configVoltageCompSaturation(11);
 		turretMotor.configVoltageCompSaturation(11);
 		armMasterMotor.configVoltageCompSaturation(11);
+		pipeline.setDouble(2); //set default to april tag pipeline
 	}
 
 	public enum ArmMode {
@@ -58,7 +60,8 @@ public class Arm extends Subsystem {
 		CONE_UP,
 		MID,
 		HIGH,
-		SHELF
+		SHELF_BEGIN,
+		SHELF_END
 	}
 
 	// Pivot, Extend, Wrist
@@ -71,7 +74,8 @@ public class Arm extends Subsystem {
 		{-98372, -6800, -54000},
 		{-260000, -53000, -128000},
 		{-278000, -159000, -111000},
-		{0,0,0}
+		{-355000, 6318, -113800},
+		{-313000, 6318, -113800}
 	};
 
 	public class ArmIO extends PeriodicIO {
@@ -89,9 +93,6 @@ public class Arm extends Subsystem {
 		public double lengthEncoder;
 		public double turretEncoder;
 
-		//previous encoder values
-		public double prevDesiredPivot = 0;
-		public double prevDesiredExtend = 0;
 
 		// Desired values 
 		public double desiredPivotEncoder;
@@ -193,7 +194,7 @@ public class Arm extends Subsystem {
 			if(Math.abs(periodic.desiredPivotEncoder) >= Math.abs(getPivotEncoder())){ //pivot is going up
 				armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
 			} else { //pivot is going down
-				if(Math.abs(periodic.lengthEncoderError) <= 3500 && Math.abs(Manipulator.getInstance().getWristEncoderError()) <= 3500){
+				if(Math.abs(periodic.lengthEncoderError) <= 7000 && Math.abs(Manipulator.getInstance().getWristEncoderError()) <= 5000){
 					armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
 			    }
 			}
@@ -212,7 +213,7 @@ public class Arm extends Subsystem {
 				extensionMotor.set(ControlMode.Position, periodic.extenHoldValue);
 			} else {
 				if(Math.abs(periodic.desiredPivotEncoder) >= Math.abs(getPivotEncoder())){ 
-					if(Math.abs(periodic.pivotEncoderError) <= 3500){
+					if(Math.abs(periodic.pivotEncoderError) <= 10000){
 						extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
 					}
 				} else { //pivot is going down
@@ -236,10 +237,6 @@ public class Arm extends Subsystem {
 		SmartDashboard.putNumber("Arm/encoder/turret-D", periodic.turretHoldValue);
 		SmartDashboard.putNumber("Arm/encoder/pivot-D", periodic.desiredPivotEncoder);
 		SmartDashboard.putNumber("Arm/encoder/extend-D", periodic.desiredArmLengthEncoder);
-
-		SmartDashboard.putNumber("Arm/encoder/prev pivot", periodic.prevDesiredPivot);
-		SmartDashboard.putNumber("Arm/encoder/prev extend", periodic.prevDesiredExtend);
-		
 
 		SmartDashboard.putString("Arm/curMode", periodic.currentMode.toString());
 		SmartDashboard.putString("Arm/curPose", periodic.currentPose.toString());
@@ -298,14 +295,6 @@ public class Arm extends Subsystem {
 
 	public double getDesiredExtension() {
 		return periodic.desiredArmLengthEncoder;
-	}
-
-	public double getPrevDesiredExtension() {
-		return periodic.prevDesiredExtend;
-	}
-
-	public double getPrevDesiredPivot() {
-		return periodic.prevDesiredPivot;
 	}
 
 	public double getTurretEncoder() {
@@ -401,8 +390,6 @@ public class Arm extends Subsystem {
 
 
 	public void setPose(ArmPose pose) {
-		periodic.prevDesiredPivot = Arm.ArmPoses[periodic.currentPose.ordinal()][0];
-		periodic.prevDesiredExtend = Arm.ArmPoses[periodic.currentPose.ordinal()][1];
 		periodic.currentPose = pose;
 		periodic.poseAccepted = false;
 	}
