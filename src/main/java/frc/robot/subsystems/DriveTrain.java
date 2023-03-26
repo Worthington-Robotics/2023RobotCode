@@ -365,7 +365,7 @@ public class DriveTrain extends Subsystem {
         double power;
         if(levelError > 9){
             power = - 0.1;
-        } else if (levelError < -9){
+        } else if (levelError < -5){
             power = 0.1;
         } else {
             power = 0;
