@@ -19,8 +19,10 @@ public class ArmPoseAction extends Action {
         Manipulator.getInstance().resWrist();
         if(pose == ArmPose.HIGH) {
 			Arm.pipeline.setDouble(1);
+        } else if (pose == ArmPose.MID){
+            Arm.pipeline.setDouble(0);
         } else {
-			Arm.pipeline.setDouble(0);
+			Arm.pipeline.setDouble(2);
         }
     }
 

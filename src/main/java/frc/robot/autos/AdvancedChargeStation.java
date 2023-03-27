@@ -35,12 +35,13 @@ public class AdvancedChargeStation extends StateMachineDescriptor{
         // addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 250);
         // addSequential(new BlockingMoveAction(25 * Constants.ENCODER_PER_INCH, 0), 5000);
         // addSequential(new ArmPoseAction(ArmPose.SLIDE), 200);
-
-        addSequential(new ArmPoseAction(ArmPose.MID), 200); //put the robot into the set pose
+        addSequential(new ArmPoseAction(ArmPose.SLIDE), 200); //put the robot into the set pose
         addSequential(new PoseWaitAction(), 1750);
         addSequential(new RotateTurretAction(180 * Constants.TURRET_TPD, false), 4000);
-        addSequential(new AutoPipelineAction(1), 3000);
+        addSequential(new ArmPoseAction(ArmPose.MID), 200); //put the robot into the set pose
+        addSequential(new PoseWaitAction(), 1750);
         addSequential(new ArmPoseAction(ArmPose.HIGH), 200); //put the robot into the set pose
+        addSequential(new AutoPipelineAction(1), 3000);
         addSequential(new PoseWaitAction(), 1750);
         addSequential(new LLHoldAction(true, true), 1000);
         addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 250);

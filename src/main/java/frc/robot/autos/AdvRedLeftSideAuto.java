@@ -18,29 +18,30 @@ import frc.robot.subsystems.Arm.ArmPose;
 
 public class AdvRedLeftSideAuto extends StateMachineDescriptor {
     public AdvRedLeftSideAuto() {
-        addSequential(new ArmPoseAction(ArmPose.MID), 200); //put the robot into the set pose
+        addSequential(new ArmPoseAction(ArmPose.SLIDE), 200); //put the robot into the set pose
         addSequential(new PoseWaitAction(), 1750);
         addSequential(new RotateTurretAction(-180 * Constants.TURRET_TPD, false), 4000);
+        addSequential(new ArmPoseAction(ArmPose.MID), 200); //put the robot into the set pose
+        addSequential(new PoseWaitAction(), 1750);
         addSequential(new ArmPoseAction(ArmPose.HIGH), 200); //put the robot into the set pose
         addSequential(new PoseWaitAction(), 1750);
         addSequential(new LLHoldAction(true, true), 1000);
         addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 250);
-        addSequential(new ArmPoseAction(ArmPose.MID), 200); //put the robot into the set pose
+        addSequential(new ArmPoseAction(ArmPose.SLIDE), 200); //put the robot into the set pose
         addSequential(new PoseWaitAction(), 1750);
     
         addSequential(new RotateTurretAction(-20 * Constants.TURRET_TPD, false), 4000);
-        addSequential(new ArmPoseAction(ArmPose.TRANSIT), 200);
-        addSequential(new PoseWaitAction(), 1750);
-        addSequential(new TimeWaitAction(), 250);
         //END CONE
         addParallel(new Action[] {new NonblockingMoveAction(170 * Constants.ENCODER_PER_INCH, 0), new ReachLineWaitAction(true, 120 * Constants.ENCODER_PER_INCH), new ArmPoseAction(ArmPose.UNSTOW)}, 8000);
         addParallel(new Action[] {new ArmPoseAction(ArmPose.INTAKE), new RunIntakeAction(Constants.INTAKE_POWER)}, 5000);
         addSequential(new ArmPoseAction(ArmPose.UNSTOW), 200);
         addSequential(new PoseWaitAction(), 1000);
-        addParallel(new Action[] {new NonblockingMoveAction(-167 * Constants.ENCODER_PER_INCH, 0), new ArmPoseAction(ArmPose.TRANSIT), new ReachLineWaitAction(false, -120 * Constants.ENCODER_PER_INCH)}, 13000);
+        addParallel(new Action[] {new NonblockingMoveAction(-167 * Constants.ENCODER_PER_INCH, 0), new ArmPoseAction(ArmPose.TRANSIT), new ReachLineWaitAction(false, -150 * Constants.ENCODER_PER_INCH)}, 13000);
+
+        addSequential(new RotateTurretAction(-170 * Constants.TURRET_TPD, false),3000);
 
         addSequential(new ArmPoseAction(ArmPose.MID),250); //put the robot into the set pose
-        addParallel(new Action[] {new RotateTurretAction(-170 * Constants.TURRET_TPD, false), new PoseWaitAction()}, 1750);
+       addSequential(new PoseWaitAction(), 4000);
         addSequential(new TimeWaitAction(), 250);
         addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 250);
     }

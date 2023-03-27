@@ -1,8 +1,7 @@
 package frc.robot.actions.vision;
 
 import frc.lib.statemachine.Action;
-import frc.robot.Constants;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.subsystems.Arm;
 
 public class AutoPipelineAction extends Action {
 	int pipeline;
@@ -13,7 +12,7 @@ public class AutoPipelineAction extends Action {
 
 	@Override
 	public void onStart() {
-        NetworkTableInstance.getDefault().getTable(Constants.LIMELIGHT_NETWORK_ID).getEntry("pipeline").setDouble(pipeline);
+		Arm.pipeline.setDouble(pipeline);
 	}
 
 	@Override

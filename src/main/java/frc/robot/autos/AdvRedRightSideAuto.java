@@ -15,20 +15,23 @@ import frc.robot.subsystems.Arm.ArmPose;
 
 public class AdvRedRightSideAuto extends StateMachineDescriptor {
     public AdvRedRightSideAuto() {
-        addSequential(new ArmPoseAction(ArmPose.MID), 200); //put the robot into the set pose
+        addSequential(new ArmPoseAction(ArmPose.SLIDE), 200); //put the robot into the set pose
         addSequential(new PoseWaitAction(), 1750);
         addSequential(new RotateTurretAction(180 * Constants.TURRET_TPD, false), 4000);
+        addSequential(new ArmPoseAction(ArmPose.MID), 200); //put the robot into the set pose
+        addSequential(new PoseWaitAction(), 1750);
         addSequential(new ArmPoseAction(ArmPose.HIGH), 200); //put the robot into the set pose
         addSequential(new PoseWaitAction(), 1750);
         addSequential(new LLHoldAction(true, true), 1000);
         addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 250);
         addSequential(new ArmPoseAction(ArmPose.MID), 200); //put the robot into the set pose
         addSequential(new PoseWaitAction(), 1750);
+        addSequential(new ArmPoseAction(ArmPose.SLIDE), 200); //put the robot into the set pose
+        addSequential(new PoseWaitAction(), 1750);
     
         addSequential(new RotateTurretAction(20 * Constants.TURRET_TPD, false), 4000);
-        addSequential(new ArmPoseAction(ArmPose.TRANSIT), 200);
-        addSequential(new PoseWaitAction(), 1750);
         addSequential(new TimeWaitAction(), 250);
+        addSequential(new ArmPoseAction(ArmPose.UNSTOW), 250);
 
         addParallel(new Action[] {new NonblockingMoveAction(160 * Constants.ENCODER_PER_INCH, 0), new ReachLineWaitAction(true, 40 * Constants.ENCODER_PER_INCH)}, 8000);
         addSequential(new ArmPoseAction(ArmPose.INTAKE), 200);
