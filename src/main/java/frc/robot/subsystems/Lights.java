@@ -66,9 +66,9 @@ public class Lights extends Subsystem {
             state = State.LIGHTS_WHITE;
         } else {
             if(wantObject > 0.9){
-                state = State.LIGHTS_PURPLE;
-            } else if(wantObject < -0.9){
                 state = State.LIGHTS_YELLOW;
+            } else if(wantObject < -0.9){
+                state = State.LIGHTS_PURPLE;
             } else {
                 state = State.LIGHTS_RAINBOW;
             }
