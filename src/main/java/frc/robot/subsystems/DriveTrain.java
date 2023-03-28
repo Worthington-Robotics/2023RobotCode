@@ -61,12 +61,12 @@ public class DriveTrain extends Subsystem {
         // Amount of heading correction to be made while driving forward
         public double driveHeadingCorrect;
         public double gyroTilt;
-        // Delta from last gyro tilt, used for D term
-        public double tiltDelta;
         //declare whether it is gyro locked or not
         public boolean gyroLock = false;
         //when a raw input power is put in the mtoros
         public double inputDrivePower;
+        //reverse drive train when true
+        public boolean reverseDriveTrain = false;
     }
 
     public DriveTrain() {
@@ -110,9 +110,7 @@ public class DriveTrain extends Subsystem {
 
     @Override
     public void readPeriodicInputs() {
-        final double lastTilt = periodic.gyroTilt;
         periodic.gyroTilt = gyro.getRoll() * -1.0;
-        periodic.tiltDelta = periodic.gyroTilt - lastTilt;
         //periodic.tiltDelta = tiltDeltaFilter.calculate(periodic.gyroTilt - lastTilt);
         periodic.rawHeading = gyro.getFusedHeading();
         periodic.normalizedHeading = normalizeHeading(periodic.rawHeading);
@@ -167,7 +165,6 @@ public class DriveTrain extends Subsystem {
         SmartDashboard.putNumber("Drive/Heading Correction", periodic.driveHeadingCorrect);
         SmartDashboard.putNumber("Drive/Pitch", periodic.gyroTilt);
         SmartDashboard.putNumber("Drive/Heading", (-periodic.rawHeading + 360) % 360);
-        SmartDashboard.putNumber("Drive/Tilt Delta", periodic.tiltDelta);
     }
 
     @Override
@@ -290,6 +287,10 @@ public class DriveTrain extends Subsystem {
         return periodic.rawHeading;
     }
 
+    public boolean getReverseDrive() {
+        return periodic.reverseDriveTrain;
+    }
+
     public double getNormalizedHeading() {
         return periodic.normalizedHeading;
     }
@@ -357,20 +358,24 @@ public class DriveTrain extends Subsystem {
         // Filter output
         periodic.leftDemand = leftFilter.calculate(periodic.leftDemand);
         periodic.rightDemand = rightFilter.calculate(periodic.rightDemand);
+
+        if(periodic.reverseDriveTrain){
+            periodic.leftDemand *= -1;
+            periodic.rightDemand *= -1;
+        }
     }
 
     // Auto-leveling mode for charge station
     private void autoLevel() {
         double levelError = Constants.DRIVE_LEVEL_ZERO + periodic.gyroTilt;
         double power;
-        if(levelError > 9){
+        if(levelError > 7){
             power = - 0.1;
-        } else if (levelError < -9){
+        } else if (levelError < -7){
             power = 0.1;
         } else {
             power = 0;
         }
-
         if(periodic.gyroLock) {
             lockGyro();
         }
@@ -393,8 +398,6 @@ public class DriveTrain extends Subsystem {
             return demand;
         }
     }
-
-    // Normalizes heading direction
     public static double normalizeHeading(double heading) {
         final double wrappedHeading = heading % 360;
         if (wrappedHeading > 180.0) {
@@ -426,20 +429,12 @@ public class DriveTrain extends Subsystem {
         periodic.rightDemand -= periodic.driveHeadingCorrect;
     }
 
+    public void setReverseDriveTrain(boolean enable) {
+        periodic.reverseDriveTrain = enable;
+    }
+
     public LogData getLogger() {
 		return periodic;
 	}
 
-    public boolean getDeltaPitchAccepted(boolean moveForward) {
-        if(moveForward) { // Verify that battery above horizon is positive tilt
-            periodic.tiltDelta *= -1.0;
-        }
-
-        if(periodic.tiltDelta < 0.0) { // return periodic.tiltDelta < 0.0 // delta should change based on pigin accuracy
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
 }

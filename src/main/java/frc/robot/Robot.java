@@ -26,6 +26,7 @@ import frc.robot.subsystems.Arm.ArmPose;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.drive.TeleopLevelAction;
 import frc.robot.actions.drive.GyroLockAction;
+import frc.robot.actions.drive.ReverseDriveAction;
 import frc.robot.actions.drive.DriveTurnAction;
 import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
@@ -62,6 +63,7 @@ public class Robot extends TimedRobot {
     private JoystickButton unStowButton = new JoystickButton(Constants.MASTER, 6);
     private JoystickButton zeroPoseButton = new JoystickButton(Constants.MASTER, 7);
     private JoystickButton cycleButton = new JoystickButton(Constants.MASTER, 9);
+    private JoystickButton revDriveTrainButton = new JoystickButton(Constants.MASTER, 11);
     private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 12);
     
     private POVButton pos0MButton = new POVButton(Constants.MASTER, 0);
@@ -88,10 +90,6 @@ public class Robot extends TimedRobot {
     private POVButton pos90Button = new POVButton(Constants.SECOND, 90);
     private POVButton LLButton = new POVButton(Constants.SECOND, 180);
 
-    //private JoystickButton pivotDownHighButton = new JoystickButton(Constants.SECOND, 3);
-    //private JoystickButton pivotUpHighButton = new JoystickButton(Constants.SECOND, 4);
-   // private JoystickButton pivotDownSlowButton = new JoystickButton(Constants.SECOND, 7);
-   // private JoystickButton pivotUpSlowButton = new JoystickButton(Constants.SECOND, 8);
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -227,11 +225,12 @@ public class Robot extends TimedRobot {
         limelightPipeButton.onTrue(Action.toCommand(new SetPipelineAction()));
         unStowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
         zeroPoseButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.ZERO)));
+        revDriveTrainButton.onTrue(Action.toCommand(new ReverseDriveAction()));
  
 
         pos0MButton.whileTrue(Action.toCommand(new DriveTurnAction(180)));
-        pos270MButton.whileTrue(Action.toCommand(new DriveTurnAction(90)));
-        pos90MButton.whileTrue(Action.toCommand(new DriveTurnAction(270)));
+        pos90MButton.whileTrue(Action.toCommand(new DriveTurnAction(90)));
+        pos270MButton.whileTrue(Action.toCommand(new DriveTurnAction(270)));
         pos180MButton.whileTrue(Action.toCommand(new DriveTurnAction(0)));
 
 

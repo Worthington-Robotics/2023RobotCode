@@ -59,12 +59,14 @@ public class Manipulator extends Subsystem {
 		if (Arm.getInstance().getMode().ordinal() < ArmMode.CLOSED_LOOP.ordinal() ) {
 			wristMotor.set(ControlMode.PercentOutput, periodic.wristMotorPower);
 		} else {
-			if(Math.abs(Arm.getInstance().getDesiredPivot()) >= Math.abs(Arm.getInstance().getPivotEncoder())){ //pivot going up
+			if(Math.abs(Arm.getInstance().getDesiredPivot()) >= Math.abs(Arm.getInstance().getPivotEncoder())){//pivot going up
 				if(Math.abs(Arm.getInstance().getPivotEncoderError()) < 10000){
 					wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
 				}
 			} else { //pivot going down
-				wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
+				if(Math.abs(Arm.getInstance().getExtendEncoderError()) < 7000){
+					wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
+				}
 			}
 		}
 	}

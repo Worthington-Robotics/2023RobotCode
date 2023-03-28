@@ -212,8 +212,8 @@ public class Arm extends Subsystem {
 			if(periodic.extendIsHolding && periodic.currentMode == ArmMode.OPEN_CLOSED_LOOP) {
 				extensionMotor.set(ControlMode.Position, periodic.extenHoldValue);
 			} else {
-				if(Math.abs(periodic.desiredPivotEncoder) >= Math.abs(getPivotEncoder())){ 
-					if(Math.abs(periodic.pivotEncoderError) <= 10000){
+				if(Math.abs(periodic.desiredPivotEncoder) >= Math.abs(getPivotEncoder())){  //pivot going up
+					if(Math.abs(periodic.pivotEncoderError) <= 10000 && Math.abs(Manipulator.getInstance().getWristEncoderError()) <= 5000){
 						extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
 					}
 				} else { //pivot is going down

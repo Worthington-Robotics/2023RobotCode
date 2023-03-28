@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
+import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
 
 public class Lights extends Subsystem {
@@ -17,10 +18,13 @@ public class Lights extends Subsystem {
     public AddressableLEDBuffer ledBuffer;
     public State state;
     public int rain;
+    public double wantObject;
 
     public enum State {
         LIGHTS_RAINBOW,
-        LIGHTS_WHITE
+        LIGHTS_WHITE,
+        LIGHTS_YELLOW,
+        LIGHTS_PURPLE
     }
 
     private Lights() {
@@ -28,6 +32,7 @@ public class Lights extends Subsystem {
         ledBuffer = new AddressableLEDBuffer(Constants.LIGHTS_LED_COUNT);
         ledString.setLength(ledBuffer.getLength());
         state = State.LIGHTS_RAINBOW;
+        wantObject = 0.0;
         reset();
     }
 
@@ -47,7 +52,9 @@ public class Lights extends Subsystem {
     }
     
 
-    public void readPeriodicInputs() {}
+    public void readPeriodicInputs() {
+        wantObject = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(3), -1, 1);
+    }
 
     public void writePeriodicOutputs() {
     }
@@ -58,7 +65,13 @@ public class Lights extends Subsystem {
         if(DriverStation.isDisabled()){
             state = State.LIGHTS_WHITE;
         } else {
-            state = State.LIGHTS_RAINBOW;
+            if(wantObject > 0.9){
+                state = State.LIGHTS_PURPLE;
+            } else if(wantObject < -0.9){
+                state = State.LIGHTS_YELLOW;
+            } else {
+                state = State.LIGHTS_RAINBOW;
+            }
         }
         switch(state) {
             case LIGHTS_RAINBOW:
@@ -69,6 +82,16 @@ public class Lights extends Subsystem {
             case LIGHTS_WHITE:
                 for (int i = 0; i < ledBuffer.getLength(); i++) {
                     ledBuffer.setLED(i, Color.kWhite);
+                }
+                break;
+            case LIGHTS_PURPLE:
+                for (int i = 0; i < ledBuffer.getLength(); i++) {
+                    ledBuffer.setLED(i, Color.kPurple);
+                }
+                break;
+            case LIGHTS_YELLOW:
+                for (int i = 0; i < ledBuffer.getLength(); i++) {
+                    ledBuffer.setLED(i, Color.kYellow);
                 }
                 break;
         }
@@ -82,4 +105,7 @@ public class Lights extends Subsystem {
         ledString.setData(ledBuffer);
         ledString.start();
     }
+
+    
+
 }
