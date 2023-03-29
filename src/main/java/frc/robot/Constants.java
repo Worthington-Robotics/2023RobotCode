@@ -130,7 +130,7 @@ public class Constants {
 
     //Lights Constants
     public static final int LIGHTS_ID = 9;
-    public static final int LIGHTS_ID_2 = 8;
+    public static final int LIGHTS_ID_2 = 3;
     public static final int LIGHTS_LED_COUNT = 200;
     public static final int LIGHTS_LED_COUNT_2 = 200;
     

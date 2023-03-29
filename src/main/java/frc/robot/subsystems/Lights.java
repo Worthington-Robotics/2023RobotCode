@@ -19,8 +19,8 @@ public class Lights extends Subsystem {
 
     public AddressableLED ledString;
     public AddressableLEDBuffer ledBuffer;
-    public AddressableLED ledStringTwo;
-    public AddressableLEDBuffer ledBufferTwo;
+    // public AddressableLED ledStringTwo;
+    // public AddressableLEDBuffer ledBufferTwo;
     public State state;
     public int rain;
     public double wantObject;
@@ -35,11 +35,11 @@ public class Lights extends Subsystem {
 
     private Lights() {
         ledString = new AddressableLED(Constants.LIGHTS_ID);
-        ledStringTwo = new AddressableLED(Constants.LIGHTS_ID_2);
+        //ledStringTwo = new AddressableLED(Constants.LIGHTS_ID_2);
         ledBuffer = new AddressableLEDBuffer(Constants.LIGHTS_LED_COUNT);
-        ledBufferTwo = new AddressableLEDBuffer(Constants.LIGHTS_LED_COUNT_2);
+        //ledBufferTwo = new AddressableLEDBuffer(Constants.LIGHTS_LED_COUNT_2);
         ledString.setLength(ledBuffer.getLength());
-        ledStringTwo.setLength(ledBufferTwo.getLength());
+        //ledStringTwo.setLength(ledBufferTwo.getLength());
         state = State.LIGHTS_RAINBOW;
         wantObject = 0.0;
         reset();
@@ -70,12 +70,12 @@ public class Lights extends Subsystem {
 
     public void setBothLedBuffersHSV(int i, int h, int s, int v) {
         ledBuffer.setHSV(i, h, s, v);
-        ledBufferTwo.setHSV(i, h, s, v);
+       // ledBufferTwo.setHSV(i, h, s, v);
     }
 
     public void setBothLedBuffersColor(int i, Color color) {
         ledBuffer.setLED(i, color);
-        ledBufferTwo.setLED(i, color);
+       // ledBufferTwo.setLED(i, color);
     }
 
     public void outputTelemetry() {
@@ -122,17 +122,17 @@ public class Lights extends Subsystem {
                 break;
         }
         ledString.setData(ledBuffer);
-        ledStringTwo.setData(ledBufferTwo);
+       // ledStringTwo.setData(ledBufferTwo);
     }
 
     public void reset() {
         ledBuffer = new AddressableLEDBuffer(Constants.LIGHTS_LED_COUNT);
-        ledBufferTwo = new AddressableLEDBuffer(Constants.LIGHTS_LED_COUNT_2);
+        //ledBufferTwo = new AddressableLEDBuffer(Constants.LIGHTS_LED_COUNT_2);
         ledString.setLength(ledBuffer.getLength());
-        ledStringTwo.setLength(ledBufferTwo.getLength());
+        //ledStringTwo.setLength(ledBufferTwo.getLength());
         ledString.setData(ledBuffer);
-        ledStringTwo.setData(ledBufferTwo);
+        //ledStringTwo.setData(ledBufferTwo);
         ledString.start();
-        ledStringTwo.start();
+        //ledStringTwo.start();
     }
 }
