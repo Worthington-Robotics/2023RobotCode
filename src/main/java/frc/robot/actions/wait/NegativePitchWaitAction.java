@@ -18,7 +18,7 @@ public class NegativePitchWaitAction extends Action{
 
     @Override
     public boolean isFinished() {
-       return pitch <= -11;
+       return pitch <= -11.0;
     }
 
     @Override

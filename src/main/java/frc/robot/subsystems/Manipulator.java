@@ -32,6 +32,8 @@ public class Manipulator extends Subsystem {
 		double wristEncoder;
 		double wristOffset;
 		double prevDesiredWrist;
+		boolean timeOfFlightActivated = false;
+
 	}
 
 	public Manipulator() {
@@ -53,8 +55,10 @@ public class Manipulator extends Subsystem {
 	public void writePeriodicOutputs() {
 		if((periodic.TimeOfFlightDistance > 200 || periodic.TimeOfFlightDistance == 0) || periodic.intakeMotorPower < 0) {
 			intakeMotor.set(ControlMode.PercentOutput, periodic.intakeMotorPower);
+			periodic.timeOfFlightActivated = false;
 		} else {
 			intakeMotor.set(ControlMode.PercentOutput, Math.max(.15, periodic.intakeMotorPower));
+			periodic.timeOfFlightActivated = true;
 		}
 		if (Arm.getInstance().getMode().ordinal() < ArmMode.CLOSED_LOOP.ordinal() ) {
 			wristMotor.set(ControlMode.PercentOutput, periodic.wristMotorPower);
@@ -147,6 +151,10 @@ public class Manipulator extends Subsystem {
 
 	public double getPrevDesiredWrist() {
 		return periodic.prevDesiredWrist;
+	}
+
+	public boolean getTimeOfFlightActivated() {
+		return periodic.timeOfFlightActivated;
 	}
 
 	// PID

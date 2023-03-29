@@ -18,7 +18,7 @@ public class LevelPitchWaitAction extends Action{
 
     @Override
     public boolean isFinished() {
-       return Math.abs(pitch) <= 3.0;
+       return Math.abs(pitch) <= 7.0;
     }
 
     @Override

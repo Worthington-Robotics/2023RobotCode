@@ -44,13 +44,13 @@ public class AutoChooser {
 				StateMachine.getInstance().runMachine(new AdvRedLeftSideAuto());
 				break;
 			case BlueOne:
-				StateMachine.getInstance().runMachine(new BlueLeftSideAuto());
+				StateMachine.getInstance().runMachine(new AdvBlueLeftSideAuto());
 				break;
 			case BlueTwo:
-				StateMachine.getInstance().runMachine(new ChargeStationAuto());
+				StateMachine.getInstance().runMachine(new AdvancedChargeStation());
 				break;
 			case BlueThree:
-				StateMachine.getInstance().runMachine(new BlueRightSideAuto());
+				StateMachine.getInstance().runMachine(new AdvBlueRightSideAuto());
 				break;
 			case Whoops:
 				StateMachine.getInstance().runMachine(new PitTestAuto());
