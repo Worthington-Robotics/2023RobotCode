@@ -165,7 +165,7 @@ public class DriveTrain extends Subsystem {
                 );
                 break;
             case RobotRel:
-                speeds = new ChassisSpeeds(x * 4, y * 4, r * 10);
+                speeds = new ChassisSpeeds((x * 4.0), (y * 4.0), (r * 360.0));
                 break;
             default:
                 speeds = new ChassisSpeeds();
