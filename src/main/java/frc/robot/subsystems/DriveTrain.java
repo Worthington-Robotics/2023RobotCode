@@ -332,9 +332,24 @@ public class DriveTrain extends Subsystem {
 
     // Auto-leveling mode for charge station
     private void autoLevel() {
+<<<<<<< Updated upstream
         final double levelError = Constants.DRIVE_LEVEL_ZERO + periodic.gyroTilt;
         periodic.leftDemand = levelError * Constants.DRIVE_LEVEL_KP;
         periodic.rightDemand = levelError * Constants.DRIVE_LEVEL_KP;
+=======
+        double levelError = Constants.DRIVE_LEVEL_ZERO + periodic.gyroTilt;
+        double power;
+        if(levelError > 5){
+            power = - 0.1;
+        } else if (levelError < -5){
+            power = 0.1;
+        } else {
+            power = 0;
+        }
+        if(periodic.gyroLock) {
+            lockGyro();
+        }
+>>>>>>> Stashed changes
 
         // Correct for heading error
         periodic.driveHeadingCorrect = periodic.headingError * Constants.DRIVE_FORWARD_HEADING_KP;

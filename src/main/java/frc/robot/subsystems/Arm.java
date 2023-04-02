@@ -14,8 +14,19 @@ import frc.robot.Constants;
 //design pattern for caching periodic writes to avoid hammering the HAL/CAN.
 public class Arm extends Subsystem {
 
+<<<<<<< Updated upstream
 	TalonFX extention, turret, armM, armS;
 	DoubleSolenoid grabber;
+=======
+	public static NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+	public static NetworkTableEntry ta = table.getEntry("ta");
+	public static NetworkTableEntry tx = table.getEntry("tx");
+	public static NetworkTableEntry tv = table.getEntry("tv");
+    public static NetworkTableEntry snapshots = table.getEntry("snapshot");
+    public static NetworkTableEntry pipeline = table.getEntry("pipeline");
+	public static NetworkTableEntry aprilTag = table.getEntry("targetpose_cameraspace");
+    public static double[] aprilTagDistances = aprilTag.getDoubleArray(new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
+>>>>>>> Stashed changes
 
 	private static Arm instance = new Arm();
 	public static Arm getInstance() { return instance; }
@@ -45,6 +56,7 @@ public class Arm extends Subsystem {
 		periodic.extentionPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(1), .5, -.5);
 		periodic.turretPower = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(0), -.25, .25);
 
+<<<<<<< Updated upstream
 		periodic.armEncoder = armM.getSelectedSensorPosition();
 		periodic.extentionEncoder = extention.getSelectedSensorPosition();
 		periodic.turretEncoder = turret.getSelectedSensorPosition();
@@ -89,6 +101,38 @@ public class Arm extends Subsystem {
 	public void setClawClosed() {
 		grabber.set(Value.kReverse);
 	}
+=======
+	public enum ArmPose {
+		ZERO,
+		UNSTOW,
+		TRANSIT,
+		SLIDE,
+		INTAKE,
+		CONE_UP,
+		MID,
+		HIGH,
+		SHELF_BEGIN,
+		SHELF_END,
+		MID_FRONT,
+		HIGH_FRONT,
+	}
+
+	// Pivot, Extend, Wrist
+	public static double[][] ArmPoses = {
+		{0,0,0},
+		{-109000, 0, 0},
+		{-15384, 10000, 29290},
+		{1775, 9100, 34290},
+		{-78431, -56300, -42800},
+		{-98372, -6800, -54000},
+		{-270000, -77000, -123000},
+		{-285000, -166000, -103000},
+		{-355000, 6318, -113800},
+		{-313000, 6318, -113800},
+		{-189000, 0, -50500},
+		{-229000, -140000, -63520},
+	};
+>>>>>>> Stashed changes
 
 	public class ArmIO extends PeriodicIO {
 		public double turretPower = 0;
@@ -101,6 +145,166 @@ public class Arm extends Subsystem {
 		public DoubleSolenoid.Value grabberEngaged = Value.kReverse;
 	}
 
+<<<<<<< Updated upstream
+=======
+	public void reset() {
+		periodic.currentMode = ArmMode.CLOSED_LOOP;
+		//pinSolenoid.set(Value.kForward);
+		configPID();
+		resetEncoders();
+	}
+	
+	public void setTVComp(double volts) {
+		turretMotor.configVoltageCompSaturation(volts);
+	}
+
+	public void incrRamp(double ramp) {
+		periodic.turretRamp += ramp;
+		if(Math.abs(periodic.turretRamp) < .05){
+			periodic.turretRamp = .05 * (Math.signum(periodic.turretRamp));
+		}
+	}
+
+	public void clearRamp() {
+		periodic.turretRamp = 0;
+	}
+
+	public void correctExtension(double extensionChange) {
+		periodic.desiredArmLengthEncoder += extensionChange;
+	}
+
+	public boolean getAccepted() {
+		return periodic.poseAccepted;
+	}
+
+	public ArmMode getMode() {
+		return periodic.currentMode;
+	}
+
+	public ArmPose getPose() {
+		return periodic.currentPose;
+	}
+
+	public double getDesiredPivot() {
+		return periodic.desiredPivotEncoder;
+	}
+
+	public double getDesiredExtension() {
+		return periodic.desiredArmLengthEncoder;
+	}
+
+	public double getTurretEncoder() {
+		return periodic.turretEncoder;
+	}
+
+	public double getExtendEncoder() {
+		return periodic.lengthEncoder;
+	}
+
+	public double getPivotEncoder() {
+		return periodic.pivotEncoder;
+	}
+
+	
+	public double getTurretEncoderError() {
+		return periodic.turretEncoderError;
+	}
+
+	public double getExtendEncoderError() {
+		return periodic.lengthEncoderError;
+	}
+
+	public double getPivotEncoderError() {
+		return periodic.pivotEncoderError;
+	}
+
+
+	public double[] getLLVals() {
+		return new double[] {periodic.LL_tx, periodic.LL_tv};
+	}
+	 
+
+	public void resetEncoders() {
+		extensionMotor.setSelectedSensorPosition(0);
+		turretMotor.setSelectedSensorPosition(0);
+		armMasterMotor.setSelectedSensorPosition(0);
+	}
+
+
+	public void configPID(){
+		armMasterMotor.config_kP(0, Constants.ARM_PIVOT_KP, 10);
+		armMasterMotor.config_kI(0, 0, 10);
+		armMasterMotor.config_kD(0, 0, 10);
+		armMasterMotor.config_kF(0, 0, 10);
+
+		extensionMotor.config_kP(0,Constants.ARM_EXTENSION_KP, 10);
+		extensionMotor.config_kI(0,0, 10);
+		extensionMotor.config_kD(0,0, 10);
+		extensionMotor.config_kF(0,0, 10);
+
+		turretMotor.config_kP(0,Constants.TURRET_KP, 10);
+		turretMotor.config_kI(0,Constants.TURRET_KI, 10);
+		turretMotor.config_kD(0,Constants.TURRET_KD, 10);
+		turretMotor.config_kF(0,0, 10);
+
+	}
+	
+	public double convertRawPivotIntoEncoder(double inputPower) {
+		return inputPower * 700000;
+	}
+
+	public double convertRawExtensionIntoEncoder(double inputPower) {
+		if (inputPower >= 0) {
+			return inputPower * 123000;
+		} else {
+			return 0;
+		}
+	}
+
+	public double convertRawTurretIntoEncoder(double inputPower) {
+		return inputPower * 22000;
+	}
+	
+
+	public void setTurretPower(double power) {
+		periodic.turretPower = power;
+	}
+
+	public void cycleMode() {
+		int nState = periodic.currentMode.ordinal() + 1;
+		periodic.currentMode = ArmMode.values()[nState % 3];
+	}
+
+	public void setMode(ArmMode mode) {
+		periodic.currentMode = mode;
+		if(mode == ArmMode.DISABLED) {
+			turretMotor.set(ControlMode.Disabled, 0);
+			armMasterMotor.set(ControlMode.Disabled, 0);
+			extensionMotor.set(ControlMode.Disabled, 0);
+		}
+	}
+
+
+	public void setPose(ArmPose pose) {
+		periodic.currentPose = pose;
+		periodic.poseAccepted = false;
+	}
+
+	public void setOpenLoop() {
+		periodic.currentMode = ArmMode.OPEN_LOOP;
+	}
+
+	public void setOpenClosedLoop() {
+		periodic.currentMode = ArmMode.OPEN_CLOSED_LOOP;
+	}
+
+	public void setClosedLoop() {
+		periodic.currentMode = ArmMode.CLOSED_LOOP;
+	}
+	
+	// Logging
+
+>>>>>>> Stashed changes
 	public LogData getLogger() {
 		return periodic;
 	}

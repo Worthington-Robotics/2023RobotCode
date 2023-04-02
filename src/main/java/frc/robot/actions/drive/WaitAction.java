@@ -19,7 +19,11 @@ public class WaitAction extends Action {
 
     @Override
     public boolean isFinished() {
+<<<<<<< Updated upstream:src/main/java/frc/robot/actions/drive/WaitAction.java
         return false;
+=======
+       return Math.abs(pitch) < 3.0;
+>>>>>>> Stashed changes:src/main/java/frc/robot/actions/wait/LevelPitchWaitAction.java
     }
 
     @Override

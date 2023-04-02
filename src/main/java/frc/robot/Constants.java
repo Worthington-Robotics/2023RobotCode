@@ -24,8 +24,62 @@ public class Constants {
     public static final int ARM_ARM_S_ID = 12;
     
     public static final int CTRE_PCM_ID = 0;
+<<<<<<< Updated upstream
     public static final int ARM_GRABBER_FWD_CHANNEL = 1;
     public static final int ARM_GRABBER_REV_CHANNEL = 0;
+=======
+    public static final int ARM_GRABBER_FWD_CHANNEL = 5;
+    public static final int ARM_GRABBER_REV_CHANNEL = 4;
+
+    //Manipulator Constants
+    public static final int INTAKE_WHEEL_ID = 5;  
+    public static final int MANIPULATOR_TOF_ID = 1;
+
+    public static final double INTAKE_POWER = .6;
+    public static final double ANYTHING_OUT_POWER = -1;
+    public static final double INTAKE_ACCEPTANCE_RANGE = 5.0; //TODO: change this range value
+
+    public static final double WRIST_PIVOT_KP = 1 / 80.0; //TODO: change this kp
+    public static final double WRIST_MIN_TIME = 1.5;
+    public static final double WRIST_ENCODER_PER_DEGREE = 400.0; //TODO: change this value
+    
+    // Arm Constants
+    public static final double PIVOT_ENCODER_PER_DEGREE = 416.31;
+    public static final double ENCODER_PER_INCH = 1833.33;
+
+    public static final double TURRET_KP = .15;
+    public static final double TURRET_KI = 0;
+    public static final double TURRET_IMAX = 0;
+    public static final double TURRET_KD = 8;
+
+    public static final double TURRET_TPD = 227.5;
+
+    public static final double ARM_PIVOT_KP = .017;
+    public static final double PIVOT_MIN_TIME =21.0;
+
+    public static final double TURRET_ANGLE_ENCODER_ACCEPTANCE = TURRET_TPD * 2;
+    public static final double TURRET_MIN_TIME = 1.5;
+
+    public static final double ARM_EXTENSION_KP = .08;
+    public static final double EXTENSION_MIN_TIME = 1.5;
+
+    public static final double EXTENSION_ENCODER_ERROR_ACCEPTANCE = 2000;
+    public static final double PIVOT_ENCODER_ERROR_ACCEPTANCE = 10000;
+    public static final double WRIST_ENCODER_ERROR_ACCEPTANCE = 5000;
+
+    // ### Vision values ###
+    public static final String LIMELIGHT_NETWORK_ID = "limelight-worbots";
+    public static final int LIMELIGHT_LOW_PIPELINE = 0;
+    public static final int LIMELIGHT_HIGH_PIPELINE = 1;
+    public static final double VISION_SNAPSHOT_INTERVAL = 1;
+    
+    
+    //Auto Pose Constants
+    public static final double highGoalExtensionEncoder = 150000.0;
+    public static final double mediumGoalExtensionEncoder = 120000.0;
+
+    // ### Device ID declarations ###
+>>>>>>> Stashed changes
 
     // Superstructure
     public static final int BACKSTOP_TOF_ID = 0;
@@ -75,6 +129,18 @@ public class Constants {
 
     // Joystick deadzone
     public static final double DEAD_ZONE = 0.05;
+<<<<<<< Updated upstream
+=======
+    public static final double OPEN_LOOP_FILTER = 0.3;
+    
+  
+
+    //Lights Constants
+    public static final int LIGHTS_ID = 9;
+    public static final int LIGHTS_ID_2 = 8;
+    public static final int LIGHTS_LED_COUNT = 200;
+    public static final int LIGHTS_LED_COUNT_2 = 200;
+>>>>>>> Stashed changes
     
     // Angle PID
     public static final double ANGLE_KP = 1.0 / 120.0;

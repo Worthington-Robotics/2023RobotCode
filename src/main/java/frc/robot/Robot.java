@@ -48,8 +48,43 @@ public class Robot extends TimedRobot {
     private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 7);
     private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 2);
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
+<<<<<<< Updated upstream
     private JoystickButton intakeDownButton = new JoystickButton(Constants.MASTER, 10);
     private JoystickButton intakeUpButton = new JoystickButton(Constants.MASTER, 9);
+=======
+    private JoystickButton gyroLockButton = new JoystickButton(Constants.MASTER, 4);
+    private JoystickButton limelightPipeButton = new JoystickButton(Constants.MASTER, 5);
+    private JoystickButton unStowButton = new JoystickButton(Constants.MASTER, 6);
+    private JoystickButton zeroPoseButton = new JoystickButton(Constants.MASTER, 7);
+    private JoystickButton cycleButton = new JoystickButton(Constants.MASTER, 9);
+    private JoystickButton revDriveTrainButton = new JoystickButton(Constants.MASTER, 11);
+    private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 12);
+    
+    private POVButton pos0MButton = new POVButton(Constants.MASTER, 0);
+    private POVButton pos270MButton = new POVButton(Constants.MASTER, 270);
+    private POVButton pos90MButton = new POVButton(Constants.MASTER, 90);
+    private POVButton pos180MButton = new POVButton(Constants.MASTER, 180);
+
+
+    private JoystickButton turretHold = new JoystickButton(Constants.SECOND, 1);
+    private JoystickButton transButton = new JoystickButton(Constants.SECOND, 2);
+    private JoystickButton intakeSpitButton = new JoystickButton(Constants.SECOND, 3);
+    private JoystickButton LLTargetButton = new JoystickButton(Constants.SECOND, 4);
+    private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 5);
+    private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 6);
+    private JoystickButton poseMidButton = new JoystickButton(Constants.SECOND, 7);
+    private JoystickButton poseHighButton = new JoystickButton(Constants.SECOND, 8);
+   // private JoystickButton poseShelfButton = new JoystickButton(Constants.SECOND, 9);
+    private JoystickButton poseSlideButton = new JoystickButton(Constants.SECOND, 10);
+    private JoystickButton poseConeUpButton = new JoystickButton(Constants.SECOND, 11);
+    private JoystickButton poseIntakeButton = new JoystickButton(Constants.SECOND, 12);
+
+    private POVButton pos0Button = new POVButton(Constants.SECOND, 0);
+    private POVButton pos270Button = new POVButton(Constants.SECOND, 270);
+    private POVButton pos90Button = new POVButton(Constants.SECOND, 90);
+    private POVButton LLButton = new POVButton(Constants.SECOND, 180);
+
+>>>>>>> Stashed changes
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -182,10 +217,48 @@ public class Robot extends TimedRobot {
         clawButton.whileTrue(Action.toCommand(new OpenClaw()));
         intakeConeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CONE_IN_POWER)));
         intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
+<<<<<<< Updated upstream
         intakeCubeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CUBE_IN_POWER)));
         intakeUpButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kUp)));
         intakeDownButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kDown)));
         autoLevelButton.whileTrue(Action.toCommand(new DriveLevelAction()));
         limelightRotateButton.whileTrue(Action.toCommand(new DriveTurnActionLimelight()));
+=======
+        intakeSpitButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
+        intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER, false)));
+        autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
+        LLTargetButton.whileTrue(Action.toCommand(new LLHoldAction(true, true, false)));
+        gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
+        limelightPipeButton.onTrue(Action.toCommand(new SetPipelineAction()));
+        unStowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
+        zeroPoseButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.ZERO)));
+        revDriveTrainButton.onTrue(Action.toCommand(new ReverseDriveAction()));
+ 
+
+        pos0MButton.whileTrue(Action.toCommand(new DriveTurnAction(180)));
+        pos90MButton.whileTrue(Action.toCommand(new DriveTurnAction(90)));
+        pos270MButton.whileTrue(Action.toCommand(new DriveTurnAction(270)));
+        pos180MButton.whileTrue(Action.toCommand(new DriveTurnAction(0)));
+
+
+        transButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.TRANSIT)));
+        poseMidButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.MID_FRONT)));
+        poseHighButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.HIGH_FRONT)));
+       // poseShelfButton.onTrue(Action.toCommand(new TwoPoseAction(ArmPose.SHELF_BEGIN, ArmPose.SHELF_END)));
+        poseSlideButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SLIDE)));
+        poseConeUpButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_UP)));
+        poseIntakeButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.INTAKE)));
+        
+
+        pos0Button.whileTrue(Action.toCommand(new RotateTurretAction(0, true)));
+        pos90Button.whileTrue(Action.toCommand(new RotateTurretAction(-20480, true)));
+        pos270Button.whileTrue(Action.toCommand(new RotateTurretAction(20480, true)));
+        LLButton.whileTrue(Action.toCommand(new RotateOneEighty(true)));
+
+        wristUpButton.whileTrue(Action.toCommand(new MoveWristAction(-.33)));
+        wristDownButton.whileTrue(Action.toCommand(new MoveWristAction(.33)));
+        turretHold.whileTrue(Action.toCommand(new TEHoldAction()));
+        cycleButton.whileTrue(Action.toCommand(new CycleArmAction()));
+>>>>>>> Stashed changes
     }
 }

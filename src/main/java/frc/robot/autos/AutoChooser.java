@@ -33,11 +33,31 @@ public class AutoChooser {
 			case kOne:
 				StateMachine.getInstance().runMachine(new AutoOne());
 				break;
+<<<<<<< Updated upstream
 			case kTwo:
 				StateMachine.getInstance().runMachine(new AutoTwo());
 				break;
 			case kTest:
 				StateMachine.getInstance().runMachine(new TestAuto());
+=======
+			case RedTwo:
+				StateMachine.getInstance().runMachine(new RedChargeStation());
+				break;
+			case RedThree:
+				StateMachine.getInstance().runMachine(new AdvRedLeftSideAuto());
+				break;
+			case BlueOne:
+				StateMachine.getInstance().runMachine(new AdvBlueLeftSideAuto());
+				break;
+			case BlueTwo:
+				StateMachine.getInstance().runMachine(new BlueChargeStation());
+				break;
+			case BlueThree:
+				StateMachine.getInstance().runMachine(new AdvBlueRightSideAuto());
+				break;
+			case Whoops:
+				StateMachine.getInstance().runMachine(new PitTestAuto());
+>>>>>>> Stashed changes
 				break;
 		}
 	}
