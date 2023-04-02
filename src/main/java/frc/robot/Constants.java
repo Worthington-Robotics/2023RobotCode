@@ -3,6 +3,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import frc.lib.util.HIDHelper;
 
 public class Constants {
@@ -29,8 +30,10 @@ public class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 0;
     public static final int BACK_RIGHT_MODULE_STEER_OFFSET = 0;
 
+    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.02;
+    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.02;
 
-
+    public static final double DRIVE_ENCODER_TO_METERS = 1000;
 
     
     
@@ -112,7 +115,8 @@ public class Constants {
     public static final Joystick MASTER = new Joystick(0);
     public static final Joystick SECOND = new Joystick(1);
     public static final Joystick WHEEL = new Joystick(2);
-    public static final HIDHelper.HIDConstants MASTER_STICK = new HIDHelper.HIDConstants(MASTER, 0.07, 0.65, -1, 0.4, 2); 
+    public static final XboxController XBOX = new XboxController(0);
+    public static final HIDHelper.HIDConstants MASTER_STICK = new HIDHelper.HIDConstants(MASTER, 0.07, 0.65, -1, 0.4, 2);
 
     /**
      * The reason for these negative signs on the Y-axis

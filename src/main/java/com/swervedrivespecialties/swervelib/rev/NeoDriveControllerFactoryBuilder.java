@@ -84,5 +84,15 @@ public final class NeoDriveControllerFactoryBuilder {
         public double getStateVelocity() {
             return encoder.getVelocity();
         }
+
+        @Override
+        public void resetDriveEncoder() {
+            encoder.setPosition(0);
+        }
+
+        @Override
+        public double getDriveEncoder() {
+            return encoder.getPosition();
+        }
     }
 }

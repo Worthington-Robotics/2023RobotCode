@@ -8,7 +8,6 @@
 package frc.robot;
 
 import java.util.Arrays;
-
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -35,7 +34,6 @@ import frc.robot.actions.arm.TEHoldAction;
 import frc.robot.actions.arm.TwoPoseAction;
 import frc.robot.actions.manipulator.MoveWristAction;
 
-
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -46,8 +44,6 @@ import frc.robot.actions.manipulator.MoveWristAction;
 public class Robot extends TimedRobot {
     private SubsystemManager manager;
     private Looper enabledLooper, disabledLooper;
-
-
 
     // Input bindings
     private JoystickButton driveGearButton = new JoystickButton(Constants.MASTER, 1);
