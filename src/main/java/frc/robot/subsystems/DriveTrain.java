@@ -7,6 +7,7 @@ import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -17,6 +18,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.lib.util.HIDHelper;
@@ -30,7 +32,6 @@ public class DriveTrain extends Subsystem {
 
     private final PigeonIMU m_pigeon = new PigeonIMU(0);
     public SwerveDriveOdometry odometry;
-    private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
     private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
 		// Front left
@@ -63,11 +64,12 @@ public class DriveTrain extends Subsystem {
     }
 
     public class DriveTrainIO {
-        public State state;
-        public SwerveModuleState[] states;
+        public State state = State.RobotRel;
+        public SwerveModuleState[] states = {new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState()};
         public double XboxLeftY;
         public double XboxLeftX;
         public double XboxRightX;
+        public ChassisSpeeds speeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     }
 
     private DriveTrain() {
@@ -119,8 +121,8 @@ public class DriveTrain extends Subsystem {
             Constants.BACK_RIGHT_MODULE_STEER_ENCODER,
             Constants.BACK_RIGHT_MODULE_STEER_OFFSET
       );
-        zeroDriveEncoders();
-        zeroGyroscope();
+        setZeroDriveEncoders();
+        setGyroZero();
 
         odometry = new SwerveDriveOdometry(m_kinematics, new Rotation2d(), new SwerveModulePosition[] {
             new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_frontLeftModule.getSteerAngle())),
@@ -134,10 +136,11 @@ public class DriveTrain extends Subsystem {
         enabledLooper.register(new Loop() {
             @Override
             public void onStart(double timestamp) {
+                periodic.states = m_kinematics.toSwerveModuleStates(periodic.speeds);
             }
             @Override
             public void onLoop(double timestamp) {
-                periodic.states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
+                periodic.states = m_kinematics.toSwerveModuleStates(periodic.speeds);
 		        SwerveDriveKinematics.desaturateWheelSpeeds(periodic.states, MAX_VELOCITY_METERS_PER_SECOND);
 
                 odometry.update(getGyroscopeRotation(), new SwerveModulePosition[] {
@@ -166,7 +169,7 @@ public class DriveTrain extends Subsystem {
             default:
                 speeds = new ChassisSpeeds();
         }
-        drive(speeds);
+        setChassisSpeeds(speeds);
         if (x != 0.0 && y != 0.0 && r != 0.0) {
             // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented movement
         }
@@ -174,12 +177,12 @@ public class DriveTrain extends Subsystem {
             }
             @Override
             public void onStop(double timestamp) {
-                drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+                setChassisSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0));
             }
         });
     }
 
-    public void zeroGyroscope() {
+    public void setGyroZero() {
 		m_pigeon.setFusedHeading(0.0);
 	}
 
@@ -191,15 +194,15 @@ public class DriveTrain extends Subsystem {
         return periodic.state;
     }
 
-	public void zeroDriveEncoders() {
+	public void setZeroDriveEncoders() {
 		m_frontLeftModule.resetDriveEncoder();
 		m_frontRightModule.resetDriveEncoder();
 		m_backLeftModule.resetDriveEncoder();
 		m_backRightModule.resetDriveEncoder();
 	}
 
-	public void drive(ChassisSpeeds chassisSpeeds) {
-		m_chassisSpeeds = chassisSpeeds;
+	public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
+		periodic.speeds = chassisSpeeds;
 	}
     
 
@@ -217,8 +220,38 @@ public class DriveTrain extends Subsystem {
     }
 
     public void outputTelemetry() {
+        final Pose2d odomPose = odometry.getPoseMeters();
+		final double heading = m_pigeon.getFusedHeading();
+		SmartDashboard.putNumberArray("Drive/Odometry",
+			new double[] {
+				odomPose.getX(),
+				odomPose.getY(),
+				Math.toRadians(heading)
+			}
+		);
+		SmartDashboard.putNumberArray("Drive/Swerve", new double[] {
+			m_frontLeftModule.getSteerAngle(), m_frontLeftModule.getDriveVelocity(),
+			m_frontRightModule.getSteerAngle(), m_frontRightModule.getDriveVelocity(),
+			m_backLeftModule.getSteerAngle(), m_backLeftModule.getDriveVelocity(),
+			m_backRightModule.getSteerAngle(), m_backRightModule.getDriveVelocity(),
+		});
+		SmartDashboard.putNumberArray("Drive/Swerve Setpoint", new double[] {
+			m_frontLeftModule.getDesiredSteerAngle(), m_frontLeftModule.getDriveVelocity(),
+			m_frontRightModule.getDesiredSteerAngle(), m_frontRightModule.getDriveVelocity(),
+			m_backLeftModule.getDesiredSteerAngle(), m_backLeftModule.getDriveVelocity(),
+			m_backRightModule.getDesiredSteerAngle(), m_backRightModule.getDriveVelocity(),
+		});
+		SmartDashboard.putNumberArray("Drive/Module Encoders", new double[] {
+			m_frontLeftModule.getDriveEncoder(),
+			m_frontRightModule.getDriveEncoder(),
+			m_backLeftModule.getDriveEncoder(),
+			m_backRightModule.getDriveEncoder(),
+		});
+		SmartDashboard.putString("Drive/Mode", periodic.state.toString());
     }
 
     public void reset() {
+        setChassisSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0));
+        setGyroZero();
     }
 }

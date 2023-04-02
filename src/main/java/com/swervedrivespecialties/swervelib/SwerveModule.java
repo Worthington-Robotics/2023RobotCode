@@ -10,4 +10,6 @@ public interface SwerveModule {
     void resetDriveEncoder();
 
     double getDriveEncoder();
+
+    double getDesiredSteerAngle();
 }

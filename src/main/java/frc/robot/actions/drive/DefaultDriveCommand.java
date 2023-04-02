@@ -46,7 +46,7 @@ public class DefaultDriveCommand extends Action{
             default:
                 speeds = new ChassisSpeeds();
         }
-        m_drivetrainSubsystem.drive(speeds);
+        m_drivetrainSubsystem.setChassisSpeeds(speeds);
         if (x != 0.0 && y != 0.0 && r != 0.0) {
             // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented movement
         }
@@ -61,7 +61,7 @@ public class DefaultDriveCommand extends Action{
 
     @Override
     public void onStop() {
-        m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+        m_drivetrainSubsystem.setChassisSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0));
     }
    
 }
