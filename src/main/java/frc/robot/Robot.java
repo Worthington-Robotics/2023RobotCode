@@ -27,10 +27,6 @@ import frc.robot.actions.manipulator.RunIntakeAction;
 import frc.robot.actions.vision.SetPipelineAction;
 import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.arm.CycleArmAction;
-import frc.robot.actions.arm.LLHoldAction;
-import frc.robot.actions.arm.RotateOneEighty;
-import frc.robot.actions.arm.RotateTurretAction;
-import frc.robot.actions.arm.TEHoldAction;
 import frc.robot.actions.arm.TwoPoseAction;
 import frc.robot.actions.manipulator.MoveWristAction;
 
@@ -141,7 +137,6 @@ public class Robot extends TimedRobot {
         enabledLooper.stop();
 
         StateMachine.getInstance().assertStop();
-        Arm.getInstance().turretHoldLock(false, 0);
 
         disabledLooper.start();
     }
@@ -210,7 +205,6 @@ public class Robot extends TimedRobot {
         intakeSpitButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
         intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER, false)));
         // autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
-        LLTargetButton.whileTrue(Action.toCommand(new LLHoldAction(true, true, false)));
         // gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
         limelightPipeButton.onTrue(Action.toCommand(new SetPipelineAction()));
         unStowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
@@ -231,16 +225,9 @@ public class Robot extends TimedRobot {
         poseSlideButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SLIDE)));
         poseConeUpButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_UP)));
         poseIntakeButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.INTAKE)));
-        
-
-        pos0Button.whileTrue(Action.toCommand(new RotateTurretAction(0, true)));
-        pos90Button.whileTrue(Action.toCommand(new RotateTurretAction(-20480, true)));
-        pos270Button.whileTrue(Action.toCommand(new RotateTurretAction(20480, true)));
-        LLButton.whileTrue(Action.toCommand(new RotateOneEighty(true)));
 
         wristUpButton.whileTrue(Action.toCommand(new MoveWristAction(-.33)));
         wristDownButton.whileTrue(Action.toCommand(new MoveWristAction(.33)));
-        turretHold.whileTrue(Action.toCommand(new TEHoldAction()));
         cycleButton.whileTrue(Action.toCommand(new CycleArmAction()));
     }
 }
