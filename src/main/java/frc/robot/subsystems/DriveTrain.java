@@ -145,10 +145,10 @@ public class DriveTrain extends Subsystem {
 		        SwerveDriveKinematics.desaturateWheelSpeeds(periodic.states, MAX_VELOCITY_METERS_PER_SECOND);
 
                 odometry.update(getGyroscopeRotation(), new SwerveModulePosition[] {
-                    new SwerveModulePosition(m_frontLeftModule.getDriveEncoder() /  Constants.DRIVE_ENCODER_TO_METERS, Rotation2d.fromDegrees(m_frontLeftModule.getSteerAngle())),
-                    new SwerveModulePosition(m_frontRightModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS, Rotation2d.fromDegrees(m_frontLeftModule.getSteerAngle())),
-                    new SwerveModulePosition(m_backLeftModule.getDriveEncoder() /   Constants.DRIVE_ENCODER_TO_METERS, Rotation2d.fromDegrees(m_frontLeftModule.getSteerAngle())),
-                    new SwerveModulePosition(m_backRightModule.getDriveEncoder() /  Constants.DRIVE_ENCODER_TO_METERS, Rotation2d.fromDegrees(m_frontLeftModule.getSteerAngle())),
+                    new SwerveModulePosition(m_frontLeftModule.getDriveEncoder() /  Constants.DRIVE_ENCODER_TO_METERS, Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
+                    new SwerveModulePosition(m_frontRightModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS, Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
+                    new SwerveModulePosition(m_backLeftModule.getDriveEncoder() /   Constants.DRIVE_ENCODER_TO_METERS, Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
+                    new SwerveModulePosition(m_backRightModule.getDriveEncoder() /  Constants.DRIVE_ENCODER_TO_METERS, Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
                 });
 
                 final double x = periodic.XboxLeftX;
@@ -165,7 +165,7 @@ public class DriveTrain extends Subsystem {
                 );
                 break;
             case RobotRel:
-                speeds = new ChassisSpeeds(x, y, r);
+                speeds = new ChassisSpeeds(x * 4, y * 4, r * 10);
                 break;
             default:
                 speeds = new ChassisSpeeds();
@@ -208,7 +208,7 @@ public class DriveTrain extends Subsystem {
     
 
     public void readPeriodicInputs() {
-        double LeftX = Constants.XBOX.getLeftX();
+        double LeftX = -Constants.XBOX.getLeftX();
         double LeftY = Constants.XBOX.getLeftY();
         double RightX = Constants.XBOX.getRightX();
 

@@ -10,25 +10,25 @@ public class Constants {
     // ### Device ID declarations ###
 
     // Drivetrain
-    public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 0;
-    public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 0;
-    public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 5;
-    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 2.5;
+    public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 8;
+    public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 7;
+    public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 2;
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(265.1 - 180.0);
 
-    public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 1;
-    public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 0;
-    public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 5;
-    public static final int FRONT_RIGHT_MODULE_STEER_OFFSET = 0;
+    public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 6;
+    public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 5;
+    public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 1;
+    public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(292.236);
 
-    public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 2;
-    public static final int BACK_LEFT_MODULE_STEER_MOTOR = 0;
-    public static final int BACK_LEFT_MODULE_STEER_ENCODER = 5;
-    public static final int BACK_LEFT_MODULE_STEER_OFFSET = 0;
+    public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 12;
+    public static final int BACK_LEFT_MODULE_STEER_MOTOR = 11;
+    public static final int BACK_LEFT_MODULE_STEER_ENCODER = 4;
+    public static final double BACK_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(219.7);
 
-    public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 3;
-    public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 0;
-    public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 5;
-    public static final int BACK_RIGHT_MODULE_STEER_OFFSET = 0;
+    public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 10;
+    public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 9;
+    public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 3;
+    public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(33.8);
 
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.02;
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.02;
@@ -37,13 +37,12 @@ public class Constants {
 
     
     
-    // Arm, Turret, Manipulator Constants
+    // Arm, Manipulator Constants
 
     // Arm Consants - IDs
-    public static final int ARM_TURRET_ID = 9;
-    public static final int ARM_ARM_M_ID = 10;
-    public static final int ARM_EXTENSION_ID = 11;
-    public static final int ARM_ARM_S_ID = 12;
+    public static final int ARM_ARM_M_ID = 16;
+    public static final int ARM_EXTENSION_ID = 17;
+    public static final int ARM_ARM_S_ID = 18;
     
     public static final int CTRE_PCM_ID = 0;
     public static final int ARM_GRABBER_FWD_CHANNEL = 5;
@@ -65,18 +64,8 @@ public class Constants {
     public static final double PIVOT_ENCODER_PER_DEGREE = 416.31;
     public static final double ENCODER_PER_INCH = 1833.33;
 
-    public static final double TURRET_KP = .12;
-    public static final double TURRET_KI = 0;
-    public static final double TURRET_IMAX = 0;
-    public static final double TURRET_KD = 8;
-
-    public static final double TURRET_TPD = 227.5;
-
     public static final double ARM_PIVOT_KP = .017;
     public static final double PIVOT_MIN_TIME =21.0;
-
-    public static final double TURRET_ANGLE_ENCODER_ACCEPTANCE = TURRET_TPD * 2;
-    public static final double TURRET_MIN_TIME = 1.5;
 
     public static final double ARM_EXTENSION_KP = .08;
     public static final double EXTENSION_MIN_TIME = 1.5;
@@ -105,10 +94,7 @@ public class Constants {
     public static final int INTAKE_MOTOR_ID = 7;
     
     //Pigion ID
-    public static final int PIGION_ID = 1;
-
-    // Pigeon ID
-    public static final int PIGEON_ID = 1;
+    public static final int PIGION_ID = 0;
 
 
     // ### Joystick Constants ###
@@ -142,7 +128,7 @@ public class Constants {
     public static final double TICKS_PER_INCH = 1695;
 
     // Joystick deadzone
-    public static final double XBOX_DEADZONE = 0.1;
+    public static final double XBOX_DEADZONE = 0.15;
     public static final double DEAD_ZONE = 0.05;
     public static final double OPEN_LOOP_FILTER = 0.3;
     
@@ -150,9 +136,7 @@ public class Constants {
 
     //Lights Constants
     public static final int LIGHTS_ID = 9;
-    public static final int LIGHTS_ID_2 = 3;
     public static final int LIGHTS_LED_COUNT = 200;
-    public static final int LIGHTS_LED_COUNT_2 = 200;
     
     // Angle PID
     public static final double TURN_KP = 1.0 / 120.0;
