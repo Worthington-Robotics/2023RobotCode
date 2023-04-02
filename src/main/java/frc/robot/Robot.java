@@ -24,11 +24,6 @@ import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Arm.ArmMode;
 import frc.robot.subsystems.Arm.ArmPose;
 import frc.lib.statemachine.Action;
-import frc.robot.actions.drive.TeleopLevelAction;
-import frc.robot.actions.drive.GyroLockAction;
-import frc.robot.actions.drive.ReverseDriveAction;
-import frc.robot.actions.drive.DriveTurnAction;
-import frc.robot.actions.drive.GearChangeAction;
 import frc.robot.actions.manipulator.RunIntakeAction;
 import frc.robot.actions.vision.SetPipelineAction;
 import frc.robot.actions.arm.ArmPoseAction;
@@ -187,7 +182,6 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
 
         // Reset anything here
-        DriveTrain.getInstance().setOpenLoop();
         DriveTrain.getInstance().reset();
         enabledLooper.start();
        // Arm.getInstance().clearPin();
@@ -215,23 +209,23 @@ public class Robot extends TimedRobot {
     public void testPeriodic() {}
 
     public void initButtons() {
-        driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
+        // driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
         intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
         intakeSpitButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
         intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER, false)));
-        autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
+        // autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
         LLTargetButton.whileTrue(Action.toCommand(new LLHoldAction(true, true, false)));
-        gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
+        // gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
         limelightPipeButton.onTrue(Action.toCommand(new SetPipelineAction()));
         unStowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
         zeroPoseButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.ZERO)));
-        revDriveTrainButton.onTrue(Action.toCommand(new ReverseDriveAction()));
+        // revDriveTrainButton.onTrue(Action.toCommand(new ReverseDriveAction()));
  
 
-        pos0MButton.whileTrue(Action.toCommand(new DriveTurnAction(180)));
-        pos90MButton.whileTrue(Action.toCommand(new DriveTurnAction(90)));
-        pos270MButton.whileTrue(Action.toCommand(new DriveTurnAction(270)));
-        pos180MButton.whileTrue(Action.toCommand(new DriveTurnAction(0)));
+        // pos0MButton.whileTrue(Action.toCommand(new DriveTurnAction(180)));
+        // pos90MButton.whileTrue(Action.toCommand(new DriveTurnAction(90)));
+        // pos270MButton.whileTrue(Action.toCommand(new DriveTurnAction(270)));
+        // pos180MButton.whileTrue(Action.toCommand(new DriveTurnAction(0)));
 
 
         transButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.TRANSIT)));

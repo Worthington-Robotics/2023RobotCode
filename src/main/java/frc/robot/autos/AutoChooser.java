@@ -12,20 +12,13 @@ public class AutoChooser {
 	
 	public enum AutoType {
 		None,
-		RedOne,
-		RedTwo,
-		RedThree,
-		BlueOne,
-		BlueTwo,
-		BlueThree,
-		Whoops
 	}
 
 	// The currently chosen autonomous routine
 	private AutoType chosen;
 
 	private AutoChooser() {
-		change(AutoType.RedOne);	
+		change(AutoType.None);	
 	}
 
 	// Run the currently selected autonomous
@@ -33,27 +26,6 @@ public class AutoChooser {
 		switch (chosen) {
 			case None:
 				DebugLogger.getInstance().debugError(DebugLevel.kNone, "No autonomous is currently selected!");
-				break;
-			case RedOne:
-				StateMachine.getInstance().runMachine(new AdvRedRightSideAuto());
-				break;
-			case RedTwo:
-				StateMachine.getInstance().runMachine(new AdvancedChargeStation());
-				break;
-			case RedThree:
-				StateMachine.getInstance().runMachine(new AdvRedLeftSideAuto());
-				break;
-			case BlueOne:
-				StateMachine.getInstance().runMachine(new AdvBlueLeftSideAuto());
-				break;
-			case BlueTwo:
-				StateMachine.getInstance().runMachine(new AdvancedChargeStation());
-				break;
-			case BlueThree:
-				StateMachine.getInstance().runMachine(new AdvBlueRightSideAuto());
-				break;
-			case Whoops:
-				StateMachine.getInstance().runMachine(new PitTestAuto());
 				break;
 		}
 	}
