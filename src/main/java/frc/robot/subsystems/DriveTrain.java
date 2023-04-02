@@ -69,7 +69,7 @@ public class DriveTrain extends Subsystem {
         public double XboxLeftY;
         public double XboxLeftX;
         public double XboxRightX;
-        public ChassisSpeeds speeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+        public ChassisSpeeds speeds;
     }
 
     private DriveTrain() {
@@ -136,6 +136,7 @@ public class DriveTrain extends Subsystem {
         enabledLooper.register(new Loop() {
             @Override
             public void onStart(double timestamp) {
+                periodic.speeds = new ChassisSpeeds(0.0, 0.0, 0.0);
                 periodic.states = m_kinematics.toSwerveModuleStates(periodic.speeds);
             }
             @Override
@@ -207,9 +208,29 @@ public class DriveTrain extends Subsystem {
     
 
     public void readPeriodicInputs() {
-        periodic.XboxLeftX = Constants.XBOX.getLeftX();
-        periodic.XboxLeftX = Constants.XBOX.getLeftX();
-        periodic.XboxRightX = Constants.XBOX.getRightX();
+        double LeftX = Constants.XBOX.getLeftX();
+        double LeftY = Constants.XBOX.getLeftY();
+        double RightX = Constants.XBOX.getRightX();
+
+        if (Math.abs(LeftX) < Constants.XBOX_DEADZONE) {
+            periodic.XboxLeftX = 0.0;
+        } else {
+            periodic.XboxLeftX = LeftX;
+        }
+
+        if (Math.abs(LeftY) < Constants.XBOX_DEADZONE) {
+            periodic.XboxLeftY = 0.0;
+        } else {
+            periodic.XboxLeftY = LeftY;
+        }
+
+        if (Math.abs(RightX) < Constants.XBOX_DEADZONE) {
+            periodic.XboxRightX = 0.0;
+        } else {
+            periodic.XboxRightX = RightX;
+        }
+
+
     }
 
     public void writePeriodicOutputs() {
@@ -236,10 +257,10 @@ public class DriveTrain extends Subsystem {
 			m_backRightModule.getSteerAngle(), m_backRightModule.getDriveVelocity(),
 		});
 		SmartDashboard.putNumberArray("Drive/Swerve Setpoint", new double[] {
-			m_frontLeftModule.getDesiredSteerAngle(), m_frontLeftModule.getDriveVelocity(),
-			m_frontRightModule.getDesiredSteerAngle(), m_frontRightModule.getDriveVelocity(),
-			m_backLeftModule.getDesiredSteerAngle(), m_backLeftModule.getDriveVelocity(),
-			m_backRightModule.getDesiredSteerAngle(), m_backRightModule.getDriveVelocity(),
+			m_frontLeftModule.getDesiredSteerAngle(), periodic.states[0].speedMetersPerSecond,
+			m_frontRightModule.getDesiredSteerAngle(), periodic.states[1].speedMetersPerSecond,
+			m_backLeftModule.getDesiredSteerAngle(), periodic.states[2].speedMetersPerSecond,
+			m_backRightModule.getDesiredSteerAngle(), periodic.states[3].speedMetersPerSecond,
 		});
 		SmartDashboard.putNumberArray("Drive/Module Encoders", new double[] {
 			m_frontLeftModule.getDriveEncoder(),
@@ -248,6 +269,9 @@ public class DriveTrain extends Subsystem {
 			m_backRightModule.getDriveEncoder(),
 		});
 		SmartDashboard.putString("Drive/Mode", periodic.state.toString());
+        SmartDashboard.putNumberArray("Drive/Swerve Setpoint Joy", new double[] {
+            periodic.XboxLeftX, periodic.XboxLeftY, periodic.XboxRightX
+        });
     }
 
     public void reset() {

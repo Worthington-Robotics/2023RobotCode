@@ -49,7 +49,7 @@ public class Manipulator extends Subsystem {
 	public void readPeriodicInputs() {
 		periodic.TimeOfFlightDistance = intakeTOF.getRange();
 		periodic.wristEncoder = wristMotor.getSelectedSensorPosition();
-		periodic.rawWristMotorPower = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(3), 1,0);
+		periodic.rawWristMotorPower = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(3), 0,0);//TODO make work again. change min_power to 1
 	}
 
 	public void writePeriodicOutputs() {

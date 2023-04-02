@@ -12,22 +12,22 @@ public class Constants {
     // Drivetrain
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 0;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 0;
-    public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 0;
-    public static final int FRONT_LEFT_MODULE_STEER_OFFSET = 0;
+    public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 5;
+    public static final double FRONT_LEFT_MODULE_STEER_OFFSET = 2.5;
 
-    public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 0;
+    public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 1;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 0;
-    public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 0;
+    public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 5;
     public static final int FRONT_RIGHT_MODULE_STEER_OFFSET = 0;
 
-    public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 0;
+    public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 2;
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 0;
-    public static final int BACK_LEFT_MODULE_STEER_ENCODER = 0;
+    public static final int BACK_LEFT_MODULE_STEER_ENCODER = 5;
     public static final int BACK_LEFT_MODULE_STEER_OFFSET = 0;
 
-    public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 0;
+    public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 3;
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 0;
-    public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 0;
+    public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 5;
     public static final int BACK_RIGHT_MODULE_STEER_OFFSET = 0;
 
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.02;
@@ -142,6 +142,7 @@ public class Constants {
     public static final double TICKS_PER_INCH = 1695;
 
     // Joystick deadzone
+    public static final double XBOX_DEADZONE = 0.1;
     public static final double DEAD_ZONE = 0.05;
     public static final double OPEN_LOOP_FILTER = 0.3;
     
