@@ -9,13 +9,28 @@ public class Constants {
     // ### Device ID declarations ###
 
     // Drivetrain
-    public static final int DRIVE_FRONT_LEFT_ID = 1;
-    public static final int DRIVE_FRONT_RIGHT_ID = 3;
-    public static final int DRIVE_BACK_LEFT_ID = 2;
-    public static final int DRIVE_BACK_RIGHT_ID = 4;
+    public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 0;
+    public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 0;
+    public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 0;
+    public static final int FRONT_LEFT_MODULE_STEER_OFFSET = 0;
 
-    public static final int DRIVE_TRANSMISSION_FORWARD = 5;
-    public static final int DRIVE_TRANSMISSION_REVERSE = 4;
+    public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 0;
+    public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 0;
+    public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 0;
+    public static final int FRONT_RIGHT_MODULE_STEER_OFFSET = 0;
+
+    public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 0;
+    public static final int BACK_LEFT_MODULE_STEER_MOTOR = 0;
+    public static final int BACK_LEFT_MODULE_STEER_ENCODER = 0;
+    public static final int BACK_LEFT_MODULE_STEER_OFFSET = 0;
+
+    public static final int BACK_RIGHT_MODULE_DRIVE_MOTOR = 0;
+    public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 0;
+    public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 0;
+    public static final int BACK_RIGHT_MODULE_STEER_OFFSET = 0;
+
+
+
 
     
     
