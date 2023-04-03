@@ -1,10 +1,6 @@
 package frc.lib.control;
 
-import com.revrobotics.CANPIDController.AccelStrategy;
-
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.subsystems.DriveTrain;
 
 public class RotationalTrapController {
     
@@ -32,27 +28,28 @@ public class RotationalTrapController {
         this.maxAlpha = maxAlpha;
         this.kP = kP;
         currOmgea = 0;
-        currTheta = DriveTrain.getInstance().getGyroscopeRotation().getDegrees();
+        currTheta = 0;
         goalTheta = currTheta;
         state = RTCState.DISABLE;
         direction = 0;
     }
 
-    public void enableToGoal(double goalHeading) {
+    public void enableToGoal(double currHeading, double currTime, double goalHeading) {
         goalTheta = goalHeading;
-        currTheta = DriveTrain.getInstance().getGyroscopeRotation().getDegrees();
-        lastUpdate = Timer.getFPGATimestamp();
+        currTheta = currHeading;
+        lastUpdate = currTime;
         state = RTCState.ACCEL;
-        direction = ((currTheta - goalTheta) > 0) ? 1 : -1;
+        direction = ((currTheta - goalTheta) > 0) ? -1 : 1;
     }
 
     public void disableController() {
         state = RTCState.DISABLE;
     }
 
-    public double updateController(double updateTime) {
+    public double updateController(double updateHeading, double updateTime) {
         if(state != RTCState.DISABLE) {
             double dt = updateTime - lastUpdate;
+            currTheta = updateHeading;
             switch(state) {
                 case ACCEL:
                     currOmgea += (direction * maxAlpha * dt);
@@ -65,26 +62,25 @@ public class RotationalTrapController {
                     break;
                 default:
             }
-            checkTransition();
             lastUpdate = updateTime;
+            checkTransition();
         } else {
             System.out.println("ERROR: RTC is disabled!");
         }
         return currOmgea;
-
     }
 
-    public void checkTransition() {
+    private void checkTransition() {
         switch (state) {
             case ACCEL:
-                if(Math.abs(currOmgea * currOmgea / (2 * maxAlpha)) < Math.abs(goalTheta - currTheta)) {
+                if(Math.abs(currOmgea * currOmgea / (2 * maxAlpha)) >= Math.abs(goalTheta - currTheta)) {
                     state = RTCState.DECEL;
                 } else if(Math.abs(currOmgea) > Math.abs(maxOmega)) {
                     state = RTCState.CRUISING;
                 }
                 break;
             case CRUISING:
-                if(Math.abs(currOmgea * currOmgea / (2 * maxAlpha)) < Math.abs(goalTheta - currTheta)) {
+                if(Math.abs(currOmgea * currOmgea / (2 * maxAlpha)) >= Math.abs(goalTheta - currTheta)) {
                     state = RTCState.DECEL;
                 }
                 break;
