@@ -18,12 +18,9 @@ public class Manipulator extends Subsystem {
 	private static Manipulator instance = new Manipulator();
 	public static Manipulator getInstance() { return instance; }
 	public ManipulatorIO periodic;
-
 	private TalonFX wristMotor, intakeMotor;
-	private TimeOfFlight intakeTOF;
 
 	public class ManipulatorIO extends PeriodicIO {
-		double TimeOfFlightDistance;
 		double wristMotorPower;
 		double intakeMotorPower;
 		double rawWristMotorPower;
@@ -32,13 +29,13 @@ public class Manipulator extends Subsystem {
 		double wristEncoder;
 		double wristOffset;
 		double prevDesiredWrist;
-		boolean timeOfFlightActivated = false;
+		double intakeMotorCurrent;
+		boolean hasGamePiece;
 
 	}
 
 	public Manipulator() {
 		periodic = new ManipulatorIO();
-		intakeTOF = new TimeOfFlight(1);
 		wristMotor = new TalonFX(Constants.WRIST_MOTOR_ID, "Default Name");
 		wristMotor.setNeutralMode(NeutralMode.Brake);
 		intakeMotor = new TalonFX(Constants.INTAKE_MOTOR_ID, "Default Name");
@@ -47,18 +44,29 @@ public class Manipulator extends Subsystem {
 	}
 
 	public void readPeriodicInputs() {
-		periodic.TimeOfFlightDistance = intakeTOF.getRange();
+		periodic.intakeMotorCurrent = intakeMotor.getSupplyCurrent();
+		if (periodic.intakeMotorCurrent > Constants.INTAKE_CURRENT_ACCEPTANCE) {
+			periodic.hasGamePiece = true;
+		}
+		if (intakeMotor.getSelectedSensorVelocity() < 0) {
+			periodic.hasGamePiece = false;
+		}
 		periodic.wristEncoder = wristMotor.getSelectedSensorPosition();
 		periodic.rawWristMotorPower = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(3), 0,0);//TODO make work again. change min_power to 1
 	}
 
 	public void writePeriodicOutputs() {
-		if((periodic.TimeOfFlightDistance > 200 || periodic.TimeOfFlightDistance == 0) || periodic.intakeMotorPower < 0) {
+		// if((periodic.TimeOfFlightDistance > 200 || periodic.TimeOfFlightDistance == 0) || periodic.intakeMotorPower < 0) {
+		// 	intakeMotor.set(ControlMode.PercentOutput, periodic.intakeMotorPower);
+		// 	periodic.timeOfFlightActivated = false;
+		// } else {
+		// 	intakeMotor.set(ControlMode.PercentOutput, Math.max(.15, periodic.intakeMotorPower));
+		// 	periodic.timeOfFlightActivated = true;
+		// }
+		if (!periodic.hasGamePiece) {
 			intakeMotor.set(ControlMode.PercentOutput, periodic.intakeMotorPower);
-			periodic.timeOfFlightActivated = false;
 		} else {
 			intakeMotor.set(ControlMode.PercentOutput, Math.max(.15, periodic.intakeMotorPower));
-			periodic.timeOfFlightActivated = true;
 		}
 		if (Arm.getInstance().getMode().ordinal() < ArmMode.CLOSED_LOOP.ordinal() ) {
 			wristMotor.set(ControlMode.PercentOutput, periodic.wristMotorPower);
@@ -106,7 +114,8 @@ public class Manipulator extends Subsystem {
 	}
 
 	public boolean isObject() {
-		return (periodic.TimeOfFlightDistance < 200 && periodic.TimeOfFlightDistance != 0);
+		return periodic.hasGamePiece;
+		// return (periodic.TimeOfFlightDistance < 200 && periodic.TimeOfFlightDistance != 0);
 	}
 
 	// Convert joystick values into motor powers
@@ -153,10 +162,6 @@ public class Manipulator extends Subsystem {
 		return periodic.prevDesiredWrist;
 	}
 
-	public boolean getTimeOfFlightActivated() {
-		return periodic.timeOfFlightActivated;
-	}
-
 	// PID
 	
 	public void wristAnglePID() {
@@ -181,7 +186,7 @@ public class Manipulator extends Subsystem {
 		SmartDashboard.putNumber("Manipulator/WristPower", periodic.wristMotorPower);
 		SmartDashboard.putNumber("Manipulator/RawWristMotorPower", periodic.rawWristMotorPower);
 		SmartDashboard.putNumber("Arm/encoder/wrist", periodic.wristEncoder);
-		SmartDashboard.putNumber("Manipulator/TOFDistance", periodic.TimeOfFlightDistance);
+		SmartDashboard.putNumber("Manipulator/IntakeMotorCurrent", periodic.intakeMotorCurrent);
 		SmartDashboard.putNumber("Arm/error/wrist error", periodic.wristEncoderError);
 		SmartDashboard.putNumber("Arm/encoder/wrist-D", periodic.desiredWristEncoder);
 	}

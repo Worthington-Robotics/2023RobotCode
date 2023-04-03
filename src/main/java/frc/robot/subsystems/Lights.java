@@ -84,7 +84,7 @@ public class Lights extends Subsystem {
         if(DriverStation.isDisabled()){
             state = State.LIGHTS_WHITE;
         } else {
-            if(Manipulator.getInstance().getTimeOfFlightActivated()){
+            if(Manipulator.getInstance().isObject()){
                 state = State.LIGHTS_GREEN;
             } else if(wantObject > 0.9){
                 state = State.LIGHTS_YELLOW;
