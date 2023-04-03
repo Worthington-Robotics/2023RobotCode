@@ -135,8 +135,8 @@ public class Robot extends TimedRobot {
         // Reset anything here
         DriveTrain.getInstance().reset();
         enabledLooper.start();
-       // Arm.getInstance().clearPin();
         Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
+        DriveTrain.getInstance().setFieldRel();
     }
 
     @Override

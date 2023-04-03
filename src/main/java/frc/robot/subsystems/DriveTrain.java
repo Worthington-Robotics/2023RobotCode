@@ -74,6 +74,7 @@ public class DriveTrain extends Subsystem {
         public double desiredEncoder;
         public double xAutoSupplier;
         public double yAutoSupplier;
+        public boolean isRobotRel;
     }
 
     private DriveTrain() {
@@ -165,7 +166,11 @@ public class DriveTrain extends Subsystem {
                     case AutoControlled:
                         x = periodic.xAutoSupplier;
                         y = periodic.yAutoSupplier;
-                        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x,y,0,DriveTrain.getInstance().getGyroscopeRotation());
+                        if(periodic.isRobotRel){
+                            speeds = new ChassisSpeeds(x,y,0);
+                        } else {
+                            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x,y,0, getGyroscopeRotation()); 
+                        }
                         break;
                     case FieldRel:
                         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -260,6 +265,10 @@ public class DriveTrain extends Subsystem {
 
     public void setAutoYSupplier(double supplier){
         periodic.yAutoSupplier = supplier;
+    }
+
+    public void setRobotRelBool(boolean enable){
+        periodic.isRobotRel = enable;
     }
 
     public void readPeriodicInputs() {

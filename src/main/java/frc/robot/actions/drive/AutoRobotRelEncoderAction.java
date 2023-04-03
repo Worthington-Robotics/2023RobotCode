@@ -1,18 +1,21 @@
 package frc.robot.actions.drive;
 
-
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
 
-public class AutoFieldRelEncoderAction extends Action{
+public class AutoRobotRelEncoderAction extends Action{
     private final double m_translationXSupplier;
     private final double m_translationYSupplier;
+    private final double m_rotationSupplier;
+    private ChassisSpeeds speeds;
     private double desiredEncoder;
 
-    public AutoFieldRelEncoderAction(double translationXSupplier, double translationYSupplier, double desiredEncoder) {
+    public AutoRobotRelEncoderAction(double translationXSupplier, double translationYSupplier, double rotationSupplier) {
         this.m_translationXSupplier = translationXSupplier;
         this.m_translationYSupplier = translationYSupplier;
-        this.desiredEncoder = desiredEncoder;
+        this.m_rotationSupplier = rotationSupplier;
     }
 
     @Override
@@ -23,12 +26,11 @@ public class AutoFieldRelEncoderAction extends Action{
 
         DriveTrain.getInstance().setAutoXSupplier(m_translationXSupplier);
         DriveTrain.getInstance().setAutoYSupplier(m_translationYSupplier);
-        DriveTrain.getInstance().setRobotRelBool(false);
+        DriveTrain.getInstance().setRobotRelBool(true);
     }
 
     @Override
     public void onLoop() {
-
     }
 
     @Override
