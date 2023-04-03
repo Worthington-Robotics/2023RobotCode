@@ -11,7 +11,7 @@ public class AutoChooser {
 	public static AutoChooser getInstance() { return instance; }
 	
 	public enum AutoType {
-		None,
+		None, TestAuto
 	}
 
 	// The currently chosen autonomous routine
@@ -27,6 +27,8 @@ public class AutoChooser {
 			case None:
 				DebugLogger.getInstance().debugError(DebugLevel.kNone, "No autonomous is currently selected!");
 				break;
+			case TestAuto:
+				StateMachine.getInstance().runMachine(new TestAuto());
 		}
 	}
 

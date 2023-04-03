@@ -28,6 +28,8 @@ import frc.robot.actions.vision.SetPipelineAction;
 import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.arm.CycleArmAction;
 import frc.robot.actions.arm.TwoPoseAction;
+import frc.robot.actions.drive.DriveSwitchRobotMode;
+import frc.robot.actions.drive.DriveZeroGyro;
 import frc.robot.actions.manipulator.MoveWristAction;
 
 /**
@@ -42,27 +44,21 @@ public class Robot extends TimedRobot {
     private Looper enabledLooper, disabledLooper;
 
     // Input bindings
-    private JoystickButton driveGearButton = new JoystickButton(Constants.MASTER, 1);
     private JoystickButton intakeButton = new JoystickButton(Constants.MASTER, 2);
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
-    private JoystickButton gyroLockButton = new JoystickButton(Constants.MASTER, 4);
     private JoystickButton limelightPipeButton = new JoystickButton(Constants.MASTER, 5);
     private JoystickButton unStowButton = new JoystickButton(Constants.MASTER, 6);
     private JoystickButton zeroPoseButton = new JoystickButton(Constants.MASTER, 7);
     private JoystickButton cycleButton = new JoystickButton(Constants.MASTER, 9);
     private JoystickButton revDriveTrainButton = new JoystickButton(Constants.MASTER, 11);
     private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 12);
-    
-    private POVButton pos0MButton = new POVButton(Constants.MASTER, 0);
-    private POVButton pos270MButton = new POVButton(Constants.MASTER, 270);
-    private POVButton pos90MButton = new POVButton(Constants.MASTER, 90);
-    private POVButton pos180MButton = new POVButton(Constants.MASTER, 180);
+
+    private JoystickButton toggleDriveModeButton = new JoystickButton(Constants.XBOX, 5);
+    private JoystickButton resetGyroButton = new JoystickButton(Constants.XBOX, 6);
 
 
-    private JoystickButton turretHold = new JoystickButton(Constants.SECOND, 1);
     private JoystickButton transButton = new JoystickButton(Constants.SECOND, 2);
     private JoystickButton intakeSpitButton = new JoystickButton(Constants.SECOND, 3);
-    private JoystickButton LLTargetButton = new JoystickButton(Constants.SECOND, 4);
     private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 5);
     private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 6);
     private JoystickButton poseMidButton = new JoystickButton(Constants.SECOND, 7);
@@ -210,6 +206,9 @@ public class Robot extends TimedRobot {
         unStowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
         zeroPoseButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.ZERO)));
         // revDriveTrainButton.onTrue(Action.toCommand(new ReverseDriveAction()));
+
+        toggleDriveModeButton.onTrue(Action.toCommand(new DriveSwitchRobotMode()));
+        resetGyroButton.onTrue(Action.toCommand(new DriveZeroGyro()));
  
 
         // pos0MButton.whileTrue(Action.toCommand(new DriveTurnAction(180)));

@@ -23,7 +23,7 @@ import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
-import frc.robot.actions.drive.DefaultDriveCommand;
+import frc.robot.actions.drive.AutoFieldRelativeAction;
 
 public class DriveTrain extends Subsystem {
     private static DriveTrain instance = new DriveTrain();
@@ -60,7 +60,8 @@ public class DriveTrain extends Subsystem {
 
     public enum State {
         FieldRel,
-        RobotRel
+        RobotRel,
+        AutoControlled
     }
 
     public class DriveTrainIO {
@@ -154,21 +155,26 @@ public class DriveTrain extends Subsystem {
                 final double x = periodic.XboxLeftX;
                 final double y = periodic.XboxLeftY;
                 final double r = periodic.XboxRightX;
+
                 ChassisSpeeds speeds;
+
                 switch (periodic.state) {
+                    case AutoControlled:
+                        speeds = periodic.speeds;
+                        break;
                     case FieldRel:
-                    speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                    x,
-                    y,
-                    r,
-                    getGyroscopeRotation()
-                );
-                break;
-            case RobotRel:
-                speeds = new ChassisSpeeds((x * 4.0), (y * 4.0), (r * 360.0));
-                break;
-            default:
-                speeds = new ChassisSpeeds();
+                        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                        (x * Constants.DRIVE_XY_MULTIPLIER),
+                        (y * Constants.DRIVE_XY_MULTIPLIER),
+                        (r * Constants.DRIVE_ROTATION_MULTIPLIER),
+                        getGyroscopeRotation()
+                        );
+                        break;
+                    case RobotRel:
+                        speeds = new ChassisSpeeds((x * Constants.DRIVE_XY_MULTIPLIER), (y * Constants.DRIVE_XY_MULTIPLIER), (r * Constants.DRIVE_ROTATION_MULTIPLIER));
+                        break;
+                    default:
+                        speeds = new ChassisSpeeds();
         }
         setChassisSpeeds(speeds);
         if (x != 0.0 && y != 0.0 && r != 0.0) {
@@ -191,8 +197,28 @@ public class DriveTrain extends Subsystem {
 		return Rotation2d.fromDegrees(m_pigeon.getFusedHeading());
 	}
 
+    public void toggleRobotMode() {
+        if (periodic.state == State.FieldRel) {
+            periodic.state = State.RobotRel;
+        } else {
+            periodic.state = State.FieldRel;
+        }
+    }
+
     public State getState() {
         return periodic.state;
+    }
+
+    public void setAutoState() {
+        periodic.state = State.AutoControlled;
+    }
+
+    public void setRobotRel() {
+        periodic.state = State.RobotRel;
+    }
+
+    public void setFieldRel() {
+        periodic.state = State.FieldRel;
     }
 
 	public void setZeroDriveEncoders() {
@@ -208,9 +234,9 @@ public class DriveTrain extends Subsystem {
     
 
     public void readPeriodicInputs() {
-        double LeftX = -Constants.XBOX.getLeftX();
-        double LeftY = Constants.XBOX.getLeftY();
-        double RightX = Constants.XBOX.getRightX();
+        double LeftX = -Constants.XBOX.getLeftY();
+        double LeftY = -Constants.XBOX.getLeftX();
+        double RightX = -Constants.XBOX.getRightX();
 
         if (Math.abs(LeftX) < Constants.XBOX_DEADZONE) {
             periodic.XboxLeftX = 0.0;

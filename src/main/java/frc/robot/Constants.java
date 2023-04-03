@@ -10,6 +10,9 @@ public class Constants {
     // ### Device ID declarations ###
 
     // Drivetrain
+    public static final double DRIVE_XY_MULTIPLIER = 4.0;
+    public static final double DRIVE_ROTATION_MULTIPLIER = 360.0;
+
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 8;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 7;
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 2;
