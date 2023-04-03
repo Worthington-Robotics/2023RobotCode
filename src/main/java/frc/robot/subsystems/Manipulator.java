@@ -44,15 +44,14 @@ public class Manipulator extends Subsystem {
 	}
 
 	public void readPeriodicInputs() {
-		periodic.intakeMotorCurrent = intakeMotor.getSupplyCurrent();
+		periodic.intakeMotorCurrent = intakeMotor.getSupplyCurrent(); //TODO: Add low current means that it doesn't have anything
 		if (periodic.intakeMotorCurrent > Constants.INTAKE_CURRENT_ACCEPTANCE) {
 			periodic.hasGamePiece = true;
 		}
-		if (intakeMotor.getSelectedSensorVelocity() < 0) {
+		if (periodic.intakeMotorPower < 0 && periodic.intakeMotorCurrent < Constants.INTAKE_CURRENT_ACCEPTANCE) {
 			periodic.hasGamePiece = false;
 		}
 		periodic.wristEncoder = wristMotor.getSelectedSensorPosition();
-		// periodic.rawWristMotorPower = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(3), 0,0);//TODO make work again. change min_power to 1
 	}
 
 	public void writePeriodicOutputs() {

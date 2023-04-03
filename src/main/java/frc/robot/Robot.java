@@ -27,7 +27,6 @@ import frc.robot.actions.manipulator.RunIntakeAction;
 import frc.robot.actions.vision.SetPipelineAction;
 import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.arm.CycleArmAction;
-import frc.robot.actions.arm.TwoPoseAction;
 import frc.robot.actions.drive.DriveSwitchRobotMode;
 import frc.robot.actions.drive.DriveZeroGyro;
 import frc.robot.actions.manipulator.MoveWristAction;
@@ -49,19 +48,18 @@ public class Robot extends TimedRobot {
     //private JoystickButton limelightPipeButton = new JoystickButton(Constants.MASTER, 5);
    // private JoystickButton unStowButton = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton cycleButton = new JoystickButton(Constants.XBOX, 7);
-    private POVButton zeroPoseButton = new POVButton(Constants.XBOX, 270);
+    private POVButton zeroPoseButton = new POVButton(Constants.XBOX, 180);
 
     private JoystickButton toggleDriveModeButton = new JoystickButton(Constants.XBOX, 5);
     private JoystickButton resetGyroButton = new JoystickButton(Constants.XBOX, 6);
 
-    private JoystickButton transButton = new JoystickButton(Constants.SECOND, 2);
+    private JoystickButton slideButton = new JoystickButton(Constants.SECOND, 2);
     private JoystickButton intakeSpitButton = new JoystickButton(Constants.SECOND, 3);
     private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 5);
     private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 6);
     private JoystickButton poseMidButton = new JoystickButton(Constants.SECOND, 7);
     private JoystickButton poseHighButton = new JoystickButton(Constants.SECOND, 8);
     private JoystickButton poseShelfButton = new JoystickButton(Constants.SECOND, 9);
-    private JoystickButton poseSlideButton = new JoystickButton(Constants.SECOND, 10);
     private JoystickButton poseConeUpButton = new JoystickButton(Constants.SECOND, 11);
     private JoystickButton poseIntakeButton = new JoystickButton(Constants.SECOND, 12);
 
@@ -167,11 +165,10 @@ public class Robot extends TimedRobot {
         toggleDriveModeButton.onTrue(Action.toCommand(new DriveSwitchRobotMode()));
         resetGyroButton.onTrue(Action.toCommand(new DriveZeroGyro()));
 
-        transButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.TRANSIT)));
+        slideButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SLIDE)));
         poseMidButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.MID)));
         poseHighButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.HIGH)));
-        poseShelfButton.onTrue(Action.toCommand(new TwoPoseAction(ArmPose.SHELF_BEGIN, ArmPose.SHELF_END)));
-        poseSlideButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SLIDE)));
+        poseShelfButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SHELF)));
         poseConeUpButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_UP)));
         poseIntakeButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.INTAKE)));
 

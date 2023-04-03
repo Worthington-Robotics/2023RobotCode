@@ -50,28 +50,24 @@ public class Arm extends Subsystem {
 	public enum ArmPose {
 		ZERO,
 		UNSTOW,
-		TRANSIT,
 		SLIDE,
 		INTAKE,
 		CONE_UP,
 		MID,
 		HIGH,
-		SHELF_BEGIN,
-		SHELF_END
+		SHELF,
 	}
 
 	// Pivot, Extend, Wrist
 	public static double[][] ArmPoses = {
 		{0,0,0},
 		{-109000, 0, 0},
-		{-15384, 10000, 29290},
-		{1775, 9100, 29290},
-		{-78431, -56300, -42800},
+		{-24900, 21500, 26200},
+		{-118000, -1635, -68800},
 		{-98372, -6800, -54000},
-		{-228000, -11700, -78200},
-		{-259000, -137000, -78000},
-		{-355000, 6318, -113800},
-		{-313000, 6318, -113800}
+		{-228000, -16700, -63200},
+		{-259000, -137000, -63000},
+		{-302000, -4500, -103000},
 	};
 
 	public class ArmIO extends PeriodicIO {

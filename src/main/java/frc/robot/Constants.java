@@ -57,7 +57,7 @@ public class Constants {
 
     public static final double INTAKE_POWER = .6;
     public static final double ANYTHING_OUT_POWER = -1;
-    public static final double INTAKE_CURRENT_ACCEPTANCE = 0.6;
+    public static final double INTAKE_CURRENT_ACCEPTANCE = 75;
 
     public static final double WRIST_PIVOT_KP = 1 / 80.0; //TODO: change this kp
     public static final double WRIST_MIN_TIME = 1.5;
