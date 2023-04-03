@@ -23,7 +23,7 @@ import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
-import frc.robot.actions.drive.AutoFieldRelativeAction;
+import frc.robot.actions.drive.AutoFieldRelAction;
 
 public class DriveTrain extends Subsystem {
     private static DriveTrain instance = new DriveTrain();
@@ -61,6 +61,7 @@ public class DriveTrain extends Subsystem {
     public enum State {
         FieldRel,
         RobotRel,
+        RobotTurn,
         AutoControlled
     }
 
@@ -71,6 +72,7 @@ public class DriveTrain extends Subsystem {
         public double XboxLeftX;
         public double XboxRightX;
         public ChassisSpeeds speeds;
+        public Rotation2d desiredHeading;
     }
 
     private DriveTrain() {
@@ -173,6 +175,9 @@ public class DriveTrain extends Subsystem {
                     case RobotRel:
                         speeds = new ChassisSpeeds((x * Constants.DRIVE_XY_MULTIPLIER), (y * Constants.DRIVE_XY_MULTIPLIER), (r * Constants.DRIVE_ROTATION_MULTIPLIER));
                         break;
+                    case RobotTurn:
+                        speeds = setRobotHeading(getGyroscopeRotation(), periodic.desiredHeading);
+                        break;
                     default:
                         speeds = new ChassisSpeeds();
         }
@@ -207,6 +212,12 @@ public class DriveTrain extends Subsystem {
 
     public State getState() {
         return periodic.state;
+    }
+
+    public ChassisSpeeds setRobotHeading(Rotation2d currentHeading, Rotation2d desiredHeading) {
+        double headingError = desiredHeading.getRadians() - currentHeading.getRadians();
+        ChassisSpeeds speeds = new ChassisSpeeds(0.0, 0.0, (Constants.DRIVE_TURN_KP * headingError));
+        return speeds;
     }
 
     public void setAutoState() {

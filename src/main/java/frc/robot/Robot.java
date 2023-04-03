@@ -56,7 +56,6 @@ public class Robot extends TimedRobot {
     private JoystickButton toggleDriveModeButton = new JoystickButton(Constants.XBOX, 5);
     private JoystickButton resetGyroButton = new JoystickButton(Constants.XBOX, 6);
 
-
     private JoystickButton transButton = new JoystickButton(Constants.SECOND, 2);
     private JoystickButton intakeSpitButton = new JoystickButton(Constants.SECOND, 3);
     private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 5);
@@ -68,16 +67,6 @@ public class Robot extends TimedRobot {
     private JoystickButton poseConeUpButton = new JoystickButton(Constants.SECOND, 11);
     private JoystickButton poseIntakeButton = new JoystickButton(Constants.SECOND, 12);
 
-    private POVButton pos0Button = new POVButton(Constants.SECOND, 0);
-    private POVButton pos270Button = new POVButton(Constants.SECOND, 270);
-    private POVButton pos90Button = new POVButton(Constants.SECOND, 90);
-    private POVButton LLButton = new POVButton(Constants.SECOND, 180);
-
-
-    /**
-     * This function is run when the robot is first started up and should be used
-     * for any initialization code.
-     */
     @Override
     public void robotInit() {
         //Start the RoboRIO kernal file system nonsense
@@ -114,14 +103,6 @@ public class Robot extends TimedRobot {
         AutoChooser.getInstance().printList();
     }
 
-    /**
-     * This function is called every robot packet, no matter the mode. Use
-     * this for items like diagnostics that you want ran during disabled,
-     * autonomous, teleoperated and test.
-     *
-     * <p>This runs after the mode specific periodic functions, but before
-     * LiveWindow and SmartDashboard integrated updating.
-     */
     @Override
     public void robotPeriodic() {
         manager.outputTelemetry();  
@@ -137,30 +118,15 @@ public class Robot extends TimedRobot {
         disabledLooper.start();
     }
 
-    /**
-     * This autonomous (along with the chooser code above) shows how to select
-     * between different autonomous modes using the dashboard. The sendable
-     * chooser code works with the Java SmartDashboard. If you prefer the
-     * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-     * getString line to get the auto name from the text box below the Gyro
-     *
-     * <p>You can add additional auto modes by adding additional comparisons to
-     * the switch structure below with additional strings. If using the
-     * SendableChooser make sure to add them to the chooser code above as well.
-     */
     @Override
     public void autonomousInit() {
         disabledLooper.stop();
-        //Arm.getInstance().clearPin();
         Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
         DriveTrain.getInstance().reset();
         enabledLooper.start();
         AutoChooser.getInstance().run_from_selection();
     }
 
-    /**
-     * This function is called periodically during autonomous.
-     */
     @Override
     public void autonomousPeriodic() {}
 
@@ -175,23 +141,16 @@ public class Robot extends TimedRobot {
         Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
     }
 
-    /**
-     * This function is called periodically during operator control.
-     */
     @Override
     public void teleopPeriodic() {}
 
     @Override
     public void testInit() {
         Arm.getInstance().setMode(ArmMode.DISABLED);
-        ///Arm.getInstance().setPin();
         disabledLooper.stop();
         enabledLooper.start();
     }
 
-    /**
-     * This function is called periodically during test mode.
-     */
     @Override
     public void testPeriodic() {}
 
@@ -209,13 +168,6 @@ public class Robot extends TimedRobot {
 
         toggleDriveModeButton.onTrue(Action.toCommand(new DriveSwitchRobotMode()));
         resetGyroButton.onTrue(Action.toCommand(new DriveZeroGyro()));
- 
-
-        // pos0MButton.whileTrue(Action.toCommand(new DriveTurnAction(180)));
-        // pos90MButton.whileTrue(Action.toCommand(new DriveTurnAction(90)));
-        // pos270MButton.whileTrue(Action.toCommand(new DriveTurnAction(270)));
-        // pos180MButton.whileTrue(Action.toCommand(new DriveTurnAction(0)));
-
 
         transButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.TRANSIT)));
         poseMidButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.MID)));
