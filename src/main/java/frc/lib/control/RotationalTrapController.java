@@ -46,9 +46,12 @@ public class RotationalTrapController {
         direction = ((currTheta - goalTheta) > 0) ? 1 : -1;
     }
 
-    public void updateController() {
+    public void disableController() {
+        state = RTCState.DISABLE;
+    }
+
+    public double updateController(double updateTime) {
         if(state != RTCState.DISABLE) {
-            double updateTime = Timer.getFPGATimestamp();
             double dt = updateTime - lastUpdate;
             switch(state) {
                 case ACCEL:
@@ -62,10 +65,12 @@ public class RotationalTrapController {
                     break;
                 default:
             }
+            checkTransition();
             lastUpdate = updateTime;
         } else {
             System.out.println("ERROR: RTC is disabled!");
         }
+        return currOmgea;
 
     }
 
