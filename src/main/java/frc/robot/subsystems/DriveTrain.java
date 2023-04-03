@@ -71,6 +71,9 @@ public class DriveTrain extends Subsystem {
         public double XboxRightX;
         public ChassisSpeeds speeds;
         public Rotation2d desiredHeading;
+        public double desiredEncoder;
+        public double xAutoSupplier;
+        public double yAutoSupplier;
     }
 
     private DriveTrain() {
@@ -152,15 +155,17 @@ public class DriveTrain extends Subsystem {
                     new SwerveModulePosition(m_backRightModule.getDriveEncoder() /  Constants.DRIVE_ENCODER_TO_METERS, Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
                 });
 
-                final double x = periodic.XboxLeftX;
-                final double y = periodic.XboxLeftY;
-                final double r = periodic.XboxRightX;
+                double x = periodic.XboxLeftX;
+                double y = periodic.XboxLeftY;
+                double r = periodic.XboxRightX;
 
                 ChassisSpeeds speeds;
 
                 switch (periodic.state) {
                     case AutoControlled:
-                        speeds = periodic.speeds;
+                        x = periodic.xAutoSupplier;
+                        y = periodic.yAutoSupplier;
+                        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x,y,0,DriveTrain.getInstance().getGyroscopeRotation());
                         break;
                     case FieldRel:
                         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -212,6 +217,10 @@ public class DriveTrain extends Subsystem {
         return periodic.state;
     }
 
+    public double getEncoderTicks() {
+        return (m_frontLeftModule.getDriveEncoder() + m_frontRightModule.getDriveEncoder() + m_backLeftModule.getDriveEncoder() + m_backRightModule.getDriveEncoder()) / 4.0;
+    }
+
     public ChassisSpeeds setRobotHeading(Rotation2d currentHeading, Rotation2d desiredHeading) {
         double headingError = desiredHeading.getRadians() - currentHeading.getRadians();
         ChassisSpeeds speeds = new ChassisSpeeds(0.0, 0.0, (Constants.DRIVE_TURN_KP * headingError));
@@ -240,7 +249,18 @@ public class DriveTrain extends Subsystem {
 	public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
 		periodic.speeds = chassisSpeeds;
 	}
+
+    public void setDesiredEncoder(double desiredEncoder){
+        periodic.desiredEncoder = desiredEncoder;
+    }
     
+    public void setAutoXSupplier(double supplier){
+        periodic.xAutoSupplier = supplier;
+    }
+
+    public void setAutoYSupplier(double supplier){
+        periodic.yAutoSupplier = supplier;
+    }
 
     public void readPeriodicInputs() {
         double LeftX = -Constants.XBOX.getLeftY();
