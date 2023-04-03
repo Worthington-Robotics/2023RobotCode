@@ -46,10 +46,10 @@ public class Robot extends TimedRobot {
     // Input bindings
     private JoystickButton intakeButton = new JoystickButton(Constants.XBOX, 1);
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.XBOX, 2);
-    private JoystickButton limelightPipeButton = new JoystickButton(Constants.MASTER, 5);
-    private JoystickButton unStowButton = new JoystickButton(Constants.MASTER, 3);
-    private JoystickButton zeroPoseButton = new JoystickButton(Constants.MASTER, 4);
-    private JoystickButton cycleButton = new JoystickButton(Constants.MASTER, 7);
+    //private JoystickButton limelightPipeButton = new JoystickButton(Constants.MASTER, 5);
+   // private JoystickButton unStowButton = new JoystickButton(Constants.MASTER, 3);
+    private JoystickButton cycleButton = new JoystickButton(Constants.XBOX, 7);
+    private POVButton zeroPoseButton = new POVButton(Constants.XBOX, 270);
 
     private JoystickButton toggleDriveModeButton = new JoystickButton(Constants.XBOX, 5);
     private JoystickButton resetGyroButton = new JoystickButton(Constants.XBOX, 6);
@@ -159,8 +159,8 @@ public class Robot extends TimedRobot {
         intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER, false)));
         // autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
         // gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
-        limelightPipeButton.onTrue(Action.toCommand(new SetPipelineAction()));
-        unStowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
+        //limelightPipeButton.onTrue(Action.toCommand(new SetPipelineAction()));
+        //unStowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
         zeroPoseButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.ZERO)));
         // revDriveTrainButton.onTrue(Action.toCommand(new ReverseDriveAction()));
 
