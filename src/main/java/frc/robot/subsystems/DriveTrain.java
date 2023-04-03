@@ -21,9 +21,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
-import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
-import frc.robot.actions.drive.AutoFieldRelAction;
 
 public class DriveTrain extends Subsystem {
     private static DriveTrain instance = new DriveTrain();

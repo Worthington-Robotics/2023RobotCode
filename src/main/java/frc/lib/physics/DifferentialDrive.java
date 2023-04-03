@@ -269,7 +269,6 @@ public class DifferentialDrive {
         public double min;
         public double max;
     }
-    //TODO: the faq?
     // Curvature is redundant here in the case that chassis_velocity is not purely angular.  It is the responsibility of
     // the caller to ensure that curvature = angular vel / linear vel in these cases.
     public MinMax getMinMaxAcceleration(final ChassisState chassis_velocity, double curvature, /*double dcurvature,*/ double

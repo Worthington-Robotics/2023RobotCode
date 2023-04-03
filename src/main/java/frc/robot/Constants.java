@@ -45,17 +45,15 @@ public class Constants {
     // Arm, Manipulator Constants
 
     // Arm Consants - IDs
-    public static final int ARM_ARM_M_ID = 16;
-    public static final int ARM_EXTENSION_ID = 17;
-    public static final int ARM_ARM_S_ID = 18;
+    public static final int ARM_ARM_M_ID = 14;
+    public static final int ARM_EXTENSION_ID = 16;
     
     public static final int CTRE_PCM_ID = 0;
     public static final int ARM_GRABBER_FWD_CHANNEL = 5;
     public static final int ARM_GRABBER_REV_CHANNEL = 4;
 
     //Manipulator Constants
-    public static final int INTAKE_WHEEL_ID = 5;  
-    public static final int MANIPULATOR_TOF_ID = 1;
+    public static final int INTAKE_WHEEL_ID = 15;  
 
     public static final double INTAKE_POWER = .6;
     public static final double ANYTHING_OUT_POWER = -1;
@@ -94,9 +92,8 @@ public class Constants {
 
     // Superstructure
     // TODO: Change these values to actual IDs
-    public static final int BACKSTOP_TOF_ID = 0;
-    public static final int WRIST_MOTOR_ID = 5;
-    public static final int INTAKE_MOTOR_ID = 7;
+    public static final int WRIST_MOTOR_ID = 13;
+    public static final int INTAKE_MOTOR_ID = 15;
     
     //Pigion ID
     public static final int PIGION_ID = 0;

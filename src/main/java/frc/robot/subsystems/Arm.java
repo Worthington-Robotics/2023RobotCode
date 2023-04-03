@@ -15,7 +15,6 @@ import frc.lib.loops.Loop;
 
 public class Arm extends Subsystem {
 	TalonFX extensionMotor, armMasterMotor;
-	//DoubleSolenoid pinSolenoid;
 
 	public static NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-worbots");
 	public static NetworkTableEntry ta = table.getEntry("ta");
@@ -38,7 +37,7 @@ public class Arm extends Subsystem {
 		reset();
 		extensionMotor.configVoltageCompSaturation(11);
 		armMasterMotor.configVoltageCompSaturation(11);
-		pipeline.setDouble(2); //set default to april tag pipeline
+		pipeline.setDouble(2); 
 	}
 
 	public enum ArmMode {

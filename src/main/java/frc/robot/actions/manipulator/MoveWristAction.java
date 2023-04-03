@@ -14,9 +14,7 @@ public class MoveWristAction extends Action {
 
 	@Override
 	public void onStart() {
-		if(Arm.getInstance().getMode() != ArmMode.CLOSED_LOOP)
-			Manipulator.getInstance().setWristPower(power);
-		else if(power > 0) {
+		if(power > 0) {
 			Manipulator.getInstance().incWrist();
 		} else {
 			Manipulator.getInstance().decWrist();

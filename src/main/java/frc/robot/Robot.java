@@ -44,14 +44,12 @@ public class Robot extends TimedRobot {
     private Looper enabledLooper, disabledLooper;
 
     // Input bindings
-    private JoystickButton intakeButton = new JoystickButton(Constants.MASTER, 2);
-    private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
+    private JoystickButton intakeButton = new JoystickButton(Constants.XBOX, 1);
+    private JoystickButton intakeReverseButton = new JoystickButton(Constants.XBOX, 2);
     private JoystickButton limelightPipeButton = new JoystickButton(Constants.MASTER, 5);
-    private JoystickButton unStowButton = new JoystickButton(Constants.MASTER, 6);
-    private JoystickButton zeroPoseButton = new JoystickButton(Constants.MASTER, 7);
-    private JoystickButton cycleButton = new JoystickButton(Constants.MASTER, 9);
-    private JoystickButton revDriveTrainButton = new JoystickButton(Constants.MASTER, 11);
-    private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 12);
+    private JoystickButton unStowButton = new JoystickButton(Constants.MASTER, 3);
+    private JoystickButton zeroPoseButton = new JoystickButton(Constants.MASTER, 4);
+    private JoystickButton cycleButton = new JoystickButton(Constants.MASTER, 7);
 
     private JoystickButton toggleDriveModeButton = new JoystickButton(Constants.XBOX, 5);
     private JoystickButton resetGyroButton = new JoystickButton(Constants.XBOX, 6);

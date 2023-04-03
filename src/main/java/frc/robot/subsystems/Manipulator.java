@@ -52,24 +52,17 @@ public class Manipulator extends Subsystem {
 			periodic.hasGamePiece = false;
 		}
 		periodic.wristEncoder = wristMotor.getSelectedSensorPosition();
-		periodic.rawWristMotorPower = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(3), 0,0);//TODO make work again. change min_power to 1
+		// periodic.rawWristMotorPower = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(3), 0,0);//TODO make work again. change min_power to 1
 	}
 
 	public void writePeriodicOutputs() {
-		// if((periodic.TimeOfFlightDistance > 200 || periodic.TimeOfFlightDistance == 0) || periodic.intakeMotorPower < 0) {
-		// 	intakeMotor.set(ControlMode.PercentOutput, periodic.intakeMotorPower);
-		// 	periodic.timeOfFlightActivated = false;
-		// } else {
-		// 	intakeMotor.set(ControlMode.PercentOutput, Math.max(.15, periodic.intakeMotorPower));
-		// 	periodic.timeOfFlightActivated = true;
-		// }
 		if (!periodic.hasGamePiece) {
 			intakeMotor.set(ControlMode.PercentOutput, periodic.intakeMotorPower);
 		} else {
-			intakeMotor.set(ControlMode.PercentOutput, Math.max(.15, periodic.intakeMotorPower));
+			intakeMotor.set(ControlMode.PercentOutput, Math.max(.1, periodic.intakeMotorPower));
 		}
 		if (Arm.getInstance().getMode().ordinal() < ArmMode.CLOSED_LOOP.ordinal() ) {
-			wristMotor.set(ControlMode.PercentOutput, periodic.wristMotorPower);
+			wristMotor.set(ControlMode.Position, periodic.wristOffset);
 		} else {
 			if(Math.abs(Arm.getInstance().getDesiredPivot()) >= Math.abs(Arm.getInstance().getPivotEncoder())){//pivot going up
 				if(Math.abs(Arm.getInstance().getPivotEncoderError()) < 10000){
@@ -189,6 +182,7 @@ public class Manipulator extends Subsystem {
 		SmartDashboard.putNumber("Manipulator/IntakeMotorCurrent", periodic.intakeMotorCurrent);
 		SmartDashboard.putNumber("Arm/error/wrist error", periodic.wristEncoderError);
 		SmartDashboard.putNumber("Arm/encoder/wrist-D", periodic.desiredWristEncoder);
+		SmartDashboard.putNumber("Arm/encoder/wrist-D", periodic.wristOffset);
 	}
 
 
