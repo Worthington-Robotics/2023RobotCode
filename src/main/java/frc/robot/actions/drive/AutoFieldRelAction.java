@@ -5,12 +5,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
 
-public class AutoFieldRelativeAction extends Action{
+public class AutoFieldRelAction extends Action{
     private final double m_translationXSupplier;
     private final double m_translationYSupplier;
     private final double m_rotationSupplier;
+    private ChassisSpeeds speeds;
 
-    public AutoFieldRelativeAction(double translationXSupplier, double translationYSupplier, double rotationSupplier) {
+    public AutoFieldRelAction(double translationXSupplier, double translationYSupplier, double rotationSupplier) {
         this.m_translationXSupplier = translationXSupplier;
         this.m_translationYSupplier = translationYSupplier;
         this.m_rotationSupplier = rotationSupplier;
@@ -27,7 +28,7 @@ public class AutoFieldRelativeAction extends Action{
         final double y = m_translationYSupplier;
         final double r = m_rotationSupplier;
 
-        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
             x,
             y,
             r,
