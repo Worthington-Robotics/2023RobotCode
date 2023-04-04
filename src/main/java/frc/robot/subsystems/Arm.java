@@ -61,8 +61,8 @@ public class Arm extends Subsystem {
 	// Pivot, Extend, Wrist
 	public static double[][] ArmPoses = {
 		{0,0,0},
-		{-109000, 0, 0},
-		{-20900, 5000, 26200},
+		{-20900, 5000, 0},
+		{-20900, 5000, 21200},
 		{-113000, -1635, -68800},
 		{-98372, -6800, -54000},
 		{-218000, -16700, -63200},
@@ -178,7 +178,7 @@ public class Arm extends Subsystem {
 				extensionMotor.set(ControlMode.Position, periodic.extenHoldValue);
 			} else {
 				if(Math.abs(periodic.desiredPivotEncoder) >= Math.abs(getPivotEncoder())){  //pivot going up
-					if(Math.abs(periodic.pivotEncoderError) <= 10000 && Math.abs(Manipulator.getInstance().getWristEncoderError()) <= 5000){
+					if(Math.abs(periodic.pivotEncoderError) <= 10000){
 						extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
 					}
 				} else { //pivot is going down

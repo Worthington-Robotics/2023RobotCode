@@ -1,6 +1,7 @@
 package frc.robot.actions.wait;
 
 import frc.robot.subsystems.DriveTrain;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.lib.statemachine.Action;
 
 public class ReachLineWaitAction extends Action{
@@ -13,6 +14,7 @@ public class ReachLineWaitAction extends Action{
 
     @Override
     public void onStart() {
+        DriveTrain.getInstance().setLineEncoder(line);
     }
 
     @Override
@@ -21,11 +23,18 @@ public class ReachLineWaitAction extends Action{
 
     @Override
     public boolean isFinished() {
-        return Math.abs(DriveTrain.getInstance().getAverageEncoder()) >= Math.abs(line);
+        return (Math.abs(DriveTrain.getInstance().getAverageEncoder()) >= Math.abs(line));
     }
 
     @Override
     public void onStop() {
+        DriveTrain.getInstance().setChassisSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0));
+        DriveTrain.getInstance().setFieldRel();
+        // DriveTrain.getInstance().setZeroDriveEncoders();
+        // DriveTrain.getInstance().setXDelta(0);
+        // DriveTrain.getInstance().setYDelta(0);
+        
     }
+
     
 }

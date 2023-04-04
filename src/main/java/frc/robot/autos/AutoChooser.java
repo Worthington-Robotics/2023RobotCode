@@ -18,7 +18,7 @@ public class AutoChooser {
 	private AutoType chosen;
 
 	private AutoChooser() {
-		change(AutoType.None);	
+		change(AutoType.RedWallAuto);	
 	}
 
 	// Run the currently selected autonomous
@@ -50,7 +50,7 @@ public class AutoChooser {
 				return;
 			}
 		}
-		chosen = AutoType.None;
+		chosen = AutoType.RedWallAuto;
 	}
 
 	public void printList() {

@@ -84,6 +84,7 @@ public class DriveTrain extends Subsystem {
         public RotationalTrapController controller;
         public boolean chargeStationToggle;
         public State previousState;
+        public double lineEncoder;
     }
 
     private DriveTrain() {
@@ -176,29 +177,29 @@ public class DriveTrain extends Subsystem {
                         speeds = periodic.speeds;
                         break;
                     case AutoControlled:
-                        periodic.averageEncoder = 0;
-                        if(Math.abs(m_frontLeftModule.getSteerAngle()) < Math.PI / 18.0){
-                            periodic.averageEncoder += m_frontLeftModule.getDriveEncoder();
-                        } else if(Math.abs(m_frontLeftModule.getSteerAngle()) > Math.PI * (17 / 18)) {
-                            periodic.averageEncoder -= m_frontLeftModule.getDriveEncoder();
-                        }
-                        if(Math.abs(m_frontRightModule.getSteerAngle()) < Math.PI / 18.0){
-                            periodic.averageEncoder += m_frontRightModule.getDriveEncoder();
-                        } else if(Math.abs(m_frontRightModule.getSteerAngle()) > Math.PI * (17 / 18)) {
-                            periodic.averageEncoder -= m_frontRightModule.getDriveEncoder();
-                        }
-                        if(Math.abs(m_backRightModule.getSteerAngle()) < Math.PI / 18.0){
-                            periodic.averageEncoder += m_backRightModule.getDriveEncoder();
-                        } else if(Math.abs(m_backRightModule.getSteerAngle()) > Math.PI * (17 / 18)) {
-                            periodic.averageEncoder -= m_backRightModule.getDriveEncoder();
-                        }
-                        if(Math.abs(m_backLeftModule.getSteerAngle()) < Math.PI / 18.0){
-                            periodic.averageEncoder += m_backLeftModule.getDriveEncoder();
-                        } else if(Math.abs(m_backLeftModule.getSteerAngle()) > Math.PI * (17 / 18)) {
-                            periodic.averageEncoder -= m_backLeftModule.getDriveEncoder();
-                        }
+                        periodic.averageEncoder = Math.abs(m_frontRightModule.getDriveEncoder());
+                        // if(Math.abs(m_frontLeftModule.getSteerAngle()) < Math.PI / 18.0){
+                        //     periodic.averageEncoder += m_frontLeftModule.getDriveEncoder();
+                        // } else if(Math.abs(m_frontLeftModule.getSteerAngle()) > Math.PI * (17 / 18)) {
+                        //     periodic.averageEncoder -= m_frontLeftModule.getDriveEncoder();
+                        // }
+                        // if(Math.abs(m_frontRightModule.getSteerAngle()) < Math.PI / 18.0){
+                        //     periodic.averageEncoder += m_frontRightModule.getDriveEncoder();
+                        // } else if(Math.abs(m_frontRightModule.getSteerAngle()) > Math.PI * (17 / 18)) {
+                        //     periodic.averageEncoder -= m_frontRightModule.getDriveEncoder();
+                        // }
+                        // if(Math.abs(m_backRightModule.getSteerAngle()) < Math.PI / 18.0){
+                        //     periodic.averageEncoder += m_backRightModule.getDriveEncoder();
+                        // } else if(Math.abs(m_backRightModule.getSteerAngle()) > Math.PI * (17 / 18)) {
+                        //     periodic.averageEncoder -= m_backRightModule.getDriveEncoder();
+                        // }
+                        // if(Math.abs(m_backLeftModule.getSteerAngle()) < Math.PI / 18.0){
+                        //     periodic.averageEncoder += m_backLeftModule.getDriveEncoder();
+                        // } else if(Math.abs(m_backLeftModule.getSteerAngle()) > Math.PI * (17 / 18)) {
+                        //     periodic.averageEncoder -= m_backLeftModule.getDriveEncoder();
+                        // }
 
-                        periodic.averageEncoder /= 4.0;
+                        // periodic.averageEncoder /= 4.0;
 
                         double xError = (periodic.xDelta - periodic.averageEncoder)  / Constants.DRIVE_ENCODER_TO_METERS;
                         double headingError = periodic.thetaAbs - getGyroscopeRotation().getRadians();
@@ -211,7 +212,6 @@ public class DriveTrain extends Subsystem {
                         if(y > Constants.Y_MOVE_MAX) {
                             y = Constants.Y_MOVE_MAX;
                         }
-
                         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, getGyroscopeRotation());
                         break;
                     case FieldRel:
@@ -243,7 +243,7 @@ public class DriveTrain extends Subsystem {
                         speeds = new ChassisSpeeds(0, 0, rotationalVelocity);
                         break;
                     case ChargeStationLock:
-                        speeds = new ChassisSpeeds(0.01, 0, 0);
+                        speeds = new ChassisSpeeds(0, 0.01, 0);
                         break;
                     default:
                         speeds = new ChassisSpeeds();
@@ -278,6 +278,7 @@ public class DriveTrain extends Subsystem {
         }
     }
 
+
     public State getState() {
         return periodic.state;
     }
@@ -304,6 +305,10 @@ public class DriveTrain extends Subsystem {
     }
     public void setYMax(double maxSpeed) {
         periodic.yMax = maxSpeed;
+    }
+
+    public void setGyroHeading(double heading) {
+        m_pigeon.setFusedHeading(heading);
     }
 
     public void setXDelta(double xDelta) {
@@ -343,6 +348,10 @@ public class DriveTrain extends Subsystem {
 
     public void setGyroLockState() {
         periodic.state = State.GyroLock;
+    }
+
+    public void setLineEncoder(double lineEncoder) {
+        periodic.lineEncoder = lineEncoder;
     }
 
 	public void setZeroDriveEncoders() {
@@ -428,10 +437,14 @@ public class DriveTrain extends Subsystem {
         SmartDashboard.putNumberArray("Drive/Swerve Setpoint Joy", new double[] {
             periodic.XboxLeftX, periodic.XboxLeftY, periodic.XboxRightX
         });
+        SmartDashboard.putNumber("Drive/current encoder", periodic.averageEncoder);
+        SmartDashboard.putNumber("Drive/ desired line encoder", periodic.lineEncoder);
+        SmartDashboard.putBoolean("Drive/ condition met", (Math.abs(getAverageEncoder()) >= Math.abs(periodic.lineEncoder)));
     }
 
     public void reset() {
         setChassisSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0));
         setGyroZero();
+        setZeroDriveEncoders();
     }
 }

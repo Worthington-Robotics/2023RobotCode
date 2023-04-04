@@ -73,9 +73,9 @@ public class Manipulator extends Subsystem {
 					wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
 				}
 			} else { //pivot going down
-				if(Math.abs(Arm.getInstance().getExtendEncoderError()) < 7000){
+				//if(Math.abs(Arm.getInstance().getExtendEncoderError()) < 12000){
 					wristMotor.set(ControlMode.Position, periodic.desiredWristEncoder);
-				}
+				//}
 			}
 		}
 	}

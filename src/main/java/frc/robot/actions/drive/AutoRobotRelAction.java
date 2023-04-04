@@ -19,7 +19,7 @@ public class AutoRobotRelAction extends Action{
 
     @Override
     public void onStart() {
-        DriveTrain.getInstance().setAutoState();
+        DriveTrain.getInstance().setTimeAutoState();
     }
 
     @Override

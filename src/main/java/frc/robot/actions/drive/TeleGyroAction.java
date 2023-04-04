@@ -5,10 +5,10 @@ import frc.lib.control.RotationalTrapController;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
 
-public class DriveNonblockingTurnAction extends Action {
+public class TeleGyroAction extends Action {
     public double thetaAbs;
 
-    public DriveNonblockingTurnAction(double thetaAbs) {
+    public TeleGyroAction(double thetaAbs) {
         this.thetaAbs = thetaAbs;
     }
 
@@ -29,6 +29,8 @@ public class DriveNonblockingTurnAction extends Action {
     }
 
     @Override
-    public void onStop() {}
+    public void onStop() {
+        DriveTrain.getInstance().setFieldRel();
+    }
     
 }
