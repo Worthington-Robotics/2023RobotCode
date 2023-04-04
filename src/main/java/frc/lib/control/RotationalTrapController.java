@@ -45,6 +45,7 @@ public class RotationalTrapController {
         state = RTCState.DISABLE;
     }
 
+
     public double updateController(double updateHeading, double updateTime) {
         if(state != RTCState.DISABLE) {
             double dt = updateTime - lastUpdate;

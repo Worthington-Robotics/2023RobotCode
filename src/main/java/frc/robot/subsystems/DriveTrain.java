@@ -13,10 +13,13 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.lib.control.RotationalTrapController;
+import frc.lib.control.RotationalTrapController.RTCState;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.robot.Constants;
@@ -58,7 +61,8 @@ public class DriveTrain extends Subsystem {
         FieldRel,
         RobotRel,
         RobotTurn,
-        AutoControlled
+        AutoControlled,
+        GyroLock
     }
 
     public class DriveTrainIO {
@@ -73,6 +77,12 @@ public class DriveTrain extends Subsystem {
         public double xAutoSupplier;
         public double yAutoSupplier;
         public boolean isRobotRel;
+        public double xMax;
+        public double yMax;
+        public double xDelta;
+        public double yDelta;
+        public double thetaAbs;
+        public RotationalTrapController controller;
     }
 
     private DriveTrain() {
@@ -162,14 +172,44 @@ public class DriveTrain extends Subsystem {
 
                 switch (periodic.state) {
                     case AutoControlled:
-                        x = periodic.xAutoSupplier;
-                        y = periodic.yAutoSupplier;
-                        if(periodic.isRobotRel){
-                            speeds = new ChassisSpeeds(x,y,0);
-                        } else {
-                            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x,y,0, getGyroscopeRotation()); 
+                        double averageEncoder = 0;
+                        if(Math.abs(m_frontLeftModule.getSteerAngle()) < 10.0){
+                            averageEncoder += m_frontLeftModule.getDriveEncoder();
+                        } else if(Math.abs(m_frontLeftModule.getSteerAngle()) > 170.0) {
+                            averageEncoder -= m_frontLeftModule.getDriveEncoder();
                         }
-                        break;
+                        if(Math.abs(m_frontRightModule.getSteerAngle()) < 10.0){
+                            averageEncoder += m_frontRightModule.getDriveEncoder();
+                        } else if(Math.abs(m_frontRightModule.getSteerAngle()) > 170.0) {
+                            averageEncoder -= m_frontRightModule.getDriveEncoder();
+                        }
+                        if(Math.abs(m_backRightModule.getSteerAngle()) < 10.0){
+                            averageEncoder += m_backRightModule.getDriveEncoder();
+                        } else if(Math.abs(m_backRightModule.getSteerAngle()) > 170.0) {
+                            averageEncoder -= m_backRightModule.getDriveEncoder();
+                        }
+                        if(Math.abs(m_backLeftModule.getSteerAngle()) < 10.0){
+                            averageEncoder += m_backLeftModule.getDriveEncoder();
+                        } else if(Math.abs(m_backLeftModule.getSteerAngle()) > 170.0) {
+                            averageEncoder -= m_backLeftModule.getDriveEncoder();
+                        }
+
+                        averageEncoder /= 4.0;
+
+                        double xError = (periodic.xDelta - averageEncoder)  / Constants.DRIVE_ENCODER_TO_METERS;
+                        double headingError = periodic.thetaAbs - getGyroscopeRotation().getRadians();
+                        x = xError * Constants.X_KP;
+                        y = 0;
+                        r = headingError * Constants.TURN_KP;
+                        if (x > Constants.X_MOVE_MAX) {
+                            x = Constants.X_MOVE_MAX;
+                        }
+                        if(y > Constants.Y_MOVE_MAX) {
+                            y = Constants.Y_MOVE_MAX;
+                        }
+
+                        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, getGyroscopeRotation());
+
                     case FieldRel:
                         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                         (x * Constants.DRIVE_XY_MULTIPLIER),
@@ -184,9 +224,15 @@ public class DriveTrain extends Subsystem {
                     case RobotTurn:
                         speeds = setRobotHeading(getGyroscopeRotation(), periodic.desiredHeading);
                         break;
+                    case GyroLock:
+                        if(periodic.controller.getState() == RTCState.DISABLE){
+                            headingError = periodic.thetaAbs - getGyroscopeRotation().getRadians();
+                            periodic.controller.enableToGoal(headingError, r, headingError);
+                        }
                     default:
                         speeds = new ChassisSpeeds();
         }
+
         setChassisSpeeds(speeds);
         if (x != 0.0 && y != 0.0 && r != 0.0) {
             // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented movement
@@ -224,6 +270,26 @@ public class DriveTrain extends Subsystem {
         return (m_frontLeftModule.getDriveEncoder() + m_frontRightModule.getDriveEncoder() + m_backLeftModule.getDriveEncoder() + m_backRightModule.getDriveEncoder()) / 4.0;
     }
 
+    public void setXMax(double maxSpeed) {
+        periodic.xMax = maxSpeed;
+    }
+
+    public void setYMax(double maxSpeed) {
+        periodic.yMax = maxSpeed;
+    }
+
+    public void setXDelta(double xDelta) {
+        periodic.xDelta = xDelta;
+    }
+
+    public void setYDelta(double yDelta) {
+        periodic.yDelta = yDelta;
+    }
+
+    public void setThetaAbs(double thetaAbs){
+        periodic.thetaAbs = thetaAbs;
+    }
+
     public ChassisSpeeds setRobotHeading(Rotation2d currentHeading, Rotation2d desiredHeading) {
         double headingError = desiredHeading.getRadians() - currentHeading.getRadians();
         ChassisSpeeds speeds = new ChassisSpeeds(0.0, 0.0, (Constants.DRIVE_TURN_KP * headingError));
@@ -242,6 +308,8 @@ public class DriveTrain extends Subsystem {
         periodic.state = State.FieldRel;
     }
 
+    
+
 	public void setZeroDriveEncoders() {
 		m_frontLeftModule.resetDriveEncoder();
 		m_frontRightModule.resetDriveEncoder();
@@ -256,6 +324,11 @@ public class DriveTrain extends Subsystem {
     public void setDesiredEncoder(double desiredEncoder){
         periodic.desiredEncoder = desiredEncoder;
     }
+
+    public RotationalTrapController makeNewController() {
+        periodic.controller = new RotationalTrapController(180, 360, 5, .1);
+        return periodic.controller;
+    }
     
     public void setAutoXSupplier(double supplier){
         periodic.xAutoSupplier = supplier;
@@ -268,6 +341,8 @@ public class DriveTrain extends Subsystem {
     public void setRobotRelBool(boolean enable){
         periodic.isRobotRel = enable;
     }
+
+
 
     public void readPeriodicInputs() {
         double LeftX = -Constants.XBOX.getLeftY();

@@ -2,7 +2,6 @@ package frc.robot.actions.wait;
 
 import frc.robot.subsystems.Arm;
 import frc.lib.statemachine.Action;
-import frc.lib.util.TimerBoolean;
 
 public class PoseWaitAction extends Action{
     @Override

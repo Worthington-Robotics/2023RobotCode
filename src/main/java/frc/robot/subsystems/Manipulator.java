@@ -48,8 +48,13 @@ public class Manipulator extends Subsystem {
 		if (periodic.intakeMotorCurrent > Constants.INTAKE_CURRENT_ACCEPTANCE) {
 			periodic.hasGamePiece = true;
 		}
-		if (periodic.intakeMotorPower < 0 && periodic.intakeMotorCurrent < Constants.INTAKE_CURRENT_ACCEPTANCE) {
+		if (periodic.intakeMotorPower < 0) {
 			periodic.hasGamePiece = false;
+		}
+		if(periodic.intakeMotorCurrent == 0) {
+			periodic.hasGamePiece = false;
+		} if (periodic.intakeMotorCurrent < 1 && periodic.intakeMotorCurrent > 0) {
+			periodic.hasGamePiece = true;
 		}
 		periodic.wristEncoder = wristMotor.getSelectedSensorPosition();
 	}

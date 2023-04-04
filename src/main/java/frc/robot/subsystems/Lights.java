@@ -19,11 +19,10 @@ public class Lights extends Subsystem {
 
     public AddressableLED ledString;
     public AddressableLEDBuffer ledBuffer;
-    // public AddressableLED ledStringTwo;
-    // public AddressableLEDBuffer ledBufferTwo;
     public State state;
     public int rain;
-    public double wantObject;
+    public boolean wantYellow;
+    public boolean wantPurple;
 
     public enum State {
         LIGHTS_RAINBOW,
@@ -38,7 +37,6 @@ public class Lights extends Subsystem {
         ledBuffer = new AddressableLEDBuffer(Constants.LIGHTS_LED_COUNT);
         ledString.setLength(ledBuffer.getLength());
         state = State.LIGHTS_RAINBOW;
-        wantObject = 0.0;
         reset();
     }
 
@@ -59,7 +57,6 @@ public class Lights extends Subsystem {
     
 
     public void readPeriodicInputs() {
-        wantObject = HIDHelper.getAxisMapped(Constants.MASTER.getRawAxis(3), -1, 1);
     }
 
     public void writePeriodicOutputs() {
@@ -73,10 +70,10 @@ public class Lights extends Subsystem {
         } else {
             if(Manipulator.getInstance().isObject()){
                 state = State.LIGHTS_GREEN;
-            } else if(wantObject > 0.9){
-                state = State.LIGHTS_YELLOW;
-            } else if(wantObject < -0.9){
+            } else if (wantPurple){
                 state = State.LIGHTS_PURPLE;
+            } else if (wantYellow){
+                state = State.LIGHTS_YELLOW;
             } else {
                 state = State.LIGHTS_RAINBOW;
             }
@@ -99,7 +96,7 @@ public class Lights extends Subsystem {
                 break;
             case LIGHTS_YELLOW:
                 for (int i = 0; i < ledBuffer.getLength(); i++) {
-                    ledBuffer.setLED(i, Color.kLightGoldenrodYellow);
+                    ledBuffer.setLED(i, Color.kYellow);
                 }
                 break;
             case LIGHTS_GREEN:
@@ -109,6 +106,21 @@ public class Lights extends Subsystem {
                 break;
         }
         ledString.setData(ledBuffer);
+    }
+
+    public void setLightState(State lightState) {
+        state = lightState;
+        if(lightState == State.LIGHTS_PURPLE){
+            wantPurple = true;
+            wantYellow = false;
+        } else if (lightState == State.LIGHTS_YELLOW){
+            wantYellow = true;
+            wantPurple= false;
+        }
+    }
+
+    public State getLightState() {
+        return state;
     }
 
     public void reset() {

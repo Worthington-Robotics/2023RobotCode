@@ -29,6 +29,8 @@ import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.arm.CycleArmAction;
 import frc.robot.actions.drive.DriveSwitchRobotMode;
 import frc.robot.actions.drive.DriveZeroGyro;
+import frc.robot.actions.lights.SetPurpleLightsAction;
+import frc.robot.actions.lights.SetYellowLightsAction;
 import frc.robot.actions.manipulator.MoveWristAction;
 
 /**
@@ -49,9 +51,10 @@ public class Robot extends TimedRobot {
    // private JoystickButton unStowButton = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton cycleButton = new JoystickButton(Constants.XBOX, 7);
     private POVButton zeroPoseButton = new POVButton(Constants.XBOX, 180);
-
     private JoystickButton toggleDriveModeButton = new JoystickButton(Constants.XBOX, 5);
     private JoystickButton resetGyroButton = new JoystickButton(Constants.XBOX, 6);
+    private JoystickButton yellowButton = new JoystickButton(Constants.XBOX, 9);
+    private JoystickButton purpleButton = new JoystickButton(Constants.XBOX, 10);
 
     private JoystickButton slideButton = new JoystickButton(Constants.SECOND, 2);
     private JoystickButton intakeSpitButton = new JoystickButton(Constants.SECOND, 3);
@@ -66,9 +69,9 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         //Start the RoboRIO kernal file system nonsense
-        try {    
-            ReflectingLogger.getMount("XDLOL");
-        } catch (Exception e) {}
+        // try {    
+        //     ReflectingLogger.getMount("XDLOL");
+        // } catch (Exception e) {}
         initButtons();
         CommandScheduler.getInstance().enable();
         manager = new SubsystemManager(
@@ -81,8 +84,8 @@ public class Robot extends TimedRobot {
             true
         );
 
-        DataLogManager.start();
-        DriverStation.startDataLog(DataLogManager.getLog());
+        // DataLogManager.start();
+        // DriverStation.startDataLog(DataLogManager.getLog());
 
         enabledLooper = new Looper();
         disabledLooper = new Looper();
@@ -93,10 +96,10 @@ public class Robot extends TimedRobot {
         manager.registerDisabledLoops(disabledLooper);
 
         // Add any additional logging sources for capture
-        manager.addLoggingSource(Arrays.asList(StateMachine.getInstance()));
+        // manager.addLoggingSource(Arrays.asList(StateMachine.getInstance()));
 
-        AutoChooser.getInstance().logAuto();
-        AutoChooser.getInstance().printList();
+        // AutoChooser.getInstance().logAuto();
+        // AutoChooser.getInstance().printList();
     }
 
     @Override
@@ -155,15 +158,11 @@ public class Robot extends TimedRobot {
         intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
         intakeSpitButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
         intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER, false)));
-        // autoLevelButton.whileTrue(Action.toCommand(new TeleopLevelAction()));
-        // gyroLockButton.whileTrue(Action.toCommand(new GyroLockAction()));
-        //limelightPipeButton.onTrue(Action.toCommand(new SetPipelineAction()));
-        //unStowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
         zeroPoseButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.ZERO)));
-        // revDriveTrainButton.onTrue(Action.toCommand(new ReverseDriveAction()));
-
         toggleDriveModeButton.onTrue(Action.toCommand(new DriveSwitchRobotMode()));
         resetGyroButton.onTrue(Action.toCommand(new DriveZeroGyro()));
+        yellowButton.onTrue(Action.toCommand(new SetYellowLightsAction()));
+        purpleButton.onTrue(Action.toCommand(new SetPurpleLightsAction()));
 
         slideButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SLIDE)));
         poseMidButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.MID)));
