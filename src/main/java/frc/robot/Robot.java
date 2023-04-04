@@ -29,6 +29,7 @@ import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.arm.CycleArmAction;
 import frc.robot.actions.drive.DriveSwitchRobotMode;
 import frc.robot.actions.drive.DriveZeroGyro;
+import frc.robot.actions.drive.ToggleChargeStationLockAction;
 import frc.robot.actions.lights.SetPurpleLightsAction;
 import frc.robot.actions.lights.SetYellowLightsAction;
 import frc.robot.actions.manipulator.MoveWristAction;
@@ -51,6 +52,7 @@ public class Robot extends TimedRobot {
    // private JoystickButton unStowButton = new JoystickButton(Constants.MASTER, 3);
     private JoystickButton cycleButton = new JoystickButton(Constants.XBOX, 7);
     private POVButton zeroPoseButton = new POVButton(Constants.XBOX, 180);
+    private POVButton chargeStationLockButton = new POVButton(Constants.XBOX, 0);
     private JoystickButton toggleDriveModeButton = new JoystickButton(Constants.XBOX, 5);
     private JoystickButton resetGyroButton = new JoystickButton(Constants.XBOX, 6);
     private JoystickButton yellowButton = new JoystickButton(Constants.XBOX, 9);
@@ -163,6 +165,7 @@ public class Robot extends TimedRobot {
         resetGyroButton.onTrue(Action.toCommand(new DriveZeroGyro()));
         yellowButton.onTrue(Action.toCommand(new SetYellowLightsAction()));
         purpleButton.onTrue(Action.toCommand(new SetPurpleLightsAction()));
+        chargeStationLockButton.onTrue(Action.toCommand(new ToggleChargeStationLockAction()));
 
         slideButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SLIDE)));
         poseMidButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.MID)));

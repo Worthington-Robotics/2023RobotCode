@@ -63,7 +63,8 @@ public class DriveTrain extends Subsystem {
         RobotTurn,
         AutoControlled,
         GyroLock,
-        TimeAutoControlled
+        TimeAutoControlled,
+        ChargeStationLock
     }
 
     public class DriveTrainIO {
@@ -82,6 +83,8 @@ public class DriveTrain extends Subsystem {
         public double yDelta;
         public double thetaAbs;
         public RotationalTrapController controller;
+        public boolean chargeStationToggle;
+        public State previousState;
     }
 
     private DriveTrain() {
@@ -239,6 +242,8 @@ public class DriveTrain extends Subsystem {
                             periodic.controller.enableToGoal(headingError, r, headingError);
                         }
                         speeds = periodic.speeds;
+                    case ChargeStationLock:
+                    speeds = new ChassisSpeeds(0.01, 0, 0);
                         break;
                     default:
                         speeds = new ChassisSpeeds();
@@ -285,6 +290,18 @@ public class DriveTrain extends Subsystem {
         periodic.xMax = maxSpeed;
     }
 
+    public void setChargeStationLock() {
+        periodic.state = State.ChargeStationLock;
+    }
+
+    public void setPreviousState(State state) {
+        periodic.previousState = state;
+    }
+
+    public State getPreviousState() {
+        return periodic.previousState;
+    }
+
     public void setYMax(double maxSpeed) {
         periodic.yMax = maxSpeed;
     }
@@ -323,8 +340,6 @@ public class DriveTrain extends Subsystem {
     public void setFieldRel() {
         periodic.state = State.FieldRel;
     }
-
-    
 
 	public void setZeroDriveEncoders() {
 		m_frontLeftModule.resetDriveEncoder();
