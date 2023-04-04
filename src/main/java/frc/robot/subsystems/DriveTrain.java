@@ -62,7 +62,8 @@ public class DriveTrain extends Subsystem {
         RobotRel,
         RobotTurn,
         AutoControlled,
-        GyroLock
+        GyroLock,
+        TimeAutoControlled
     }
 
     public class DriveTrainIO {
@@ -74,8 +75,6 @@ public class DriveTrain extends Subsystem {
         public ChassisSpeeds speeds;
         public Rotation2d desiredHeading;
         public double desiredEncoder;
-        public double xAutoSupplier;
-        public double yAutoSupplier;
         public boolean isRobotRel;
         public double xMax;
         public double yMax;
@@ -171,6 +170,16 @@ public class DriveTrain extends Subsystem {
                 ChassisSpeeds speeds;
 
                 switch (periodic.state) {
+                    case TimeAutoControlled:
+                        // x = periodic.xAutoSupplier;
+                        // y = periodic.yAutoSupplier;
+                        // if(periodic.isRobotRel){
+                        //     speeds = new ChassisSpeeds(x,y,0);
+                        // } else {
+                        //     speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x,y,0, getGyroscopeRotation()); 
+                        // }
+                        speeds = periodic.speeds;
+                        break;
                     case AutoControlled:
                         double averageEncoder = 0;
                         if(Math.abs(m_frontLeftModule.getSteerAngle()) < 10.0){
@@ -209,7 +218,7 @@ public class DriveTrain extends Subsystem {
                         }
 
                         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, getGyroscopeRotation());
-
+                        break;
                     case FieldRel:
                         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                         (x * Constants.DRIVE_XY_MULTIPLIER),
@@ -229,6 +238,8 @@ public class DriveTrain extends Subsystem {
                             headingError = periodic.thetaAbs - getGyroscopeRotation().getRadians();
                             periodic.controller.enableToGoal(headingError, r, headingError);
                         }
+                        speeds = periodic.speeds;
+                        break;
                     default:
                         speeds = new ChassisSpeeds();
         }
@@ -300,6 +311,11 @@ public class DriveTrain extends Subsystem {
         periodic.state = State.AutoControlled;
     }
 
+
+    public void setTimeAutoState(){
+        periodic.state = State.TimeAutoControlled;
+    }
+
     public void setRobotRel() {
         periodic.state = State.RobotRel;
     }
@@ -321,25 +337,9 @@ public class DriveTrain extends Subsystem {
 		periodic.speeds = chassisSpeeds;
 	}
 
-    public void setDesiredEncoder(double desiredEncoder){
-        periodic.desiredEncoder = desiredEncoder;
-    }
-
     public RotationalTrapController makeNewController() {
         periodic.controller = new RotationalTrapController(180, 360, 5, .1);
         return periodic.controller;
-    }
-    
-    public void setAutoXSupplier(double supplier){
-        periodic.xAutoSupplier = supplier;
-    }
-
-    public void setAutoYSupplier(double supplier){
-        periodic.yAutoSupplier = supplier;
-    }
-
-    public void setRobotRelBool(boolean enable){
-        periodic.isRobotRel = enable;
     }
 
 

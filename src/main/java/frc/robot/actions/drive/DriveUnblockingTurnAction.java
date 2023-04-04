@@ -1,7 +1,5 @@
 package frc.robot.actions.drive;
 
-import edu.wpi.first.wpilibj.Timer;
-import frc.lib.control.RotationalTrapController;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
 
