@@ -5,14 +5,14 @@ import frc.lib.control.RotationalTrapController;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
 
-public class DriveUnblockingLineAction extends Action {
+public class DriveNonblockingLineAction extends Action {
     public double xMax;
     public double yMax;
     public double xDelta;
     public double yDelta;
     public double thetaAbs;
 
-    public DriveUnblockingLineAction(double xMax, double yMax, double xDelta, double yDelta, double thetaAbs) {
+    public DriveNonblockingLineAction(double xMax, double yMax, double xDelta, double yDelta, double thetaAbs) {
         this.xMax = xMax;
         this.yMax = yMax;
         this.xDelta = xDelta;
