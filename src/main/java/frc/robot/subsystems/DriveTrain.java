@@ -178,24 +178,24 @@ public class DriveTrain extends Subsystem {
                         break;
                     case AutoControlled:
                         double averageEncoder = 0;
-                        if(Math.abs(m_frontLeftModule.getSteerAngle()) < 10.0){
+                        if(Math.abs(m_frontLeftModule.getSteerAngle()) < Math.PI / 18.0){
                             averageEncoder += m_frontLeftModule.getDriveEncoder();
-                        } else if(Math.abs(m_frontLeftModule.getSteerAngle()) > 170.0) {
+                        } else if(Math.abs(m_frontLeftModule.getSteerAngle()) > Math.PI * (17 / 18)) {
                             averageEncoder -= m_frontLeftModule.getDriveEncoder();
                         }
-                        if(Math.abs(m_frontRightModule.getSteerAngle()) < 10.0){
+                        if(Math.abs(m_frontRightModule.getSteerAngle()) < Math.PI / 18.0){
                             averageEncoder += m_frontRightModule.getDriveEncoder();
-                        } else if(Math.abs(m_frontRightModule.getSteerAngle()) > 170.0) {
+                        } else if(Math.abs(m_frontRightModule.getSteerAngle()) > Math.PI * (17 / 18)) {
                             averageEncoder -= m_frontRightModule.getDriveEncoder();
                         }
-                        if(Math.abs(m_backRightModule.getSteerAngle()) < 10.0){
+                        if(Math.abs(m_backRightModule.getSteerAngle()) < Math.PI / 18.0){
                             averageEncoder += m_backRightModule.getDriveEncoder();
-                        } else if(Math.abs(m_backRightModule.getSteerAngle()) > 170.0) {
+                        } else if(Math.abs(m_backRightModule.getSteerAngle()) > Math.PI * (17 / 18)) {
                             averageEncoder -= m_backRightModule.getDriveEncoder();
                         }
-                        if(Math.abs(m_backLeftModule.getSteerAngle()) < 10.0){
+                        if(Math.abs(m_backLeftModule.getSteerAngle()) < Math.PI / 18.0){
                             averageEncoder += m_backLeftModule.getDriveEncoder();
-                        } else if(Math.abs(m_backLeftModule.getSteerAngle()) > 170.0) {
+                        } else if(Math.abs(m_backLeftModule.getSteerAngle()) > Math.PI * (17 / 18)) {
                             averageEncoder -= m_backLeftModule.getDriveEncoder();
                         }
 
@@ -232,11 +232,10 @@ public class DriveTrain extends Subsystem {
                     case GyroLock:
                         double rotationalVelocity = 0;
                         if(periodic.controller.getState() == RTCState.DISABLE){
-                            headingError = periodic.thetaAbs - getGyroscopeRotation().getRadians();
-                            periodic.controller.enableToGoal(getGyroscopeRotation().getDegrees(), Timer.getFPGATimestamp(), periodic.thetaAbs);
+                            periodic.controller.enableToGoal(getGyroscopeRotation().getRadians(), Timer.getFPGATimestamp(), periodic.thetaAbs);
                             rotationalVelocity = periodic.controller.getOmega();
                         } else if(periodic.controller.getState() == RTCState.ACCEL || periodic.controller.getState() == RTCState.CRUISING || periodic.controller.getState() == RTCState.DECEL){
-                            rotationalVelocity = periodic.controller.updateController(getGyroscopeRotation().getDegrees(), Timer.getFPGATimestamp());
+                            rotationalVelocity = periodic.controller.updateController(getGyroscopeRotation().getRadians(), Timer.getFPGATimestamp());
                             rotationalVelocity = periodic.controller.getOmega();
                         } else {
                             periodic.controller.disableController();
@@ -244,7 +243,7 @@ public class DriveTrain extends Subsystem {
                         }
                         speeds = new ChassisSpeeds(0, 0, rotationalVelocity);
                     case ChargeStationLock:
-                    speeds = new ChassisSpeeds(0.01, 0, 0);
+                        speeds = new ChassisSpeeds(0.01, 0, 0);
                         break;
                     default:
                         speeds = new ChassisSpeeds();
