@@ -5,11 +5,9 @@ import frc.lib.statemachine.Action;
 
 public class ReachLineWaitAction extends Action{
 
-    boolean isFwd;
     double line;
 
-    public ReachLineWaitAction(boolean isFwd, double line) {
-        this.isFwd = isFwd;
+    public ReachLineWaitAction(double line) {
         this.line = line;
     }
 
@@ -23,8 +21,7 @@ public class ReachLineWaitAction extends Action{
 
     @Override
     public boolean isFinished() {
-        return (DriveTrain.getInstance().getEncoderTicks() < line && !isFwd)
-        || (DriveTrain.getInstance().getEncoderTicks() > line && isFwd);
+        return Math.abs(DriveTrain.getInstance().getAverageEncoder()) >= Math.abs(line);
     }
 
     @Override

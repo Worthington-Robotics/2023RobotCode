@@ -11,7 +11,7 @@ public class AutoChooser {
 	public static AutoChooser getInstance() { return instance; }
 	
 	public enum AutoType {
-		None, TestAuto
+		None, TestAuto, RedWallAuto
 	}
 
 	// The currently chosen autonomous routine
@@ -29,6 +29,10 @@ public class AutoChooser {
 				break;
 			case TestAuto:
 				StateMachine.getInstance().runMachine(new TestAuto());
+				break;
+			case RedWallAuto:
+				StateMachine.getInstance().runMachine(new RedWallAuto());
+				break;
 		}
 	}
 

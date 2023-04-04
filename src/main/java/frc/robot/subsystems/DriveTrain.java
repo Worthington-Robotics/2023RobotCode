@@ -75,13 +75,12 @@ public class DriveTrain extends Subsystem {
         public double XboxRightX;
         public ChassisSpeeds speeds;
         public Rotation2d desiredHeading;
-        public double desiredEncoder;
-        public boolean isRobotRel;
         public double xMax;
         public double yMax;
         public double xDelta;
         public double yDelta;
         public double thetaAbs;
+        public double averageEncoder;
         public RotationalTrapController controller;
         public boolean chargeStationToggle;
         public State previousState;
@@ -177,31 +176,31 @@ public class DriveTrain extends Subsystem {
                         speeds = periodic.speeds;
                         break;
                     case AutoControlled:
-                        double averageEncoder = 0;
+                        periodic.averageEncoder = 0;
                         if(Math.abs(m_frontLeftModule.getSteerAngle()) < Math.PI / 18.0){
-                            averageEncoder += m_frontLeftModule.getDriveEncoder();
+                            periodic.averageEncoder += m_frontLeftModule.getDriveEncoder();
                         } else if(Math.abs(m_frontLeftModule.getSteerAngle()) > Math.PI * (17 / 18)) {
-                            averageEncoder -= m_frontLeftModule.getDriveEncoder();
+                            periodic.averageEncoder -= m_frontLeftModule.getDriveEncoder();
                         }
                         if(Math.abs(m_frontRightModule.getSteerAngle()) < Math.PI / 18.0){
-                            averageEncoder += m_frontRightModule.getDriveEncoder();
+                            periodic.averageEncoder += m_frontRightModule.getDriveEncoder();
                         } else if(Math.abs(m_frontRightModule.getSteerAngle()) > Math.PI * (17 / 18)) {
-                            averageEncoder -= m_frontRightModule.getDriveEncoder();
+                            periodic.averageEncoder -= m_frontRightModule.getDriveEncoder();
                         }
                         if(Math.abs(m_backRightModule.getSteerAngle()) < Math.PI / 18.0){
-                            averageEncoder += m_backRightModule.getDriveEncoder();
+                            periodic.averageEncoder += m_backRightModule.getDriveEncoder();
                         } else if(Math.abs(m_backRightModule.getSteerAngle()) > Math.PI * (17 / 18)) {
-                            averageEncoder -= m_backRightModule.getDriveEncoder();
+                            periodic.averageEncoder -= m_backRightModule.getDriveEncoder();
                         }
                         if(Math.abs(m_backLeftModule.getSteerAngle()) < Math.PI / 18.0){
-                            averageEncoder += m_backLeftModule.getDriveEncoder();
+                            periodic.averageEncoder += m_backLeftModule.getDriveEncoder();
                         } else if(Math.abs(m_backLeftModule.getSteerAngle()) > Math.PI * (17 / 18)) {
-                            averageEncoder -= m_backLeftModule.getDriveEncoder();
+                            periodic.averageEncoder -= m_backLeftModule.getDriveEncoder();
                         }
 
-                        averageEncoder /= 4.0;
+                        periodic.averageEncoder /= 4.0;
 
-                        double xError = (periodic.xDelta - averageEncoder)  / Constants.DRIVE_ENCODER_TO_METERS;
+                        double xError = (periodic.xDelta - periodic.averageEncoder)  / Constants.DRIVE_ENCODER_TO_METERS;
                         double headingError = periodic.thetaAbs - getGyroscopeRotation().getRadians();
                         x = xError * Constants.X_KP;
                         y = 0;
@@ -242,6 +241,7 @@ public class DriveTrain extends Subsystem {
                             rotationalVelocity = periodic.controller.getOmega();
                         }
                         speeds = new ChassisSpeeds(0, 0, rotationalVelocity);
+                        break;
                     case ChargeStationLock:
                         speeds = new ChassisSpeeds(0.01, 0, 0);
                         break;
@@ -282,8 +282,17 @@ public class DriveTrain extends Subsystem {
         return periodic.state;
     }
 
-    public double getEncoderTicks() {
-        return (m_frontLeftModule.getDriveEncoder() + m_frontRightModule.getDriveEncoder() + m_backLeftModule.getDriveEncoder() + m_backRightModule.getDriveEncoder()) / 4.0;
+    
+    public void setPreviousState(State state) {
+        periodic.previousState = state;
+    }
+
+    public State getPreviousState() {
+        return periodic.previousState;
+    }
+
+    public double getAverageEncoder() {
+        return periodic.averageEncoder;
     }
 
     public void setXMax(double maxSpeed) {
@@ -293,15 +302,6 @@ public class DriveTrain extends Subsystem {
     public void setChargeStationLock() {
         periodic.state = State.ChargeStationLock;
     }
-
-    public void setPreviousState(State state) {
-        periodic.previousState = state;
-    }
-
-    public State getPreviousState() {
-        return periodic.previousState;
-    }
-
     public void setYMax(double maxSpeed) {
         periodic.yMax = maxSpeed;
     }
@@ -339,6 +339,10 @@ public class DriveTrain extends Subsystem {
 
     public void setFieldRel() {
         periodic.state = State.FieldRel;
+    }
+
+    public void setGyroLockState() {
+        periodic.state = State.GyroLock;
     }
 
 	public void setZeroDriveEncoders() {

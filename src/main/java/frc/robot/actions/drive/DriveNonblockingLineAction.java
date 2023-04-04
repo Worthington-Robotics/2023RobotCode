@@ -27,8 +27,7 @@ public class DriveNonblockingLineAction extends Action {
         DriveTrain.getInstance().setXDelta(xDelta);
         DriveTrain.getInstance().setYDelta(yDelta);
         DriveTrain.getInstance().setThetaAbs(thetaAbs); 
-        RotationalTrapController controller = DriveTrain.getInstance().makeNewController();
-        controller.enableToGoal(xMax, xDelta, thetaAbs);
+        DriveTrain.getInstance().setAutoState();
     }
 
     @Override

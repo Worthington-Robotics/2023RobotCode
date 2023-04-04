@@ -1,5 +1,6 @@
 package frc.robot.actions.drive;
 
+import frc.lib.control.RotationalTrapController;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.DriveTrain;
 
@@ -25,7 +26,9 @@ public class DriveNonblockingTurnAction extends Action {
         DriveTrain.getInstance().setXDelta(xDelta);
         DriveTrain.getInstance().setYDelta(yDelta);
         DriveTrain.getInstance().setThetaAbs(thetaAbs);
-        
+        RotationalTrapController controller = DriveTrain.getInstance().makeNewController();
+        controller.enableToGoal(xMax, xDelta, thetaAbs);
+        DriveTrain.getInstance().setGyroLockState();
     }
 
     @Override
