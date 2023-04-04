@@ -171,13 +171,6 @@ public class DriveTrain extends Subsystem {
 
                 switch (periodic.state) {
                     case TimeAutoControlled:
-                        // x = periodic.xAutoSupplier;
-                        // y = periodic.yAutoSupplier;
-                        // if(periodic.isRobotRel){
-                        //     speeds = new ChassisSpeeds(x,y,0);
-                        // } else {
-                        //     speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x,y,0, getGyroscopeRotation()); 
-                        // }
                         speeds = periodic.speeds;
                         break;
                     case AutoControlled:
@@ -234,11 +227,19 @@ public class DriveTrain extends Subsystem {
                         speeds = setRobotHeading(getGyroscopeRotation(), periodic.desiredHeading);
                         break;
                     case GyroLock:
+                        double rotationalVelocity = 0;
                         if(periodic.controller.getState() == RTCState.DISABLE){
                             headingError = periodic.thetaAbs - getGyroscopeRotation().getRadians();
-                            periodic.controller.enableToGoal(headingError, r, headingError);
+                            periodic.controller.enableToGoal(getGyroscopeRotation().getDegrees(), Timer.getFPGATimestamp(), periodic.thetaAbs);
+                            rotationalVelocity = periodic.controller.getOmega();
+                        } else if(periodic.controller.getState() == RTCState.ACCEL || periodic.controller.getState() == RTCState.CRUISING || periodic.controller.getState() == RTCState.DECEL){
+                            rotationalVelocity = periodic.controller.updateController(getGyroscopeRotation().getDegrees(), Timer.getFPGATimestamp());
+                            rotationalVelocity = periodic.controller.getOmega();
+                        } else {
+                            periodic.controller.disableController();
+                            rotationalVelocity = periodic.controller.getOmega();
                         }
-                        speeds = periodic.speeds;
+                        speeds = new ChassisSpeeds(0, 0, rotationalVelocity);
                         break;
                     default:
                         speeds = new ChassisSpeeds();

@@ -99,4 +99,8 @@ public class RotationalTrapController {
         return state;
     }
 
+    public double getOmega() {
+        return currOmgea;
+    }
+
 }
