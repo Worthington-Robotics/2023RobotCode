@@ -1,7 +1,5 @@
 package frc.lib.control;
 
-import edu.wpi.first.wpilibj.Timer;
-
 public class RotationalTrapController {
     
     public enum RTCState {
@@ -26,6 +24,7 @@ public class RotationalTrapController {
     public RotationalTrapController(double maxOmega, double maxAlpha, double thetaThreshold, double kP) {
         this.maxOmega = maxOmega;
         this.maxAlpha = maxAlpha;
+        this.thetaThreshold = thetaThreshold;
         this.kP = kP;
         currOmgea = 0;
         currTheta = 0;
@@ -58,7 +57,7 @@ public class RotationalTrapController {
                     currOmgea -= (direction * maxAlpha * dt);
                     break;
                 case HOLD:
-                    currOmgea = kP * (currTheta - goalTheta);
+                    currOmgea = kP * (goalTheta - currTheta);
                     break;
                 default:
             }
@@ -71,6 +70,8 @@ public class RotationalTrapController {
     }
 
     private void checkTransition() {
+        System.out.print(" Speed: " + Math.abs(currOmgea * currOmgea / (2 * maxAlpha)));
+        System.out.print(" Remaining: " + Math.abs(goalTheta - currTheta));
         switch (state) {
             case ACCEL:
                 if(Math.abs(currOmgea * currOmgea / (2 * maxAlpha)) >= Math.abs(goalTheta - currTheta)) {
