@@ -49,8 +49,10 @@ public class Robot extends TimedRobot {
     private JoystickButton intakeButton = new JoystickButton(Constants.XBOX, 1);
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.XBOX, 2);
     private JoystickButton gyroLockButton = new JoystickButton(Constants.XBOX, 5);
-    //private JoystickButton limelightPipeButton = new JoystickButton(Constants.MASTER, 5);
-    // private JoystickButton unStowButton = new JoystickButton(Constants.MASTER, 3);
+    // private JoystickButton limelightPipeButton = new
+    // JoystickButton(Constants.MASTER, 5);
+    // private JoystickButton unStowButton = new JoystickButton(Constants.MASTER,
+    // 3);
 
     private JoystickButton cycleButton = new JoystickButton(Constants.XBOX, 7);
     private POVButton zeroPoseButton = new POVButton(Constants.XBOX, 180);
@@ -75,21 +77,19 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        //Start the RoboRIO kernal file system nonsense
-        // try {    
-        //     ReflectingLogger.getMount("XDLOL");
+        // Start the RoboRIO kernal file system nonsense
+        // try {
+        // ReflectingLogger.getMount("XDLOL");
         // } catch (Exception e) {}
         initButtons();
         CommandScheduler.getInstance().enable();
         manager = new SubsystemManager(
-            Arrays.asList(
-                Manipulator.getInstance(),
-                Arm.getInstance(),
-                DriveTrain.getInstance(),
-                Lights.getInstance()
-            ),
-            true
-        );
+                Arrays.asList(
+                        Manipulator.getInstance(),
+                        Arm.getInstance(),
+                        DriveTrain.getInstance(),
+                        Lights.getInstance()),
+                true);
 
         // DataLogManager.start();
         // DriverStation.startDataLog(DataLogManager.getLog());
@@ -105,13 +105,13 @@ public class Robot extends TimedRobot {
         // Add any additional logging sources for capture
         // manager.addLoggingSource(Arrays.asList(StateMachine.getInstance()));
 
-        // AutoChooser.getInstance().logAuto();
-        // AutoChooser.getInstance().printList();
+        AutoChooser.getInstance().logAuto();
+        AutoChooser.getInstance().printList();
     }
 
     @Override
     public void robotPeriodic() {
-        manager.outputTelemetry();  
+        manager.outputTelemetry();
         CommandScheduler.getInstance().run();
     }
 
@@ -134,7 +134,8 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void autonomousPeriodic() {}
+    public void autonomousPeriodic() {
+    }
 
     @Override
     public void teleopInit() {
@@ -148,7 +149,8 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void teleopPeriodic() {}
+    public void teleopPeriodic() {
+    }
 
     @Override
     public void testInit() {
@@ -158,7 +160,8 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void testPeriodic() {}
+    public void testPeriodic() {
+    }
 
     public void initButtons() {
         // driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
@@ -171,8 +174,10 @@ public class Robot extends TimedRobot {
         yellowButton.onTrue(Action.toCommand(new SetYellowLightsAction()));
         purpleButton.onTrue(Action.toCommand(new SetPurpleLightsAction()));
         chargeStationLockButton.onTrue(Action.toCommand(new ToggleChargeStationLockAction()));
-        gyroLockButton.onTrue(Action.toCommand(new TeleGyroAction(DriveTrain.getInstance().getGyroscopeRotation().getRadians())));
-        // Constants.XBOX.rightTrigger(0.5, Action.toCommand(new DriveNonblockingTurnAction(DriveTrain.getInstance().getGyroscopeRotation().getRadians())));
+        gyroLockButton.onTrue(
+                Action.toCommand(new TeleGyroAction(DriveTrain.getInstance().getGyroscopeRotation().getRadians())));
+        // Constants.XBOX.rightTrigger(0.5, Action.toCommand(new
+        // DriveNonblockingTurnAction(DriveTrain.getInstance().getGyroscopeRotation().getRadians())));
 
         unstowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
         slideButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SLIDE)));
