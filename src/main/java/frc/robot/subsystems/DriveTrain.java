@@ -245,6 +245,9 @@ public class DriveTrain extends Subsystem {
                     case ChargeStationLock:
                         speeds = new ChassisSpeeds(0, 0.01, 0);
                         break;
+                    case AutoLevel:
+                        autoLevel();
+                        speeds = periodic.speeds;
                     default:
                         speeds = new ChassisSpeeds();
         }
@@ -276,6 +279,22 @@ public class DriveTrain extends Subsystem {
         } else {
             periodic.state = State.FieldRel;
         }
+    }
+
+    public void autoLevel() {
+        double levelError = Constants.DRIVE_LEVEL_ZERO + periodic.gyroTilt;
+        double power;
+        if(levelError > 7){
+            power = - 0.1;
+        } else if (levelError < -7){
+            power = 0.1;
+        } else {
+            power = 0;
+        }
+        if(periodic.gyroLock) {
+            lockGyro();
+        }
+        periodic.speeds = new ChassisSpeeds(power, 0, 0);
     }
 
 
@@ -323,6 +342,7 @@ public class DriveTrain extends Subsystem {
         periodic.thetaAbs = thetaAbs;
     }
 
+
     public ChassisSpeeds setRobotHeading(Rotation2d currentHeading, Rotation2d desiredHeading) {
         double headingError = desiredHeading.getRadians() - currentHeading.getRadians();
         ChassisSpeeds speeds = new ChassisSpeeds(0.0, 0.0, (Constants.DRIVE_TURN_KP * headingError));
@@ -348,6 +368,10 @@ public class DriveTrain extends Subsystem {
 
     public void setGyroLockState() {
         periodic.state = State.GyroLock;
+    }
+
+    public void setAutoLevelState() {
+        periodic.state = State.AutoLevel;
     }
 
     public void setLineEncoder(double lineEncoder) {
