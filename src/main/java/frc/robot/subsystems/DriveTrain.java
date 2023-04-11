@@ -64,7 +64,8 @@ public class DriveTrain extends Subsystem {
         TeleGyroLock,
         TimeAutoControlled,
         ChargeStationLock,
-        AutoLevel
+        AutoLevel,
+        LLCorrect
     }
 
     public class DriveTrainIO {
@@ -87,6 +88,7 @@ public class DriveTrain extends Subsystem {
         public State previousState;
         public double lineEncoder;
         public double gyroTilt;
+        public double LL_tx;
     }
 
     private DriveTrain() {
@@ -253,6 +255,13 @@ public class DriveTrain extends Subsystem {
                         autoLevel();
                         speeds = periodic.speeds;
                         break;
+                    case LLCorrect:
+                        if (llWithinBounds()) {
+                            periodic.state = State.FieldRel;
+                        }
+                        llCorrect(periodic.LL_tx);
+                        speeds = periodic.speeds;
+                        break;
                     default:
                         speeds = new ChassisSpeeds();
         }
@@ -284,6 +293,23 @@ public class DriveTrain extends Subsystem {
         } else {
             periodic.state = State.FieldRel;
         }
+    }
+
+    public void llCorrect(double tx) {
+        double power = Constants.DRIVE_LL_CORRECT_KP * tx;
+        periodic.speeds = new ChassisSpeeds(0, power, 0);
+    }
+
+    public boolean llWithinBounds() {
+        if (Math.abs(periodic.LL_tx) < 4) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void setLLCorrect() {
+        periodic.state = State.LLCorrect;
     }
 
     public void autoLevel() {
@@ -404,6 +430,7 @@ public class DriveTrain extends Subsystem {
 
 
     public void readPeriodicInputs() {
+        periodic.LL_tx = Arm.getInstance().getLLVals()[0];
         double LeftX = -Constants.XBOX.getLeftY();
         double LeftY = -Constants.XBOX.getLeftX();
         double RightX = -Constants.XBOX.getRightX();

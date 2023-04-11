@@ -24,6 +24,7 @@ import frc.lib.statemachine.Action;
 import frc.robot.actions.manipulator.RunIntakeAction;
 import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.arm.CycleArmAction;
+import frc.robot.actions.drive.AutoLLCorrectAction;
 import frc.robot.actions.drive.AutoLevelAction;
 import frc.robot.actions.drive.DriveSwitchRobotMode;
 import frc.robot.actions.drive.DriveZeroGyro;
@@ -59,6 +60,7 @@ public class Robot extends TimedRobot {
     private JoystickButton cycleButton = new JoystickButton(Constants.XBOX, 7);
     private POVButton zeroPoseButton = new POVButton(Constants.XBOX, 180);
     private POVButton chargeStationLockButton = new POVButton(Constants.XBOX, 0);
+    private POVButton LLCorrectButton = new POVButton(Constants.XBOX, 90);
     private JoystickButton resetGyroButton = new JoystickButton(Constants.XBOX, 6);
     private JoystickButton yellowButton = new JoystickButton(Constants.XBOX, 9);
     private JoystickButton purpleButton = new JoystickButton(Constants.XBOX, 10);
@@ -178,6 +180,7 @@ public class Robot extends TimedRobot {
         gyroLockButton.onTrue(
                 Action.toCommand(new TeleGyroAction(DriveTrain.getInstance().getGyroscopeRotation().getRadians())));
         autoLevButton.whileTrue(Action.toCommand(new AutoLevelAction()));
+        LLCorrectButton.whileTrue(Action.toCommand(new AutoLLCorrectAction()));
         // Constants.XBOX.rightTrigger(0.5, Action.toCommand(new
         // DriveNonblockingTurnAction(DriveTrain.getInstance().getGyroscopeRotation().getRadians())));
 
