@@ -336,6 +336,10 @@ public class DriveTrain extends Subsystem {
         return periodic.averageEncoder;
     }
 
+    public double getLevelError() {
+        return Constants.DRIVE_LEVEL_ZERO + periodic.gyroTilt;
+    }
+
     public void setXMax(double maxSpeed) {
         periodic.xMax = maxSpeed;
     }
