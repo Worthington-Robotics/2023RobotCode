@@ -30,7 +30,7 @@ public class ReachLineWaitAction extends Action{
     public void onStop() {
         DriveTrain.getInstance().setChassisSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0));
         DriveTrain.getInstance().setFieldRel();
-        // DriveTrain.getInstance().setZeroDriveEncoders();
+        DriveTrain.getInstance().setZeroDriveEncoders();
         // DriveTrain.getInstance().setXDelta(0);
         // DriveTrain.getInstance().setYDelta(0);
         

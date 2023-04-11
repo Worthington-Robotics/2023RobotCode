@@ -17,7 +17,7 @@ public class DriveNonblockingTurnAction extends Action {
         DriveTrain.getInstance().setThetaAbs(thetaAbs);
         RotationalTrapController controller = DriveTrain.getInstance().makeNewController();
         controller.enableToGoal(DriveTrain.getInstance().getGyroscopeRotation().getRadians(), Timer.getFPGATimestamp(), thetaAbs);
-        DriveTrain.getInstance().setGyroLockState();
+        DriveTrain.getInstance().setTeleGyroLockState();
     }
 
     @Override

@@ -10,11 +10,11 @@ public class Constants {
     // ### Device ID declarations ###
 
     // Drivetrain
-    public static final double DRIVE_XY_MULTIPLIER = 4.0;
+    public static final double DRIVE_XY_MULTIPLIER = 4.5;
     public static final double DRIVE_ROTATION_MULTIPLIER = 360.0;
 
     public static final double DRIVE_TURN_KP = 1.0;
-    public static final double X_KP = 1/2.5;
+    public static final double X_KP = 1/(1.5);
 
     public static final double X_MOVE_MAX = 4;
     public static final double Y_MOVE_MAX = 4;
@@ -61,9 +61,9 @@ public class Constants {
 
     public static final double INTAKE_POWER = .6;
     public static final double ANYTHING_OUT_POWER = -1;
-    public static final double INTAKE_CURRENT_ACCEPTANCE = 75;
+    public static final double INTAKE_CURRENT_ACCEPTANCE = 75.0;
 
-    public static final double WRIST_PIVOT_KP = 1 / 80.0; //TODO: change this kp
+    public static final double WRIST_PIVOT_KP = .015; //TODO: change this kp
     public static final double WRIST_MIN_TIME = 1.5;
     public static final double WRIST_ENCODER_PER_DEGREE = 400.0; //TODO: change this value
     
@@ -71,7 +71,7 @@ public class Constants {
     public static final double PIVOT_ENCODER_PER_DEGREE = 416.31;
     public static final double ENCODER_PER_INCH = 1833.33;
 
-    public static final double ARM_PIVOT_KP = .017;
+    public static final double ARM_PIVOT_KP = .02;
     public static final double PIVOT_MIN_TIME =21.0;
 
     public static final double ARM_EXTENSION_KP = .08;

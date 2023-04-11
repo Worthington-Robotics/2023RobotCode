@@ -1,4 +1,5 @@
 package frc.robot.subsystems;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm.ArmMode;
@@ -20,6 +21,11 @@ public class Manipulator extends Subsystem {
 	public ManipulatorIO periodic;
 	private TalonFX wristMotor, intakeMotor;
 
+	public enum State {
+		OpenLoop,
+		DriverControlled
+	}
+
 	public class ManipulatorIO extends PeriodicIO {
 		double wristMotorPower;
 		double intakeMotorPower;
@@ -31,7 +37,9 @@ public class Manipulator extends Subsystem {
 		double prevDesiredWrist;
 		double intakeMotorCurrent;
 		boolean hasGamePiece;
-
+		State state = State.DriverControlled;
+		double startTime;
+		double timeOffset;
 	}
 
 	public Manipulator() {
@@ -45,18 +53,32 @@ public class Manipulator extends Subsystem {
 
 	public void readPeriodicInputs() {
 		periodic.intakeMotorCurrent = intakeMotor.getSupplyCurrent(); //TODO: Add low current means that it doesn't have anything
-		if (periodic.intakeMotorCurrent > Constants.INTAKE_CURRENT_ACCEPTANCE) {
-			periodic.hasGamePiece = true;
-		}
-		if (periodic.intakeMotorPower < 0) {
-			periodic.hasGamePiece = false;
-		}
-		if(periodic.intakeMotorCurrent == 0) {
-			periodic.hasGamePiece = false;
-		} if (periodic.intakeMotorCurrent < 1 && periodic.intakeMotorCurrent > 0) {
-			periodic.hasGamePiece = true;
-		}
 		periodic.wristEncoder = wristMotor.getSelectedSensorPosition();
+		double currentTime = Timer.getFPGATimestamp();
+		if(periodic.state == State.DriverControlled) {
+			if (periodic.intakeMotorCurrent > Constants.INTAKE_CURRENT_ACCEPTANCE) {
+				periodic.hasGamePiece = true;
+			}
+			if (periodic.intakeMotorCurrent < 5 && periodic.intakeMotorCurrent > 0.5) {
+				periodic.hasGamePiece = true;
+			}
+			if (periodic.intakeMotorPower < 0) {
+				periodic.hasGamePiece = false;
+			}
+			if(periodic.intakeMotorCurrent == 0) {
+				periodic.hasGamePiece = false;
+			} 
+			if (periodic.intakeMotorCurrent < 0.2) {
+				periodic.hasGamePiece = false;
+			}
+		} 
+		if(periodic.state == State.OpenLoop && (periodic.startTime + periodic.timeOffset) >= currentTime) {
+			periodic.hasGamePiece = true;
+		}
+		if (periodic.state == State.OpenLoop && (periodic.startTime + periodic.timeOffset) < currentTime) {
+			periodic.state = State.DriverControlled;
+		}
+
 	}
 
 	public void writePeriodicOutputs() {
@@ -115,6 +137,22 @@ public class Manipulator extends Subsystem {
 		// return (periodic.TimeOfFlightDistance < 200 && periodic.TimeOfFlightDistance != 0);
 	}
 
+	public void setGamePiece(boolean state) {
+		periodic.hasGamePiece = state;
+	}
+
+	public void setDriverControlled() {
+		periodic.state = State.DriverControlled;
+	}
+
+	public void setTimoutControlled() {
+		periodic.state = State.OpenLoop;
+	}
+
+	public void setTimeOffset(double delay) {
+		periodic.timeOffset = delay;
+	}
+
 	// Convert joystick values into motor powers
 	public double convertRawWristPowerIntoEncoder(double inputPower) {
 		return inputPower * 80000.0;
@@ -168,6 +206,9 @@ public class Manipulator extends Subsystem {
 		wristMotor.config_kF(0,0);
 	}
 
+	public void setStartTime(double startTime) {
+		periodic.startTime = startTime;
+	}
 
 	public void reset() { 
 	}

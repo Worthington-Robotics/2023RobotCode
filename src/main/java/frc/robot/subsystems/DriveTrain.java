@@ -60,11 +60,11 @@ public class DriveTrain extends Subsystem {
     public enum State {
         FieldRel,
         RobotRel,
-        RobotTurn,
         AutoControlled,
-        GyroLock,
+        TeleGyroLock,
         TimeAutoControlled,
-        ChargeStationLock
+        ChargeStationLock,
+        AutoLevel
     }
 
     public class DriveTrainIO {
@@ -75,6 +75,7 @@ public class DriveTrain extends Subsystem {
         public double XboxRightX;
         public ChassisSpeeds speeds;
         public Rotation2d desiredHeading;
+        public double desiredDriveEncoder;
         public double xMax;
         public double yMax;
         public double xDelta;
@@ -85,6 +86,7 @@ public class DriveTrain extends Subsystem {
         public boolean chargeStationToggle;
         public State previousState;
         public double lineEncoder;
+        public double gyroTilt;
     }
 
     private DriveTrain() {
@@ -212,6 +214,11 @@ public class DriveTrain extends Subsystem {
                         if(y > Constants.Y_MOVE_MAX) {
                             y = Constants.Y_MOVE_MAX;
                         }
+                        if(Math.abs(Math.abs(periodic.averageEncoder) - Math.abs(periodic.desiredDriveEncoder)) < 3000){
+                            x = 0;
+                            y = 0;
+                            r = 0;
+                        }
                         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, getGyroscopeRotation());
                         break;
                     case FieldRel:
@@ -225,10 +232,7 @@ public class DriveTrain extends Subsystem {
                     case RobotRel:
                         speeds = new ChassisSpeeds((x * Constants.DRIVE_XY_MULTIPLIER), (y * Constants.DRIVE_XY_MULTIPLIER), (r * Constants.DRIVE_ROTATION_MULTIPLIER));
                         break;
-                    case RobotTurn:
-                        speeds = setRobotHeading(getGyroscopeRotation(), periodic.desiredHeading);
-                        break;
-                    case GyroLock:
+                    case TeleGyroLock:
                         double rotationalVelocity = 0;
                         if(periodic.controller.getState() == RTCState.DISABLE){
                             periodic.controller.enableToGoal(getGyroscopeRotation().getRadians(), Timer.getFPGATimestamp(), periodic.thetaAbs);
@@ -240,14 +244,15 @@ public class DriveTrain extends Subsystem {
                             periodic.controller.disableController();
                             rotationalVelocity = periodic.controller.getOmega();
                         }
-                        speeds = new ChassisSpeeds(0, 0, rotationalVelocity);
-                        break;
-                    case ChargeStationLock:
-                        speeds = new ChassisSpeeds(0, 0.01, 0);
+                        if(Math.abs(Math.abs(periodic.thetaAbs) - Math.abs(getGyroscopeRotation().getRadians())) < (Math.PI / 20)){
+                            rotationalVelocity = 0;
+                        }
+                        speeds = new ChassisSpeeds(x * Constants.DRIVE_XY_MULTIPLIER, y * Constants.DRIVE_XY_MULTIPLIER, rotationalVelocity);
                         break;
                     case AutoLevel:
                         autoLevel();
                         speeds = periodic.speeds;
+                        break;
                     default:
                         speeds = new ChassisSpeeds();
         }
@@ -285,14 +290,11 @@ public class DriveTrain extends Subsystem {
         double levelError = Constants.DRIVE_LEVEL_ZERO + periodic.gyroTilt;
         double power;
         if(levelError > 7){
-            power = - 0.1;
+            power = 0.5;
         } else if (levelError < -7){
-            power = 0.1;
+            power = - 0.5;
         } else {
             power = 0;
-        }
-        if(periodic.gyroLock) {
-            lockGyro();
         }
         periodic.speeds = new ChassisSpeeds(power, 0, 0);
     }
@@ -366,8 +368,8 @@ public class DriveTrain extends Subsystem {
         periodic.state = State.FieldRel;
     }
 
-    public void setGyroLockState() {
-        periodic.state = State.GyroLock;
+    public void setTeleGyroLockState() {
+        periodic.state = State.TeleGyroLock;
     }
 
     public void setAutoLevelState() {
@@ -376,6 +378,11 @@ public class DriveTrain extends Subsystem {
 
     public void setLineEncoder(double lineEncoder) {
         periodic.lineEncoder = lineEncoder;
+    }
+
+    public void setEndDesiredEncoder(double desiredDriveEncoder){
+        periodic.desiredDriveEncoder = desiredDriveEncoder;
+
     }
 
 	public void setZeroDriveEncoders() {
@@ -419,14 +426,22 @@ public class DriveTrain extends Subsystem {
             periodic.XboxRightX = RightX;
         }
 
+        periodic.gyroTilt = m_pigeon.getRoll();
 
     }
 
     public void writePeriodicOutputs() {
-        m_frontLeftModule.set(periodic.states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, periodic.states[0].angle.getRadians());
-		m_frontRightModule.set(periodic.states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, periodic.states[1].angle.getRadians());
-		m_backLeftModule.set(periodic.states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, periodic.states[2].angle.getRadians());
-		m_backRightModule.set(periodic.states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, periodic.states[3].angle.getRadians());
+        if(periodic.state != State.ChargeStationLock) {
+            m_frontLeftModule.set(periodic.states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, periodic.states[0].angle.getRadians());
+            m_frontRightModule.set(periodic.states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, periodic.states[1].angle.getRadians());
+            m_backLeftModule.set(periodic.states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, periodic.states[2].angle.getRadians());
+            m_backRightModule.set(periodic.states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, periodic.states[3].angle.getRadians());
+        } else {
+            m_frontLeftModule.set(0, 1.184);
+            m_frontRightModule.set(0, 2.401);
+            m_backLeftModule.set(0, 2.350);
+            m_backRightModule.set(0, 0.568);
+        }
     }
 
     public void outputTelemetry() {

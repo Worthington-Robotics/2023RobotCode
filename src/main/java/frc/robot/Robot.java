@@ -9,12 +9,12 @@ package frc.robot;
 
 import java.util.Arrays;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.lib.loops.Looper;
 import frc.lib.statemachine.StateMachine;
-import frc.lib.util.ReflectingLogger;
 import frc.robot.subsystems.*;
 import frc.robot.autos.AutoChooser;
 import frc.robot.subsystems.Manipulator;
@@ -22,10 +22,9 @@ import frc.robot.subsystems.Arm.ArmMode;
 import frc.robot.subsystems.Arm.ArmPose;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.manipulator.RunIntakeAction;
-import frc.robot.actions.vision.SetPipelineAction;
 import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.arm.CycleArmAction;
-import frc.robot.actions.drive.DriveNonblockingTurnAction;
+import frc.robot.actions.drive.AutoLevelAction;
 import frc.robot.actions.drive.DriveSwitchRobotMode;
 import frc.robot.actions.drive.DriveZeroGyro;
 import frc.robot.actions.drive.TeleGyroAction;
@@ -48,6 +47,9 @@ public class Robot extends TimedRobot {
     // Input bindings
     private JoystickButton intakeButton = new JoystickButton(Constants.XBOX, 1);
     private JoystickButton intakeReverseButton = new JoystickButton(Constants.XBOX, 2);
+    private JoystickButton autoLevButton = new JoystickButton(Constants.XBOX, 3);
+    private JoystickButton toggleDriveModeButton = new JoystickButton(Constants.XBOX, 4);
+
     private JoystickButton gyroLockButton = new JoystickButton(Constants.XBOX, 5);
     // private JoystickButton limelightPipeButton = new
     // JoystickButton(Constants.MASTER, 5);
@@ -57,11 +59,10 @@ public class Robot extends TimedRobot {
     private JoystickButton cycleButton = new JoystickButton(Constants.XBOX, 7);
     private POVButton zeroPoseButton = new POVButton(Constants.XBOX, 180);
     private POVButton chargeStationLockButton = new POVButton(Constants.XBOX, 0);
-    private JoystickButton toggleDriveModeButton = new JoystickButton(Constants.XBOX, 4);
     private JoystickButton resetGyroButton = new JoystickButton(Constants.XBOX, 6);
     private JoystickButton yellowButton = new JoystickButton(Constants.XBOX, 9);
     private JoystickButton purpleButton = new JoystickButton(Constants.XBOX, 10);
-
+    
     // private JoystickA
 
     private JoystickButton unstowButton = new JoystickButton(Constants.SECOND, 1);
@@ -176,6 +177,7 @@ public class Robot extends TimedRobot {
         chargeStationLockButton.onTrue(Action.toCommand(new ToggleChargeStationLockAction()));
         gyroLockButton.onTrue(
                 Action.toCommand(new TeleGyroAction(DriveTrain.getInstance().getGyroscopeRotation().getRadians())));
+        autoLevButton.whileTrue(Action.toCommand(new AutoLevelAction()));
         // Constants.XBOX.rightTrigger(0.5, Action.toCommand(new
         // DriveNonblockingTurnAction(DriveTrain.getInstance().getGyroscopeRotation().getRadians())));
 

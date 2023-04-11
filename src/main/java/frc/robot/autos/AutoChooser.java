@@ -11,14 +11,14 @@ public class AutoChooser {
 	public static AutoChooser getInstance() { return instance; }
 	
 	public enum AutoType {
-		None, TestAuto, RedWallAuto
+		None, TestAuto, BarrierAndWallAuto, MiddleAuto, NoMoveAuto
 	}
 
 	// The currently chosen autonomous routine
 	private AutoType chosen;
 
 	private AutoChooser() {
-		change(AutoType.RedWallAuto);	
+		change(AutoType.None);	
 	}
 
 	// Run the currently selected autonomous
@@ -30,8 +30,14 @@ public class AutoChooser {
 			case TestAuto:
 				StateMachine.getInstance().runMachine(new TestAuto());
 				break;
-			case RedWallAuto:
-				StateMachine.getInstance().runMachine(new RedWallAuto());
+			case BarrierAndWallAuto:
+				StateMachine.getInstance().runMachine(new BarrierAndWallAuto());
+				break;
+			case MiddleAuto:
+				StateMachine.getInstance().runMachine(new MiddleAuto());
+				break;
+			case NoMoveAuto:
+				StateMachine.getInstance().runMachine(new NoMoveAuto());
 				break;
 		}
 	}
@@ -50,7 +56,7 @@ public class AutoChooser {
 				return;
 			}
 		}
-		chosen = AutoType.RedWallAuto;
+		chosen = AutoType.None;
 	}
 
 	public void printList() {

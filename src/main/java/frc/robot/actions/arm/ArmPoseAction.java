@@ -17,6 +17,7 @@ public class ArmPoseAction extends Action {
     public void onStart() {
         Arm.getInstance().setPose(pose);
         Manipulator.getInstance().resWrist();
+        Arm.getInstance().resPivot();
         if(pose == ArmPose.HIGH) {
 			Arm.pipeline.setDouble(1);
         } else {

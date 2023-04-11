@@ -62,10 +62,10 @@ public class Arm extends Subsystem {
 	public static double[][] ArmPoses = {
 		{0,0,0},
 		{-20900, 5000, 0},
-		{-20900, 5000, 21200},
+		{-20900, 5000, 26200},
 		{-113000, -1635, -68800},
 		{-98372, -6800, -54000},
-		{-218000, -16700, -63200},
+		{-218000, -13700, -63200},
 		{-240000, -137000, -63000},
 		{-292000, -4500, -103000},
 	};
@@ -100,6 +100,8 @@ public class Arm extends Subsystem {
 		// Limelights
 		public double LL_tx = 0;
 		public double LL_tv = 0;
+
+		public double pivotOffset = 0;
 	}
 
 	public void readPeriodicInputs() {
@@ -111,6 +113,10 @@ public class Arm extends Subsystem {
 
 		periodic.LL_tv = tv.getDouble(0.0);
 		periodic.LL_tx = tx.getDouble(0.0);
+
+		if(periodic.currentMode == ArmMode.CLOSED_LOOP){
+			periodic.pivotOffset = HIDHelper.getAxisMapped(Constants.SECOND.getRawAxis(3), -1,0) * 20000;
+		}
 	}
 
 	public void registerEnabledLoops(ILooper enabledLooper) {
@@ -136,7 +142,7 @@ public class Arm extends Subsystem {
 						(Math.abs(periodic.pivotEncoderError) < Constants.PIVOT_ENCODER_ERROR_ACCEPTANCE);
 						break;
 					case CLOSED_LOOP:
-						periodic.desiredPivotEncoder = Arm.ArmPoses[periodic.currentPose.ordinal()][0];
+						periodic.desiredPivotEncoder = Arm.ArmPoses[periodic.currentPose.ordinal()][0] + periodic.pivotOffset;
 						periodic.desiredArmLengthEncoder = Arm.ArmPoses[periodic.currentPose.ordinal()][1];
 
 						periodic.lengthEncoderError = periodic.desiredArmLengthEncoder - periodic.lengthEncoder;
@@ -268,6 +274,10 @@ public class Arm extends Subsystem {
 	public void resetEncoders() {
 		extensionMotor.setSelectedSensorPosition(0);
 		armMasterMotor.setSelectedSensorPosition(0);
+	}
+
+	public void resPivot() {
+		periodic.pivotOffset = 0;
 	}
 
 
