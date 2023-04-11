@@ -87,7 +87,6 @@ public class DriveTrain extends Subsystem {
         public RotationalTrapController controller;
         public boolean chargeStationToggle;
         public State previousState;
-        public double lineEncoder;
         public double gyroTilt;
         public double LL_tx;
         public double currentHeading;
@@ -212,17 +211,23 @@ public class DriveTrain extends Subsystem {
                         x = xError * Constants.X_KP;
                         y = 0;
                         r = headingError * Constants.TURN_KP;
-                        if (x > Constants.X_MOVE_MAX) {
-                            x = Constants.X_MOVE_MAX;
+                        if (Math.abs(x) > Math.abs(Constants.X_MOVE_MAX)) {
+                            x = Constants.X_MOVE_MAX * Math.signum(x);
                         }
-                        if(y > Constants.Y_MOVE_MAX) {
-                            y = Constants.Y_MOVE_MAX;
+                        if(Math.abs(y) > Math.abs(Constants.Y_MOVE_MAX)) {
+                            y = Constants.Y_MOVE_MAX * Math.signum(y);
                         }
-                        if(Math.abs(Math.abs(periodic.averageEncoder) - Math.abs(periodic.desiredDriveEncoder)) < 3000){
+
+                        if(xError < 0 && periodic.xDelta > 0){ //when the encoder is becoming more positive
+                            x = 0;
+                            y = 0;
+                            r = 0;
+                        } else if (xError > 0 && periodic.xDelta < 0){ //when the encoder is becoming more negative
                             x = 0;
                             y = 0;
                             r = 0;
                         }
+                        
                         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, getGyroscopeRotation());
                         break;
                     case FieldRel:
@@ -341,14 +346,6 @@ public class DriveTrain extends Subsystem {
         return periodic.state;
     }
 
-    
-    public void setPreviousState(State state) {
-        periodic.previousState = state;
-    }
-
-    public State getPreviousState() {
-        return periodic.previousState;
-    }
 
     public double getAverageEncoder() {
         return periodic.averageEncoder;
@@ -413,9 +410,6 @@ public class DriveTrain extends Subsystem {
         periodic.state = State.AutoLevel;
     }
 
-    public void setLineEncoder(double lineEncoder) {
-        periodic.lineEncoder = lineEncoder;
-    }
 
     public void setEndDesiredEncoder(double desiredDriveEncoder){
         periodic.desiredDriveEncoder = desiredDriveEncoder;
@@ -516,8 +510,6 @@ public class DriveTrain extends Subsystem {
             periodic.XboxLeftX, periodic.XboxLeftY, periodic.XboxRightX
         });
         SmartDashboard.putNumber("Drive/current encoder", periodic.averageEncoder);
-        SmartDashboard.putNumber("Drive/ desired line encoder", periodic.lineEncoder);
-        SmartDashboard.putBoolean("Drive/ condition met", (Math.abs(getAverageEncoder()) >= Math.abs(periodic.lineEncoder)));
     }
 
     public void reset() {
