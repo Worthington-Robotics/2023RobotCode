@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.fasterxml.jackson.databind.deser.impl.SetterlessProperty;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
@@ -183,29 +184,6 @@ public class DriveTrain extends Subsystem {
                         break;
                     case AutoControlled:
                         periodic.averageEncoder = Math.abs(m_frontRightModule.getDriveEncoder());
-                        // if(Math.abs(m_frontLeftModule.getSteerAngle()) < Math.PI / 18.0){
-                        //     periodic.averageEncoder += m_frontLeftModule.getDriveEncoder();
-                        // } else if(Math.abs(m_frontLeftModule.getSteerAngle()) > Math.PI * (17 / 18)) {
-                        //     periodic.averageEncoder -= m_frontLeftModule.getDriveEncoder();
-                        // }
-                        // if(Math.abs(m_frontRightModule.getSteerAngle()) < Math.PI / 18.0){
-                        //     periodic.averageEncoder += m_frontRightModule.getDriveEncoder();
-                        // } else if(Math.abs(m_frontRightModule.getSteerAngle()) > Math.PI * (17 / 18)) {
-                        //     periodic.averageEncoder -= m_frontRightModule.getDriveEncoder();
-                        // }
-                        // if(Math.abs(m_backRightModule.getSteerAngle()) < Math.PI / 18.0){
-                        //     periodic.averageEncoder += m_backRightModule.getDriveEncoder();
-                        // } else if(Math.abs(m_backRightModule.getSteerAngle()) > Math.PI * (17 / 18)) {
-                        //     periodic.averageEncoder -= m_backRightModule.getDriveEncoder();
-                        // }
-                        // if(Math.abs(m_backLeftModule.getSteerAngle()) < Math.PI / 18.0){
-                        //     periodic.averageEncoder += m_backLeftModule.getDriveEncoder();
-                        // } else if(Math.abs(m_backLeftModule.getSteerAngle()) > Math.PI * (17 / 18)) {
-                        //     periodic.averageEncoder -= m_backLeftModule.getDriveEncoder();
-                        // }
-
-                        // periodic.averageEncoder /= 4.0;
-
                         double xError = (periodic.xDelta - periodic.averageEncoder)  / Constants.DRIVE_ENCODER_TO_METERS;
                         double headingError = periodic.thetaAbs - getGyroscopeRotation().getRadians();
                         x = xError * Constants.X_KP;
@@ -227,7 +205,6 @@ public class DriveTrain extends Subsystem {
                             y = 0;
                             r = 0;
                         }
-                        
                         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, getGyroscopeRotation());
                         break;
                     case FieldRel:
@@ -346,6 +323,14 @@ public class DriveTrain extends Subsystem {
         return periodic.state;
     }
 
+    
+    public void setPreviousState(State state) {
+        periodic.previousState = state;
+    }
+
+    public State getPreviousState() {
+        return periodic.previousState;
+    }
 
     public double getAverageEncoder() {
         return periodic.averageEncoder;
