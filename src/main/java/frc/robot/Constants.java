@@ -44,6 +44,7 @@ public class Constants {
 
     public static final double DRIVE_ENCODER_TO_METERS = 40038.0;
     public static final double DRIVE_LL_CORRECT_KP = 1.0/15.0;
+    public static final double DRIVE_GYRO_LOCK_KP = 1.0/20.0;
 
     
     

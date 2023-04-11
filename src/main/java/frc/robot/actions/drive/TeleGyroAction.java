@@ -14,9 +14,10 @@ public class TeleGyroAction extends Action {
 
     @Override
     public void onStart() {
-        DriveTrain.getInstance().setThetaAbs(thetaAbs);
-        RotationalTrapController controller = DriveTrain.getInstance().makeNewController();
-        controller.enableToGoal(DriveTrain.getInstance().getGyroscopeRotation().getRadians(), Timer.getFPGATimestamp(), thetaAbs);
+        DriveTrain.getInstance().setGyroHeading(thetaAbs);
+        // DriveTrain.getInstance().setThetaAbs(thetaAbs);
+        // RotationalTrapController controller = DriveTrain.getInstance().makeNewController();
+        // controller.enableToGoal(DriveTrain.getInstance().getGyroscopeRotation().getRadians(), Timer.getFPGATimestamp(), thetaAbs);
         DriveTrain.getInstance().setTeleGyroLockState();
     }
 
@@ -25,7 +26,7 @@ public class TeleGyroAction extends Action {
 
     @Override
     public boolean isFinished() {
-        return true;
+        return false;
     }
 
     @Override

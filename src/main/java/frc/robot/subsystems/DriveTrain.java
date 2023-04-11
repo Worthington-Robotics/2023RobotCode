@@ -61,6 +61,7 @@ public class DriveTrain extends Subsystem {
         FieldRel,
         RobotRel,
         AutoControlled,
+        AutoTurn,
         TeleGyroLock,
         TimeAutoControlled,
         ChargeStationLock,
@@ -89,6 +90,7 @@ public class DriveTrain extends Subsystem {
         public double lineEncoder;
         public double gyroTilt;
         public double LL_tx;
+        public double currentHeading;
     }
 
     private DriveTrain() {
@@ -234,7 +236,7 @@ public class DriveTrain extends Subsystem {
                     case RobotRel:
                         speeds = new ChassisSpeeds((x * Constants.DRIVE_XY_MULTIPLIER), (y * Constants.DRIVE_XY_MULTIPLIER), (r * Constants.DRIVE_ROTATION_MULTIPLIER));
                         break;
-                    case TeleGyroLock:
+                    case AutoTurn:
                         double rotationalVelocity = 0;
                         if(periodic.controller.getState() == RTCState.DISABLE){
                             periodic.controller.enableToGoal(getGyroscopeRotation().getRadians(), Timer.getFPGATimestamp(), periodic.thetaAbs);
@@ -250,6 +252,10 @@ public class DriveTrain extends Subsystem {
                             rotationalVelocity = 0;
                         }
                         speeds = new ChassisSpeeds(x * Constants.DRIVE_XY_MULTIPLIER, y * Constants.DRIVE_XY_MULTIPLIER, rotationalVelocity);
+                        break;
+                    case TeleGyroLock:
+                        gyroLock();
+                        speeds = periodic.speeds;
                         break;
                     case AutoLevel:
                         autoLevel();
@@ -306,6 +312,11 @@ public class DriveTrain extends Subsystem {
         } else {
             return false;
         }
+    }
+
+    public void gyroLock() {
+        double rotationSpeed = (periodic.desiredHeading.getRadians() - periodic.currentHeading) * Constants.DRIVE_GYRO_LOCK_KP;
+        periodic.speeds = new ChassisSpeeds(0.0, 0.0, rotationSpeed);
     }
 
     public void setLLCorrect() {
@@ -431,6 +442,7 @@ public class DriveTrain extends Subsystem {
 
     public void readPeriodicInputs() {
         periodic.LL_tx = Arm.getInstance().getLLVals()[0];
+        periodic.currentHeading = getGyroscopeRotation().getRadians();
         double LeftX = -Constants.XBOX.getLeftY();
         double LeftY = -Constants.XBOX.getLeftX();
         double RightX = -Constants.XBOX.getRightX();
