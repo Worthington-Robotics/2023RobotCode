@@ -1,7 +1,5 @@
 package frc.robot.actions.vision;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.statemachine.Action;
 import frc.robot.subsystems.Arm;
 

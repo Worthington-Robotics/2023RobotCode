@@ -183,7 +183,13 @@ public class DriveTrain extends Subsystem {
                         speeds = periodic.speeds;
                         break;
                     case AutoControlled:
-                        periodic.averageEncoder = Math.abs(m_frontRightModule.getDriveEncoder());
+                        // periodic.averageEncoder = Math.abs(m_frontRightModule.getDriveEncoder());
+                        if(Math.abs(m_frontRightModule.getSteerAngle()) < 15) {
+                            periodic.averageEncoder = m_frontRightModule.getDriveEncoder();
+                        }
+                        if (Math.abs(m_frontRightModule.getSteerAngle()) > 165) {
+                            periodic.averageEncoder = -m_frontRightModule.getDriveEncoder();
+                        }
                         double xError = (periodic.xDelta - periodic.averageEncoder)  / Constants.DRIVE_ENCODER_TO_METERS;
                         double headingError = periodic.thetaAbs - getGyroscopeRotation().getRadians();
                         x = xError * Constants.X_KP;
