@@ -27,22 +27,29 @@ import frc.robot.Constants;
 
 public class DriveTrain extends Subsystem {
     private static DriveTrain instance = new DriveTrain();
-    public static DriveTrain getInstance() { return instance; }
+
+    public static DriveTrain getInstance() {
+        return instance;
+    }
+
     private DriveTrainIO periodic = new DriveTrainIO();
 
     private final PigeonIMU m_pigeon = new PigeonIMU(0);
     public SwerveDriveOdometry odometry;
 
     private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
-		// Front left
-		new Translation2d(Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-		// Front right
-		new Translation2d(Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-		// Back left
-		new Translation2d(-Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
-		// Back right
-		new Translation2d(-Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0)
-	);
+            // Front left
+            new Translation2d(Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+                    Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            // Front right
+            new Translation2d(Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+                    -Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            // Back left
+            new Translation2d(-Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+                    Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            // Back right
+            new Translation2d(-Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
+                    -Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
 
     private final SwerveModule m_frontLeftModule;
     private final SwerveModule m_frontRightModule;
@@ -52,11 +59,11 @@ public class DriveTrain extends Subsystem {
     public static final double MAX_VOLTAGE = 9.5;
 
     public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380 / 60.0 *
-    SdsModuleConfigurations.MK4_L3.getDriveReduction() *
-    SdsModuleConfigurations.MK4_L3.getWheelDiameter() * Math.PI;
+            SdsModuleConfigurations.MK4_L3.getDriveReduction() *
+            SdsModuleConfigurations.MK4_L3.getWheelDiameter() * Math.PI;
 
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
-    Math.hypot(Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
+            Math.hypot(Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
     public enum State {
         FieldRel,
@@ -72,7 +79,8 @@ public class DriveTrain extends Subsystem {
 
     public class DriveTrainIO {
         public State state = State.RobotRel;
-        public SwerveModuleState[] states = {new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState()};
+        public SwerveModuleState[] states = { new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(),
+                new SwerveModuleState() };
         public double XboxLeftY;
         public double XboxLeftX;
         public double XboxRightX;
@@ -95,61 +103,59 @@ public class DriveTrain extends Subsystem {
 
     private DriveTrain() {
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-        
+
         m_frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
-            // This parameter is optional, but will allow you to see the current state of the module on the dashboard.
-            tab.getLayout("Front Left Module", BuiltInLayouts.kList)
-                .withSize(2, 4)
-                .withPosition(0, 0),
-            // This can either be STANDARD or FAST depending on your gear configuration
-            Mk4SwerveModuleHelper.GearRatio.L3,
-            // This is the ID of the drive motor
-            Constants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
-            // This is the ID of the steer motor
-            Constants.FRONT_LEFT_MODULE_STEER_MOTOR,
-            // This is the ID of the steer encoder
-            Constants.FRONT_LEFT_MODULE_STEER_ENCODER,
-            // This is how much the steer encoder is offset from true zero (In our case, zero is facing straight forward)
-            Constants.FRONT_LEFT_MODULE_STEER_OFFSET
-        );
+                // This parameter is optional, but will allow you to see the current state of
+                // the module on the dashboard.
+                tab.getLayout("Front Left Module", BuiltInLayouts.kList)
+                        .withSize(2, 4)
+                        .withPosition(0, 0),
+                // This can either be STANDARD or FAST depending on your gear configuration
+                Mk4SwerveModuleHelper.GearRatio.L3,
+                // This is the ID of the drive motor
+                Constants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
+                // This is the ID of the steer motor
+                Constants.FRONT_LEFT_MODULE_STEER_MOTOR,
+                // This is the ID of the steer encoder
+                Constants.FRONT_LEFT_MODULE_STEER_ENCODER,
+                // This is how much the steer encoder is offset from true zero (In our case,
+                // zero is facing straight forward)
+                Constants.FRONT_LEFT_MODULE_STEER_OFFSET);
         m_frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
-            tab.getLayout("Front Right Module", BuiltInLayouts.kList)
-                .withSize(2, 4)
-                .withPosition(2, 0),
-            Mk4SwerveModuleHelper.GearRatio.L3,
-            Constants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
-            Constants.FRONT_RIGHT_MODULE_STEER_MOTOR,
-            Constants.FRONT_RIGHT_MODULE_STEER_ENCODER,
-            Constants.FRONT_RIGHT_MODULE_STEER_OFFSET
-        );
+                tab.getLayout("Front Right Module", BuiltInLayouts.kList)
+                        .withSize(2, 4)
+                        .withPosition(2, 0),
+                Mk4SwerveModuleHelper.GearRatio.L3,
+                Constants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
+                Constants.FRONT_RIGHT_MODULE_STEER_MOTOR,
+                Constants.FRONT_RIGHT_MODULE_STEER_ENCODER,
+                Constants.FRONT_RIGHT_MODULE_STEER_OFFSET);
         m_backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
-            tab.getLayout("Back Left Module", BuiltInLayouts.kList)
-                .withSize(2, 4)
-                .withPosition(4, 0),
-            Mk4SwerveModuleHelper.GearRatio.L3,
-           Constants.BACK_LEFT_MODULE_DRIVE_MOTOR,
-           Constants.BACK_LEFT_MODULE_STEER_MOTOR,
-           Constants.BACK_LEFT_MODULE_STEER_ENCODER,
-           Constants.BACK_LEFT_MODULE_STEER_OFFSET
-        );
+                tab.getLayout("Back Left Module", BuiltInLayouts.kList)
+                        .withSize(2, 4)
+                        .withPosition(4, 0),
+                Mk4SwerveModuleHelper.GearRatio.L3,
+                Constants.BACK_LEFT_MODULE_DRIVE_MOTOR,
+                Constants.BACK_LEFT_MODULE_STEER_MOTOR,
+                Constants.BACK_LEFT_MODULE_STEER_ENCODER,
+                Constants.BACK_LEFT_MODULE_STEER_OFFSET);
         m_backRightModule = Mk4SwerveModuleHelper.createFalcon500(
-            tab.getLayout("Back Right Module", BuiltInLayouts.kList)
-                .withSize(2, 4)
-                .withPosition(6, 0),
-            Mk4SwerveModuleHelper.GearRatio.L3,
-            Constants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
-            Constants.BACK_RIGHT_MODULE_STEER_MOTOR,
-            Constants.BACK_RIGHT_MODULE_STEER_ENCODER,
-            Constants.BACK_RIGHT_MODULE_STEER_OFFSET
-      );
+                tab.getLayout("Back Right Module", BuiltInLayouts.kList)
+                        .withSize(2, 4)
+                        .withPosition(6, 0),
+                Mk4SwerveModuleHelper.GearRatio.L3,
+                Constants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
+                Constants.BACK_RIGHT_MODULE_STEER_MOTOR,
+                Constants.BACK_RIGHT_MODULE_STEER_ENCODER,
+                Constants.BACK_RIGHT_MODULE_STEER_OFFSET);
         setZeroDriveEncoders();
         setGyroZero();
 
         odometry = new SwerveDriveOdometry(m_kinematics, new Rotation2d(), new SwerveModulePosition[] {
-            new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_frontLeftModule.getSteerAngle())),
-            new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_frontRightModule.getSteerAngle())),
-            new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_backLeftModule.getSteerAngle())),
-            new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_backRightModule.getSteerAngle())),
+                new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_frontLeftModule.getSteerAngle())),
+                new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_frontRightModule.getSteerAngle())),
+                new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_backLeftModule.getSteerAngle())),
+                new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_backRightModule.getSteerAngle())),
         });
     }
 
@@ -160,16 +166,24 @@ public class DriveTrain extends Subsystem {
                 periodic.speeds = new ChassisSpeeds(0.0, 0.0, 0.0);
                 periodic.states = m_kinematics.toSwerveModuleStates(periodic.speeds);
             }
+
             @Override
             public void onLoop(double timestamp) {
                 periodic.states = m_kinematics.toSwerveModuleStates(periodic.speeds);
-		        SwerveDriveKinematics.desaturateWheelSpeeds(periodic.states, MAX_VELOCITY_METERS_PER_SECOND);
+                SwerveDriveKinematics.desaturateWheelSpeeds(periodic.states, MAX_VELOCITY_METERS_PER_SECOND);
 
                 odometry.update(getGyroscopeRotation(), new SwerveModulePosition[] {
-                    new SwerveModulePosition(m_frontLeftModule.getDriveEncoder() /  Constants.DRIVE_ENCODER_TO_METERS, Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
-                    new SwerveModulePosition(m_frontRightModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS, Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
-                    new SwerveModulePosition(m_backLeftModule.getDriveEncoder() /   Constants.DRIVE_ENCODER_TO_METERS, Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
-                    new SwerveModulePosition(m_backRightModule.getDriveEncoder() /  Constants.DRIVE_ENCODER_TO_METERS, Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
+                        new SwerveModulePosition(
+                                m_frontLeftModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS,
+                                Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
+                        new SwerveModulePosition(
+                                m_frontRightModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS,
+                                Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
+                        new SwerveModulePosition(m_backLeftModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS,
+                                Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
+                        new SwerveModulePosition(
+                                m_backRightModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS,
+                                Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
                 });
 
                 double x = periodic.XboxLeftX;
@@ -184,13 +198,13 @@ public class DriveTrain extends Subsystem {
                         break;
                     case AutoControlled:
                         // periodic.averageEncoder = Math.abs(m_frontRightModule.getDriveEncoder());
-                        if(Math.abs(m_frontRightModule.getSteerAngle()) < 15) {
+                        if (Math.abs(m_frontRightModule.getSteerAngle()) < 15) {
                             periodic.averageEncoder = m_frontRightModule.getDriveEncoder();
                         }
                         if (Math.abs(m_frontRightModule.getSteerAngle()) > 165) {
                             periodic.averageEncoder = -m_frontRightModule.getDriveEncoder();
                         }
-                        double xError = (periodic.xDelta - periodic.averageEncoder)  / Constants.DRIVE_ENCODER_TO_METERS;
+                        double xError = (periodic.xDelta - periodic.averageEncoder) / Constants.DRIVE_ENCODER_TO_METERS;
                         double headingError = periodic.thetaAbs - getGyroscopeRotation().getRadians();
                         x = xError * Constants.X_KP;
                         y = 0;
@@ -198,15 +212,15 @@ public class DriveTrain extends Subsystem {
                         if (Math.abs(x) > Math.abs(Constants.X_MOVE_MAX)) {
                             x = Constants.X_MOVE_MAX * Math.signum(x);
                         }
-                        if(Math.abs(y) > Math.abs(Constants.Y_MOVE_MAX)) {
+                        if (Math.abs(y) > Math.abs(Constants.Y_MOVE_MAX)) {
                             y = Constants.Y_MOVE_MAX * Math.signum(y);
                         }
 
-                        if(xError < 0 && periodic.xDelta > 0){ //when the encoder is becoming more positive
+                        if (xError < 0 && periodic.xDelta > 0) { // when the encoder is becoming more positive
                             x = 0;
                             y = 0;
                             r = 0;
-                        } else if (xError > 0 && periodic.xDelta < 0){ //when the encoder is becoming more negative
+                        } else if (xError > 0 && periodic.xDelta < 0) { // when the encoder is becoming more negative
                             x = 0;
                             y = 0;
                             r = 0;
@@ -215,31 +229,36 @@ public class DriveTrain extends Subsystem {
                         break;
                     case FieldRel:
                         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                        (x * Constants.DRIVE_XY_MULTIPLIER),
-                        (y * Constants.DRIVE_XY_MULTIPLIER),
-                        (r * Constants.DRIVE_ROTATION_MULTIPLIER),
-                        getGyroscopeRotation()
-                        );
+                                (x * Constants.DRIVE_XY_MULTIPLIER),
+                                (y * Constants.DRIVE_XY_MULTIPLIER),
+                                (r * Constants.DRIVE_ROTATION_MULTIPLIER),
+                                getGyroscopeRotation());
                         break;
                     case RobotRel:
-                        speeds = new ChassisSpeeds((x * Constants.DRIVE_XY_MULTIPLIER), (y * Constants.DRIVE_XY_MULTIPLIER), (r * Constants.DRIVE_ROTATION_MULTIPLIER));
+                        speeds = new ChassisSpeeds((x * Constants.DRIVE_XY_MULTIPLIER),
+                                (y * Constants.DRIVE_XY_MULTIPLIER), (r * Constants.DRIVE_ROTATION_MULTIPLIER));
                         break;
                     case AutoTurn:
                         double rotationalVelocity = 0;
-                        if(periodic.controller.getState() == RTCState.DISABLE){
-                            periodic.controller.enableToGoal(getGyroscopeRotation().getRadians(), Timer.getFPGATimestamp(), periodic.thetaAbs);
+                        if (periodic.controller.getState() == RTCState.DISABLE) {
+                            periodic.controller.enableToGoal(getGyroscopeRotation().getRadians(),
+                                    Timer.getFPGATimestamp(), periodic.thetaAbs);
                             rotationalVelocity = periodic.controller.getOmega();
-                        } else if(periodic.controller.getState() == RTCState.ACCEL || periodic.controller.getState() == RTCState.CRUISING || periodic.controller.getState() == RTCState.DECEL){
-                            rotationalVelocity = periodic.controller.updateController(getGyroscopeRotation().getRadians(), Timer.getFPGATimestamp());
+                        } else if (periodic.controller.getState() == RTCState.ACCEL
+                                || periodic.controller.getState() == RTCState.CRUISING
+                                || periodic.controller.getState() == RTCState.DECEL) {
+                            rotationalVelocity = periodic.controller
+                                    .updateController(getGyroscopeRotation().getRadians(), Timer.getFPGATimestamp());
                             rotationalVelocity = periodic.controller.getOmega();
                         } else {
                             periodic.controller.disableController();
                             rotationalVelocity = periodic.controller.getOmega();
                         }
-                        if(Math.abs(Math.abs(periodic.thetaAbs) - Math.abs(getGyroscopeRotation().getRadians())) < (Math.PI / 20)){
+                        if (Math.abs(Math.abs(periodic.thetaAbs)
+                                - Math.abs(getGyroscopeRotation().getRadians())) < (Math.PI / 20)) {
                             rotationalVelocity = 0;
                         }
-                        speeds = new ChassisSpeeds(x * Constants.DRIVE_XY_MULTIPLIER, y * Constants.DRIVE_XY_MULTIPLIER, rotationalVelocity);
+                        speeds = new ChassisSpeeds(0, 0, rotationalVelocity);
                         break;
                     case TeleGyroLock:
                         gyroLock();
@@ -258,14 +277,16 @@ public class DriveTrain extends Subsystem {
                         break;
                     default:
                         speeds = new ChassisSpeeds();
-        }
+                }
 
-        setChassisSpeeds(speeds);
-        if (x != 0.0 && y != 0.0 && r != 0.0) {
-            // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented movement
-        }
+                setChassisSpeeds(speeds);
+                if (x != 0.0 && y != 0.0 && r != 0.0) {
+                    // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of
+                    // field-oriented movement
+                }
 
             }
+
             @Override
             public void onStop(double timestamp) {
                 setChassisSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0));
@@ -274,12 +295,12 @@ public class DriveTrain extends Subsystem {
     }
 
     public void setGyroZero() {
-		m_pigeon.setFusedHeading(0.0);
-	}
+        m_pigeon.setFusedHeading(0.0);
+    }
 
-	public Rotation2d getGyroscopeRotation() {
-		return Rotation2d.fromDegrees(m_pigeon.getFusedHeading());
-	}
+    public Rotation2d getGyroscopeRotation() {
+        return Rotation2d.fromDegrees(m_pigeon.getFusedHeading());
+    }
 
     public void toggleRobotMode() {
         if (periodic.state == State.FieldRel) {
@@ -303,7 +324,8 @@ public class DriveTrain extends Subsystem {
     }
 
     public void gyroLock() {
-        double rotationSpeed = (periodic.desiredHeading.getRadians() - periodic.currentHeading) * Constants.DRIVE_GYRO_LOCK_KP;
+        double rotationSpeed = (periodic.desiredHeading.getRadians() - periodic.currentHeading)
+                * Constants.DRIVE_GYRO_LOCK_KP;
         periodic.speeds = new ChassisSpeeds(0.0, 0.0, rotationSpeed);
     }
 
@@ -314,22 +336,20 @@ public class DriveTrain extends Subsystem {
     public void autoLevel() {
         double levelError = Constants.DRIVE_LEVEL_ZERO + periodic.gyroTilt;
         double power;
-        if(levelError > 7){
+        if (levelError > 7) {
             power = 0.5;
-        } else if (levelError < -7){
-            power = - 0.5;
+        } else if (levelError < -7) {
+            power = -0.5;
         } else {
             power = 0;
         }
         periodic.speeds = new ChassisSpeeds(power, 0, 0);
     }
 
-
     public State getState() {
         return periodic.state;
     }
 
-    
     public void setPreviousState(State state) {
         periodic.previousState = state;
     }
@@ -353,6 +373,7 @@ public class DriveTrain extends Subsystem {
     public void setChargeStationLock() {
         periodic.state = State.ChargeStationLock;
     }
+
     public void setYMax(double maxSpeed) {
         periodic.yMax = maxSpeed;
     }
@@ -369,10 +390,9 @@ public class DriveTrain extends Subsystem {
         periodic.yDelta = yDelta;
     }
 
-    public void setThetaAbs(double thetaAbs){
+    public void setThetaAbs(double thetaAbs) {
         periodic.thetaAbs = thetaAbs;
     }
-
 
     public ChassisSpeeds setRobotHeading(Rotation2d currentHeading, Rotation2d desiredHeading) {
         double headingError = desiredHeading.getRadians() - currentHeading.getRadians();
@@ -384,8 +404,7 @@ public class DriveTrain extends Subsystem {
         periodic.state = State.AutoControlled;
     }
 
-
-    public void setTimeAutoState(){
+    public void setTimeAutoState() {
         periodic.state = State.TimeAutoControlled;
     }
 
@@ -405,29 +424,25 @@ public class DriveTrain extends Subsystem {
         periodic.state = State.AutoLevel;
     }
 
-
-    public void setEndDesiredEncoder(double desiredDriveEncoder){
+    public void setEndDesiredEncoder(double desiredDriveEncoder) {
         periodic.desiredDriveEncoder = desiredDriveEncoder;
-
     }
 
-	public void setZeroDriveEncoders() {
-		m_frontLeftModule.resetDriveEncoder();
-		m_frontRightModule.resetDriveEncoder();
-		m_backLeftModule.resetDriveEncoder();
-		m_backRightModule.resetDriveEncoder();
-	}
+    public void setZeroDriveEncoders() {
+        m_frontLeftModule.resetDriveEncoder();
+        m_frontRightModule.resetDriveEncoder();
+        m_backLeftModule.resetDriveEncoder();
+        m_backRightModule.resetDriveEncoder();
+    }
 
-	public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
-		periodic.speeds = chassisSpeeds;
-	}
+    public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
+        periodic.speeds = chassisSpeeds;
+    }
 
     public RotationalTrapController makeNewController() {
         periodic.controller = new RotationalTrapController(180, 360, 5, .1);
         return periodic.controller;
     }
-
-
 
     public void readPeriodicInputs() {
         periodic.LL_tx = Arm.getInstance().getLLVals()[0];
@@ -459,11 +474,18 @@ public class DriveTrain extends Subsystem {
     }
 
     public void writePeriodicOutputs() {
-        if(periodic.state != State.ChargeStationLock) {
-            m_frontLeftModule.set(periodic.states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, periodic.states[0].angle.getRadians());
-            m_frontRightModule.set(periodic.states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, periodic.states[1].angle.getRadians());
-            m_backLeftModule.set(periodic.states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, periodic.states[2].angle.getRadians());
-            m_backRightModule.set(periodic.states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, periodic.states[3].angle.getRadians());
+        if (periodic.state != State.ChargeStationLock) {
+            m_frontLeftModule.set(
+                    periodic.states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+                    periodic.states[0].angle.getRadians());
+            m_frontRightModule.set(
+                    periodic.states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+                    periodic.states[1].angle.getRadians());
+            m_backLeftModule.set(periodic.states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+                    periodic.states[2].angle.getRadians());
+            m_backRightModule.set(
+                    periodic.states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+                    periodic.states[3].angle.getRadians());
         } else {
             m_frontLeftModule.set(0, 1.184);
             m_frontRightModule.set(0, 2.401);
@@ -474,35 +496,34 @@ public class DriveTrain extends Subsystem {
 
     public void outputTelemetry() {
         final Pose2d odomPose = odometry.getPoseMeters();
-		final double heading = m_pigeon.getFusedHeading();
-		SmartDashboard.putNumberArray("Drive/Odometry",
-			new double[] {
-				odomPose.getX(),
-				odomPose.getY(),
-				Math.toRadians(heading)
-			}
-		);
-		SmartDashboard.putNumberArray("Drive/Swerve", new double[] {
-			m_frontLeftModule.getSteerAngle(), m_frontLeftModule.getDriveVelocity(),
-			m_frontRightModule.getSteerAngle(), m_frontRightModule.getDriveVelocity(),
-			m_backLeftModule.getSteerAngle(), m_backLeftModule.getDriveVelocity(),
-			m_backRightModule.getSteerAngle(), m_backRightModule.getDriveVelocity(),
-		});
-		SmartDashboard.putNumberArray("Drive/Swerve Setpoint", new double[] {
-			m_frontLeftModule.getDesiredSteerAngle(), periodic.states[0].speedMetersPerSecond,
-			m_frontRightModule.getDesiredSteerAngle(), periodic.states[1].speedMetersPerSecond,
-			m_backLeftModule.getDesiredSteerAngle(), periodic.states[2].speedMetersPerSecond,
-			m_backRightModule.getDesiredSteerAngle(), periodic.states[3].speedMetersPerSecond,
-		});
-		SmartDashboard.putNumberArray("Drive/Module Encoders", new double[] {
-			m_frontLeftModule.getDriveEncoder(),
-			m_frontRightModule.getDriveEncoder(),
-			m_backLeftModule.getDriveEncoder(),
-			m_backRightModule.getDriveEncoder(),
-		});
-		SmartDashboard.putString("Drive/Mode", periodic.state.toString());
+        final double heading = m_pigeon.getFusedHeading();
+        SmartDashboard.putNumberArray("Drive/Odometry",
+                new double[] {
+                        odomPose.getX(),
+                        odomPose.getY(),
+                        Math.toRadians(heading)
+                });
+        SmartDashboard.putNumberArray("Drive/Swerve", new double[] {
+                m_frontLeftModule.getSteerAngle(), m_frontLeftModule.getDriveVelocity(),
+                m_frontRightModule.getSteerAngle(), m_frontRightModule.getDriveVelocity(),
+                m_backLeftModule.getSteerAngle(), m_backLeftModule.getDriveVelocity(),
+                m_backRightModule.getSteerAngle(), m_backRightModule.getDriveVelocity(),
+        });
+        SmartDashboard.putNumberArray("Drive/Swerve Setpoint", new double[] {
+                m_frontLeftModule.getDesiredSteerAngle(), periodic.states[0].speedMetersPerSecond,
+                m_frontRightModule.getDesiredSteerAngle(), periodic.states[1].speedMetersPerSecond,
+                m_backLeftModule.getDesiredSteerAngle(), periodic.states[2].speedMetersPerSecond,
+                m_backRightModule.getDesiredSteerAngle(), periodic.states[3].speedMetersPerSecond,
+        });
+        SmartDashboard.putNumberArray("Drive/Module Encoders", new double[] {
+                m_frontLeftModule.getDriveEncoder(),
+                m_frontRightModule.getDriveEncoder(),
+                m_backLeftModule.getDriveEncoder(),
+                m_backRightModule.getDriveEncoder(),
+        });
+        SmartDashboard.putString("Drive/Mode", periodic.state.toString());
         SmartDashboard.putNumberArray("Drive/Swerve Setpoint Joy", new double[] {
-            periodic.XboxLeftX, periodic.XboxLeftY, periodic.XboxRightX
+                periodic.XboxLeftX, periodic.XboxLeftY, periodic.XboxRightX
         });
         SmartDashboard.putNumber("Drive/current encoder", periodic.averageEncoder);
     }
