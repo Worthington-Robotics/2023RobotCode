@@ -13,8 +13,8 @@ public class TestAuto extends StateMachineDescriptor{
 
     public TestAuto(){
        addSequential(new ZeroGyroAction(), 250);
-       //addSequential(new AutoTurnAction(Math.PI), 3000);
-       addSequential(new DriveNonblockingLineAction(1, 0,  5 * Constants.DRIVE_ENCODER_TO_METERS, 0, 0), 5000);
+       addSequential(new AutoTurnAction(Math.PI), 3000);
+      // addSequential(new DriveNonblockingLineAction(1, 0,  5 * Constants.DRIVE_ENCODER_TO_METERS, 0, 0), 5000);
     }
     
 }

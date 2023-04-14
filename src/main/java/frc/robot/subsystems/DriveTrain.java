@@ -67,6 +67,7 @@ public class DriveTrain extends Subsystem {
     public enum State {
         FieldRel,
         RobotRel,
+        GrannyFieldRel,
         AutoControlled,
         AutoTurn,
         TeleGyroLock,
@@ -98,6 +99,7 @@ public class DriveTrain extends Subsystem {
         public double gyroTilt;
         public double LL_tx;
         public double currentHeading;
+        public double startHeading;
     }
 
     private DriveTrain() {
@@ -220,14 +222,8 @@ public class DriveTrain extends Subsystem {
                             y = 0;
                             r = 0;
                         }
-                        // } else if (xError > 0 && periodic.xDelta < 0) { // when the encoder is becoming more negative
-                        //     x = 0;
-                        //     y = 0;
-                        //     r = 0;
-                        // }
                         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, getGyroscopeRotation());
-                        SmartDashboard.putNumber("Drivetrain/x error", xError);
-                        SmartDashboard.putNumber("DriveTrain/x current heading", getGyroscopeRotation().getDegrees());
+                        SmartDashboard.putNumber("Drive/x error", xError);
                         break;
                     case FieldRel:
                         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -239,6 +235,13 @@ public class DriveTrain extends Subsystem {
                     case RobotRel:
                         speeds = new ChassisSpeeds((x * Constants.DRIVE_XY_MULTIPLIER),
                                 (y * Constants.DRIVE_XY_MULTIPLIER), (r * Constants.DRIVE_ROTATION_MULTIPLIER));
+                        break;
+                    case GrannyFieldRel:
+                        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                            (x * Constants.SLOW_DRIVE_XY_MULTIPLIER),
+                            (y * Constants.SLOW_DRIVE_XY_MULTIPLIER),
+                            (r * Constants.SLOW_DRIVE_ROTATION_MULTIPLIER),
+                            getGyroscopeRotation());
                         break;
                     case AutoTurn:
                         double rotationalVelocity = 0;
@@ -256,8 +259,10 @@ public class DriveTrain extends Subsystem {
                             periodic.controller.disableController();
                             rotationalVelocity = periodic.controller.getOmega();
                         }
-                        if (Math.abs(Math.abs(periodic.thetaAbs)
-                                - Math.abs(getGyroscopeRotation().getRadians())) < (Constants.DRIVE_TURN_ERROR)) {
+                        if(Math.abs(periodic.thetaAbs) > Math.abs(periodic.startHeading) && (Math.abs(periodic.thetaAbs) - Math.abs(periodic.currentHeading) < 0)){
+                            rotationalVelocity = 0;
+                        }
+                        if(Math.abs(periodic.thetaAbs) < Math.abs(periodic.startHeading) && (Math.abs(periodic.thetaAbs) - Math.abs(periodic.currentHeading) > 0)){
                             rotationalVelocity = 0;
                         }
                         speeds = new ChassisSpeeds(0, 0, rotationalVelocity);
@@ -422,6 +427,10 @@ public class DriveTrain extends Subsystem {
         periodic.state = State.FieldRel;
     }
 
+    public void setGrannyFieldRel() {
+        periodic.state = State.GrannyFieldRel;
+    }
+
     public void setTeleGyroLockState() {
         periodic.state = State.TeleGyroLock;
     }
@@ -449,8 +458,12 @@ public class DriveTrain extends Subsystem {
         periodic.speeds = chassisSpeeds;
     }
 
+    public void setStartHeading(double startHeading){
+        periodic.startHeading = startHeading; //for auto turn
+    }
+
     public RotationalTrapController makeNewController() {
-        periodic.controller = new RotationalTrapController(180, 360, 5, .1);
+        periodic.controller = new RotationalTrapController(180, 360, 5, .15);
         return periodic.controller;
     }
 
@@ -538,6 +551,7 @@ public class DriveTrain extends Subsystem {
         SmartDashboard.putNumber("Drive/current encoder", periodic.averageEncoder);
         SmartDashboard.putNumber("Drive/gyro pitch", periodic.gyroTilt + Constants.DRIVE_LEVEL_ZERO);
         SmartDashboard.putNumber("Drive/theta abs", periodic.thetaAbs);
+        SmartDashboard.putNumber("Drive/x current heading", getGyroscopeRotation().getDegrees());
     }
 
     public void reset() {

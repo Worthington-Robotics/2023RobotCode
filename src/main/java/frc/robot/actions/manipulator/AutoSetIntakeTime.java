@@ -12,7 +12,7 @@ public class AutoSetIntakeTime extends Action {
 
     @Override
     public void onStart() {
-        Manipulator.getInstance().setTimoutControlled();
+        //Manipulator.getInstance().setTimoutControlled();
         Manipulator.getInstance().setStartTime(Timer.getFPGATimestamp());
         Manipulator.getInstance().setTimeOffset(timeDelay);
     }

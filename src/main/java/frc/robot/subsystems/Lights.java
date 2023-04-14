@@ -115,6 +115,9 @@ public class Lights extends Subsystem {
         } else if (lightState == State.LIGHTS_YELLOW) {
             wantYellow = true;
             wantPurple = false;
+        } else if (lightState == State.LIGHTS_RAINBOW){
+            wantYellow = false;
+            wantPurple = false;
         }
     }
 

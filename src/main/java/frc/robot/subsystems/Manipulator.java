@@ -37,6 +37,7 @@ public class Manipulator extends Subsystem {
 		State state = State.DriverControlled;
 		double startTime;
 		double timeOffset;
+		boolean isAuto;
 	}
 
 	public Manipulator() {
@@ -49,30 +50,30 @@ public class Manipulator extends Subsystem {
 	}
 
 	public void readPeriodicInputs() {
-		periodic.intakeMotorCurrent = intakeMotor.getSupplyCurrent(); //TODO: Add low current means that it doesn't have anything
+		periodic.intakeMotorCurrent = intakeMotor.getSupplyCurrent();
 		periodic.wristEncoder = wristMotor.getSelectedSensorPosition();
 		double currentTime = Timer.getFPGATimestamp();
 		if(periodic.state == State.DriverControlled) {
-			if (periodic.intakeMotorCurrent > Constants.INTAKE_CURRENT_ACCEPTANCE) {
+			if (periodic.intakeMotorCurrent > Constants.INTAKE_CURRENT_ACCEPTANCE && periodic.isAuto) {
 				periodic.hasGamePiece = true;
 			}
-			if (periodic.intakeMotorCurrent < 5 && periodic.intakeMotorCurrent > 0.5) {
+			if (periodic.intakeMotorCurrent < 5 && periodic.intakeMotorCurrent > 0.5 && periodic.isAuto) {
 				periodic.hasGamePiece = true;
 			}
-			if (periodic.intakeMotorPower < 0) {
+			if (periodic.intakeMotorPower < 0 && periodic.isAuto) {
 				periodic.hasGamePiece = false;
 			}
-			if(periodic.intakeMotorCurrent == 0) {
+			if(periodic.intakeMotorCurrent == 0 && periodic.isAuto) {
 				periodic.hasGamePiece = false;
 			} 
-			if (periodic.intakeMotorCurrent < 0.2) {
+			if (periodic.intakeMotorCurrent < 0.2 && periodic.isAuto) {
 				periodic.hasGamePiece = false;
 			}
 		} 
-		if(periodic.state == State.OpenLoop && (periodic.startTime + periodic.timeOffset) >= currentTime) {
+		if(periodic.state == State.OpenLoop && (periodic.startTime + periodic.timeOffset) >= currentTime && periodic.isAuto) {
 			periodic.hasGamePiece = true;
 		}
-		if (periodic.state == State.OpenLoop && (periodic.startTime + periodic.timeOffset) < currentTime) {
+		if (periodic.state == State.OpenLoop && (periodic.startTime + periodic.timeOffset) < currentTime && periodic.isAuto) {
 			periodic.state = State.DriverControlled;
 		}
 
@@ -138,13 +139,14 @@ public class Manipulator extends Subsystem {
 		periodic.hasGamePiece = state;
 	}
 
-	public void setDriverControlled() {
-		periodic.state = State.DriverControlled;
-	}
 
-	public void setTimoutControlled() {
-		periodic.state = State.OpenLoop;
-	}
+	// public void setDriverControlled() {
+	// 	periodic.state = State.DriverControlled;
+	// }
+
+	// public void setTimoutControlled() {
+	// 	periodic.state = State.OpenLoop;
+	// }
 
 	public void setTimeOffset(double delay) {
 		periodic.timeOffset = delay;
@@ -176,6 +178,10 @@ public class Manipulator extends Subsystem {
 		periodic.wristOffset -= 5000;
 	}
 
+	public void setAuto(boolean state){
+		periodic.isAuto = state;
+	}
+
 	// Getters
 
 	public double getWristEncoder(){
@@ -194,6 +200,9 @@ public class Manipulator extends Subsystem {
 		return periodic.prevDesiredWrist;
 	}
 
+	public boolean getAutoBool() {
+		return periodic.isAuto;
+	}
 	// PID
 	
 	public void wristAnglePID() {
@@ -224,7 +233,7 @@ public class Manipulator extends Subsystem {
 		SmartDashboard.putNumber("Manipulator/IntakeMotorCurrent", periodic.intakeMotorCurrent);
 		SmartDashboard.putNumber("Arm/error/wrist error", periodic.wristEncoderError);
 		SmartDashboard.putNumber("Arm/encoder/wrist-D", periodic.desiredWristEncoder);
-		SmartDashboard.putNumber("Arm/encoder/wrist-D", periodic.wristOffset);
+		SmartDashboard.putNumber("Arm/encoder/wrist offset", periodic.wristOffset);
 	}
 
 

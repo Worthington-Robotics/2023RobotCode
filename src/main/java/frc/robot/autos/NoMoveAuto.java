@@ -4,7 +4,6 @@ import frc.lib.statemachine.StateMachineDescriptor;
 import frc.robot.Constants;
 import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.drive.ZeroGyroAction;
-import frc.robot.actions.manipulator.AutoSetIntakeTime;
 import frc.robot.actions.manipulator.AutoStartIntaking;
 import frc.robot.actions.manipulator.RunIntakeAction;
 import frc.robot.actions.wait.PoseWaitAction;

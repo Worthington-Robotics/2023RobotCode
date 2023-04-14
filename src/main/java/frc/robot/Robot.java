@@ -28,6 +28,7 @@ import frc.robot.actions.drive.AutoLLCorrectAction;
 import frc.robot.actions.drive.AutoLevelAction;
 import frc.robot.actions.drive.DriveSwitchRobotMode;
 import frc.robot.actions.drive.DriveZeroGyro;
+import frc.robot.actions.drive.GrannyFieldRelAction;
 import frc.robot.actions.drive.TeleGyroAction;
 import frc.robot.actions.drive.ToggleChargeStationLockAction;
 import frc.robot.actions.lights.SetPurpleLightsAction;
@@ -51,7 +52,7 @@ public class Robot extends TimedRobot {
     private JoystickButton autoLevButton = new JoystickButton(Constants.XBOX, 3);
     private JoystickButton toggleDriveModeButton = new JoystickButton(Constants.XBOX, 4);
 
-    //private JoystickButton gyroLockButton = new JoystickButton(Constants.XBOX, 5);
+    private JoystickButton grannyModeButton = new JoystickButton(Constants.XBOX, 5);
     // private JoystickButton limelightPipeButton = new
     // JoystickButton(Constants.MASTER, 5);
     // private JoystickButton unStowButton = new JoystickButton(Constants.MASTER,
@@ -132,6 +133,7 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
         Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
         DriveTrain.getInstance().reset();
+       // Manipulator.getInstance().setAuto(true);
         enabledLooper.start();
         AutoChooser.getInstance().run_from_selection();
     }
@@ -146,6 +148,7 @@ public class Robot extends TimedRobot {
 
         // Reset anything here
         DriveTrain.getInstance().reset();
+        //Manipulator.getInstance().setAuto(false);
         enabledLooper.start();
         Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
         DriveTrain.getInstance().setFieldRel();
@@ -177,6 +180,7 @@ public class Robot extends TimedRobot {
         yellowButton.onTrue(Action.toCommand(new SetYellowLightsAction()));
         purpleButton.onTrue(Action.toCommand(new SetPurpleLightsAction()));
         chargeStationLockButton.onTrue(Action.toCommand(new ToggleChargeStationLockAction()));
+        grannyModeButton.onTrue(Action.toCommand(new GrannyFieldRelAction()));
        // gyroLockButton.onTrue(
                // Action.toCommand(new TeleGyroAction(DriveTrain.getInstance().getGyroscopeRotation().getRadians())));
         autoLevButton.whileTrue(Action.toCommand(new AutoLevelAction()));

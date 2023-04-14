@@ -8,6 +8,7 @@ import frc.robot.subsystems.DriveTrain;
 
 public class AutoTurnAction extends Action {
     public double thetaAbs;
+    public double initialHeading;
 
     public AutoTurnAction(double thetaAbs) {
         this.thetaAbs = thetaAbs;
@@ -19,6 +20,8 @@ public class AutoTurnAction extends Action {
         RotationalTrapController controller = DriveTrain.getInstance().makeNewController();
         controller.enableToGoal(DriveTrain.getInstance().getGyroscopeRotation().getRadians(), Timer.getFPGATimestamp(), thetaAbs);
         DriveTrain.getInstance().setAutoTurnState();
+        initialHeading = DriveTrain.getInstance().getGyroscopeRotation().getRadians();
+        DriveTrain.getInstance().setStartHeading(initialHeading);
     }
 
     @Override
@@ -26,9 +29,18 @@ public class AutoTurnAction extends Action {
 
     @Override
     public boolean isFinished() {
-        double goalHeading = thetaAbs;
         double currentHeading = DriveTrain.getInstance().getGyroscopeRotation().getRadians();
-        return Math.abs(Math.abs(goalHeading) - Math.abs(currentHeading)) < (Constants.DRIVE_TURN_ERROR);
+
+        if(Math.abs(thetaAbs) > Math.abs(initialHeading) && (Math.abs(thetaAbs) - Math.abs(currentHeading) < 0)){
+            return true;
+        }
+        if(Math.abs(thetaAbs) < Math.abs(initialHeading) && (Math.abs(thetaAbs) - Math.abs(currentHeading) > 0)){
+            return true;
+        }
+
+        return false;
+
+        //return Math.abs(Math.abs(goalHeading) - Math.abs(currentHeading)) < (Constants.DRIVE_TURN_ERROR);
     }
 
     @Override
