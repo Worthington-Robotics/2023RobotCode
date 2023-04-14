@@ -42,7 +42,7 @@ public class Constants {
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.02;
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.02;
 
-    public static final double DRIVE_ENCODER_TO_METERS = 40038.0;
+    public static final double DRIVE_ENCODER_TO_METERS = 40975.0;
     public static final double DRIVE_LL_CORRECT_KP = 1.0/15.0;
     public static final double DRIVE_GYRO_LOCK_KP = 1.0/20.0;
 
@@ -61,8 +61,9 @@ public class Constants {
     //Manipulator Constants
     public static final int INTAKE_WHEEL_ID = 15;  
 
-    public static final double INTAKE_POWER = .6;
+    public static final double INTAKE_POWER = .45;
     public static final double ANYTHING_OUT_POWER = -1;
+    public static final double LOWER_OUT_POWER = -.25;
     public static final double INTAKE_CURRENT_ACCEPTANCE = 75.0;
 
     public static final double WRIST_PIVOT_KP = .015; //TODO: change this kp
@@ -174,6 +175,8 @@ public class Constants {
     // Correction for pigeon pitch inaccuracy
     public static final double DRIVE_LEVEL_ZERO = 1;
     public static final double DRIVE_LEVEL_ERROR = 1.5;
+
+    public static final double DRIVE_TURN_ERROR = Math.PI / 60;
 
 
 

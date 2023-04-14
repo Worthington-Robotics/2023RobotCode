@@ -47,11 +47,11 @@ public class Robot extends TimedRobot {
 
     // Input bindings
     private JoystickButton intakeButton = new JoystickButton(Constants.XBOX, 1);
-    private JoystickButton intakeReverseButton = new JoystickButton(Constants.XBOX, 2);
+    private JoystickButton owenSpitButton = new JoystickButton(Constants.XBOX, 2);
     private JoystickButton autoLevButton = new JoystickButton(Constants.XBOX, 3);
     private JoystickButton toggleDriveModeButton = new JoystickButton(Constants.XBOX, 4);
 
-    private JoystickButton gyroLockButton = new JoystickButton(Constants.XBOX, 5);
+    //private JoystickButton gyroLockButton = new JoystickButton(Constants.XBOX, 5);
     // private JoystickButton limelightPipeButton = new
     // JoystickButton(Constants.MASTER, 5);
     // private JoystickButton unStowButton = new JoystickButton(Constants.MASTER,
@@ -69,13 +69,13 @@ public class Robot extends TimedRobot {
 
     private JoystickButton unstowButton = new JoystickButton(Constants.SECOND, 1);
     private JoystickButton slideButton = new JoystickButton(Constants.SECOND, 2);
-    private JoystickButton intakeSpitButton = new JoystickButton(Constants.SECOND, 3);
+    private JoystickButton joshSpitButton = new JoystickButton(Constants.SECOND, 3);
     private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 5);
     private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 6);
     private JoystickButton poseMidButton = new JoystickButton(Constants.SECOND, 7);
     private JoystickButton poseHighButton = new JoystickButton(Constants.SECOND, 8);
-    private JoystickButton poseShelfButton = new JoystickButton(Constants.SECOND, 9);
-    private JoystickButton poseConeUpButton = new JoystickButton(Constants.SECOND, 11);
+    // private JoystickButton poseShelfButton = new JoystickButton(Constants.SECOND, 9);
+    //private JoystickButton poseConeUpButton = new JoystickButton(Constants.SECOND, 11);
     private JoystickButton poseIntakeButton = new JoystickButton(Constants.SECOND, 12);
 
     @Override
@@ -168,8 +168,8 @@ public class Robot extends TimedRobot {
 
     public void initButtons() {
         // driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
-        intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
-        intakeSpitButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
+        owenSpitButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
+        joshSpitButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.LOWER_OUT_POWER)));
         intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER, false)));
         zeroPoseButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.ZERO)));
         toggleDriveModeButton.onTrue(Action.toCommand(new DriveSwitchRobotMode()));
@@ -177,8 +177,8 @@ public class Robot extends TimedRobot {
         yellowButton.onTrue(Action.toCommand(new SetYellowLightsAction()));
         purpleButton.onTrue(Action.toCommand(new SetPurpleLightsAction()));
         chargeStationLockButton.onTrue(Action.toCommand(new ToggleChargeStationLockAction()));
-        gyroLockButton.onTrue(
-                Action.toCommand(new TeleGyroAction(DriveTrain.getInstance().getGyroscopeRotation().getRadians())));
+       // gyroLockButton.onTrue(
+               // Action.toCommand(new TeleGyroAction(DriveTrain.getInstance().getGyroscopeRotation().getRadians())));
         autoLevButton.whileTrue(Action.toCommand(new AutoLevelAction()));
         LLCorrectButton.whileTrue(Action.toCommand(new AutoLLCorrectAction()));
         // Constants.XBOX.rightTrigger(0.5, Action.toCommand(new
@@ -188,8 +188,8 @@ public class Robot extends TimedRobot {
         slideButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SLIDE)));
         poseMidButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.MID)));
         poseHighButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.HIGH)));
-        poseShelfButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SHELF)));
-        poseConeUpButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_UP)));
+       // poseShelfButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SHELF)));
+        //poseConeUpButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_UP)));
         poseIntakeButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.INTAKE)));
 
         wristUpButton.whileTrue(Action.toCommand(new MoveWristAction(-.33)));

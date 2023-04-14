@@ -3,14 +3,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm.ArmMode;
-import frc.robot.subsystems.Arm.ArmPose;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.playingwithfusion.TimeOfFlight;
 
-import frc.lib.util.HIDHelper;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 

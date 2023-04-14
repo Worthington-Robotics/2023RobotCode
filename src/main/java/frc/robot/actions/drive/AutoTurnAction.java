@@ -3,12 +3,13 @@ package frc.robot.actions.drive;
 import edu.wpi.first.wpilibj.Timer;
 import frc.lib.control.RotationalTrapController;
 import frc.lib.statemachine.Action;
+import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
 
-public class DriveNonblockingTurnAction extends Action {
+public class AutoTurnAction extends Action {
     public double thetaAbs;
 
-    public DriveNonblockingTurnAction(double thetaAbs) {
+    public AutoTurnAction(double thetaAbs) {
         this.thetaAbs = thetaAbs;
     }
 
@@ -17,7 +18,7 @@ public class DriveNonblockingTurnAction extends Action {
         DriveTrain.getInstance().setThetaAbs(thetaAbs);
         RotationalTrapController controller = DriveTrain.getInstance().makeNewController();
         controller.enableToGoal(DriveTrain.getInstance().getGyroscopeRotation().getRadians(), Timer.getFPGATimestamp(), thetaAbs);
-        DriveTrain.getInstance().setTeleGyroLockState();
+        DriveTrain.getInstance().setAutoTurnState();
     }
 
     @Override
@@ -25,7 +26,9 @@ public class DriveNonblockingTurnAction extends Action {
 
     @Override
     public boolean isFinished() {
-        return true;
+        double goalHeading = thetaAbs;
+        double currentHeading = DriveTrain.getInstance().getGyroscopeRotation().getRadians();
+        return Math.abs(Math.abs(goalHeading) - Math.abs(currentHeading)) < (Constants.DRIVE_TURN_ERROR);
     }
 
     @Override

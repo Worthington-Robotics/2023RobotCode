@@ -28,6 +28,7 @@ public class DriveNonblockingLineAction extends Action {
         DriveTrain.getInstance().setYDelta(yDelta);
         DriveTrain.getInstance().setEndDesiredEncoder(xDelta);
         DriveTrain.getInstance().setThetaAbs(thetaAbs); 
+        DriveTrain.getInstance().setZeroDriveEncoders();
         DriveTrain.getInstance().setAutoState();
     }
 

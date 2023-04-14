@@ -1,9 +1,11 @@
 package frc.robot.autos;
 
+import frc.lib.statemachine.Action;
 import frc.lib.statemachine.StateMachineDescriptor;
 import frc.robot.Constants;
 import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.drive.AutoFieldRelAction;
+import frc.robot.actions.drive.AutoTurnAction;
 import frc.robot.actions.drive.DriveFlipGyroZero;
 import frc.robot.actions.drive.DriveNonblockingLineAction;
 import frc.robot.actions.drive.ZeroGyroAction;
@@ -17,18 +19,35 @@ import frc.robot.subsystems.Arm.ArmPose;
 public class BarrierAndWallAuto extends StateMachineDescriptor{
 
     public BarrierAndWallAuto() {
-        addSequential(new AutoStartIntaking(), 100);
-        // addSequential(new AutoSetIntakeTime(4.0), 100);
+       
         addSequential(new ZeroGyroAction(), 100);
-        addSequential(new ArmPoseAction(ArmPose.HIGH), 200);
-        addSequential(new PoseWaitAction(), 5000);
+        addParallel(new Action[] {new RunIntakeAction(0.1), new ArmPoseAction(ArmPose.HIGH)}, 1200);
+        addParallel(new Action[] {new RunIntakeAction(0.1), new PoseWaitAction()}, 1800);
         addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 250);
         addSequential(new ArmPoseAction(ArmPose.UNSTOW), 200);
         addSequential(new PoseWaitAction(), 2500);
-        addSequential(new AutoFieldRelAction(-2, 0, 0), 2750);
-       // addSequential(new DriveNonblockingLineAction(4, 4, (-4 * Constants.DRIVE_ENCODER_TO_METERS), 0, 1), 5000);
-        //addSequential(new ReachLineWaitAction(-4 * Constants.DRIVE_ENCODER_TO_METERS), 10000);
-        addSequential(new DriveFlipGyroZero(), 200);
+        addSequential(new DriveNonblockingLineAction(-2, 0, -3.5 * Constants.DRIVE_ENCODER_TO_METERS, 0, 0), 5000);
+        addSequential(new AutoTurnAction(Math.PI), 3000);
+        addSequential(new ArmPoseAction(ArmPose.INTAKE), 250);
+        addSequential(new PoseWaitAction(), 5000);
+        addParallel(new Action[] {new RunIntakeAction(Constants.INTAKE_POWER), new DriveNonblockingLineAction(1, 0, 1 * Constants.DRIVE_ENCODER_TO_METERS, 0, Math.PI)}, 1000);
+        
+       
+       
+       
+       
+        // addSequential(new ArmPoseAction(ArmPose.UNSTOW), 250);
+        // addSequential(new PoseWaitAction(), 3000);
+        // addSequential(new AutoTurnAction(0), 3000);
+        // addSequential(new DriveNonblockingLineAction(2, 0, 4.5 * Constants.DRIVE_ENCODER_TO_METERS, 0, 0), 5000);
+        // addSequential(new ReachLineWaitAction(3 * Constants.DRIVE_ENCODER_TO_METERS), 3000);
+        // addSequential(new ArmPoseAction(ArmPose.HIGH), 250);
+        // addSequential(new PoseWaitAction(), 2000);
+        // addSequential(new AutoTurnAction(Math.PI / 20), 3000);
+        // addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 250);
+        // addSequential(new DriveFlipGyroZero(), 200);
+
+
         // addSequential(new ArmPoseAction(ArmPose.SLIDE), 200); //put the robot into the set pose
         // addSequential(new PoseWaitAction(), 1750);
         // addSequential(new ArmPoseAction(ArmPose.HIGH), 200);

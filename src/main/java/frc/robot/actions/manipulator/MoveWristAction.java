@@ -1,10 +1,7 @@
 package frc.robot.actions.manipulator;
 
 import frc.lib.statemachine.Action;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Manipulator;
-import frc.robot.subsystems.Arm.ArmMode;
-
 public class MoveWristAction extends Action {
 	
 	double power;

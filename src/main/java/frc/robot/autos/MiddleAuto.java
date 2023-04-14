@@ -9,7 +9,7 @@ import frc.robot.actions.drive.AutoLevelAction;
 import frc.robot.actions.drive.AutoRobotRelAction;
 import frc.robot.actions.drive.DriveFlipGyroZero;
 import frc.robot.actions.drive.DriveNonblockingLineAction;
-import frc.robot.actions.drive.DriveNonblockingTurnAction;
+import frc.robot.actions.drive.AutoTurnAction;
 import frc.robot.actions.drive.NonblockingDrivePowerAction;
 import frc.robot.actions.drive.ZeroGyroAction;
 import frc.robot.actions.manipulator.AutoSetIntakeTime;
@@ -26,12 +26,12 @@ import frc.robot.subsystems.Arm.ArmPose;
 public class MiddleAuto extends StateMachineDescriptor{
 
     public MiddleAuto() {
-        addSequential(new AutoStartIntaking(), 100);
         addSequential(new ZeroGyroAction(), 100);
-        addSequential(new ArmPoseAction(ArmPose.HIGH), 200);
-        addSequential(new PoseWaitAction(), 5000);
+        addParallel(new Action[] {new RunIntakeAction(0.1), new ArmPoseAction(ArmPose.HIGH)}, 1200);
+        addParallel(new Action[] {new RunIntakeAction(0.1), new PoseWaitAction()}, 1500);
         addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 250);
         addSequential(new ArmPoseAction(ArmPose.UNSTOW), 200);
+        addSequential(new TimeWaitAction(), 1000);
 
 
         // addSequential(new AutoFieldRelAction(-3, 0, 0), 1000);
@@ -39,20 +39,20 @@ public class MiddleAuto extends StateMachineDescriptor{
         // addSequential(new DriveFlipGyroZero(), 200);
 
         addParallel(new Action[] {new PoseWaitAction(), new NonblockingDrivePowerAction(-3, 0, 0)}, 1200);
-        addSequential(new NegativePitchWaitAction(-9), 7000);
+        addSequential(new NegativePitchWaitAction(-11), 7000);
 
-        addSequential(new NonblockingDrivePowerAction(-3, 0, 0), 200);
-        addSequential(new PositivePitchWaitAction(9), 7000);
+        addSequential(new NonblockingDrivePowerAction(-2, 0, 0), 200);
+        addSequential(new PositivePitchWaitAction(11), 7000);
 
-        addSequential(new NonblockingDrivePowerAction(-3, 0, 0), 200);
+        addSequential(new NonblockingDrivePowerAction(-2, 0, 0), 200);
         addSequential(new LevelPitchWaitAction(3), 3000);
 
         addSequential(new TimeWaitAction(), 200);
-        addSequential(new NonblockingDrivePowerAction(3, 0, 0), 200);
-        addSequential(new PositivePitchWaitAction(9), 7000);
-        addSequential(new TimeWaitAction(),1000);
+        addSequential(new NonblockingDrivePowerAction(0, 0, 0), 200);
+        // addSequential(new PositivePitchWaitAction(13), 7000);
+        // addSequential(new TimeWaitAction(),1000);
 
-        addParallel(new Action[] {new AutoLevelAction(), new TimeWaitAction()}, 9000);
+        // addParallel(new Action[] {new AutoLevelAction(), new TimeWaitAction()}, 9000);
 
 
 
