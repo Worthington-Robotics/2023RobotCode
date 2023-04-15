@@ -133,7 +133,7 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
         Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
         DriveTrain.getInstance().reset();
-       // Manipulator.getInstance().setAuto(true);
+        Manipulator.getInstance().setAuto(true);
         enabledLooper.start();
         AutoChooser.getInstance().run_from_selection();
     }
@@ -148,7 +148,7 @@ public class Robot extends TimedRobot {
 
         // Reset anything here
         DriveTrain.getInstance().reset();
-        //Manipulator.getInstance().setAuto(false);
+        Manipulator.getInstance().setAuto(false);
         enabledLooper.start();
         Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
         DriveTrain.getInstance().setFieldRel();

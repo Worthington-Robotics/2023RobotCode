@@ -344,9 +344,9 @@ public class DriveTrain extends Subsystem {
         double levelError = Constants.DRIVE_LEVEL_ZERO + periodic.gyroTilt;
         double power;
         if (levelError > 7) {
-            power = 0.5;
+            power = 0.6;
         } else if (levelError < -7) {
-            power = -0.5;
+            power = -0.6;
         } else {
             power = 0;
         }

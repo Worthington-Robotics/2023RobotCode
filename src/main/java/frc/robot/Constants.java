@@ -10,7 +10,7 @@ public class Constants {
     // ### Device ID declarations ###
 
     // Drivetrain
-    public static final double DRIVE_XY_MULTIPLIER = 4.5;
+    public static final double DRIVE_XY_MULTIPLIER = 5.0;
     public static final double DRIVE_ROTATION_MULTIPLIER = 360.0;
     public static final double SLOW_DRIVE_XY_MULTIPLIER = 2.25;
     public static final double SLOW_DRIVE_ROTATION_MULTIPLIER = 180.0;

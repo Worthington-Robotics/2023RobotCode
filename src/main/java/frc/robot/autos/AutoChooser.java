@@ -34,7 +34,7 @@ public class AutoChooser {
 				StateMachine.getInstance().runMachine(new BarrierAndWallAuto());
 				break;
 			case MiddleAuto:
-				StateMachine.getInstance().runMachine(new MiddleAuto());
+				StateMachine.getInstance().runMachine(new NewMiddleAuto());
 				break;
 			case NoMoveAuto:
 				StateMachine.getInstance().runMachine(new NoMoveAuto());
