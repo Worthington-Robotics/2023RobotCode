@@ -67,7 +67,7 @@ public class Arm extends Subsystem {
 		{-98372, -6800, -54000},
 		{-127000, -19970, -87700},
 		{-138800, -151500, -87740},
-		{-292000, -4500, -103000},
+		{-154100, -22480, -122300},
 	};
 
 	public class ArmIO extends PeriodicIO {

@@ -75,7 +75,7 @@ public class Robot extends TimedRobot {
     private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 6);
     private JoystickButton poseMidButton = new JoystickButton(Constants.SECOND, 7);
     private JoystickButton poseHighButton = new JoystickButton(Constants.SECOND, 8);
-    // private JoystickButton poseShelfButton = new JoystickButton(Constants.SECOND, 9);
+    private JoystickButton poseShelfButton = new JoystickButton(Constants.SECOND, 9);
     //private JoystickButton poseConeUpButton = new JoystickButton(Constants.SECOND, 11);
     private JoystickButton poseIntakeButton = new JoystickButton(Constants.SECOND, 12);
 
@@ -192,7 +192,7 @@ public class Robot extends TimedRobot {
         slideButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SLIDE)));
         poseMidButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.MID)));
         poseHighButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.HIGH)));
-       // poseShelfButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SHELF)));
+        poseShelfButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SHELF)));
         //poseConeUpButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.CONE_UP)));
         poseIntakeButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.INTAKE)));
 
