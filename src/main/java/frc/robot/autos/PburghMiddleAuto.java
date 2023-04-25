@@ -15,16 +15,24 @@ import frc.robot.actions.manipulator.RunIntakeAction;
 import frc.robot.actions.wait.PoseWaitAction;
 import frc.robot.actions.wait.ReachLineWaitAction;
 import frc.robot.subsystems.Arm.ArmPose;
+import frc.lib.statemachine.Action;
 
 public class PburghMiddleAuto extends StateMachineDescriptor{
 
     public PburghMiddleAuto() {
-        addSequential(new AutoStartIntaking(), 100);
         addSequential(new ZeroGyroAction(), 100);
-        addSequential(new ArmPoseAction(ArmPose.HIGH), 200);
-        addSequential(new PoseWaitAction(), 5000);
+        addParallel(new Action[] {new RunIntakeAction(0.1), new ArmPoseAction(ArmPose.HIGH)}, 250);
+        addParallel(new Action[] {new RunIntakeAction(0.1), new PoseWaitAction()}, 1800);
         addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 250);
         addSequential(new ArmPoseAction(ArmPose.UNSTOW), 200);
+
+        // addSequential(new AutoStartIntaking(), 100);
+        // addSequential(new ZeroGyroAction(), 100);
+        // addSequential(new ArmPoseAction(ArmPose.HIGH), 200);
+        // addSequential(new PoseWaitAction(), 5000);
+        // addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 250);
+        // addSequential(new ArmPoseAction(ArmPose.UNSTOW), 200);
+        
         addSequential(new PoseWaitAction(), 2500);
 
 

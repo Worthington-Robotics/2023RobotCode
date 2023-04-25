@@ -22,9 +22,10 @@ public class BarrierAndWallAuto extends StateMachineDescriptor{
         addSequential(new ZeroGyroAction(), 100);
         addParallel(new Action[] {new RunIntakeAction(0.1), new ArmPoseAction(ArmPose.HIGH)}, 250);
         addParallel(new Action[] {new RunIntakeAction(0.1), new PoseWaitAction()}, 1800);
-        addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 250);
+        addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 1500);
         addSequential(new ArmPoseAction(ArmPose.UNSTOW), 200);
         addSequential(new PoseWaitAction(), 2500);
+        
         addSequential(new DriveNonblockingLineAction(-3, 0, -4.2 * Constants.DRIVE_ENCODER_TO_METERS, 0, 0), 5000);
         addSequential(new ReachLineWaitAction(-4.2 * Constants.DRIVE_ENCODER_TO_METERS), 6000);
         addSequential(new AutoTurnAction(Math.PI), 3000);
