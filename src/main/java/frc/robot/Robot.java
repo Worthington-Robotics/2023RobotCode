@@ -171,8 +171,8 @@ public class Robot extends TimedRobot {
 
     public void initButtons() {
         // driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
-        owenSpitButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
-        joshSpitButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.LOWER_OUT_POWER)));
+        owenSpitButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.TELE_HIGHER_OUT_POWER)));
+        joshSpitButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.TELE_LOWER_OUT_POWER)));
         intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER, false)));
         zeroPoseButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.ZERO)));
         toggleDriveModeButton.onTrue(Action.toCommand(new DriveSwitchRobotMode()));

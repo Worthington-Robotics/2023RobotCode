@@ -61,13 +61,13 @@ public class Arm extends Subsystem {
 	// Pivot, Extend, Wrist
 	public static double[][] ArmPoses = {
 		{0,0,0},
-		{-9623, 21480, 14270},
-		{-21000, -1630, 18000},
-		{-60700, -22800, -87200},
-		{-98372, -6800, -54000},
-		{-127000, -24970, -82700},
-		{-138800, -156500, -82740},
-		{-154100, -22480, -122300},
+		{-9623, 16110, 14270},
+		{-21000, -1223, 18000},
+		{-60700, -17100, -87200},
+		{-98372, -5100, -54000},
+		{-127000, -18728, -82700},
+		{-138800, -117375, -82740},
+		{-127000, 16110, -70430},
 	};
 
 	public class ArmIO extends PeriodicIO {
@@ -175,7 +175,7 @@ public class Arm extends Subsystem {
 			if(Math.abs(periodic.desiredPivotEncoder) >= Math.abs(getPivotEncoder())){ //pivot is going up
 				armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
 			} else { //pivot is going down
-				if(Math.abs(periodic.lengthEncoderError) <= 7000 && Math.abs(Manipulator.getInstance().getWristEncoderError()) <= 5000){
+				if(Math.abs(periodic.lengthEncoderError) <= 7000 && Math.abs(Manipulator.getInstance().getWristEncoderError()) <= 8500){
 					armMasterMotor.set(ControlMode.Position, periodic.desiredPivotEncoder);
 			    }
 			}
@@ -184,7 +184,7 @@ public class Arm extends Subsystem {
 				extensionMotor.set(ControlMode.Position, periodic.extenHoldValue);
 			} else {
 				if(Math.abs(periodic.desiredPivotEncoder) >= Math.abs(getPivotEncoder())){  //pivot going up
-					if(Math.abs(periodic.pivotEncoderError) <= 10000){
+					if(Math.abs(periodic.pivotEncoderError) <= 5000){
 						extensionMotor.set(ControlMode.Position, periodic.desiredArmLengthEncoder);
 					}
 				} else { //pivot is going down

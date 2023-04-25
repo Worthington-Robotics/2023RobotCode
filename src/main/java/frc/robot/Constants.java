@@ -65,10 +65,11 @@ public class Constants {
 
     public static final double INTAKE_POWER = .45;
     public static final double ANYTHING_OUT_POWER = -1;
-    public static final double LOWER_OUT_POWER = -.25;
+    public static final double TELE_HIGHER_OUT_POWER = -.5;
+    public static final double TELE_LOWER_OUT_POWER = -.25;
     public static final double INTAKE_CURRENT_ACCEPTANCE = 75.0;
 
-    public static final double WRIST_PIVOT_KP = .015; //TODO: change this kp
+    public static final double WRIST_PIVOT_KP = .025; //TODO: change this kp
     public static final double WRIST_MIN_TIME = 1.5;
     public static final double WRIST_ENCODER_PER_DEGREE = 400.0; //TODO: change this value
     
@@ -76,14 +77,14 @@ public class Constants {
     public static final double PIVOT_ENCODER_PER_DEGREE = 416.31;
     public static final double ENCODER_PER_INCH = 1833.33;
 
-    public static final double ARM_PIVOT_KP = .02;
+    public static final double ARM_PIVOT_KP = .06;
     public static final double PIVOT_MIN_TIME =21.0;
 
     public static final double ARM_EXTENSION_KP = .08;
     public static final double EXTENSION_MIN_TIME = 1.5;
 
     public static final double EXTENSION_ENCODER_ERROR_ACCEPTANCE = 2000;
-    public static final double PIVOT_ENCODER_ERROR_ACCEPTANCE = 10000;
+    public static final double PIVOT_ENCODER_ERROR_ACCEPTANCE = 7000;
     public static final double WRIST_ENCODER_ERROR_ACCEPTANCE = 5000;
 
     // ### Vision values ###

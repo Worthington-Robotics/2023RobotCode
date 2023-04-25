@@ -172,6 +172,10 @@ public class StateMachine implements Loggable{
         return data;
     }
 
+    // public Action commandToAction() {
+    //     Command
+    // }
+
 
     /**
      * Internal data class for logging the behaviour of the state machine during runtime

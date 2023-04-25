@@ -34,7 +34,6 @@ public class DriveTrain extends Subsystem {
     private DriveTrainIO periodic = new DriveTrainIO();
 
     private final PigeonIMU m_pigeon = new PigeonIMU(0);
-    public SwerveDriveOdometry odometry;
 
     private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
             // Front left
@@ -78,6 +77,7 @@ public class DriveTrain extends Subsystem {
     }
 
     public class DriveTrainIO {
+        public SwerveDriveOdometry odometry;
         public State state = State.RobotRel;
         public SwerveModuleState[] states = { new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(),
                 new SwerveModuleState() };
@@ -152,7 +152,7 @@ public class DriveTrain extends Subsystem {
         setZeroDriveEncoders();
         setGyroZero();
 
-        odometry = new SwerveDriveOdometry(m_kinematics, new Rotation2d(), new SwerveModulePosition[] {
+        periodic.odometry = new SwerveDriveOdometry(m_kinematics, new Rotation2d(), new SwerveModulePosition[] {
                 new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_frontLeftModule.getSteerAngle())),
                 new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_frontRightModule.getSteerAngle())),
                 new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_backLeftModule.getSteerAngle())),
@@ -173,7 +173,7 @@ public class DriveTrain extends Subsystem {
                 periodic.states = m_kinematics.toSwerveModuleStates(periodic.speeds);
                 SwerveDriveKinematics.desaturateWheelSpeeds(periodic.states, MAX_VELOCITY_METERS_PER_SECOND);
 
-                odometry.update(getGyroscopeRotation(), new SwerveModulePosition[] {
+                periodic.odometry.update(getGyroscopeRotation(), new SwerveModulePosition[] {
                         new SwerveModulePosition(
                                 m_frontLeftModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS,
                                 Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
@@ -468,6 +468,7 @@ public class DriveTrain extends Subsystem {
     }
 
     public void readPeriodicInputs() {
+        
         periodic.LL_tx = Arm.getInstance().getLLVals()[0];
         periodic.currentHeading = getGyroscopeRotation().getRadians();
         double LeftX = -Constants.XBOX.getLeftY();
@@ -518,7 +519,7 @@ public class DriveTrain extends Subsystem {
     }
 
     public void outputTelemetry() {
-        final Pose2d odomPose = odometry.getPoseMeters();
+        final Pose2d odomPose = periodic.odometry.getPoseMeters();
         final double heading = m_pigeon.getFusedHeading();
         SmartDashboard.putNumberArray("Drive/Odometry",
                 new double[] {

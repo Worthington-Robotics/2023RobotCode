@@ -83,7 +83,7 @@ public class Manipulator extends Subsystem {
 		if (!periodic.hasGamePiece) {
 			intakeMotor.set(ControlMode.PercentOutput, periodic.intakeMotorPower);
 		} else {
-			intakeMotor.set(ControlMode.PercentOutput, Math.max(.1, periodic.intakeMotorPower));
+			intakeMotor.set(ControlMode.PercentOutput, Math.max(.15, periodic.intakeMotorPower));
 		}
 		if (Arm.getInstance().getMode().ordinal() < ArmMode.CLOSED_LOOP.ordinal() ) {
 			wristMotor.set(ControlMode.Position, periodic.wristOffset);
