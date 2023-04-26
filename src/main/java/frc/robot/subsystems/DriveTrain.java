@@ -37,17 +37,14 @@ public class DriveTrain extends Subsystem {
 
     private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
             // Front left
-            new Translation2d(Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-                    Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            new Translation2d(0.41, 0.41),
             // Front right
-            new Translation2d(Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-                    -Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            new Translation2d(0.41, -0.41),
             // Back left
-            new Translation2d(-Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-                    Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0),
+            new Translation2d(-0.41, 0.41),
             // Back right
-            new Translation2d(-Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0,
-                    -Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0));
+            new Translation2d(-0.41, -0.41));
+   
 
     private final SwerveModule m_frontLeftModule;
     private final SwerveModule m_frontRightModule;
@@ -199,12 +196,6 @@ public class DriveTrain extends Subsystem {
                         break;
                     case AutoControlled:
                         periodic.averageEncoder = Math.abs(m_frontRightModule.getDriveEncoder());
-                        // if (Math.abs(m_frontRightModule.getSteerAngle()) < 15) {
-                        //     periodic.averageEncoder = m_frontRightModule.getDriveEncoder();
-                        // }
-                        // if (Math.abs(m_frontRightModule.getSteerAngle()) > 165) {
-                        //     periodic.averageEncoder = -m_frontRightModule.getDriveEncoder();
-                        // }
                         double xError = (Math.abs(periodic.xDelta) - periodic.averageEncoder) / Constants.DRIVE_ENCODER_TO_METERS;
                         double headingError = periodic.thetaAbs - getGyroscopeRotation().getRadians();
                         x = xError * Constants.X_KP * Math.signum(periodic.xDelta);
@@ -215,6 +206,12 @@ public class DriveTrain extends Subsystem {
                         }
                         if (Math.abs(y) > Math.abs(Constants.Y_MOVE_MAX)) {
                             y = Constants.Y_MOVE_MAX * Math.signum(y);
+                        }
+                        if (Math.abs(x) < 0.1) {
+                            x = 0.1 * Math.signum(x);
+                        }
+                        if (Math.abs(y) < 0.1) {
+                            y = 0.1 * Math.signum(y);
                         }
 
                         if (xError < 0) { // when the encoder is becoming more positive
@@ -463,7 +460,7 @@ public class DriveTrain extends Subsystem {
     }
 
     public RotationalTrapController makeNewController() {
-        periodic.controller = new RotationalTrapController(180, 360, 5, .15);
+        periodic.controller = new RotationalTrapController(180, 380, 5, .15);
         return periodic.controller;
     }
 
@@ -519,12 +516,12 @@ public class DriveTrain extends Subsystem {
     }
 
     public void outputTelemetry() {
-        final Pose2d odomPose = periodic.odometry.getPoseMeters();
-        final double heading = m_pigeon.getFusedHeading();
+        Pose2d odomPose = periodic.odometry.getPoseMeters();
+        double heading = m_pigeon.getFusedHeading();
         SmartDashboard.putNumberArray("Drive/Odometry",
                 new double[] {
-                        odomPose.getX(),
-                        odomPose.getY(),
+                        odomPose.getX() * 2.0,
+                        odomPose.getY() * 2.0,
                         Math.toRadians(heading)
                 });
         SmartDashboard.putNumberArray("Drive/Swerve", new double[] {

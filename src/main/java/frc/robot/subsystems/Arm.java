@@ -56,6 +56,7 @@ public class Arm extends Subsystem {
 		MID,
 		HIGH,
 		SHELF,
+		HYBRID
 	}
 
 	// Pivot, Extend, Wrist
@@ -68,6 +69,7 @@ public class Arm extends Subsystem {
 		{-127000, -18728, -82700},
 		{-138800, -117375, -82740},
 		{-127000, 16110, -70430},
+		{-9623, 16110, -9000},
 	};
 
 	public class ArmIO extends PeriodicIO {

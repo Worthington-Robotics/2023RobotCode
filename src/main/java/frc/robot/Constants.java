@@ -16,7 +16,7 @@ public class Constants {
     public static final double SLOW_DRIVE_ROTATION_MULTIPLIER = 180.0;
 
     public static final double DRIVE_TURN_KP = 1.0;
-    public static final double X_KP = 1/(1.5);
+    public static final double X_KP = 1/(1);
 
     public static final double X_MOVE_MAX = 4;
     public static final double Y_MOVE_MAX = 4;
