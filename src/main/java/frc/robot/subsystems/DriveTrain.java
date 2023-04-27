@@ -44,12 +44,14 @@ public class DriveTrain extends Subsystem {
             new Translation2d(-0.41, 0.41),
             // Back right
             new Translation2d(-0.41, -0.41));
+
    
 
     private final SwerveModule m_frontLeftModule;
     private final SwerveModule m_frontRightModule;
     private final SwerveModule m_backLeftModule;
     private final SwerveModule m_backRightModule;
+
 
     public static final double MAX_VOLTAGE = 9.5;
 
@@ -97,6 +99,7 @@ public class DriveTrain extends Subsystem {
         public double LL_tx;
         public double currentHeading;
         public double startHeading;
+        public boolean reachedLine = false;
     }
 
     private DriveTrain() {
@@ -119,6 +122,7 @@ public class DriveTrain extends Subsystem {
                 // This is how much the steer encoder is offset from true zero (In our case,
                 // zero is facing straight forward)
                 Constants.FRONT_LEFT_MODULE_STEER_OFFSET);
+
         m_frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
                 tab.getLayout("Front Right Module", BuiltInLayouts.kList)
                         .withSize(2, 4)
@@ -207,18 +211,20 @@ public class DriveTrain extends Subsystem {
                         if (Math.abs(y) > Math.abs(Constants.Y_MOVE_MAX)) {
                             y = Constants.Y_MOVE_MAX * Math.signum(y);
                         }
-                        if (Math.abs(x) < 0.1) {
-                            x = 0.1 * Math.signum(x);
+                        if (Math.abs(x) < 0.2) {
+                            x = 0.2 * Math.signum(x);
                         }
-                        if (Math.abs(y) < 0.1) {
-                            y = 0.1 * Math.signum(y);
+                        if (Math.abs(y) < 0.2) {
+                            y = 0.2 * Math.signum(y);
                         }
 
                         if (xError < 0) { // when the encoder is becoming more positive
                             x = 0;
                             y = 0;
                             r = 0;
-                        }
+                            periodic.reachedLine = true;
+                        } 
+
                         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, getGyroscopeRotation());
                         SmartDashboard.putNumber("Drive/x error", xError);
                         break;
@@ -256,12 +262,13 @@ public class DriveTrain extends Subsystem {
                             periodic.controller.disableController();
                             rotationalVelocity = periodic.controller.getOmega();
                         }
-                        if(Math.abs(periodic.thetaAbs) > Math.abs(periodic.startHeading) && (Math.abs(periodic.thetaAbs) - Math.abs(periodic.currentHeading) < 0)){
+                        if(Math.abs(periodic.thetaAbs) > Math.abs(periodic.startHeading - Math.PI / 20) && (Math.abs(periodic.thetaAbs) - Math.abs(periodic.currentHeading) < 0)){
                             rotationalVelocity = 0;
                         }
-                        if(Math.abs(periodic.thetaAbs) < Math.abs(periodic.startHeading) && (Math.abs(periodic.thetaAbs) - Math.abs(periodic.currentHeading) > 0)){
+                        if(Math.abs(periodic.thetaAbs) < Math.abs(periodic.startHeading + Math.PI / 20) && (Math.abs(periodic.thetaAbs) - Math.abs(periodic.currentHeading) > 0)){
                             rotationalVelocity = 0;
                         }
+                        SmartDashboard.putString("Drive/TrapState", periodic.controller.getState().toString());
                         speeds = new ChassisSpeeds(0, 0, rotationalVelocity);
                         break;
                     case TeleGyroLock:
@@ -374,6 +381,10 @@ public class DriveTrain extends Subsystem {
         return periodic.thetaAbs;
     }
 
+    public boolean getReachedLine() {
+        return periodic.reachedLine;
+    }
+
     public void setXMax(double maxSpeed) {
         periodic.xMax = maxSpeed;
     }
@@ -459,8 +470,13 @@ public class DriveTrain extends Subsystem {
         periodic.startHeading = startHeading; //for auto turn
     }
 
+    public void setReachedLineBool(boolean enable){
+        periodic.reachedLine = enable;
+    }
+
     public RotationalTrapController makeNewController() {
-        periodic.controller = new RotationalTrapController(180, 380, 5, .15);
+        periodic.controller = new RotationalTrapController(Math.PI, Math.PI, Math.PI / 12, .015);
+        // periodic.controller = new RotationalTrapController(5, 5, 5, .15);
         return periodic.controller;
     }
 
@@ -550,9 +566,11 @@ public class DriveTrain extends Subsystem {
         SmartDashboard.putNumber("Drive/gyro pitch", periodic.gyroTilt + Constants.DRIVE_LEVEL_ZERO);
         SmartDashboard.putNumber("Drive/theta abs", periodic.thetaAbs);
         SmartDashboard.putNumber("Drive/x current heading", getGyroscopeRotation().getDegrees());
+
     }
 
     public void reset() {
+        makeNewController();
         setChassisSpeeds(new ChassisSpeeds(0.0, 0.0, 0.0));
         setGyroZero();
         setZeroDriveEncoders();

@@ -22,7 +22,8 @@ public class ReachLineWaitAction extends Action{
 
     @Override
     public boolean isFinished() {
-        return (Math.abs(DriveTrain.getInstance().getAverageEncoder()) >= Math.abs(line));
+        return DriveTrain.getInstance().getReachedLine();
+        //return (Math.abs(DriveTrain.getInstance().getAverageEncoder()) >= Math.abs(line));
     }
 
     @Override

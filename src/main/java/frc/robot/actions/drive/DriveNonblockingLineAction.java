@@ -30,6 +30,7 @@ public class DriveNonblockingLineAction extends Action {
         DriveTrain.getInstance().setThetaAbs(thetaAbs); 
         DriveTrain.getInstance().setZeroDriveEncoders();
         DriveTrain.getInstance().setAutoState();
+        DriveTrain.getInstance().setReachedLineBool(false);
     }
 
     @Override

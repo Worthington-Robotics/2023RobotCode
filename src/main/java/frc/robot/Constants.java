@@ -11,12 +11,12 @@ public class Constants {
 
     // Drivetrain
     public static final double DRIVE_XY_MULTIPLIER = 5.0;
-    public static final double DRIVE_ROTATION_MULTIPLIER = 360.0;
-    public static final double SLOW_DRIVE_XY_MULTIPLIER = 2.25;
-    public static final double SLOW_DRIVE_ROTATION_MULTIPLIER = 180.0;
+    public static final double DRIVE_ROTATION_MULTIPLIER = 9.0;
+    public static final double SLOW_DRIVE_XY_MULTIPLIER = DRIVE_XY_MULTIPLIER / 2.0;
+    public static final double SLOW_DRIVE_ROTATION_MULTIPLIER = DRIVE_ROTATION_MULTIPLIER / 2.0;
 
     public static final double DRIVE_TURN_KP = 1.0;
-    public static final double X_KP = 1/(1);
+    public static final double X_KP = 1.2;
 
     public static final double X_MOVE_MAX = 4;
     public static final double Y_MOVE_MAX = 4;
