@@ -25,12 +25,13 @@ public class TestBarrierAuto extends StateMachineDescriptor{
         addSequential(new ArmPoseAction(ArmPose.UNSTOW), 200);
         addSequential(new PoseWaitAction(), 2500);
         
-        addSequential(new DriveNonblockingLineAction(-5.0, 0, -4.5 * Constants.DRIVE_ENCODER_TO_METERS, 0, 0), 250);
-        addSequential(new ReachLineWaitAction(-4.0 * Constants.DRIVE_ENCODER_TO_METERS), 6000);
-        addSequential(new AutoTurnAction(-Math.PI * (17/18)), 3000);
+        addSequential(new DriveNonblockingLineAction(-3, 0, -4.2 * Constants.DRIVE_ENCODER_TO_METERS, 0, 0), 5000);
+        addSequential(new ReachLineWaitAction(-4.2 * Constants.DRIVE_ENCODER_TO_METERS), 6000);
+        addSequential(new AutoTurnAction(- Math.PI), 3000);
+
         addSequential(new ArmPoseAction(ArmPose.INTAKE), 250);
         addSequential(new PoseWaitAction(), 5000);
-        addSequential(new DriveNonblockingLineAction(-2.0, 0, -1.5 * Constants.DRIVE_ENCODER_TO_METERS, 0, -Math.PI * (17/18)), 250);
+        addSequential(new DriveNonblockingLineAction(-2.0, 0, -1.5 * Constants.DRIVE_ENCODER_TO_METERS, 0, -Math.PI), 250);
         addParallel(new Action[]{new RunIntakeAction(Constants.INTAKE_POWER), new ReachLineWaitAction(-1.5 * Constants.DRIVE_ENCODER_TO_METERS)}, 3500);//maybe a little long?
         addSequential(new ArmPoseAction(ArmPose.UNSTOW), 250);
         addSequential(new PoseWaitAction(), 5000);

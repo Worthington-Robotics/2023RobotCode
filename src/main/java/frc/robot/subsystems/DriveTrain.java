@@ -262,10 +262,10 @@ public class DriveTrain extends Subsystem {
                             periodic.controller.disableController();
                             rotationalVelocity = periodic.controller.getOmega();
                         }
-                        if(Math.abs(periodic.thetaAbs) > Math.abs(periodic.startHeading - Math.PI / 20) && (Math.abs(periodic.thetaAbs) - Math.abs(periodic.currentHeading) < 0)){
+                        if(Math.abs(periodic.thetaAbs) > Math.abs(periodic.startHeading) && (Math.abs(periodic.thetaAbs) - Math.abs(periodic.currentHeading) < (Math.PI / 20.0))){
                             rotationalVelocity = 0;
                         }
-                        if(Math.abs(periodic.thetaAbs) < Math.abs(periodic.startHeading + Math.PI / 20) && (Math.abs(periodic.thetaAbs) - Math.abs(periodic.currentHeading) > 0)){
+                        if(Math.abs(periodic.thetaAbs) < Math.abs(periodic.startHeading) && (Math.abs(periodic.thetaAbs) - Math.abs(periodic.currentHeading) > (-Math.PI / 20.0))){
                             rotationalVelocity = 0;
                         }
                         SmartDashboard.putString("Drive/TrapState", periodic.controller.getState().toString());
