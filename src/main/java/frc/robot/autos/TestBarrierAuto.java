@@ -27,19 +27,21 @@ public class TestBarrierAuto extends StateMachineDescriptor{
         
         addSequential(new DriveNonblockingLineAction(-3, 0, -4.2 * Constants.DRIVE_ENCODER_TO_METERS, 0, 0), 5000);
         addSequential(new ReachLineWaitAction(-4.2 * Constants.DRIVE_ENCODER_TO_METERS), 6000);
-        addSequential(new AutoTurnAction(- Math.PI), 3000);
+        // addSequential(new AutoTurnAction(Math.PI), 3000);
 
-        addSequential(new ArmPoseAction(ArmPose.INTAKE), 250);
+        // addSequential(new ArmPoseAction(ArmPose.INTAKE), 250);
+        addParallel(new Action[] {new AutoTurnAction(Math.PI), new ArmPoseAction(ArmPose.INTAKE)}, 3000);
         addSequential(new PoseWaitAction(), 5000);
-        addSequential(new DriveNonblockingLineAction(-2.0, 0, -1.5 * Constants.DRIVE_ENCODER_TO_METERS, 0, -Math.PI), 250);
-        addParallel(new Action[]{new RunIntakeAction(Constants.INTAKE_POWER), new ReachLineWaitAction(-1.5 * Constants.DRIVE_ENCODER_TO_METERS)}, 3500);//maybe a little long?
-        addSequential(new ArmPoseAction(ArmPose.UNSTOW), 250);
-        addSequential(new PoseWaitAction(), 5000);
-        addSequential(new AutoTurnAction(0), 3000);
+        addSequential(new DriveNonblockingLineAction(-2.0, 0, -.75 * Constants.DRIVE_ENCODER_TO_METERS, 0, Math.PI), 250);
+        addParallel(new Action[]{new RunIntakeAction(Constants.INTAKE_POWER), new ReachLineWaitAction(-.75 * Constants.DRIVE_ENCODER_TO_METERS)}, 1400);//maybe a little long?
+        // addSequential(new ArmPoseAction(ArmPose.UNSTOW), 250);
+        // addSequential(new PoseWaitAction(), 5000);
+        // addSequential(new AutoTurnAction(0), 3000);
+        addParallel(new Action[] {new AutoTurnAction(0), new ArmPoseAction(ArmPose.UNSTOW)}, 3000);
         addSequential(new DriveNonblockingLineAction(5.0, 0, 5.0 * Constants.DRIVE_ENCODER_TO_METERS, 0, 0), 250);
-        addParallel(new Action[] {new ReachLineWaitAction(5 * Constants.DRIVE_ENCODER_TO_METERS), new ArmPoseAction(ArmPose.HYBRID)}, 3000);
+        addParallel(new Action[] {new ReachLineWaitAction(3.7 * Constants.DRIVE_ENCODER_TO_METERS), new ArmPoseAction(ArmPose.HYBRID), new RunIntakeAction(0.1)}, 1700);
         //addSequential(new ReachLineWaitAction(5 * Constants.DRIVE_ENCODER_TO_METERS),2500);
-        addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 750);
+        addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 3000);
     }
     
 }

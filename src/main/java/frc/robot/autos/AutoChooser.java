@@ -11,7 +11,7 @@ public class AutoChooser {
 	public static AutoChooser getInstance() { return instance; }
 	
 	public enum AutoType {
-		None, TestAuto, BlueBarrierAuto, BlueCableAuto, RedBarrierAuto, RedCableAuto, MiddleAuto, NoMoveAuto, PittsburghMiddleAuto, TestBarrierAuto
+		None, TestAuto, BlueBarrierAuto, BlueCableAuto, RedBarrierAuto, RedCableAuto, MiddleAuto, NoMoveAuto, PittsburghMiddleAuto, TestBarrierAuto, TestPathFollowerAuto
 	}
 
 	// The currently chosen autonomous routine
@@ -53,6 +53,9 @@ public class AutoChooser {
 				break;
 			case TestBarrierAuto:
 				StateMachine.getInstance().runMachine(new TestBarrierAuto());
+				break;
+			case TestPathFollowerAuto:
+				StateMachine.getInstance().runMachine(new TestPathFollowerAuto());
 				break;
 		}
 	}

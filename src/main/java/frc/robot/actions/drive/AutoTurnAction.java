@@ -31,16 +31,15 @@ public class AutoTurnAction extends Action {
     public boolean isFinished() {
         double currentHeading = DriveTrain.getInstance().getGyroscopeRotation().getRadians();
 
-        if(Math.abs(thetaAbs) > Math.abs(initialHeading) && (Math.abs(thetaAbs) - Math.abs(currentHeading) < 0)){
+        if(Math.abs(thetaAbs) > Math.abs(initialHeading) && (Math.abs(thetaAbs) - Math.abs(currentHeading) < (Math.PI / 20.0))){
             return true;
         }
-        if(Math.abs(thetaAbs) < Math.abs(initialHeading) && (Math.abs(thetaAbs) - Math.abs(currentHeading) > 0)){
+        if(Math.abs(thetaAbs) < Math.abs(initialHeading) && (Math.abs(thetaAbs) - Math.abs(currentHeading) > (-Math.PI / 20.0))){
             return true;
         }
 
         return false;
 
-        //return Math.abs(Math.abs(goalHeading) - Math.abs(currentHeading)) < (Constants.DRIVE_TURN_ERROR);
     }
 
     @Override

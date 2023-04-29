@@ -2,6 +2,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.PathConstraints;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.lib.util.HIDHelper;
@@ -16,7 +18,8 @@ public class Constants {
     public static final double SLOW_DRIVE_ROTATION_MULTIPLIER = DRIVE_ROTATION_MULTIPLIER / 2.0;
 
     public static final double DRIVE_TURN_KP = 1.0;
-    public static final double X_KP = 1.2;
+    public static final double X_KP = 1.9;
+    public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(4, 3);
 
     public static final double X_MOVE_MAX = 4;
     public static final double Y_MOVE_MAX = 4;

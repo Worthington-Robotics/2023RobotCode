@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
@@ -72,7 +75,8 @@ public class DriveTrain extends Subsystem {
         TimeAutoControlled,
         ChargeStationLock,
         AutoLevel,
-        LLCorrect
+        LLCorrect,
+        PathPlanner
     }
 
     public class DriveTrainIO {
@@ -100,6 +104,7 @@ public class DriveTrain extends Subsystem {
         public double currentHeading;
         public double startHeading;
         public boolean reachedLine = false;
+        public ChassisSpeeds pathPlannerSpeeds = new ChassisSpeeds(0, 0, 0);
     }
 
     private DriveTrain() {
@@ -211,11 +216,11 @@ public class DriveTrain extends Subsystem {
                         if (Math.abs(y) > Math.abs(Constants.Y_MOVE_MAX)) {
                             y = Constants.Y_MOVE_MAX * Math.signum(y);
                         }
-                        if (Math.abs(x) < 0.2) {
-                            x = 0.2 * Math.signum(x);
+                        if (Math.abs(x) < 0.4) {
+                            x = 0.4 * Math.signum(x);
                         }
-                        if (Math.abs(y) < 0.2) {
-                            y = 0.2 * Math.signum(y);
+                        if (Math.abs(y) < 0.4) {
+                            y = 0.4 * Math.signum(y);
                         }
 
                         if (xError < 0) { // when the encoder is becoming more positive
@@ -286,6 +291,9 @@ public class DriveTrain extends Subsystem {
                         llCorrect(periodic.LL_tx);
                         speeds = periodic.speeds;
                         break;
+                    case PathPlanner:
+                        speeds = periodic.pathPlannerSpeeds;
+                        break;
                     default:
                         speeds = new ChassisSpeeds();
                 }
@@ -342,6 +350,11 @@ public class DriveTrain extends Subsystem {
 
     public void setLLCorrect() {
         periodic.state = State.LLCorrect;
+    }
+
+    public Consumer<ChassisSpeeds> setModuleStates() {
+        Consumer<ChassisSpeeds> testSpeeds = (speeds) -> periodic.pathPlannerSpeeds = speeds;
+        return testSpeeds;
     }
 
     public void autoLevel() {
@@ -455,6 +468,10 @@ public class DriveTrain extends Subsystem {
         periodic.desiredDriveEncoder = desiredDriveEncoder;
     }
 
+    public void setPathPlannerControlled() {
+        periodic.state = State.PathPlanner;
+    }
+
     public void setZeroDriveEncoders() {
         m_frontLeftModule.resetDriveEncoder();
         m_frontRightModule.resetDriveEncoder();
@@ -468,6 +485,11 @@ public class DriveTrain extends Subsystem {
 
     public void setStartHeading(double startHeading){
         periodic.startHeading = startHeading; //for auto turn
+    }
+
+    public Supplier<Pose2d> getPose() {
+        Supplier<Pose2d> supplier = () -> periodic.odometry.getPoseMeters();
+        return supplier;
     }
 
     public void setReachedLineBool(boolean enable){
@@ -518,7 +540,8 @@ public class DriveTrain extends Subsystem {
             m_frontRightModule.set(
                     periodic.states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
                     periodic.states[1].angle.getRadians());
-            m_backLeftModule.set(periodic.states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
+            m_backLeftModule.set(
+                    periodic.states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
                     periodic.states[2].angle.getRadians());
             m_backRightModule.set(
                     periodic.states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE,
@@ -562,6 +585,9 @@ public class DriveTrain extends Subsystem {
         SmartDashboard.putNumberArray("Drive/Swerve Setpoint Joy", new double[] {
                 periodic.XboxLeftX, periodic.XboxLeftY, periodic.XboxRightX
         });
+        SmartDashboard.putNumberArray("Drive/Swerve Setpoint Path", new double[] {
+            periodic.pathPlannerSpeeds.vxMetersPerSecond, periodic.pathPlannerSpeeds.vyMetersPerSecond, periodic.pathPlannerSpeeds.omegaRadiansPerSecond
+    });
         SmartDashboard.putNumber("Drive/current encoder", periodic.averageEncoder);
         SmartDashboard.putNumber("Drive/gyro pitch", periodic.gyroTilt + Constants.DRIVE_LEVEL_ZERO);
         SmartDashboard.putNumber("Drive/theta abs", periodic.thetaAbs);

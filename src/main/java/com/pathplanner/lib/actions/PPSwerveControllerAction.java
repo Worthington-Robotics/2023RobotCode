@@ -126,6 +126,10 @@ public class PPSwerveControllerAction extends Action {
         } else {
           this.outputChassisSpeeds.accept(targetChassisSpeeds);
         }
+
+        SmartDashboard.putNumberArray("PPSwerveControllerAction/targetChassisSpeeds", new double[] {
+          targetChassisSpeeds.vxMetersPerSecond, targetChassisSpeeds.vyMetersPerSecond, targetChassisSpeeds.omegaRadiansPerSecond
+        });
     
         if (logTargetPose != null) {
           logTargetPose.accept(
@@ -145,13 +149,12 @@ public class PPSwerveControllerAction extends Action {
 
     @Override
     public boolean isFinished() {
-        // TODO Auto-generated method stub
-        return false;
+      return this.timer.hasElapsed(transformedTrajectory.getTotalTimeSeconds());
     }
 
     @Override
     public void onStop() {
-    this.timer.stop();
+      this.timer.stop();
     }
 
     private static void defaultLogError(Translation2d translationError, Rotation2d rotationError) {
