@@ -4,6 +4,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
@@ -33,6 +35,7 @@ public class DriveTrain extends Subsystem {
     public static DriveTrain getInstance() {
         return instance;
     }
+    private PathPlannerTrajectory traj = PathPlanner.loadPath(Constants.DRIVE_TRAJECTORY, Constants.PATH_CONSTRAINTS);
 
     private DriveTrainIO periodic = new DriveTrainIO();
 
@@ -158,12 +161,12 @@ public class DriveTrain extends Subsystem {
         setZeroDriveEncoders();
         setGyroZero();
 
-        periodic.odometry = new SwerveDriveOdometry(m_kinematics, new Rotation2d(), new SwerveModulePosition[] {
+        periodic.odometry = new SwerveDriveOdometry(m_kinematics, getGyroscopeRotation(), new SwerveModulePosition[] {
                 new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_frontLeftModule.getSteerAngle())),
                 new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_frontRightModule.getSteerAngle())),
                 new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_backLeftModule.getSteerAngle())),
                 new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_backRightModule.getSteerAngle())),
-        });
+        }, traj.getInitialPose());
     }
 
     public void registerEnabledLoops(ILooper enabledLooper) {
@@ -185,12 +188,13 @@ public class DriveTrain extends Subsystem {
                                 Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
                         new SwerveModulePosition(
                                 m_frontRightModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS,
-                                Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
-                        new SwerveModulePosition(m_backLeftModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS,
-                                Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
+                                Rotation2d.fromRadians(m_frontRightModule.getSteerAngle())),
+                        new SwerveModulePosition(
+                                m_backLeftModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS,
+                                Rotation2d.fromRadians(m_backLeftModule.getSteerAngle())),
                         new SwerveModulePosition(
                                 m_backRightModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS,
-                                Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
+                                Rotation2d.fromRadians(m_backRightModule.getSteerAngle())),
                 });
 
                 double x = periodic.XboxLeftX;
@@ -559,8 +563,8 @@ public class DriveTrain extends Subsystem {
         double heading = m_pigeon.getFusedHeading();
         SmartDashboard.putNumberArray("Drive/Odometry",
                 new double[] {
-                        odomPose.getX() * 2.0,
-                        odomPose.getY() * 2.0,
+                        odomPose.getX(),
+                        odomPose.getY(),
                         Math.toRadians(heading)
                 });
         SmartDashboard.putNumberArray("Drive/Swerve", new double[] {
