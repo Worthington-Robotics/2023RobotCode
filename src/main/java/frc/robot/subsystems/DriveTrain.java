@@ -18,6 +18,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -160,13 +161,14 @@ public class DriveTrain extends Subsystem {
                 Constants.BACK_RIGHT_MODULE_STEER_OFFSET);
         setZeroDriveEncoders();
         setGyroZero();
+        m_pigeon.setFusedHeading(traj.getInitialHolonomicPose().getRotation().getDegrees());
 
         periodic.odometry = new SwerveDriveOdometry(m_kinematics, getGyroscopeRotation(), new SwerveModulePosition[] {
                 new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_frontLeftModule.getSteerAngle())),
                 new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_frontRightModule.getSteerAngle())),
                 new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_backLeftModule.getSteerAngle())),
                 new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_backRightModule.getSteerAngle())),
-        }, traj.getInitialPose());
+        }, traj.getInitialHolonomicPose());
     }
 
     public void registerEnabledLoops(ILooper enabledLooper) {
@@ -319,6 +321,7 @@ public class DriveTrain extends Subsystem {
 
     public void setGyroZero() {
         m_pigeon.setFusedHeading(0.0);
+        // DriverStation.("DriveTrain/Zero", "I HAVE BEEN ZEROED");
     }
 
     public Rotation2d getGyroscopeRotation() {
