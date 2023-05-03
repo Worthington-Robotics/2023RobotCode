@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class StateMachine implements Loggable{
-    private static final StateMachine instance =  new StateMachine();
+    private static final StateMachine instance = new StateMachine();
 
     /**
      * @return Singleton instance of the state machine
@@ -29,9 +29,7 @@ public class StateMachine implements Loggable{
     /**
      * Prevent the creation of a new state machine object
      */
-    private StateMachine() {
-
-    }
+    private StateMachine() {}
 
     /**
      * The runnable thread object that handles the execution of a state machine descriptor.

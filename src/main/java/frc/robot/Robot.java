@@ -90,6 +90,7 @@ public class Robot extends TimedRobot {
         initButtons();
         CommandScheduler.getInstance().enable();
         CameraServer.startAutomaticCapture();
+        CameraServer.startAutomaticCapture();
         manager = new SubsystemManager(
                 Arrays.asList(
                         Manipulator.getInstance(),

@@ -7,8 +7,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.112575642264035,
-        "y": 4.742446022072954
+        "x": 3.1586068307657293,
+        "y": 4.780021428801773
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -24,18 +24,18 @@
     },
     {
       "anchorPoint": {
-        "x": 5.388521133675648,
-        "y": 5.180262457529195
+        "x": 5.731584872584866,
+        "y": 5.443277990692929
       },
       "prevControl": {
-        "x": 4.29071716916615,
-        "y": 5.351794326983803
+        "x": 4.761451820909008,
+        "y": 5.851755065082764
       },
       "nextControl": {
-        "x": 5.981740799238637,
-        "y": 5.087571884784978
+        "x": 7.035227080439896,
+        "y": 4.894376008438179
       },
-      "holonomicAngle": -60.64224645720883,
+      "holonomicAngle": 0.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -49,40 +49,15 @@
     },
     {
       "anchorPoint": {
-        "x": 6.600679677821552,
-        "y": 3.613604716510431
+        "x": 7.263936239712709,
+        "y": 2.8702999488737913
       },
       "prevControl": {
-        "x": 6.707880813890021,
-        "y": 4.278251760134943
-      },
-      "nextControl": {
-        "x": 6.486325098185146,
-        "y": 2.9046063227647134
-      },
-      "holonomicAngle": -126.09828396710797,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 5.194118348293758,
-        "y": 1.7496250684370118
-      },
-      "prevControl": {
-        "x": 6.37197051854874,
-        "y": 1.9325923958552615
+        "x": 7.46977448305824,
+        "y": 3.9109266235650875
       },
       "nextControl": null,
-      "holonomicAngle": 0.0,
+      "holonomicAngle": -56.51383118448705,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -95,12 +70,5 @@
       }
     }
   ],
-  "markers": [
-    {
-      "position": 0.3490909090908955,
-      "names": [
-        "event"
-      ]
-    }
-  ]
+  "markers": []
 }

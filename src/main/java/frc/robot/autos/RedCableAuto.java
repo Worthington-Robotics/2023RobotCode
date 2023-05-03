@@ -30,5 +30,4 @@ public class RedCableAuto extends StateMachineDescriptor{
         addSequential(new ReachLineWaitAction(-4.2 * Constants.DRIVE_ENCODER_TO_METERS), 6000);
         addSequential(new AutoTurnAction(Math.PI), 3000);
     }
-    
 }
