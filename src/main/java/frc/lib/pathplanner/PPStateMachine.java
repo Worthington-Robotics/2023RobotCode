@@ -3,6 +3,7 @@ package frc.lib.pathplanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import frc.lib.statemachine.ActionGroup;
 import frc.lib.util.Loggable;
 
 public class PPStateMachine implements Loggable {
@@ -12,6 +13,14 @@ public class PPStateMachine implements Loggable {
     public static PPStateMachine getInstance() {
         return instance;
     }
+
+    private PPStateMachine() {}
+
+    // private final Runnable stateMachine() = () -> {
+    //     try {
+
+    //     } 
+    // }
 
     /**
      * Allows logging access to internal data structure of the state machine.
@@ -25,7 +34,7 @@ public class PPStateMachine implements Loggable {
         public final AtomicInteger state = new AtomicInteger(-1);
         public final AtomicBoolean wantStop = new AtomicBoolean(true);
         public final AtomicBoolean stateLock = new AtomicBoolean(false);
-        public volatile PPActionGroup currentState;
+        public volatile ActionGroup currentState;
         public volatile long t_start;
     }
 }
