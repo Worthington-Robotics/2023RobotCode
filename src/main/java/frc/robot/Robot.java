@@ -34,6 +34,8 @@ import frc.robot.actions.drive.ToggleChargeStationLockAction;
 import frc.robot.actions.lights.SetPurpleLightsAction;
 import frc.robot.actions.lights.SetYellowLightsAction;
 import frc.robot.actions.manipulator.MoveWristAction;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.TimedRobot;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -87,6 +89,8 @@ public class Robot extends TimedRobot {
         // } catch (Exception e) {}
         initButtons();
         CommandScheduler.getInstance().enable();
+        CameraServer.startAutomaticCapture();
+        CameraServer.startAutomaticCapture();
         manager = new SubsystemManager(
                 Arrays.asList(
                         Manipulator.getInstance(),
