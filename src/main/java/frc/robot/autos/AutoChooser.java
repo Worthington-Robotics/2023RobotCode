@@ -1,6 +1,7 @@
 package frc.robot.autos;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.lib.pathplanner.PPStateMachine;
 import frc.lib.statemachine.StateMachine;
 import frc.robot.util.DebugLogger;
 import frc.robot.util.DebugLogger.DebugLevel;
@@ -49,7 +50,7 @@ public class AutoChooser {
 				StateMachine.getInstance().runMachine(new TestBarrierAuto());
 				break;
 			case TestPathFollowerAuto:
-				StateMachine.getInstance().runMachine(new TestPathFollowerAuto());
+				StateMachine.getInstance().runMachine(new TestPathFollowerAuto()); //TODO: Make state machine!
 				break;
 		}
 	}

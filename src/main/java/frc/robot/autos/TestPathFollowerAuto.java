@@ -5,6 +5,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.actions.PPSwerveControllerAction;
 
 import edu.wpi.first.math.controller.PIDController;
+import frc.lib.pathplanner.PPStateMachineDescriptor;
 import frc.lib.statemachine.StateMachineDescriptor;
 import frc.robot.Constants;
 import frc.robot.actions.drive.AutoPathPlannerClearAction;

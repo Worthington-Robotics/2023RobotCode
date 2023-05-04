@@ -21,7 +21,7 @@ public class Constants {
 
     public static final double DRIVE_TURN_KP = 1.0;
     public static final double X_KP = 1.9;
-    public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(4, 3);
+    public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(4.0, 2.0);
 
     public static final double X_MOVE_MAX = 4;
     public static final double Y_MOVE_MAX = 4;

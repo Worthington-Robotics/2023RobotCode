@@ -18,6 +18,7 @@ public class PPStateMachine implements Loggable {
 
     private final Runnable stateMachine = () -> {
         try {
+            System.out.println("Path Planner State Machine Starting Execution");
 
         } catch (Exception e) {
 
