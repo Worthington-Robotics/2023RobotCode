@@ -16,11 +16,15 @@ public class PPStateMachine implements Loggable {
 
     private PPStateMachine() {}
 
-    // private final Runnable stateMachine() = () -> {
-    //     try {
+    private final Runnable stateMachine = () -> {
+        try {
 
-    //     } 
-    // }
+        } catch (Exception e) {
+
+        } finally {
+            
+        }
+    };
 
     /**
      * Allows logging access to internal data structure of the state machine.
