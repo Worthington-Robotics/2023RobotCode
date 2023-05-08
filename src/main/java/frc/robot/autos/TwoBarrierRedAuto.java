@@ -15,9 +15,9 @@ import frc.robot.actions.wait.PoseWaitAction;
 import frc.robot.actions.wait.ReachLineWaitAction;
 import frc.robot.subsystems.Arm.ArmPose;
 
-public class TwoBarrierAuto extends StateMachineDescriptor{
+public class TwoBarrierRedAuto extends StateMachineDescriptor{
 
-    public TwoBarrierAuto() {
+    public TwoBarrierRedAuto() {
         addSequential(new ZeroGyroAction(), 100);
         addParallel(new Action[] {new RunIntakeAction(0.1), new ArmPoseAction(ArmPose.HIGH)}, 250);
         addParallel(new Action[] {new RunIntakeAction(0.1), new PoseWaitAction()}, 1800);

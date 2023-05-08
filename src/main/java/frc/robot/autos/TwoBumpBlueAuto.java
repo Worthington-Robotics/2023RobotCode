@@ -15,9 +15,9 @@ import frc.robot.actions.wait.PoseWaitAction;
 import frc.robot.actions.wait.ReachLineWaitAction;
 import frc.robot.subsystems.Arm.ArmPose;
 
-public class TwoBumpAuto extends StateMachineDescriptor{
+public class TwoBumpBlueAuto extends StateMachineDescriptor{
 
-    public TwoBumpAuto() {
+    public TwoBumpBlueAuto() {
         addSequential(new ZeroGyroAction(), 100);
         addParallel(new Action[] {new RunIntakeAction(0.1), new ArmPoseAction(ArmPose.HIGH)}, 250);
         addParallel(new Action[] {new RunIntakeAction(0.1), new PoseWaitAction()}, 1800);
@@ -28,14 +28,14 @@ public class TwoBumpAuto extends StateMachineDescriptor{
         addSequential(new DriveNonblockingLineAction(-3, 0, -4.2 * Constants.DRIVE_ENCODER_TO_METERS, 0, 0), 5000);
         addSequential(new ReachLineWaitAction(-4.2 * Constants.DRIVE_ENCODER_TO_METERS), 6000);
    
-        addParallel(new Action[] {new AutoTurnAction(Math.PI), new ArmPoseAction(ArmPose.INTAKE)}, 3000);
+        addParallel(new Action[] {new AutoTurnAction(-Math.PI), new ArmPoseAction(ArmPose.INTAKE)}, 3000);
         addSequential(new PoseWaitAction(), 5000);
-        addSequential(new DriveNonblockingLineAction(-2.0, 0, -.75 * Constants.DRIVE_ENCODER_TO_METERS, 0, Math.PI), 250);
+        addSequential(new DriveNonblockingLineAction(-2.0, 0, -.75 * Constants.DRIVE_ENCODER_TO_METERS, 0, -Math.PI), 250);
         addParallel(new Action[]{new RunIntakeAction(Constants.INTAKE_POWER), new ReachLineWaitAction(-.75 * Constants.DRIVE_ENCODER_TO_METERS)}, 1400);//maybe a little long?
        
         addParallel(new Action[] {new AutoTurnAction(0), new ArmPoseAction(ArmPose.UNSTOW), new RunIntakeAction(0.1)}, 1800);
         addParallel(new Action[] {new DriveNonblockingLineAction(5.0, 0, 5.0 * Constants.DRIVE_ENCODER_TO_METERS, 0, 0), new RunIntakeAction(0.1)}, 200);
-        addParallel(new Action[] {new ReachLineWaitAction(3.7 * Constants.DRIVE_ENCODER_TO_METERS), new ArmPoseAction(ArmPose.HYBRID), new RunIntakeAction(0.1)}, 1700);
+        addParallel(new Action[] {new ReachLineWaitAction(3.7 * Constants.DRIVE_ENCODER_TO_METERS), new ArmPoseAction(ArmPose.HYBRID), new RunIntakeAction(0.1)}, 2200);
         
         addSequential(new RunIntakeAction(Constants.ANYTHING_OUT_POWER), 3000);
 

@@ -32,7 +32,7 @@ public class NewMiddleAuto extends StateMachineDescriptor{
 
         addSequential(new AutoFieldRelAction(-2.9, 0, 0), 2400);
         addSequential(new TimeWaitAction(), 1500);
-        addSequential(new AutoFieldRelAction(3.1, 0, 0), 1500);
+        addSequential(new AutoFieldRelAction(3.1, 0, 0), 2500);
         addSequential(new AutoLevelAction(), 7000);
         addSequential(new DriveFlipGyroZero(), 200);
 
