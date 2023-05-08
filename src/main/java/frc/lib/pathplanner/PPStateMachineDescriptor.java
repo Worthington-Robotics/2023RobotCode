@@ -1,58 +1,52 @@
 package frc.lib.pathplanner;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.pathplanner.lib.PathPlannerTrajectory.EventMarker;
-
+import com.pathplanner.lib.PathPlannerTrajectory;
 import frc.lib.statemachine.Action;
 
 public class PPStateMachineDescriptor {
-    private ConcurrentLinkedQueue<PPActionGroup> queuedStates;
-
-    public PPStateMachineDescriptor() {
-        queuedStates = new ConcurrentLinkedQueue<>();
-    }
-
+    private PathPlannerTrajectory path = new PathPlannerTrajectory();
+    private List<PathPlannerTrajectory.EventMarker> pathMarkers = path.getMarkers();
+    private Map<String, Action> eventMap = new HashMap<>();
+    
     /**
      * Adds a sequential state to the state machine queue
      *
-     * @param action     The action to be executed during the state
-     * @param timeout_ms The timeout in ms of the state
+     * @param markerName     The marker at which the action will be executed.
+     * @param actionName     The action to be executed.
      */
-    public void addSequential(Action action, String marker, long timeout_ms) {
-        queuedStates.add(new PPActionGroup(action, marker, timeout_ms));
+    public void addSequential(String markerName, Action actionName) {
+        eventMap.put(markerName, actionName);
     }
 
     /**
-     * Adds a parallel state to the state machine queue
+     * Adds a parallel state to the state machine
      *
-     * @param actions    The array of actions to create a state from
-     * @param timeout_ms The timeout in ms of the state
+     * @param markerName     The marker at which the action will be executed.
+     * @param actionArray     The array of actions that will be executed at the same marker.
      */
-    public void addParallel(Action[] actions, String marker, long timeout_ms) {
-        queuedStates.add(new PPActionGroup(actions, marker, timeout_ms));
+    public void addParallel(String markerName, Action[] actionArray) {
+        for(Action action : actionArray) {
+            eventMap.put(markerName, action);
+        }
     }
-
-    /**
-     * Gets the queue object underlying the descriptor
+     /**
+     * Sets the state machine's path
      *
-     * @return The queue containing all the states
+     * @param traj     The trajectory to be set.
      */
-    public ConcurrentLinkedQueue<PPActionGroup> getStates() {
-        return queuedStates;
+    public void setPath(PathPlannerTrajectory traj) {
+        this.path = traj;
+        this.pathMarkers = traj.getMarkers();
     }
 
-    /**
-     * Code to run when the state machine is first started
-     * <p>Does not have to be an action. This can be any real code
+    /*
+     * Returns the current state of state machine!
      */
-    public void onStart() {
-    }
-
-    /**
-     * Code to run when the state machine is stopped
-     * <p>Does not have to be an action. This can be any real code
-     */
-    public void onStop() {
+    public List<PathPlannerTrajectory.EventMarker> getPathMarkers() {
+        return pathMarkers;
     }
 }

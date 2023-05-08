@@ -50,7 +50,7 @@ public class AutoChooser {
 				StateMachine.getInstance().runMachine(new TestBarrierAuto());
 				break;
 			case TestPathFollowerAuto:
-				StateMachine.getInstance().runMachine(new TestPathFollowerAuto()); //TODO: Make state machine!
+				PPStateMachine.getInstance().runMachine(new TestPathFollowerAuto()); //TODO: Make state machine!
 				break;
 		}
 	}
