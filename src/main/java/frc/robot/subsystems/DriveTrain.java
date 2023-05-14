@@ -10,6 +10,7 @@ import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -85,6 +86,7 @@ public class DriveTrain extends Subsystem {
 
     public class DriveTrainIO {
         public SwerveDriveOdometry odometry;
+        public SwerveDrivePoseEstimator poseEstimator;
         public State state = State.RobotRel;
         public SwerveModuleState[] states = { new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(),
                 new SwerveModuleState() };
@@ -169,6 +171,13 @@ public class DriveTrain extends Subsystem {
                 new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_backLeftModule.getSteerAngle())),
                 new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_backRightModule.getSteerAngle())),
         }, traj.getInitialHolonomicPose());
+
+        periodic.poseEstimator = new SwerveDrivePoseEstimator(m_kinematics, getGyroscopeRotation(), new SwerveModulePosition[] {
+            new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_frontLeftModule.getSteerAngle())),
+            new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_frontRightModule.getSteerAngle())),
+            new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_backLeftModule.getSteerAngle())),
+            new SwerveModulePosition(0.0, Rotation2d.fromDegrees(m_backRightModule.getSteerAngle())),
+        }, traj.getInitialHolonomicPose());
     }
 
     public void registerEnabledLoops(ILooper enabledLooper) {
@@ -184,20 +193,25 @@ public class DriveTrain extends Subsystem {
                 periodic.states = m_kinematics.toSwerveModuleStates(periodic.speeds);
                 SwerveDriveKinematics.desaturateWheelSpeeds(periodic.states, MAX_VELOCITY_METERS_PER_SECOND);
 
-                periodic.odometry.update(getGyroscopeRotation(), new SwerveModulePosition[] {
-                        new SwerveModulePosition(
-                                m_frontLeftModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS,
-                                Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
-                        new SwerveModulePosition(
-                                m_frontRightModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS,
-                                Rotation2d.fromRadians(m_frontRightModule.getSteerAngle())),
-                        new SwerveModulePosition(
-                                m_backLeftModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS,
-                                Rotation2d.fromRadians(m_backLeftModule.getSteerAngle())),
-                        new SwerveModulePosition(
-                                m_backRightModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS,
-                                Rotation2d.fromRadians(m_backRightModule.getSteerAngle())),
-                });
+                final SwerveModulePosition[] positions = new SwerveModulePosition[] {
+                    new SwerveModulePosition(
+                        m_frontLeftModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS,
+                        Rotation2d.fromRadians(m_frontLeftModule.getSteerAngle())),
+                    new SwerveModulePosition(
+                        m_frontRightModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS,
+                        Rotation2d.fromRadians(m_frontRightModule.getSteerAngle())),
+                    new SwerveModulePosition(
+                        m_backLeftModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS,
+                        Rotation2d.fromRadians(m_backLeftModule.getSteerAngle())),
+                    new SwerveModulePosition(
+                        m_backRightModule.getDriveEncoder() / Constants.DRIVE_ENCODER_TO_METERS,
+                        Rotation2d.fromRadians(m_backRightModule.getSteerAngle())),
+                };
+
+                periodic.odometry.update(getGyroscopeRotation(), positions);
+                periodic.poseEstimator.update(getGyroscopeRotation(), positions);
+
+                //TODO: Use periodic.poseEstimator.addVisionMeasurement
 
                 double x = periodic.XboxLeftX;
                 double y = periodic.XboxLeftY;
@@ -510,8 +524,6 @@ public class DriveTrain extends Subsystem {
     }
 
     public void readPeriodicInputs() {
-        
-        periodic.LL_tx = Arm.getInstance().getLLVals()[0];
         periodic.currentHeading = getGyroscopeRotation().getRadians();
         double LeftX = -Constants.XBOX.getLeftY();
         double LeftY = -Constants.XBOX.getLeftX();
@@ -536,7 +548,6 @@ public class DriveTrain extends Subsystem {
         }
 
         periodic.gyroTilt = m_pigeon.getRoll();
-
     }
 
     public void writePeriodicOutputs() {
@@ -563,12 +574,18 @@ public class DriveTrain extends Subsystem {
 
     public void outputTelemetry() {
         Pose2d odomPose = periodic.odometry.getPoseMeters();
-        double heading = m_pigeon.getFusedHeading();
+        Pose2d poseEstimatorPose = periodic.poseEstimator.getEstimatedPosition();
         SmartDashboard.putNumberArray("Drive/Odometry",
                 new double[] {
                         odomPose.getX(),
                         odomPose.getY(),
-                        Math.toRadians(heading)
+                        odomPose.getRotation().getRadians()
+                });
+        SmartDashboard.putNumberArray("Drive/Pose Estimator",
+                new double[] {
+                        poseEstimatorPose.getX(),
+                        poseEstimatorPose.getY(),
+                        poseEstimatorPose.getRotation().getRadians()
                 });
         SmartDashboard.putNumberArray("Drive/Swerve", new double[] {
                 m_frontLeftModule.getSteerAngle(), m_frontLeftModule.getDriveVelocity(),

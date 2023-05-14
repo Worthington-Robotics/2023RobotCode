@@ -2,15 +2,10 @@ package frc.robot.autos;
 
 import frc.lib.statemachine.StateMachineDescriptor;
 import frc.robot.Constants;
-import frc.robot.actions.arm.ArmPoseAction;
-import frc.robot.actions.drive.AutoFieldRelAction;
-import frc.robot.actions.drive.AutoRobotRelAction;
 import frc.robot.actions.drive.DriveNonblockingLineAction;
 import frc.robot.actions.drive.ZeroGyroAction;
 import frc.robot.actions.drive.AutoTurnAction;
 import frc.robot.actions.wait.ReachLineWaitAction;
-import frc.robot.actions.wait.TimeWaitAction;
-import frc.robot.subsystems.Arm.ArmPose;
 
 public class TestAuto extends StateMachineDescriptor{
 
