@@ -8,34 +8,13 @@
 package frc.robot;
 
 import java.util.Arrays;
+
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.lib.loops.Looper;
-import frc.lib.statemachine.StateMachine;
+import frc.lib.pathplanner.PPStateMachine;
 import frc.robot.subsystems.*;
-import frc.robot.autos.AutoChooser;
-import frc.robot.subsystems.Manipulator;
-import frc.robot.subsystems.Arm.ArmMode;
-import frc.robot.subsystems.Arm.ArmPose;
-import frc.lib.statemachine.Action;
-import frc.robot.actions.manipulator.RunIntakeAction;
-import frc.robot.actions.arm.ArmPoseAction;
-import frc.robot.actions.arm.CycleArmAction;
-import frc.robot.actions.drive.AutoLLCorrectAction;
-import frc.robot.actions.drive.AutoLevelAction;
-import frc.robot.actions.drive.DriveSwitchRobotMode;
-import frc.robot.actions.drive.DriveZeroGyro;
-import frc.robot.actions.drive.GrannyFieldRelAction;
-import frc.robot.actions.drive.TeleGyroAction;
-import frc.robot.actions.drive.ToggleChargeStationLockAction;
-import frc.robot.actions.lights.SetPurpleLightsAction;
-import frc.robot.actions.lights.SetYellowLightsAction;
-import frc.robot.actions.manipulator.MoveWristAction;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.TimedRobot;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -46,75 +25,35 @@ import edu.wpi.first.wpilibj.TimedRobot;
  */
 public class Robot extends TimedRobot {
     private SubsystemManager manager;
+    private JoystickButtonManager buttonManager = new JoystickButtonManager();
     private Looper enabledLooper, disabledLooper;
-
-    // Input bindings
-    private JoystickButton intakeButton = new JoystickButton(Constants.XBOX, 1);
-    private JoystickButton owenSpitButton = new JoystickButton(Constants.XBOX, 2);
-    private JoystickButton autoLevButton = new JoystickButton(Constants.XBOX, 3);
-    private JoystickButton toggleDriveModeButton = new JoystickButton(Constants.XBOX, 4);
-
-    private JoystickButton grannyModeButton = new JoystickButton(Constants.XBOX, 5);
-    // private JoystickButton limelightPipeButton = new
-    // JoystickButton(Constants.MASTER, 5);
-    // private JoystickButton unStowButton = new JoystickButton(Constants.MASTER,
-    // 3);
-
-    private JoystickButton cycleButton = new JoystickButton(Constants.XBOX, 7);
-    private POVButton zeroPoseButton = new POVButton(Constants.XBOX, 180);
-    private POVButton chargeStationLockButton = new POVButton(Constants.XBOX, 0);
-    private POVButton LLCorrectButton = new POVButton(Constants.XBOX, 90);
-    private JoystickButton resetGyroButton = new JoystickButton(Constants.XBOX, 6);
-    private JoystickButton yellowButton = new JoystickButton(Constants.XBOX, 9);
-    private JoystickButton purpleButton = new JoystickButton(Constants.XBOX, 10);
-    
-    // private JoystickA
-
-    private JoystickButton unstowButton = new JoystickButton(Constants.SECOND, 1);
-    private JoystickButton slideButton = new JoystickButton(Constants.SECOND, 2);
-    private JoystickButton joshSpitButton = new JoystickButton(Constants.SECOND, 3);
-    private JoystickButton wristUpButton = new JoystickButton(Constants.SECOND, 5);
-    private JoystickButton wristDownButton = new JoystickButton(Constants.SECOND, 6);
-    private JoystickButton poseMidButton = new JoystickButton(Constants.SECOND, 7);
-    private JoystickButton poseHighButton = new JoystickButton(Constants.SECOND, 8);
-    private JoystickButton poseShelfButton = new JoystickButton(Constants.SECOND, 9);
-    private JoystickButton poseHybridButton = new JoystickButton(Constants.SECOND, 11);
-    private JoystickButton poseIntakeButton = new JoystickButton(Constants.SECOND, 12);
 
     @Override
     public void robotInit() {
         // Start the RoboRIO kernal file system nonsense
-        // try {
-        // ReflectingLogger.getMount("XDLOL");
-        // } catch (Exception e) {}
-        initButtons();
         CommandScheduler.getInstance().enable();
-        CameraServer.startAutomaticCapture();
-        CameraServer.startAutomaticCapture();
+        // CameraServer.startAutomaticCapture();
         manager = new SubsystemManager(
                 Arrays.asList(
-                        Manipulator.getInstance(),
-                        Arm.getInstance(),
-                        DriveTrain.getInstance(),
-                        Lights.getInstance()),
+                        SwerveDrive.getInstance(),
+                        Lights.getInstance()
+                        ),
                 true);
 
-        // DataLogManager.start();
+        DataLogManager.logNetworkTables(true);
+        DataLogManager.start(null, null, 0.02);
         // DriverStation.startDataLog(DataLogManager.getLog());
 
         enabledLooper = new Looper();
         disabledLooper = new Looper();
-        Manipulator.getInstance().resetManipulatorEncoder();
 
         // Register the looper threads to the manager to use for enabled and disabled
         manager.registerEnabledLoops(enabledLooper);
         manager.registerDisabledLoops(disabledLooper);
 
-        // Add any additional logging sources for capture
-        // manager.addLoggingSource(Arrays.asList(StateMachine.getInstance()));
-
+        AutoChooser.getInstance().getAutos();
         AutoChooser.getInstance().logAuto();
-        AutoChooser.getInstance().printList();
+        AutoChooser.getInstance().printAutos();
     }
 
     @Override
@@ -126,20 +65,17 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         enabledLooper.stop();
-
-        StateMachine.getInstance().assertStop();
-
+        PPStateMachine.getInstance().assertStop();
+        Lights.getInstance().setState(Lights.State.INIT);
         disabledLooper.start();
     }
 
     @Override
     public void autonomousInit() {
         disabledLooper.stop();
-        Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
-        DriveTrain.getInstance().reset();
-        Manipulator.getInstance().setAuto(true);
+        Lights.getInstance().setState(Lights.State.AUTO);
+        AutoChooser.getInstance().runFromSelection();
         enabledLooper.start();
-        AutoChooser.getInstance().run_from_selection();
     }
 
     @Override
@@ -149,13 +85,11 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         disabledLooper.stop();
-
         // Reset anything here
-        DriveTrain.getInstance().reset();
-        Manipulator.getInstance().setAuto(false);
+        SwerveDrive.getInstance().setState(SwerveDrive.State.FieldRel);
+        PPStateMachine.getInstance().clearTrajectory();
+        Lights.getInstance().setState(Lights.State.TELEOP);
         enabledLooper.start();
-        Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
-        DriveTrain.getInstance().setFieldRel();
     }
 
     @Override
@@ -164,44 +98,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-        Arm.getInstance().setMode(ArmMode.DISABLED);
         disabledLooper.stop();
         enabledLooper.start();
     }
 
     @Override
     public void testPeriodic() {
-    }
-
-    public void initButtons() {
-        // driveGearButton.whileTrue(Action.toCommand(new GearChangeAction()));
-        owenSpitButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.TELE_HIGHER_OUT_POWER)));
-        joshSpitButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.TELE_LOWER_OUT_POWER)));
-        intakeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.INTAKE_POWER, false)));
-        zeroPoseButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.ZERO)));
-        toggleDriveModeButton.onTrue(Action.toCommand(new DriveSwitchRobotMode()));
-        resetGyroButton.onTrue(Action.toCommand(new DriveZeroGyro()));
-        yellowButton.onTrue(Action.toCommand(new SetYellowLightsAction()));
-        purpleButton.onTrue(Action.toCommand(new SetPurpleLightsAction()));
-        chargeStationLockButton.onTrue(Action.toCommand(new ToggleChargeStationLockAction()));
-        grannyModeButton.onTrue(Action.toCommand(new GrannyFieldRelAction()));
-       // gyroLockButton.onTrue(
-               // Action.toCommand(new TeleGyroAction(DriveTrain.getInstance().getGyroscopeRotation().getRadians())));
-        autoLevButton.whileTrue(Action.toCommand(new AutoLevelAction()));
-        LLCorrectButton.whileTrue(Action.toCommand(new AutoLLCorrectAction()));
-        // Constants.XBOX.rightTrigger(0.5, Action.toCommand(new
-        // DriveNonblockingTurnAction(DriveTrain.getInstance().getGyroscopeRotation().getRadians())));
-
-        unstowButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.UNSTOW)));
-        slideButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SLIDE)));
-        poseMidButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.MID)));
-        poseHighButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.HIGH)));
-        poseShelfButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.SHELF)));
-        poseHybridButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.HYBRID)));
-        poseIntakeButton.onTrue(Action.toCommand(new ArmPoseAction(ArmPose.INTAKE)));
-
-        wristUpButton.whileTrue(Action.toCommand(new MoveWristAction(-.33)));
-        wristDownButton.whileTrue(Action.toCommand(new MoveWristAction(.33)));
-        cycleButton.whileTrue(Action.toCommand(new CycleArmAction()));
     }
 }

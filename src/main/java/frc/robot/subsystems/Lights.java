@@ -1,134 +1,128 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.util.Color;
-import frc.lib.loops.ILooper;
-import frc.lib.loops.Loop;
 import frc.robot.Constants;
 
 public class Lights extends Subsystem {
     private static Lights instance = new Lights();
 
-    public static Lights getInstance() {
+    public static Lights getInstance(){
         return instance;
     }
 
-    public AddressableLED ledString;
-    public AddressableLEDBuffer ledBuffer;
-    public State state;
-    public int rain;
-    public boolean wantYellow;
-    public boolean wantPurple;
-
     public enum State {
-        LIGHTS_RAINBOW,
-        LIGHTS_WHITE,
-        LIGHTS_YELLOW,
-        LIGHTS_PURPLE,
-        LIGHTS_GREEN
+        INIT,
+        AUTO,
+        TELEOP
     }
 
-    private Lights() {
-        ledString = new AddressableLED(Constants.LIGHTS_ID);
-        ledBuffer = new AddressableLEDBuffer(Constants.LIGHTS_LED_COUNT);
-        ledString.setLength(ledBuffer.getLength());
-        state = State.LIGHTS_RAINBOW;
-        reset();
+    private final AddressableLED leds;
+    private final AddressableLEDBuffer buffer;
+    private State state = State.INIT;
+
+    public Lights() {
+        leds = new AddressableLED(Constants.Lights.LIGHTS_ID);
+        buffer = new AddressableLEDBuffer(Constants.Lights.NUM_LEDS);
+        leds.setLength(Constants.Lights.NUM_LEDS);
+        leds.start();
     }
 
-    public void registerEnabledLoops(ILooper enabledLooper) {
-        enabledLooper.register(new Loop() {
-            @Override
-            public void onStart(double timestamp) {
-            }
+    @Override
+    public void readPeriodicInputs() {}
 
-            @Override
-            public void onLoop(double timestamp) {
-            }
+    @Override
+    public void writePeriodicOutputs() {}
 
-            @Override
-            public void onStop(double timestamp) {
-
-            }
-        });
-    }
-
-    public void readPeriodicInputs() {
-    }
-
-    public void writePeriodicOutputs() {
-    }
-
+    @Override
     public void outputTelemetry() {
-        rain++;
-        rain = rain % 180;
-        if (DriverStation.isDisabled()) {
-            state = State.LIGHTS_WHITE;
-        } else {
-            if (Manipulator.getInstance().isObject()) {
-                state = State.LIGHTS_GREEN;
-            } else if (wantPurple) {
-                state = State.LIGHTS_PURPLE;
-            } else if (wantYellow) {
-                state = State.LIGHTS_YELLOW;
-            } else {
-                state = State.LIGHTS_RAINBOW;
+        switch (state) {
+            case INIT:
+                if(DriverStation.getAlliance() == Alliance.Blue) {
+                    wave(100, Color.kBlack, Color.kBlue, 25.0, 2.0, 0.4);
+                } else if (DriverStation.getAlliance() == Alliance.Red) {
+                    wave(100, Color.kBlack, Color.kRed, 25.0, 2.0, 0.4);
+                } else if (DriverStation.getAlliance() == Alliance.Invalid) {
+                    wave(100, Color.kBlue, Color.kRed, 25.0, 2.0, 0.4);
+                }
+            break;
+            case AUTO:
+                if(DriverStation.getAlliance() == Alliance.Blue) {
+                    breath(100, Color.kBlue, Color.kBlack, 1.0, Timer.getFPGATimestamp());
+                } else {
+                    breath(100, Color.kRed, Color.kBlack, 1.0, Timer.getFPGATimestamp());
+                }
+            break;
+            case TELEOP:
+                rainbow(100, 50.0, 1.5);
+            break;
+        }
+        leds.setData(buffer);
+    }
+
+    private void solid(double percent, Color color) {
+        for (int i = 0; i<MathUtil.clamp(Constants.Lights.NUM_LEDS, percent, Constants.Lights.NUM_LEDS); i++) {
+            buffer.setLED(i, color);
+        }
+    }
+
+    private void strobe(double percent, Color color, double duration) {
+        boolean on = ((Timer.getFPGATimestamp() % duration) / duration) > 0.5;
+        solid(percent, on ? color: Color.kBlack);
+    }
+
+    private void breath(double percent, Color c1, Color c2, double duration, double timestamp) {
+        double x = ((timestamp % duration) / duration) * 2.0 * Math.PI;
+        double ratio = (Math.sin(x) + 1.0) / 2.0;
+        double red = (c1.red * (1-ratio)) + (c2.red * ratio);
+        double green = (c1.green * (1-ratio)) + (c2.green * ratio);
+        double blue = (c1.blue * (1-ratio)) + (c2.blue * ratio);
+        solid(percent, new Color(red, green, blue));
+    }
+
+    private void rainbow(double percent, double cycleLength, double duration) {
+        double x = (1-((Timer.getFPGATimestamp() / duration) % 1.0)) * 180.0;
+        double xDiffPerLed = 180.0 / cycleLength;
+        for (int i = 0; i<MathUtil.clamp(Constants.Lights.NUM_LEDS, percent, Constants.Lights.NUM_LEDS); i++) {
+            x += xDiffPerLed;
+            x %= 180.0;
+            if (i >= 0) {
+                buffer.setHSV(i, (int)x, 255, 255);
             }
         }
-        switch (state) {
-            case LIGHTS_RAINBOW:
-                for (int i = 0; i < ledBuffer.getLength(); i++) {
-                    ledBuffer.setHSV(i, rain, 255, 255);
-                }
-                break;
-            case LIGHTS_WHITE:
-                for (int i = 0; i < ledBuffer.getLength(); i++) {
-                    ledBuffer.setLED(i, Color.kWhite);
-                }
-                break;
-            case LIGHTS_PURPLE:
-                for (int i = 0; i < ledBuffer.getLength(); i++) {
-                    ledBuffer.setLED(i, Color.kPurple);
-                }
-                break;
-            case LIGHTS_YELLOW:
-                for (int i = 0; i < ledBuffer.getLength(); i++) {
-                    ledBuffer.setLED(i, Color.kYellow);
-                }
-                break;
-            case LIGHTS_GREEN:
-                for (int i = 0; i < ledBuffer.getLength(); i++) {
-                    ledBuffer.setLED(i, Color.kGreen);
-                }
-                break;
+    }
+
+    private void wave(double percent, Color c1, Color c2, double cycleLength, double duration, double waveExponent) {
+        double x = (1 - ((Timer.getFPGATimestamp() % duration) / duration)) * 2.0 * Math.PI;
+        double xDiffPerLed = (2.0 * Math.PI) / cycleLength;
+        for (int i = 0; i<MathUtil.clamp(Constants.Lights.NUM_LEDS, percent, Constants.Lights.NUM_LEDS); i++) {
+          x += xDiffPerLed;
+          if (i >= 0) {
+            double ratio = (Math.pow(Math.sin(x), waveExponent) + 1.0) / 2.0;
+            if (Double.isNaN(ratio)) {
+              ratio = (-Math.pow(Math.sin(x + Math.PI), waveExponent) + 1.0) / 2.0;
+            }
+            if (Double.isNaN(ratio)) {
+              ratio = 0.5;
+            }
+            double red = (c1.red * (1 - ratio)) + (c2.red * ratio);
+            double green = (c1.green * (1 - ratio)) + (c2.green * ratio);
+            double blue = (c1.blue * (1 - ratio)) + (c2.blue * ratio);
+            buffer.setLED(i, new Color(red, green, blue));
+          }
         }
-        ledString.setData(ledBuffer);
+      }
+
+    public void setState(State state) {
+        this.state = state;
     }
 
-    public void setLightState(State lightState) {
-        state = lightState;
-        if (lightState == State.LIGHTS_PURPLE) {
-            wantPurple = true;
-            wantYellow = false;
-        } else if (lightState == State.LIGHTS_YELLOW) {
-            wantYellow = true;
-            wantPurple = false;
-        } else if (lightState == State.LIGHTS_RAINBOW){
-            wantYellow = false;
-            wantPurple = false;
-        }
-    }
-
-    public State getLightState() {
-        return state;
-    }
-
-    public void reset() {
-        ledBuffer = new AddressableLEDBuffer(Constants.LIGHTS_LED_COUNT);
-        ledString.setLength(ledBuffer.getLength());
-        ledString.setData(ledBuffer);
-        ledString.start();
-    }
+    @Override
+    public void reset() {}
+    
 }

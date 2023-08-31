@@ -16,6 +16,7 @@ public class PathPlannerTrajectory extends Trajectory {
   private final List<EventMarker> markers;
   private final StopEvent startStopEvent;
   private final StopEvent endStopEvent;
+  public final String name;
   public final boolean fromGUI;
 
   public PathPlannerTrajectory() {
@@ -23,6 +24,7 @@ public class PathPlannerTrajectory extends Trajectory {
     this.markers = new ArrayList<>();
     this.startStopEvent = new StopEvent();
     this.endStopEvent = new StopEvent();
+    this.name = new String();
     this.fromGUI = false;
   }
 
@@ -31,6 +33,7 @@ public class PathPlannerTrajectory extends Trajectory {
       List<EventMarker> markers,
       PathConstraints constraints,
       boolean reversed,
+      String name,
       boolean fromGUI) {
     super(generatePath(pathPoints, constraints.maxVelocity, constraints.maxAcceleration, reversed));
 
@@ -38,6 +41,7 @@ public class PathPlannerTrajectory extends Trajectory {
     this.calculateMarkerTimes(pathPoints);
     this.startStopEvent = pathPoints.get(0).stopEvent;
     this.endStopEvent = pathPoints.get(pathPoints.size() - 1).stopEvent;
+    this.name = name;
     this.fromGUI = fromGUI;
   }
 
@@ -46,12 +50,14 @@ public class PathPlannerTrajectory extends Trajectory {
       List<EventMarker> markers,
       StopEvent startStopEvent,
       StopEvent endStopEvent,
+      String name,
       boolean fromGUI) {
     super(states);
 
     this.markers = markers;
     this.startStopEvent = startStopEvent;
     this.endStopEvent = endStopEvent;
+    this.name = name;
     this.fromGUI = fromGUI;
   }
 
@@ -80,6 +86,15 @@ public class PathPlannerTrajectory extends Trajectory {
    */
   public List<EventMarker> getMarkers() {
     return this.markers;
+  }
+
+  /**
+   * Get the name of the path
+   *
+   * @return The name
+   */
+  public String getName() {
+    return this.name;
   }
 
   /**
@@ -158,6 +173,7 @@ public class PathPlannerTrajectory extends Trajectory {
           trajectory.markers,
           trajectory.startStopEvent,
           trajectory.endStopEvent,
+          trajectory.name,
           trajectory.fromGUI);
     } else {
       return trajectory;

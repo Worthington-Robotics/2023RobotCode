@@ -42,7 +42,7 @@ public class PathPlanner {
       List<Waypoint> waypoints = getWaypointsFromJson(json);
       List<EventMarker> markers = getMarkersFromJson(json);
 
-      return new PathPlannerTrajectory(waypoints, markers, constraints, reversed, true);
+      return new PathPlannerTrajectory(waypoints, markers, constraints, reversed, name, true);
     } catch (Exception e) {
       e.printStackTrace();
       return null;
@@ -170,6 +170,7 @@ public class PathPlanner {
                 splitMarkers.get(i),
                 currentConstraints,
                 shouldReverse,
+                name,
                 true));
 
         // Loop through waypoints and invert shouldReverse for every reversal point.
@@ -272,7 +273,8 @@ public class PathPlanner {
       PathConstraints constraints,
       boolean reversed,
       List<PathPoint> points,
-      List<EventMarker> eventMarkers) {
+      List<EventMarker> eventMarkers,
+      String name) {
     if (points.size() < 2) {
       throw new IllegalArgumentException(
           "Error generating trajectory.  List of points in trajectory must have at least two points.");
@@ -323,12 +325,12 @@ public class PathPlanner {
               new PathPlannerTrajectory.StopEvent()));
     }
 
-    return new PathPlannerTrajectory(waypoints, eventMarkers, constraints, reversed, false);
+    return new PathPlannerTrajectory(waypoints, eventMarkers, constraints, reversed, name, false);
   }
 
   public static PathPlannerTrajectory generatePath(
-      PathConstraints constraints, boolean reversed, List<PathPoint> points) {
-    return generatePath(constraints, reversed, points, new ArrayList<>());
+      PathConstraints constraints, boolean reversed, List<PathPoint> points, String name) {
+    return generatePath(constraints, reversed, points, new ArrayList<>(), name);
   }
 
   /**
@@ -341,14 +343,15 @@ public class PathPlanner {
    * @param maxAccel The max acceleration of the path
    * @param reversed Should the robot follow this path reversed
    * @param points Points in the path
+   * @param name The name of the path
    * @return The generated path
    * @deprecated For removal in 2024, use {@link PathPlanner#generatePath(PathConstraints, boolean,
    *     List)} instead
    */
   @Deprecated
   public static PathPlannerTrajectory generatePath(
-      double maxVel, double maxAccel, boolean reversed, List<PathPoint> points) {
-    return generatePath(new PathConstraints(maxVel, maxAccel), reversed, points);
+      double maxVel, double maxAccel, boolean reversed, List<PathPoint> points, String name) {
+    return generatePath(new PathConstraints(maxVel, maxAccel), reversed, points, name);
   }
 
   /**
@@ -359,16 +362,17 @@ public class PathPlanner {
    *
    * @param constraints The max velocity and max acceleration of the path
    * @param points Points in the path
+   * @param name The name of the path
    * @return The generated path
    */
   public static PathPlannerTrajectory generatePath(
-      PathConstraints constraints, List<PathPoint> points) {
-    return generatePath(constraints, false, points);
+      PathConstraints constraints, List<PathPoint> points, String name) {
+    return generatePath(constraints, false, points, name);
   }
 
   public static PathPlannerTrajectory generatePath(
-      PathConstraints constraints, List<PathPoint> points, List<EventMarker> markers) {
-    return generatePath(constraints, false, points, markers);
+      PathConstraints constraints, List<PathPoint> points, List<EventMarker> markers, String name) {
+    return generatePath(constraints, false, points, markers, name);
   }
 
   /**
@@ -380,14 +384,15 @@ public class PathPlanner {
    * @param maxVel The max velocity of the path
    * @param maxAccel The max acceleration of the path
    * @param points Points in the path
+   * @param name The name of the path
    * @return The generated path
    * @deprecated For removal in 2024, use {@link PathPlanner#generatePath(PathConstraints, List)}
    *     instead
    */
   @Deprecated
   public static PathPlannerTrajectory generatePath(
-      double maxVel, double maxAccel, List<PathPoint> points) {
-    return generatePath(new PathConstraints(maxVel, maxAccel), false, points);
+      double maxVel, double maxAccel, List<PathPoint> points, String name) {
+    return generatePath(new PathConstraints(maxVel, maxAccel), false, points, name);
   }
 
   /**
@@ -408,12 +413,13 @@ public class PathPlanner {
       boolean reversed,
       PathPoint point1,
       PathPoint point2,
+      String name,
       PathPoint... points) {
     List<PathPoint> pointsList = new ArrayList<>();
     pointsList.add(point1);
     pointsList.add(point2);
     pointsList.addAll(List.of(points));
-    return generatePath(constraints, reversed, pointsList);
+    return generatePath(constraints, reversed, pointsList, name);
   }
 
   public static PathPlannerTrajectory generatePath(
@@ -422,12 +428,13 @@ public class PathPlanner {
       List<EventMarker> markers,
       PathPoint point1,
       PathPoint point2,
+      String name,
       PathPoint... points) {
     List<PathPoint> pointsList = new ArrayList<>();
     pointsList.add(point1);
     pointsList.add(point2);
     pointsList.addAll(List.of(points));
-    return generatePath(constraints, reversed, pointsList, markers);
+    return generatePath(constraints, reversed, pointsList, markers, name);
   }
 
   /**
@@ -439,12 +446,13 @@ public class PathPlanner {
    * @param constraints The max velocity and max acceleration of the path
    * @param point1 First point in the path
    * @param point2 Second point in the path
+   * @param name The name of the path
    * @param points Remaining points in the path
    * @return The generated path
    */
   public static PathPlannerTrajectory generatePath(
-      PathConstraints constraints, PathPoint point1, PathPoint point2, PathPoint... points) {
-    return generatePath(constraints, false, point1, point2, points);
+      PathConstraints constraints, PathPoint point1, PathPoint point2, String name, PathPoint... points) {
+    return generatePath(constraints, false, point1, point2, name, points);
   }
 
   public static PathPlannerTrajectory generatePath(
@@ -452,8 +460,9 @@ public class PathPlanner {
       List<EventMarker> markers,
       PathPoint point1,
       PathPoint point2,
+      String name,
       PathPoint... points) {
-    return generatePath(constraints, false, markers, point1, point2, points);
+    return generatePath(constraints, false, markers, point1, point2, name, points);
   }
 
   /**
@@ -466,6 +475,7 @@ public class PathPlanner {
    * @param maxAccel The max acceleration of the path
    * @param point1 First point in the path
    * @param point2 Second point in the path
+   * @param name The name of the graph
    * @param points Remaining points in the path
    * @return The generated path
    * @deprecated For removal in 2024, use {@link PathPlanner#generatePath(PathConstraints,
@@ -473,8 +483,8 @@ public class PathPlanner {
    */
   @Deprecated
   public static PathPlannerTrajectory generatePath(
-      double maxVel, double maxAccel, PathPoint point1, PathPoint point2, PathPoint... points) {
-    return generatePath(new PathConstraints(maxVel, maxAccel), point1, point2, points);
+      double maxVel, double maxAccel, PathPoint point1, PathPoint point2,String name, PathPoint... points) {
+    return generatePath(new PathConstraints(maxVel, maxAccel), point1, point2,name, points);
   }
 
   /**

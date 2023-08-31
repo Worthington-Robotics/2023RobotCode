@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.statemachine.Action;
+import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.SwerveDrive.State;
 
 public class PPSwerveControllerAction extends Action {
     private final Timer timer = new Timer();
@@ -57,7 +59,6 @@ public class PPSwerveControllerAction extends Action {
    * @param useAllianceColor Should the path states be automatically transformed based on alliance
    *     color? In order for this to work properly, you MUST create your path on the blue side of
    *     the field.
-   * @param requirements The subsystems to require.
    */
   public PPSwerveControllerAction(
     PathPlannerTrajectory trajectory,
@@ -87,6 +88,7 @@ public class PPSwerveControllerAction extends Action {
 
     @Override
     public void onStart() {
+      System.out.println("[State Machine] Started path planner action");
         if (useAllianceColor && trajectory.fromGUI) {
             transformedTrajectory =
                 PathPlannerTrajectory.transformTrajectoryForAlliance(
@@ -103,6 +105,7 @@ public class PPSwerveControllerAction extends Action {
           timer.start();
       
           PathPlannerServer.sendActivePath(transformedTrajectory.getStates());
+          SwerveDrive.getInstance().setState(State.PathPlanner);
     }
 
     @Override
@@ -154,7 +157,17 @@ public class PPSwerveControllerAction extends Action {
 
     @Override
     public void onStop() {
+      System.out.println("[State Machine] Stopped path planner action");
       this.timer.stop();
+      SwerveDrive.getInstance().setState(State.FieldRel);
+    }
+
+    public double getCurrentTime() {
+      return this.timer.get();
+    }
+
+    public double getTotalTime() {
+      return transformedTrajectory.getTotalTimeSeconds();
     }
 
     private static void defaultLogError(Translation2d translationError, Rotation2d rotationError) {
