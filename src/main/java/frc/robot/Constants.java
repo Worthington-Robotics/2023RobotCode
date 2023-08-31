@@ -81,6 +81,63 @@ public class Constants {
         public static final int NUM_LEDS = 200;
     }
 
+    public static class Arm {
+        // Arm, Manipulator Constants
+
+        // Arm Consants - IDs
+        public static final int ARM_ARM_M_ID = 14;
+        public static final int ARM_EXTENSION_ID = 16;
+        
+        public static final int CTRE_PCM_ID = 0;
+        public static final int ARM_GRABBER_FWD_CHANNEL = 5;
+        public static final int ARM_GRABBER_REV_CHANNEL = 4;
+        
+        //Manipulator Constants
+        public static final int INTAKE_WHEEL_ID = 15;  
+        
+        public static final double INTAKE_POWER = .45;
+        public static final double ANYTHING_OUT_POWER = -1;
+        public static final double TELE_HIGHER_OUT_POWER = -.5;
+        public static final double TELE_LOWER_OUT_POWER = -.25;
+        public static final double INTAKE_CURRENT_ACCEPTANCE = 75.0;
+
+        public static final double WRIST_PIVOT_KP = .025; //TODO: change this kp
+        public static final double WRIST_MIN_TIME = 1.5;
+        public static final double WRIST_ENCODER_PER_DEGREE = 400.0; //TODO: change this value
+        
+        // Arm Constants
+        public static final double PIVOT_ENCODER_PER_DEGREE = 416.31;
+        public static final double ENCODER_PER_INCH = 1833.33;
+
+        public static final double ARM_PIVOT_KP = .06;
+        public static final double PIVOT_MIN_TIME =21.0;
+
+        public static final double ARM_EXTENSION_KP = .08;
+        public static final double EXTENSION_MIN_TIME = 1.5;
+
+        public static final double EXTENSION_ENCODER_ERROR_ACCEPTANCE = 2000;
+        public static final double PIVOT_ENCODER_ERROR_ACCEPTANCE = 7000;
+        public static final double WRIST_ENCODER_ERROR_ACCEPTANCE = 5000;
+
+        // ### Vision values ###
+        public static final String LIMELIGHT_NETWORK_ID = "limelight-worbots";
+        public static final int LIMELIGHT_LOW_PIPELINE = 0;
+        public static final int LIMELIGHT_HIGH_PIPELINE = 1;
+        public static final double VISION_SNAPSHOT_INTERVAL = 1;
+        
+        
+        //Auto Pose Constants
+        public static final double highGoalExtensionEncoder = 150000.0;
+        public static final double mediumGoalExtensionEncoder = 120000.0;
+
+        // ### Device ID declarations ###
+
+        // Superstructure
+        // TODO: Change these values to actual IDs
+        public static final int WRIST_MOTOR_ID = 13;
+        public static final int INTAKE_MOTOR_ID = 15;
+    }
+
     public static class Joysticks{
         // ### Joystick Constants ###
         public static final Joystick MASTER = new Joystick(0);
