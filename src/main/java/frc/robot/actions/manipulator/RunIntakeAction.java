@@ -1,23 +1,14 @@
 package frc.robot.actions.manipulator;
 
 import frc.lib.statemachine.Action;
+import frc.robot.Constants;
 import frc.robot.subsystems.Manipulator;
 
 
 public class RunIntakeAction extends Action {
     // The speed to run the intake at
-    double power;
-    boolean isRelease;
-    
-    public RunIntakeAction(double power) { //releasing
-        this.power = power;
-        isRelease = true;
-    }
-
-    public RunIntakeAction(double power, boolean isRelease) { //intaking
-        this.power = power;
-        this.isRelease = isRelease;
-    }
+    double power = Constants.Arm.ANYTHING_OUT_POWER;
+    boolean isRelease = false;
 
     @Override
     public void onStart() {

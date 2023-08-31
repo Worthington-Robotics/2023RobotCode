@@ -18,21 +18,14 @@ public class AutoSetIntakeTime extends Action {
     }
 
     @Override
-    public void onLoop() {
-        // TODO Auto-generated method stub
-        
-    }
+    public void onLoop() {}
 
     @Override
     public boolean isFinished() {
-        // TODO Auto-generated method stub
         return true;
     }
 
     @Override
-    public void onStop() {
-        // TODO Auto-generated method stub
-        
-    }
+    public void onStop() {}
     
 }
