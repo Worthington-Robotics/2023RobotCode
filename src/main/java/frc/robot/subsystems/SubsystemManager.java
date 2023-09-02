@@ -3,12 +3,17 @@ package frc.robot.subsystems;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.lib.loops.Looper;
+import frc.lib.statemachine.StateMachine;
+import frc.lib.pathplanner.PPStateMachine;
 import frc.lib.util.Loggable;
 import frc.lib.util.ReflectingLogger;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.wpi.first.networktables.IntegerPublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -20,6 +25,10 @@ public class SubsystemManager implements ILooper, Loggable {
     private ReflectingLogger<LogData> logger;
     private final boolean mIgnoreLogger;
     private Timing timing = new Timing();
+    private NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    private NetworkTable table = inst.getTable("Auto");
+    private IntegerPublisher legacyIntPub = table.getIntegerTopic("State Machine State").publish();
+    private IntegerPublisher ppIntPub = table.getIntegerTopic("Path Planner State").publish();
 
     /**
      * A manager class to handle all of the individual subsystems
@@ -91,6 +100,8 @@ public class SubsystemManager implements ILooper, Loggable {
      */
     public void outputTelemetry() {
         mAllSubsystems.forEach(Subsystem::outputTelemetry);
+        legacyIntPub.set(StateMachine.getInstance().getState());
+        ppIntPub.set(PPStateMachine.getInstance().getState());
     }
 
     /**

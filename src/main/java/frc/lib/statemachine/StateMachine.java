@@ -2,6 +2,7 @@ package frc.lib.statemachine;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.util.Loggable;
@@ -11,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class StateMachine implements Loggable{
-    private static final StateMachine instance =  new StateMachine();
+    private static final StateMachine instance = new StateMachine();
 
     /**
      * @return Singleton instance of the state machine
@@ -28,9 +29,7 @@ public class StateMachine implements Loggable{
     /**
      * Prevent the creation of a new state machine object
      */
-    private StateMachine() {
-
-    }
+    private StateMachine() {}
 
     /**
      * The runnable thread object that handles the execution of a state machine descriptor.
@@ -53,20 +52,21 @@ public class StateMachine implements Loggable{
 
             // State goes to 0 to start
             data.state.set(0);
-            SmartDashboard.putNumber("StateMachine/state", data.state.get());
             
 
             while (!queuedStates.isEmpty() && !data.wantStop.get()) {
                 // Pull the next element from the queue and run the state
-                SmartDashboard.putNumber("StateMachine/state", data.state.get());
                 data.currentState = queuedStates.poll();
                 data.currentState.onStart();
 
                 // Wait for the state to complete exectuing
                 while (!data.currentState.isFinished() && !data.wantStop.get()) {
-                    data.t_start = Timer.getFPGATimestamp();
+                    data.t_start = RobotController.getFPGATime();
                     data.currentState.onLoop();
-                    Timer.delay(delay - (Timer.getFPGATimestamp() - data.t_start));
+                    double sleepTime = (delay - (RobotController.getFPGATime() - data.t_start) / 1000000.0);
+                    Timer.delay(Math.max(0, sleepTime));
+                    if (sleepTime < 0)   
+                        DriverStation.reportWarning("Internal state overran looper time delay with overrun " + sleepTime, false);
                 }
 
                 // When complete stop the state and increment the state counter
@@ -76,6 +76,7 @@ public class StateMachine implements Loggable{
             data.state.set(-1);
         } catch (Exception e) {
             System.out.println(e.getMessage());
+            System.out.println(Timer.getFPGATimestamp() + " At state: " + data.state.get());
             data.state.set(-3);
         } finally {
             // Run all cleanup procedures
@@ -145,6 +146,10 @@ public class StateMachine implements Loggable{
         return data.stateLock.get();
     }
 
+    public int getState() {
+        return data.state.get();
+    }
+
     /**
      * Forces the state machine to stop and exit within the next iteration.
      */
@@ -165,6 +170,11 @@ public class StateMachine implements Loggable{
         return data;
     }
 
+    // public Action commandToAction() {
+    //     Command
+    // }
+
+
     /**
      * Internal data class for logging the behaviour of the state machine during runtime
      * for use by the reflecting logger.
@@ -174,6 +184,6 @@ public class StateMachine implements Loggable{
         public final AtomicBoolean wantStop = new AtomicBoolean(true);
         public final AtomicBoolean stateLock = new AtomicBoolean(false);
         public volatile ActionGroup currentState;
-        public volatile double t_start;
+        public volatile long t_start;
     }
 }

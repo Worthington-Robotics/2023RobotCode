@@ -1,3 +1,7 @@
-# Worbots 2023
+# Worbots 2023 - Path Planner
 
-This is the robot code for the 2023 FRC season.
+Things that got added/changed:
+* Path Planner support
+* New state machine
+* Edited PathPlannerLib to interact with Dart based program
+* Simulated swerve drive

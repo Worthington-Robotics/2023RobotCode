@@ -9,24 +9,13 @@ package frc.robot;
 
 import java.util.Arrays;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.lib.loops.Looper;
-import frc.lib.models.DriveTrajectoryGenerator;
-import frc.lib.statemachine.StateMachine;
+import frc.lib.pathplanner.PPStateMachine;
 import frc.robot.subsystems.*;
-import frc.robot.autos.AutoChooser;
-import frc.robot.subsystems.SuperStructure;
-import frc.robot.subsystems.SuperStructure.IntakePosition;
-import frc.lib.statemachine.Action;
-import frc.robot.actions.arm.OpenClaw;
-import frc.robot.actions.drive.DriveLevelAction;
-import frc.robot.actions.drive.DriveTurnActionLimelight;
-import frc.robot.actions.drive.GearChangeAction;
-import frc.robot.actions.superstructure.MoveIntakeAction;
-import frc.robot.actions.superstructure.RunIntakeAction;
-import frc.robot.actions.superstructure.SwitchSolenoid;
+import frc.robot.subsystems.Arm.ArmMode;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -37,39 +26,27 @@ import frc.robot.actions.superstructure.SwitchSolenoid;
  */
 public class Robot extends TimedRobot {
     private SubsystemManager manager;
+    private JoystickButtonManager buttonManager = new JoystickButtonManager();
     private Looper enabledLooper, disabledLooper;
 
-    // Input bindings
-    private JoystickButton clawButton = new JoystickButton(Constants.SECOND, 1);
-    private JoystickButton transmissionButton = new JoystickButton(Constants.MASTER, 1);
-    private JoystickButton intakeSolenoidButton = new JoystickButton(Constants.MASTER, 6);
-    private JoystickButton intakeCubeButton = new JoystickButton(Constants.MASTER, 4);
-    private JoystickButton limelightRotateButton = new JoystickButton(Constants.MASTER, 6);
-    private JoystickButton autoLevelButton = new JoystickButton(Constants.MASTER, 7);
-    private JoystickButton intakeConeButton = new JoystickButton(Constants.MASTER, 2);
-    private JoystickButton intakeReverseButton = new JoystickButton(Constants.MASTER, 3);
-    private JoystickButton intakeDownButton = new JoystickButton(Constants.MASTER, 10);
-    private JoystickButton intakeUpButton = new JoystickButton(Constants.MASTER, 9);
-
-    /**
-     * This function is run when the robot is first started up and should be used
-     * for any initialization code.
-     */
     @Override
     public void robotInit() {
+        // Start the RoboRIO kernal file system nonsense
+        CommandScheduler.getInstance().enable();
+        // CameraServer.startAutomaticCapture();
         manager = new SubsystemManager(
-            Arrays.asList(
-                SuperStructure.getInstance(),
-                PoseEstimator.getInstance(),
-                Arm.getInstance(),
-                DriveTrain.getInstance(),
-                Lights.getInstance()
-            ),
-            true
-        );
+                Arrays.asList(
+                        SwerveDrive.getInstance(),
+                        Lights.getInstance(),
+                        Manipulator.getInstance(),
+                        Arm.getInstance()
+                        ),
+                true);
 
-        // Create the master looper threads
-        DriveTrajectoryGenerator.getInstance();
+        DataLogManager.logNetworkTables(true);
+        DataLogManager.start(null, null, 0.02);
+        // DriverStation.startDataLog(DataLogManager.getLog());
+
         enabledLooper = new Looper();
         disabledLooper = new Looper();
 
@@ -77,115 +54,63 @@ public class Robot extends TimedRobot {
         manager.registerEnabledLoops(enabledLooper);
         manager.registerDisabledLoops(disabledLooper);
 
-        // Add any additional logging sources for capture
-        manager.addLoggingSource(Arrays.asList(StateMachine.getInstance()));
-
-        initButtons();
-        CommandScheduler.getInstance().enable();
+        AutoChooser.getInstance().getAutos();
+        AutoChooser.getInstance().logAuto();
+        AutoChooser.getInstance().printAutos();
     }
 
-    /**
-     * This function is called every robot packet, no matter the mode. Use
-     * this for items like diagnostics that you want ran during disabled,
-     * autonomous, teleoperated and test.
-     *
-     * <p>This runs after the mode specific periodic functions, but before
-     * LiveWindow and SmartDashboard integrated updating.
-     */
     @Override
     public void robotPeriodic() {
-        manager.outputTelemetry();  
+        manager.outputTelemetry();
         CommandScheduler.getInstance().run();
     }
 
     @Override
     public void disabledInit() {
         enabledLooper.stop();
-
-        StateMachine.getInstance().assertStop();
-        DriveTrain.getInstance().reset();
-        PoseEstimator.getInstance().reset();
-
+        PPStateMachine.getInstance().assertStop();
+        Lights.getInstance().setState(Lights.State.INIT);
         disabledLooper.start();
     }
 
-    /**
-     * This autonomous (along with the chooser code above) shows how to select
-     * between different autonomous modes using the dashboard. The sendable
-     * chooser code works with the Java SmartDashboard. If you prefer the
-     * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-     * getString line to get the auto name from the text box below the Gyro
-     *
-     * <p>You can add additional auto modes by adding additional comparisons to
-     * the switch structure below with additional strings. If using the
-     * SendableChooser make sure to add them to the chooser code above as well.
-     */
     @Override
     public void autonomousInit() {
         disabledLooper.stop();
-
-        // Reset anything here
-        DriveTrain.getInstance().reset();
+        Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
+        Lights.getInstance().setState(Lights.State.AUTO);
+        Manipulator.getInstance().setAuto(true);
+        AutoChooser.getInstance().runFromSelection();
         enabledLooper.start();
-
-        AutoChooser.getInstance().run();
     }
 
-    /**
-     * This function is called periodically during autonomous.
-     */
     @Override
-    public void autonomousPeriodic() {}
+    public void autonomousPeriodic() {
+    }
 
     @Override
     public void teleopInit() {
         disabledLooper.stop();
-
         // Reset anything here
-        initButtons();
-        Lights.getInstance().reset();
-        DriveTrain.getInstance().reset();
-        SuperStructure.getInstance().reset();
-        DriveTrain.getInstance().setOpenLoop();
-        PoseEstimator.getInstance().reset();
-
+        Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
+        Manipulator.getInstance().setAuto(false);
+        SwerveDrive.getInstance().setState(SwerveDrive.State.FieldRel);
+        PPStateMachine.getInstance().clearTrajectory();
+        Lights.getInstance().setState(Lights.State.TELEOP);
         enabledLooper.start();
     }
 
-    /**
-     * This function is called periodically during operator control.
-     */
     @Override
-    public void teleopPeriodic() {}
+    public void teleopPeriodic() {
+    }
 
     @Override
     public void testInit() {
         disabledLooper.stop();
-
-        // Reset anything here
-        SuperStructure.getInstance().reset();
-        Dummy.getInstance().reset();
-        DriveTrain.getInstance().reset();
-
+        Arm.getInstance().setMode(ArmMode.DISABLED);
         enabledLooper.start();
     }
 
-    /**
-     * This function is called periodically during test mode.
-     */
     @Override
-    public void testPeriodic() {}
-
-    public void initButtons() {
-        transmissionButton.whileTrue(Action.toCommand(new GearChangeAction()));
-        intakeSolenoidButton.whileTrue(Action.toCommand(new SwitchSolenoid()));
-        clawButton.whileTrue(Action.toCommand(new OpenClaw()));
-        intakeConeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CONE_IN_POWER)));
-        intakeReverseButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.ANYTHING_OUT_POWER)));
-        intakeCubeButton.whileTrue(Action.toCommand(new RunIntakeAction(Constants.CUBE_IN_POWER)));
-        intakeUpButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kUp)));
-        intakeDownButton.onTrue(Action.toCommand(new MoveIntakeAction(IntakePosition.kDown)));
-        autoLevelButton.whileTrue(Action.toCommand(new DriveLevelAction()));
-        limelightRotateButton.whileTrue(Action.toCommand(new DriveTurnActionLimelight()));
+    public void testPeriodic() {
     }
 }

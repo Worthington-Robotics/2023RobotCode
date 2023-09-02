@@ -1,0 +1,11 @@
+package com.swervedrivespecialties.swervelib;
+
+public interface DriveController {
+    void setReferenceVoltage(double voltage);
+
+    double getStateVelocity();
+
+    void resetDriveEncoder(); 
+
+    double getDriveEncoder();
+}

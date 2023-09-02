@@ -9,6 +9,11 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 public abstract class Action {
     private boolean hasStopped = false;
 
+    /*
+     * Empty constructor
+     */
+    public Action() {}
+
     /**
      * Code to run on action start
      */

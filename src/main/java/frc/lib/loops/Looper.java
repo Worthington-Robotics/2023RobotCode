@@ -12,7 +12,7 @@ import java.util.List;
  * powers up and stopped after the match.
  */
 public class Looper implements ILooper {
-    public final double kPeriod = Constants.LOOPER_DT;
+    public final double kPeriod = Constants.Physical.LOOPER_DT;
 
     private boolean running_;
 
