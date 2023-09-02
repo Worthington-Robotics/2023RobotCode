@@ -197,7 +197,6 @@ public class Arm extends Subsystem {
 
 	public void reset() {
 		periodic.currentMode = ArmMode.CLOSED_LOOP;
-		//pinSolenoid.set(Value.kForward);
 		configPID();
 		resetEncoders();
 	}

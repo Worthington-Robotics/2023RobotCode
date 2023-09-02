@@ -103,7 +103,6 @@ public class Constants {
 
         public static final double WRIST_PIVOT_KP = .025; //TODO: change this kp
         public static final double WRIST_MIN_TIME = 1.5;
-        public static final double WRIST_ENCODER_PER_DEGREE = 400.0; //TODO: change this value
         
         // Arm Constants
         public static final double PIVOT_ENCODER_PER_DEGREE = 416.31;

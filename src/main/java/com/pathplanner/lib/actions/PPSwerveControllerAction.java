@@ -159,7 +159,6 @@ public class PPSwerveControllerAction extends Action {
     public void onStop() {
       System.out.println("[State Machine] Stopped path planner action");
       this.timer.stop();
-      SwerveDrive.getInstance().setState(State.FieldRel);
     }
 
     public double getCurrentTime() {

@@ -16,6 +16,7 @@ public class PPPathStateMachine extends Thread {
     private Thread pathThread;
     private List<EventMarker> markers = new ArrayList<>();
     private List<Action> startedActions = new ArrayList<>();
+    private boolean isPathCompleted = false;
 
     public PPPathStateMachine(PathPlannerTrajectory trajectory) {
         this.trajectory = trajectory;
@@ -31,7 +32,13 @@ public class PPPathStateMachine extends Thread {
         PPStateMachine.getInstance().registerNewThread(pathThread);
         markers = trajectory.getMarkers();
 
-        while(pathThread.isAlive()) {
+        while(!isPathCompleted) {
+            if (SwerveDrive.getInstance().getState() == SwerveDrive.State.PathPlanner && !pathThread.isAlive()) {
+                isPathCompleted = true;
+            } else {
+                isPathCompleted = false;
+            }
+
             for(EventMarker marker : markers) {
                 if (pathAction.getCurrentTime() >= marker.timeSeconds) {
                     for(String name : marker.names){

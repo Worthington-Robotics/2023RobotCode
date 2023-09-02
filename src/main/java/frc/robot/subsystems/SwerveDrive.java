@@ -316,4 +316,8 @@ public class SwerveDrive extends Subsystem {
         Consumer<ChassisSpeeds> testSpeeds = (speeds) -> periodic.PPspeeds = speeds;
         return testSpeeds;
     }
+
+    public State getState() {
+        return periodic.state;
+    }
 }

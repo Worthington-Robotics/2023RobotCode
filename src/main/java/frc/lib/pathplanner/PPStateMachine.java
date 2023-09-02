@@ -21,6 +21,7 @@ import frc.lib.pathplanner.Managers.PPMinimumManager;
 import frc.lib.pathplanner.Managers.PPNonSpecialManager;
 import frc.lib.statemachine.Action;
 import frc.lib.util.Loggable;
+import frc.robot.subsystems.SwerveDrive;
 
 public class PPStateMachine implements Loggable {
     //Creates a singleton of the state machine
@@ -80,6 +81,7 @@ public class PPStateMachine implements Loggable {
                     pathThread.start();
                 }
                 pathThread.join();
+                SwerveDrive.getInstance().setState(SwerveDrive.State.FieldRel);
 
                 if (data.state.get() == fullTrajectory.size() - 1) { //At the very end
                     clearTrajectory();
@@ -185,10 +187,10 @@ public class PPStateMachine implements Loggable {
         if(mainThread != null) {
             mainThread.interrupt();
         }
-        threads.forEach((thread) -> {
-            thread.interrupt();
-            thread.stop();
-        });
+        for (int i =0; i<threads.size(); i++) {
+            threads.get(i).interrupt();
+            threads.get(i).stop();
+        }
         threads.clear();
         data.state.set(-1);
     }
