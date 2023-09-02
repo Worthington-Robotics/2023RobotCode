@@ -19,12 +19,16 @@ public class Lights extends Subsystem {
     public enum State {
         INIT,
         AUTO,
-        TELEOP
+        TELEOP,
+        CUBE,
+        CONE
     }
 
     private final AddressableLED leds;
     private final AddressableLEDBuffer buffer;
     private State state = State.INIT;
+    private State previousState = State.INIT;
+    private Timer timer = new Timer();
 
     public Lights() {
         leds = new AddressableLED(Constants.Lights.LIGHTS_ID);
@@ -60,6 +64,22 @@ public class Lights extends Subsystem {
             break;
             case TELEOP:
                 rainbow(100, 50.0, 1.5);
+            break;
+            case CONE:
+                if (timer.get() <= 5.0) {
+                    strobe(100, Color.kYellow, 0.5);
+                } else {
+                    timer.stop();
+                    setState(previousState);
+                }
+            break;
+            case CUBE:
+                if (timer.get() <= 5.0) {
+                    strobe(100, Color.kPurple, 0.5);
+                } else {
+                    timer.stop();
+                    setState(previousState);
+                }
             break;
         }
         leds.setData(buffer);
@@ -120,6 +140,24 @@ public class Lights extends Subsystem {
 
     public void setState(State state) {
         this.state = state;
+    }
+
+    public void setCube() {
+        if (state != State.CONE && state != State.CUBE) {
+            previousState = state;
+        }
+        timer.reset();
+        timer.start();
+        setState(State.CUBE);
+    }
+
+    public void setCone() {
+        if (state != State.CONE && state != State.CUBE) {
+            previousState = state;
+        }
+        timer.reset();
+        timer.start();
+        setState(State.CONE);
     }
 
     @Override
