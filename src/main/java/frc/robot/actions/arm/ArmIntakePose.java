@@ -5,8 +5,8 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Arm.ArmPose;
 
-public class ArmHighPose extends Action {
-    ArmPose pose = ArmPose.HIGH;
+public class ArmIntakePose extends Action {
+    ArmPose pose = ArmPose.INTAKE;
 
     @Override
     public void onStart() {

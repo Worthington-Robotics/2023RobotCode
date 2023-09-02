@@ -20,7 +20,7 @@ public class ArmMidPose extends Action {
 
     @Override
     public boolean isFinished() {
-        return true;
+        return Arm.getInstance().getAccepted();
     }
 
     @Override

@@ -1,7 +1,5 @@
 package frc.robot.actions.debug;
 
-import java.util.Timer;
-
 import frc.lib.statemachine.Action;
 
 public class logAction extends Action {

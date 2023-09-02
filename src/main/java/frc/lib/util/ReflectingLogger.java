@@ -25,8 +25,7 @@ public class ReflectingLogger<T> {
     protected final DecimalFormat fmt = new DecimalFormat("#0.000");
 
     protected ReflectingLogger() {}
-
-    // FIXME: What??
+    
     /**
      * M
      * 

@@ -16,7 +16,11 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "arm.ArmHighPose",
+          "manipulator.SpitGamePiece",
+          "arm.ArmZeroPose"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -120,5 +124,24 @@
       }
     }
   ],
-  "markers": []
+  "markers": [
+    {
+      "position": 0.8727272727272642,
+      "names": [
+        "manipulator.IntakeGamePiece"
+      ]
+    },
+    {
+      "position": 0.6690909090908957,
+      "names": [
+        "arm.ArmIntakePose"
+      ]
+    },
+    {
+      "position": 1.1345454545453484,
+      "names": [
+        "arm.ArmUnstowPose"
+      ]
+    }
+  ]
 }

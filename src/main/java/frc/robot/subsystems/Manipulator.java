@@ -26,6 +26,7 @@ public class Manipulator extends Subsystem {
 	public class ManipulatorIO extends PeriodicIO {
 		double wristMotorPower;
 		double intakeMotorPower;
+		double intakeMotorVelocity;
 		double rawWristMotorPower;
 		double desiredWristEncoder;
 		double wristEncoderError;
@@ -52,6 +53,7 @@ public class Manipulator extends Subsystem {
 	public void readPeriodicInputs() {
 		periodic.intakeMotorCurrent = intakeMotor.getSupplyCurrent();
 		periodic.wristEncoder = wristMotor.getSelectedSensorPosition();
+		periodic.intakeMotorVelocity = intakeMotor.getSelectedSensorVelocity();
 		double currentTime = Timer.getFPGATimestamp();
 		if(periodic.state == State.DriverControlled) {
 			if (periodic.intakeMotorCurrent > Constants.Arm.INTAKE_CURRENT_ACCEPTANCE && periodic.isAuto) {
@@ -231,6 +233,7 @@ public class Manipulator extends Subsystem {
 		SmartDashboard.putNumber("Manipulator/RawWristMotorPower", periodic.rawWristMotorPower);
 		SmartDashboard.putNumber("Arm/encoder/wrist", periodic.wristEncoder);
 		SmartDashboard.putNumber("Manipulator/IntakeMotorCurrent", periodic.intakeMotorCurrent);
+		SmartDashboard.putNumber("Manipulator/IntakeMotorVelocity", periodic.intakeMotorVelocity);
 		SmartDashboard.putNumber("Arm/error/wrist error", periodic.wristEncoderError);
 		SmartDashboard.putNumber("Arm/encoder/wrist-D", periodic.desiredWristEncoder);
 		SmartDashboard.putNumber("Arm/encoder/wrist offset", periodic.wristOffset);
