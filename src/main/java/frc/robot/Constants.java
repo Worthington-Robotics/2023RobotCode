@@ -118,6 +118,9 @@ public class Constants {
         public static final double PIVOT_ENCODER_ERROR_ACCEPTANCE = 7000;
         public static final double WRIST_ENCODER_ERROR_ACCEPTANCE = 5000;
 
+        // Arm Kinematics
+        public static final double END_LENGTH = 0.28;
+
         // ### Vision values ###
         public static final String LIMELIGHT_NETWORK_ID = "limelight-worbots";
         public static final int LIMELIGHT_LOW_PIPELINE = 0;
