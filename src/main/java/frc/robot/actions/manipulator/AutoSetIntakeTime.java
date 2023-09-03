@@ -2,7 +2,7 @@ package frc.robot.actions.manipulator;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.lib.statemachine.Action;
-import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.arm.Manipulator;
 
 public class AutoSetIntakeTime extends Action {
     public double timeDelay;

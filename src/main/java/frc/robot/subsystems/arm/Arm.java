@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -7,6 +7,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
+import frc.robot.subsystems.Subsystem;
+import frc.robot.subsystems.Subsystem.PeriodicIO;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 

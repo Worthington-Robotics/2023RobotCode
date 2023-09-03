@@ -1,7 +1,7 @@
 package frc.robot.actions.wait;
 
-import frc.robot.subsystems.Arm;
 import frc.lib.statemachine.Action;
+import frc.robot.subsystems.arm.Arm;
 
 public class PoseWaitAction extends Action{
     @Override

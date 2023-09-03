@@ -2,7 +2,7 @@ package frc.robot.actions.manipulator;
 
 import frc.lib.statemachine.Action;
 import frc.robot.Constants;
-import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.arm.Manipulator;
 
 
 public class RunIntakeAction extends Action {
