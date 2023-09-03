@@ -4,6 +4,11 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
@@ -18,6 +23,10 @@ public class Arm extends Subsystem {
 	private static Arm instance = new Arm();
 	public static Arm getInstance() { return instance; }
 	private ArmIO periodic = new ArmIO();
+	private ArmKinematics kinematics = new ArmKinematics();
+	Pose2d out = kinematics.forward(VecBuilder.fill(-1.57079632679,0.6526,-0.5));
+	Vector<N3> angles = kinematics.inverse(out);
+	private ArmVisualizer visualizer = new ArmVisualizer(angles);
 
 	public Arm() {
 		extensionMotor = new TalonFX(Constants.Arm.ARM_EXTENSION_ID, "Default Name");
@@ -111,6 +120,8 @@ public class Arm extends Subsystem {
 
 			@Override
 			public void onLoop(double timestamp) {
+				double x = Math.sin(timestamp);
+				visualizer.update(kinematics.inverse(new Pose2d(1.0+(0.1*x), 0.5 *x, new Rotation2d(0))));
 				switch (periodic.currentMode) {
 					case OPEN_LOOP:
 						periodic.poseAccepted = true;
