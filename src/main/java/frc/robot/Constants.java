@@ -121,6 +121,9 @@ public class Constants {
         // Arm Kinematics
         public static final double END_LENGTH = 0.28;
 
+        public static final double EXTENSION_MIN_METERS = 0.6526;
+        public static final double EXTENSION_MAX_METERS = 1.03;
+
         // ### Vision values ###
         public static final String LIMELIGHT_NETWORK_ID = "limelight-worbots";
         public static final int LIMELIGHT_LOW_PIPELINE = 0;

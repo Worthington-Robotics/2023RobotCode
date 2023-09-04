@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
-import frc.robot.subsystems.Subsystem.PeriodicIO;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 
@@ -24,8 +23,7 @@ public class Arm extends Subsystem {
 	public static Arm getInstance() { return instance; }
 	private ArmIO periodic = new ArmIO();
 	private ArmKinematics kinematics = new ArmKinematics();
-	Pose2d out = kinematics.forward(VecBuilder.fill(-1.57079632679,0.6526,-0.5));
-	Vector<N3> angles = kinematics.inverse(out);
+	Vector<N3> angles = kinematics.inverse(new Pose2d(1, 0.5, new Rotation2d()));
 	private ArmVisualizer visualizer = new ArmVisualizer(angles);
 
 	public Arm() {
@@ -121,7 +119,7 @@ public class Arm extends Subsystem {
 			@Override
 			public void onLoop(double timestamp) {
 				double x = Math.sin(timestamp);
-				visualizer.update(kinematics.inverse(new Pose2d(1.0+(0.1*x), 0.5 *x, new Rotation2d(0))));
+				visualizer.update(kinematics.inverseSafe(new Pose2d(0.9+(0.3*x), 0.5 *x, new Rotation2d(0))));
 				switch (periodic.currentMode) {
 					case OPEN_LOOP:
 						periodic.poseAccepted = true;
