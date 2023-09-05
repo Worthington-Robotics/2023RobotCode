@@ -178,8 +178,13 @@ public class Constants {
     }
 
     public static class Field {
-        public static final double MID_HEIGHT = 1.2;
-        public static final double BASE_TO_MID_X = 0.9;
+        public static final double MID_CUBE_HEIGHT = 0.85;
+        public static final double MID_CONE_HEIGHT = 0.97;
+        public static final double HIGH_CUBE_HEIGHT = 1.15;
+        public static final double HIGH_CONE_HEIGHT = 1.34;
+        public static final double BASE_TO_MID_X = 0.97;
+        public static final double BASE_TO_HIGH_X = 1.28;
+        public static final double ARM_HEIGHT = 0.94;
     }
     public static class PathFollower {
         // Path following Constants
