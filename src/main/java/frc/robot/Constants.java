@@ -176,6 +176,11 @@ public class Constants {
         public static final double DRIVE_WHEEL_RADIUS = DRIVE_WHEEL_DIAMETER / 2.0;
         public static final double TRACK_SCRUB_FACTOR = 1.2;  //fudge factor for turning
     }
+
+    public static class Field {
+        public static final double MID_HEIGHT = 1.2;
+        public static final double BASE_TO_MID_X = 0.9;
+    }
     public static class PathFollower {
         // Path following Constants
         public static final double ROBOT_MAX_VELOCITY = 1.5; // in/s

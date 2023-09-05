@@ -23,7 +23,7 @@ public class Arm extends Subsystem {
 	public static Arm getInstance() { return instance; }
 	private ArmIO periodic = new ArmIO();
 	private ArmKinematics kinematics = new ArmKinematics();
-	Vector<N3> angles = kinematics.inverse(new Pose2d(1, 0.5, new Rotation2d()));
+	Vector<N3> angles = kinematics.inverseSafe(ArmPoseNew.Preset.MID.getPose2d());
 	private ArmVisualizer visualizer = new ArmVisualizer(angles);
 
 	public Arm() {
