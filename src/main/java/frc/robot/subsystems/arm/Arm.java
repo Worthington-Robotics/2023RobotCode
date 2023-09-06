@@ -1,5 +1,8 @@
 package frc.robot.subsystems.arm;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -118,8 +121,8 @@ public class Arm extends Subsystem {
 
 			@Override
 			public void onLoop(double timestamp) {
-				// double x = Math.sin(timestamp);
-				// visualizer.update(kinematics.inverseSafe(new Pose2d(0.9+(0.3*x), 0.5 *x, new Rotation2d(0))));
+				double x = Math.sin(timestamp);
+				visualizer.update(kinematics.inverseSafe(new Pose2d(0.9+(0.3*x), 0.5 *x, new Rotation2d(0))));
 				switch (periodic.currentMode) {
 					case OPEN_LOOP:
 						periodic.poseAccepted = true;

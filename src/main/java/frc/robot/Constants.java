@@ -186,6 +186,13 @@ public class Constants {
         public static final double BASE_TO_HIGH_X = 1.28;
         public static final double ARM_HEIGHT = 0.94;
     }
+
+    public static class PathFinder {
+        public static final double NODE_RADIUS = 0.01; //Node radius in meters
+        public static final int TOTAL_NODES_X = 300;
+        public static final int TOTAL_NODES_Y = 300;
+    }
+
     public static class PathFollower {
         // Path following Constants
         public static final double ROBOT_MAX_VELOCITY = 1.5; // in/s

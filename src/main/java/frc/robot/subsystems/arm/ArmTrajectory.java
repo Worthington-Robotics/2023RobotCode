@@ -3,28 +3,27 @@ package frc.robot.subsystems.arm;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.wpi.first.math.Vector;
-import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.geometry.Pose2d;
 
 public class ArmTrajectory {
     private double totalTime = 0.0;
     private Parameters parameters;
-    private List<Vector<N3>> points = new ArrayList<>();
+    private List<Pose2d> points = new ArrayList<>();
 
     public static class Parameters {
-        private final Vector<N3> initialPose;
-        private final Vector<N3> finalPose;
+        private final Pose2d initialPose;
+        private final Pose2d finalPose;
 
-        public Parameters(Vector<N3> initialPose, Vector<N3> finalPose) {
+        public Parameters(Pose2d initialPose, Pose2d finalPose) {
             this.initialPose = initialPose;
             this.finalPose = finalPose;
         }
 
-        public Vector<N3> initialPose() {
+        public Pose2d initialPose() {
             return initialPose;
         }
 
-        public Vector<N3> finalPose() {
+        public Pose2d finalPose() {
             return finalPose;
         }
     }
@@ -43,7 +42,7 @@ public class ArmTrajectory {
         return totalTime > 0.0 && points.size() > 2;
     }
 
-    public void setPoints(double totalTime, List<Vector<N3>> points) {
+    public void setPoints(double totalTime, List<Pose2d> points) {
         this.totalTime = totalTime;
         this.points = points;
     }
@@ -52,7 +51,19 @@ public class ArmTrajectory {
         return totalTime;
     }
 
-    public List<Vector<N3>> getPoints() {
+    public List<Pose2d> getPoints() {
         return this.points;
-      }
+    }
+
+    public Pose2d sample(double timestamp) {
+        if (timestamp >= totalTime) {
+            return parameters.finalPose();
+        } else if (timestamp <= 0.0) {
+            return parameters.initialPose();
+        } else {
+            double percentage = timestamp/totalTime;
+            int closestValue = (int)(points.size() * percentage);
+            return points.get(closestValue);
+        }
+    }
 }
