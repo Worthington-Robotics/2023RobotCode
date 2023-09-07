@@ -88,10 +88,6 @@ public class Constants {
         public static final int ARM_ARM_M_ID = 14;
         public static final int ARM_EXTENSION_ID = 16;
         
-        public static final int CTRE_PCM_ID = 0;
-        public static final int ARM_GRABBER_FWD_CHANNEL = 5;
-        public static final int ARM_GRABBER_REV_CHANNEL = 4;
-        
         //Manipulator Constants
         public static final int INTAKE_WHEEL_ID = 15;  
         
@@ -101,7 +97,7 @@ public class Constants {
         public static final double TELE_LOWER_OUT_POWER = -.25;
         public static final double INTAKE_CURRENT_ACCEPTANCE = 75.0;
 
-        public static final double WRIST_PIVOT_KP = .025; //TODO: change this kp
+        public static final double WRIST_PIVOT_KP = .025;
         public static final double WRIST_MIN_TIME = 1.5;
         
         // Arm Constants
@@ -124,6 +120,12 @@ public class Constants {
         public static final double EXTENSION_MIN_METERS = 0.6526;
         public static final double EXTENSION_MAX_METERS = 1.03;
 
+        public static final double SHOULDER_HIGH_MAX = 0;
+        public static final double SHOULDER_LOW_MIN = 0;
+
+        public static final double WRIST_HIGH_MAX = 0;
+        public static final double WRIST_LOW_MIN = 0;
+
         // ### Vision values ###
         public static final String LIMELIGHT_NETWORK_ID = "limelight-worbots";
         public static final int LIMELIGHT_LOW_PIPELINE = 0;
@@ -134,6 +136,8 @@ public class Constants {
         //Auto Pose Constants
         public static final double highGoalExtensionEncoder = 150000.0;
         public static final double mediumGoalExtensionEncoder = 120000.0;
+
+        // 
 
         // ### Device ID declarations ###
 
