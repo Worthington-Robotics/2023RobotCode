@@ -15,9 +15,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.loops.Looper;
 import frc.lib.pathplanner.PPStateMachine;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.Manipulator;
-import frc.robot.subsystems.arm.Arm.ArmMode;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Arm.ArmMode;
+import frc.robot.subsystems.arm.ArmNew;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -41,7 +42,8 @@ public class Robot extends TimedRobot {
                         SwerveDrive.getInstance(),
                         Lights.getInstance(),
                         Manipulator.getInstance(),
-                        Arm.getInstance()
+                        Arm.getInstance(),
+                        ArmNew.getInstance()
                         ),
                 true);
 

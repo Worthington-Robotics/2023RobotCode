@@ -1,9 +1,9 @@
 package frc.robot.actions.arm;
 
 import frc.lib.statemachine.Action;
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.Manipulator;
-import frc.robot.subsystems.arm.Arm.ArmPose;
+import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Arm.ArmPose;
 
 public class ArmHighPose extends Action {
     ArmPose pose = ArmPose.HIGH;

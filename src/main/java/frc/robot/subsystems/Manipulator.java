@@ -1,9 +1,8 @@
-package frc.robot.subsystems.arm;
+package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
-import frc.robot.subsystems.Subsystem;
-import frc.robot.subsystems.arm.Arm.ArmMode;
+import frc.robot.subsystems.Arm.ArmMode;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;

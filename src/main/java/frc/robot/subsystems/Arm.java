@@ -1,4 +1,4 @@
-package frc.robot.subsystems.arm;
+package frc.robot.subsystems;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,22 +12,23 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.util.HIDHelper;
 import frc.robot.Constants;
 import frc.robot.subsystems.Subsystem;
+import frc.robot.subsystems.arm.ArmTrajectory.Parameters;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 
 public class Arm extends Subsystem {
 	TalonFX extensionMotor, armMasterMotor;
 
+	private ArmIO periodic = new ArmIO();
+
 	private static Arm instance = new Arm();
 	public static Arm getInstance() { return instance; }
-	private ArmIO periodic = new ArmIO();
-	private ArmKinematics kinematics = new ArmKinematics();
-	Vector<N3> angles = kinematics.inverseSafe(ArmPoseNew.Preset.MID_CONE.getPose2d());
-	private ArmVisualizer visualizer = new ArmVisualizer(angles);
+
 
 	public Arm() {
 		extensionMotor = new TalonFX(Constants.Arm.ARM_EXTENSION_ID, "Default Name");
@@ -121,8 +122,6 @@ public class Arm extends Subsystem {
 
 			@Override
 			public void onLoop(double timestamp) {
-				double x = Math.sin(timestamp);
-				visualizer.update(kinematics.inverseSafe(new Pose2d(0.9+(0.3*x), 0.5 *x, new Rotation2d(0))));
 				switch (periodic.currentMode) {
 					case OPEN_LOOP:
 						periodic.poseAccepted = true;

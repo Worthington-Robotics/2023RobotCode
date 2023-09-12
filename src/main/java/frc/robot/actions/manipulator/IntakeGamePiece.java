@@ -2,7 +2,7 @@ package frc.robot.actions.manipulator;
 
 import frc.lib.statemachine.Action;
 import frc.robot.Constants;
-import frc.robot.subsystems.arm.Manipulator;
+import frc.robot.subsystems.Manipulator;
 
 public class IntakeGamePiece extends Action {
     double power = Constants.Arm.INTAKE_POWER;
