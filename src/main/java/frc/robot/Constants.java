@@ -7,10 +7,17 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.lib.util.HIDHelper;
 
 public class Constants {
+    public static boolean simBot = false;
+    public Constants() {
+        if(RobotBase.isSimulation()) {
+            simBot = true;
+        }
+    }
     public static class DriveTrain{
         // Drivetrain
         public static final double DRIVE_XY_MULTIPLIER = 5.0;
@@ -77,14 +84,15 @@ public class Constants {
     }
 
     public static class Lights {
-        public static final int LIGHTS_ID = 0;
-        public static final int NUM_LEDS = 200;
+        public static final int LIGHTS_ID = 8;
+        public static final int NUM_LEDS = 100;
     }
 
     public static class Arm {
         // Arm, Manipulator Constants
 
         // Arm Consants - IDs
+        public static final int SHOULDER_CANCODER_ID = 20;
         public static final int ARM_ARM_M_ID = 14;
         public static final int ARM_EXTENSION_ID = 16;
         

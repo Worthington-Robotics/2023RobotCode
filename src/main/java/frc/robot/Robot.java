@@ -10,6 +10,7 @@ package frc.robot;
 import java.util.Arrays;
 
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.loops.Looper;
@@ -41,15 +42,14 @@ public class Robot extends TimedRobot {
                 Arrays.asList(
                         SwerveDrive.getInstance(),
                         Lights.getInstance(),
-                        Manipulator.getInstance(),
-                        Arm.getInstance(),
+                        // Manipulator.getInstance(),
+                        // Arm.getInstance(),
                         ArmNew.getInstance()
                         ),
                 true);
 
         DataLogManager.logNetworkTables(true);
-        DataLogManager.start(null, null, 0.02);
-        // DriverStation.startDataLog(DataLogManager.getLog());
+        DriverStation.startDataLog(DataLogManager.getLog());
 
         enabledLooper = new Looper();
         disabledLooper = new Looper();
