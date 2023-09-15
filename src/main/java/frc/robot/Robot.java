@@ -11,15 +11,14 @@ import java.util.Arrays;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.lib.loops.Looper;
 import frc.lib.pathplanner.PPStateMachine;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Manipulator;
-import frc.robot.subsystems.Arm.ArmMode;
-import frc.robot.subsystems.arm.ArmNew;
+import frc.robot.subsystems.arm.Arm;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -41,10 +40,8 @@ public class Robot extends TimedRobot {
         manager = new SubsystemManager(
                 Arrays.asList(
                         SwerveDrive.getInstance(),
-                        Lights.getInstance(),
-                        // Manipulator.getInstance(),
-                        // Arm.getInstance(),
-                        ArmNew.getInstance()
+                        Arm.getInstance(),
+                        Lights.getInstance()
                         ),
                 true);
 
@@ -73,6 +70,7 @@ public class Robot extends TimedRobot {
     public void disabledInit() {
         enabledLooper.stop();
         PPStateMachine.getInstance().assertStop();
+        // Arm.getInstance().reset();
         Lights.getInstance().setState(Lights.State.INIT);
         disabledLooper.start();
     }
@@ -80,9 +78,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         disabledLooper.stop();
-        Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
         Lights.getInstance().setState(Lights.State.AUTO);
-        Manipulator.getInstance().setAuto(true);
         AutoChooser.getInstance().runFromSelection();
         enabledLooper.start();
     }
@@ -94,9 +90,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         disabledLooper.stop();
-        // Reset anything here
-        Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
-        Manipulator.getInstance().setAuto(false);
+        // Arm.getInstance().setMode(frc.robot.subsystems.arm.Arm.ArmMode.OPEN_LOOP);
         SwerveDrive.getInstance().setState(SwerveDrive.State.FieldRel);
         PPStateMachine.getInstance().clearTrajectory();
         Lights.getInstance().setState(Lights.State.TELEOP);
@@ -110,7 +104,6 @@ public class Robot extends TimedRobot {
     @Override
     public void testInit() {
         disabledLooper.stop();
-        Arm.getInstance().setMode(ArmMode.DISABLED);
         enabledLooper.start();
     }
 

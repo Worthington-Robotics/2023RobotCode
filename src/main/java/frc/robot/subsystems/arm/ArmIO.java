@@ -1,7 +1,7 @@
 package frc.robot.subsystems.arm;
 
 public interface ArmIO {
-    public static class ArmIOInputs {
+    public class ArmIOInputs {
         public double shoulderBuiltinTicks = 0;
         public double shoulderAbsoluteRad = 0;
         public double shoulderAppliedPower = 0;

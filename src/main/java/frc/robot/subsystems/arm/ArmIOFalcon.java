@@ -9,7 +9,7 @@ import frc.robot.Constants;
 
 public class ArmIOFalcon implements ArmIO {
     private final TalonFX shoulderFalcon500;
-    private final CANCoder shoulderCANCoder;
+    // private final CANCoder shoulderCANCoder;
 
     private final TalonFX extensionFalcon500;
 
@@ -18,23 +18,27 @@ public class ArmIOFalcon implements ArmIO {
     private final TalonFX intakeFalcon500;
 
     public ArmIOFalcon() {
-        shoulderCANCoder = new CANCoder(Constants.Arm.SHOULDER_CANCODER_ID);
-        shoulderFalcon500 = new TalonFX(Constants.Arm.ARM_ARM_M_ID);
-        extensionFalcon500 = new TalonFX(Constants.Arm.ARM_EXTENSION_ID);
-        wristFalcon500 = new TalonFX(Constants.Arm.WRIST_MOTOR_ID);
-        intakeFalcon500 = new TalonFX(Constants.Arm.INTAKE_MOTOR_ID);
+        // shoulderCANCoder = new CANCoder(Constants.Arm.SHOULDER_CANCODER_ID);
+        shoulderFalcon500 = new TalonFX(Constants.Arm.ARM_ARM_M_ID, "Default Name");
+        extensionFalcon500 = new TalonFX(Constants.Arm.ARM_EXTENSION_ID, "Default Name");
+        wristFalcon500 = new TalonFX(Constants.Arm.WRIST_MOTOR_ID, "Default Name");
+        intakeFalcon500 = new TalonFX(Constants.Arm.INTAKE_MOTOR_ID, "Default Name");
     }
 
     @Override
     public void updateInputs(ArmIOInputs inputs) {
         inputs.extensionAppliedPower = extensionFalcon500.getSelectedSensorVelocity();
         inputs.extensionBuiltinTicks = extensionFalcon500.getSelectedSensorPosition();
-        inputs.shoulderAbsoluteRad = shoulderCANCoder.getAbsolutePosition();
+        inputs.extensionLengthMeters = ((-(extensionFalcon500.getSelectedSensorPosition()) - 15380) / 220186.1) + 0.844;
+        //0.6985
+        //1.346
+        // inputs.shoulderAbsoluteRad = shoulderCANCoder.getAbsolutePosition();
 
         inputs.intakeAppliedPower = intakeFalcon500.getSelectedSensorVelocity();
 
-        inputs.shoulderBuiltinTicks = extensionFalcon500.getSelectedSensorPosition();
-        inputs.shoulderAppliedPower = extensionFalcon500.getSelectedSensorVelocity();
+        inputs.shoulderBuiltinTicks = shoulderFalcon500.getSelectedSensorPosition();
+        inputs.shoulderAppliedPower = shoulderFalcon500.getSelectedSensorVelocity();
+        inputs.shoulderAbsoluteRad = (shoulderFalcon500.getSelectedSensorPosition() / -72165) - 1.33;
 
         inputs.wristAppliedPower = wristFalcon500.getSelectedSensorVelocity();
         inputs.wristBuiltinTicks = wristFalcon500.getSelectedSensorPosition();

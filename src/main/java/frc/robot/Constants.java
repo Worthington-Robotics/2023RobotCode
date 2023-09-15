@@ -3,12 +3,16 @@ package frc.robot;
 import com.pathplanner.lib.PathConstraints;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.lib.util.HIDHelper;
 
 public class Constants {
@@ -134,11 +138,11 @@ public class Constants {
         public static final double WRIST_HIGH_MAX = 0;
         public static final double WRIST_LOW_MIN = 0;
 
-        // ### Vision values ###
-        public static final String LIMELIGHT_NETWORK_ID = "limelight-worbots";
-        public static final int LIMELIGHT_LOW_PIPELINE = 0;
-        public static final int LIMELIGHT_HIGH_PIPELINE = 1;
-        public static final double VISION_SNAPSHOT_INTERVAL = 1;
+        public static final Vector<N3> ZERO_ANGLES = VecBuilder.fill(-1.33, 0.77, 2.3);
+
+        // Simulation values
+        public static final double PHYSICS_TEST_KgPerMetersSquared = SingleJointedArmSim.estimateMOI(1, 6.8);
+        public static final double PHYSICS_SHOULDER_GEAR_RATIO = 1.63636363636;
         
         
         //Auto Pose Constants
