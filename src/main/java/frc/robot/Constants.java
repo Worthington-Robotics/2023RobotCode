@@ -141,7 +141,7 @@ public class Constants {
         public static final Vector<N3> ZERO_ANGLES = VecBuilder.fill(-1.33, 0.77, 2.3);
 
         // Simulation values
-        public static final double PHYSICS_TEST_KgPerMetersSquared = SingleJointedArmSim.estimateMOI(1, 6.8);
+        public static final double PHYSICS_TEST_KgPerMetersSquared = SingleJointedArmSim.estimateMOI(0.9, 6.8);
         public static final double PHYSICS_SHOULDER_GEAR_RATIO = 1.63636363636;
         
         

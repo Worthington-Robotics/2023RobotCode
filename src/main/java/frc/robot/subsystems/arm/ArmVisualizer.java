@@ -21,12 +21,14 @@ public class ArmVisualizer {
     private MechanismLigament2d turret;
     private MechanismLigament2d joint;
     private MechanismLigament2d end;
+    private String name;
 
     private Pose3d jointPose;
     private Pose3d extensionPose;
     private Pose3d wristPose;
 
-    public ArmVisualizer(Vector<N3> angles) {
+    public ArmVisualizer(Vector<N3> angles, String name) {
+        this.name = name;
         arm = new Mechanism2d(3, 3);
         root = arm.getRoot("Body", 1 + 0.35, 0.0);
         turret = root.append(new MechanismLigament2d("Turret", 0.9, 90, 5, new Color8Bit(Color.kRed)));
@@ -38,7 +40,7 @@ public class ArmVisualizer {
 
         update(angles);
         
-        SmartDashboard.putData("ArmMech", arm);
+        SmartDashboard.putData(name+"/Mech", arm);
     }
 
     public void logPose3d(String name, Pose3d pose) {
@@ -51,7 +53,7 @@ public class ArmVisualizer {
         joint.setAngle(-90 + Rotation2d.fromRadians(angles.get(0, 0)).getDegrees());
         joint.setLength(angles.get(1, 0));
         end.setAngle(Rotation2d.fromRadians(angles.get(2, 0)));
-        SmartDashboard.putData("ArmMech", arm);
+        SmartDashboard.putData(name+"/Mech", arm);
 
         // jointPose = new Pose3d(0, 0, 0, new Rotation3d(Rotation2d.fromDegrees(joint.getAngle()).getRadians(), Math.PI, -Math.PI/2 + Math.PI));
 
@@ -67,9 +69,9 @@ public class ArmVisualizer {
         jointPose = new Pose3d(-0.14, 0.0, 0.94, new Rotation3d(0, -angles.get(0, 0), 0));
         extensionPose = jointPose.transformBy(new Transform3d(new Translation3d(-0.6526 + joint.getLength(), 0.0, -0.055), new Rotation3d(0.0, 0.0, 0.0)));
         wristPose = extensionPose.transformBy(new Transform3d(new Translation3d(0.54 + 0.14, 0.0, 0.0), new Rotation3d(0.0, -angles.get(2, 0), 0.0)));
-        logPose3d("jointPose", jointPose);
-        logPose3d("extensionPose", extensionPose);
-        logPose3d("wristPose", wristPose);
+        logPose3d(name+"/jointPose", jointPose);
+        logPose3d(name+"/extensionPose", extensionPose);
+        logPose3d(name+"/wristPose", wristPose);
     }
     
 }
