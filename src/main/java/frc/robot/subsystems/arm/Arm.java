@@ -37,6 +37,7 @@ public class Arm extends Subsystem {
     public class ArmNewIO extends PeriodicIO {
         public ArmMode state = ArmMode.MANUAL;
         public ArmIOInputs inputs = new ArmIOInputs();
+        public Vector<N3> anglesSetpoint = VecBuilder.fill(0, 0, 0);
 
         public double openLoopShoulderJoyVal = 0;
         public double openLoopExtensionJoyVal = 0;
@@ -57,14 +58,14 @@ public class Arm extends Subsystem {
     @Override
     public void readPeriodicInputs() {
         io.updateInputs(periodic.inputs);
-        visualizer.update(VecBuilder.fill(periodic.inputs.shoulderAbsoluteRad, periodic.inputs.extensionLengthMeters, Constants.Arm.ZERO_ANGLES.get(2, 0)));
+        visualizer.update(VecBuilder.fill(periodic.inputs.shoulderAbsoluteRad, periodic.inputs.extensionLengthMeters, periodic.inputs.wristAbsoluteRad));
 
         periodic.openLoopShoulderJoyVal = HIDHelper.getAxisMapped(Constants.Joysticks.SECOND.getRawAxis(2), -0.2, 0.2);
         periodic.openLoopExtensionJoyVal = HIDHelper.getAxisMapped(Constants.Joysticks.SECOND.getRawAxis(1), -0.1, 0.1);
         periodic.openLoopWristJoyVal = HIDHelper.getAxisMapped(Constants.Joysticks.SECOND.getRawAxis(0), -0.1, 0.1);
 
         periodic.manualX = HIDHelper.getAxisMapped(Constants.Joysticks.SECOND.getRawAxis(0), -0.3, 0.3);
-        periodic.manualY = HIDHelper.getAxisMapped(Constants.Joysticks.SECOND.getRawAxis(1), -0.5, 0.5);
+        periodic.manualY = -HIDHelper.getAxisMapped(Constants.Joysticks.SECOND.getRawAxis(1), 0.5, 1.4);
     }
 
     public void registerEnabledLoops(ILooper enalbedLooper) {
@@ -81,14 +82,17 @@ public class Arm extends Subsystem {
                         periodic.wristSetpoint = periodic.openLoopWristJoyVal;
                     break;
                     case MANUAL:
-                    Vector<N3> angles = kinematics.inverseSafe(new Pose2d(periodic.manualX + 1.022, periodic.manualY-0.5, new Rotation2d()));
-                    setpointViz.update(angles);
+                    periodic.anglesSetpoint = kinematics.inverseSafe(new Pose2d(periodic.manualX + 1.022, periodic.manualY + 0.7, new Rotation2d()));
+                    setpointViz.update(periodic.anglesSetpoint);
                     PIDController shoulderController = new PIDController(1.2, 0.0, 0.5);
-                    PIDController extensionController = new PIDController(1.0, 0, 0);
+                    PIDController extensionController = new PIDController(1.0, 0, 0.5);
+                    PIDController wristController = new PIDController(0.075, 0, 0.005);
                     shoulderController.setTolerance(0.05);
                     extensionController.setTolerance(0.05);
-                    periodic.shoulderSetpoint = shoulderController.calculate(periodic.inputs.shoulderAbsoluteRad, angles.get(0, 0));
-                    periodic.extensionSetpoint = extensionController.calculate(periodic.inputs.extensionLengthMeters, angles.get(1, 0));
+                    wristController.setTolerance(0.05);
+                    periodic.shoulderSetpoint = shoulderController.calculate(periodic.inputs.shoulderAbsoluteRad, periodic.anglesSetpoint.get(0, 0));
+                    periodic.extensionSetpoint = extensionController.calculate(periodic.inputs.extensionLengthMeters, periodic.anglesSetpoint.get(1, 0));
+                    periodic.wristSetpoint = wristController.calculate(periodic.inputs.wristAbsoluteRad, periodic.anglesSetpoint.get(2,0));
                     break;
                     case TRAJECTORY:
                     double x = Math.sin(timestamp);
@@ -123,7 +127,7 @@ public class Arm extends Subsystem {
         SmartDashboard.putNumber("Arm/Shoulder/Percent Setpoint", periodic.shoulderSetpoint);
         SmartDashboard.putNumber("Arm/Shoulder/Actual Percent", periodic.inputs.shoulderAppliedPower);
         SmartDashboard.putNumberArray("Arm/Shoulder/Manual Pose Setpoint", new double[] {
-            periodic.manualX, periodic.manualY, 0
+            periodic.anglesSetpoint.get(0, 0), periodic.anglesSetpoint.get(1, 0), periodic.anglesSetpoint.get(2, 0)
         });
 
         SmartDashboard.putNumber("Arm/Extension/Position", periodic.inputs.extensionBuiltinTicks);
@@ -134,6 +138,7 @@ public class Arm extends Subsystem {
         SmartDashboard.putNumber("Arm/Wrist/Position", periodic.inputs.wristBuiltinTicks);
         SmartDashboard.putNumber("Arm/Wrist/Percent Setpoint", periodic.wristSetpoint);
         SmartDashboard.putNumber("Arm/Wrist/Actual Percent", periodic.inputs.wristAppliedPower);
+        SmartDashboard.putNumber("Arm/Wrist/Abs Encoder", periodic.inputs.wristAbsoluteRad);
     }
 
     @Override
