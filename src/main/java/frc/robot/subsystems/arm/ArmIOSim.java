@@ -4,7 +4,6 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
-import kotlin.internal.OnlyInputTypes;
 
 public class ArmIOSim implements ArmIO {
     private SingleJointedArmSim shoulderSim;

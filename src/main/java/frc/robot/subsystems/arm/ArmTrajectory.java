@@ -3,27 +3,28 @@ package frc.robot.subsystems.arm;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.numbers.N3;
 
 public class ArmTrajectory {
     private double totalTime = 0.0;
     private Parameters parameters;
-    private List<Pose2d> points = new ArrayList<>();
+    private List<Vector<N3>> points = new ArrayList<>();
 
     public static class Parameters {
-        private final Pose2d initialPose;
-        private final Pose2d finalPose;
+        private final Vector<N3> initialPose;
+        private final Vector<N3> finalPose;
 
-        public Parameters(Pose2d initialPose, Pose2d finalPose) {
+        public Parameters(Vector<N3> initialPose, Vector<N3> finalPose) {
             this.initialPose = initialPose;
             this.finalPose = finalPose;
         }
 
-        public Pose2d initialPose() {
+        public Vector<N3> initialPose() {
             return initialPose;
         }
 
-        public Pose2d finalPose() {
+        public Vector<N3> finalPose() {
             return finalPose;
         }
     }
@@ -42,7 +43,7 @@ public class ArmTrajectory {
         return totalTime > 0.0 && points.size() > 2;
     }
 
-    public void setPoints(double totalTime, List<Pose2d> points) {
+    public void setPoints(double totalTime, List<Vector<N3>> points) {
         this.totalTime = totalTime;
         this.points = points;
     }
@@ -51,11 +52,11 @@ public class ArmTrajectory {
         return totalTime;
     }
 
-    public List<Pose2d> getPoints() {
+    public List<Vector<N3>> getPoints() {
         return this.points;
     }
 
-    public Pose2d sample(double timestamp) {
+    public Vector<N3> sample(double timestamp) {
         if (timestamp >= totalTime) {
             return parameters.finalPose();
         } else if (timestamp <= 0.0) {
