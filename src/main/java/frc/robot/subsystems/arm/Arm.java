@@ -8,7 +8,12 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.spline.CubicHermiteSpline;
+import edu.wpi.first.math.spline.QuinticHermiteSpline;
+import edu.wpi.first.math.spline.SplineHelper;
+import edu.wpi.first.math.spline.Spline.ControlVector;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -29,6 +34,7 @@ public class Arm extends Subsystem {
     public static Arm getInstance() {return instance;}
 
     private ArmIO io;
+    private ArmTrajectoryManager trajectories;
     private TrapezoidProfile shoulderTrapezoid;
 	private ArmVisualizer visualizer;
     private ArmVisualizer setpointViz;
@@ -44,16 +50,11 @@ public class Arm extends Subsystem {
         visualizer = new ArmVisualizer(Constants.Arm.ZERO_ANGLES, "Actual");
         setpointViz = new ArmVisualizer(Constants.Arm.ZERO_ANGLES, "Setpoint");
         shoulderTrapezoid = new TrapezoidProfile(new Constraints(2.0, 0.5), new State(1.0, 0.0));
+        trajectories = new ArmTrajectoryManager();
         periodic.timer.start();
     }
 
     public class ArmNewIO extends PeriodicIO {
-        private ArmTrajectory testTrajectory = new ArmTrajectory(new Parameters(Constants.Arm.ZERO_ANGLES, ArmPose.Preset.MID_CONE.getAngles()));
-        public ArmNewIO() {
-            List<Vector<N3>> points = new ArrayList<Vector<N3>>();
-            points.add(ArmKinematics.inverseSafe(new Pose2d(0.6, -0.6, new Rotation2d())));
-            testTrajectory.setPoints(1.5, points);
-        }
         public ArmMode state = ArmMode.TRAJECTORY;
         public ArmIOInputs inputs = new ArmIOInputs();
         public Vector<N3> anglesSetpoint = VecBuilder.fill(0, 0, 0);
@@ -69,7 +70,7 @@ public class Arm extends Subsystem {
         public double manualX = 0;
         public double manualY = 0;
 
-        public ArmTrajectory currentTrajectory = testTrajectory;
+        public ArmTrajectory currentTrajectory;
         public Vector<N3> holdPose = Constants.Arm.ZERO_ANGLES;
         public boolean trajectoryComplete = true;
         public boolean trajectoryInProgress = false;
@@ -194,6 +195,7 @@ public class Arm extends Subsystem {
     public void setFollowingTrajectory(boolean isInProgress, boolean isComplete) {
         periodic.trajectoryInProgress = isInProgress;
         periodic.trajectoryComplete = isComplete;
+        periodic.currentTrajectory = trajectories.getTrajectory(2);
     }
     
 }

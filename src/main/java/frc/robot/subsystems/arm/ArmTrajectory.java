@@ -48,6 +48,10 @@ public class ArmTrajectory {
         this.points = points;
     }
 
+    public void setTotalTime(double totalTime) {
+        this.totalTime = totalTime;
+    }
+
     public double getTotalTime() {
         return totalTime;
     }

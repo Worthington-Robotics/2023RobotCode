@@ -34,8 +34,6 @@ public class SwerveDrive extends Subsystem {
 
     public enum State {
         FieldRel,
-        RobotRel,
-        SlowFieldRel,
         PathPlanner,
         ChargeStationLock
     }
@@ -63,6 +61,7 @@ public class SwerveDrive extends Subsystem {
         public double XboxLeftX;
         public double XboxLeftY;
         public double XboxRightX;
+        public boolean grannyMode = false;
         public SwerveModulePosition[] simulatedModulePositions = {
             new SwerveModulePosition(0, new Rotation2d()),
             new SwerveModulePosition(0, new Rotation2d()),
@@ -136,27 +135,18 @@ public class SwerveDrive extends Subsystem {
                     periodic.simulatedModulePositions[2] = new SwerveModulePosition(periodic.simulatedModulePositions[2].distanceMeters + (simStates[2].speedMetersPerSecond/50.0), simStates[2].angle);
                     periodic.simulatedModulePositions[3] = new SwerveModulePosition(periodic.simulatedModulePositions[3].distanceMeters + (simStates[3].speedMetersPerSecond/50.0), simStates[3].angle);
                     periodic.poseEstimator.update(new Rotation2d(), periodic.simulatedModulePositions);
-                    //periodic.poseEstimator.getEstimatedPosition().exp(new Twist2d(periodic.speeds.vxMetersPerSecond/50.0, periodic.speeds.vyMetersPerSecond/50.0, periodic.speeds.omegaRadiansPerSecond/50.0)).getRotation()
                 } else {
                     periodic.poseEstimator.update(getGyroRotation(), getSwerveModulePositions());
                 }
 
-                // SwerveModuleState[] measuredDiff = new SwerveModuleState[4];
-                // measuredDiff[0] = new SwerveModuleState((frontLeftModule.getDesiredSteerAngle() - periodic.lastSwervePositionsRad[0]) * SdsModuleConfigurations.MK4_L3.getWheelDiameter(), new Rotation2d(frontLeftModule.getDesiredSteerAngle()));
-                // measuredDiff[1] = new SwerveModuleState((frontRightModule.getDesiredSteerAngle() - periodic.lastSwervePositionsRad[0]) * SdsModuleConfigurations.MK4_L3.getWheelDiameter(), new Rotation2d(frontRightModule.getDesiredSteerAngle()));
-                // measuredDiff[2] = new SwerveModuleState((backLeftModule.getDesiredSteerAngle() - periodic.lastSwervePositionsRad[0]) * SdsModuleConfigurations.MK4_L3.getWheelDiameter(), new Rotation2d(backLeftModule.getDesiredSteerAngle()));
-                // measuredDiff[3] = new SwerveModuleState((backRightModule.getDesiredSteerAngle() - periodic.lastSwervePositionsRad[0]) * SdsModuleConfigurations.MK4_L3.getWheelDiameter(), new Rotation2d(backRightModule.getDesiredSteerAngle()));
-                // periodic.lastSwervePositionsRad[0] = frontLeftModule.getDesiredSteerAngle();
-                // periodic.lastSwervePositionsRad[1] = frontRightModule.getDesiredSteerAngle();
-                // periodic.lastSwervePositionsRad[2] = backLeftModule.getDesiredSteerAngle();
-                // periodic.lastSwervePositionsRad[3] = backRightModule.getDesiredSteerAngle();
-                // ChassisSpeeds chassisStateDiff = Constants.DriveTrain.SWERVE_KINEMATICS.toChassisSpeeds(measuredDiff);
-                // periodic.simPoseEstimator = periodic.simPoseEstimator.exp(new Twist2d(chassisStateDiff.vxMetersPerSecond, chassisStateDiff.vyMetersPerSecond, chassisStateDiff.omegaRadiansPerSecond));
-
                 ChassisSpeeds speedsToApply = new ChassisSpeeds();
                 switch (periodic.state) {
                     case FieldRel:
+                    if(!periodic.grannyMode) {
                         speedsToApply = ChassisSpeeds.fromFieldRelativeSpeeds((periodic.XboxLeftX * Constants.DriveTrain.DRIVE_XY_MULTIPLIER),(periodic.XboxLeftY * Constants.DriveTrain.DRIVE_XY_MULTIPLIER),(periodic.XboxRightX * Constants.DriveTrain.DRIVE_ROTATION_MULTIPLIER), getPoseEstimatorRotation()); //TODO: Expiriment with pose estimator position
+                    } else {
+                        speedsToApply = ChassisSpeeds.fromFieldRelativeSpeeds((periodic.XboxLeftX * (Constants.DriveTrain.DRIVE_XY_MULTIPLIER * 0.5)),(periodic.XboxLeftY * (Constants.DriveTrain.DRIVE_XY_MULTIPLIER * 0.5)),(periodic.XboxRightX * (Constants.DriveTrain.DRIVE_ROTATION_MULTIPLIER * 0.5)), getPoseEstimatorRotation()); //TODO: Expiriment with pose estimator position
+                    }
                     break;
                     case PathPlanner:
                         speedsToApply = periodic.PPspeeds;
@@ -285,6 +275,14 @@ public class SwerveDrive extends Subsystem {
 
     public void zeroGyroHeading() {
         pigeon.setFusedHeading(0);
+    }
+
+    public boolean getGrannyMode() {
+        return periodic.grannyMode;
+    }
+
+    public void setGrannyMode(boolean grannyMode) {
+        periodic.grannyMode = grannyMode;
     }
 
     public Rotation2d getGyroRotation() {
