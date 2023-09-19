@@ -195,7 +195,7 @@ public class Arm extends Subsystem {
     public void setFollowingTrajectory(boolean isInProgress, boolean isComplete) {
         periodic.trajectoryInProgress = isInProgress;
         periodic.trajectoryComplete = isComplete;
-        periodic.currentTrajectory = trajectories.getTrajectory(2);
+        periodic.currentTrajectory = trajectories.getTrajectory(4);
     }
     
 }
