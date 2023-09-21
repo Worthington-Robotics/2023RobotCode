@@ -23,45 +23,55 @@ public class ArmIOFalcon implements ArmIO {
         extensionFalcon500 = new TalonFX(Constants.Arm.ARM_EXTENSION_ID, "Default Name");
         wristFalcon500 = new TalonFX(Constants.Arm.WRIST_MOTOR_ID, "Default Name");
         intakeFalcon500 = new TalonFX(Constants.Arm.INTAKE_MOTOR_ID, "Default Name");
+
+        extensionFalcon500.setInverted(true);
+        shoulderFalcon500.setInverted(true);
+
+        shoulderFalcon500.configVoltageCompSaturation(10);
+        extensionFalcon500.configVoltageCompSaturation(10);
+        wristFalcon500.configVoltageCompSaturation(10);
+        intakeFalcon500.configVoltageCompSaturation(10);
     }
 
     @Override
     public void updateInputs(ArmIOInputs inputs) {
         inputs.extensionAppliedPower = extensionFalcon500.getSelectedSensorVelocity();
         inputs.extensionBuiltinTicks = extensionFalcon500.getSelectedSensorPosition();
-        inputs.extensionLengthMeters = ((-(extensionFalcon500.getSelectedSensorPosition()) - 15380) / 220186.1) + 0.844;
-        //0.6985
-        //1.346
-        // inputs.shoulderAbsoluteRad = shoulderCANCoder.getAbsolutePosition();
+        inputs.extensionLengthMeters = (((extensionFalcon500.getSelectedSensorPosition()) - 15380) / 230186.1) + 0.8; //GET REAL VALUE
 
         inputs.intakeAppliedPower = intakeFalcon500.getSelectedSensorVelocity();
 
         inputs.shoulderBuiltinTicks = shoulderFalcon500.getSelectedSensorPosition();
         inputs.shoulderAppliedPower = shoulderFalcon500.getSelectedSensorVelocity();
-        inputs.shoulderAbsoluteRad = (shoulderFalcon500.getSelectedSensorPosition() / -72165) - 1.33;
+        inputs.shoulderAbsoluteRad = ((-(shoulderFalcon500.getSelectedSensorPosition()) / -72165) - 1.33);
 
         inputs.wristAppliedPower = wristFalcon500.getSelectedSensorVelocity();
         inputs.wristBuiltinTicks = wristFalcon500.getSelectedSensorPosition();
+        inputs.wristAbsoluteRad = (wristFalcon500.getSelectedSensorPosition() / 29000) + 1.78;
     }
 
     @Override
     public void setWristPercent(double percent) {
         wristFalcon500.set(ControlMode.PercentOutput, percent);
+        // wristFalcon500.set(ControlMode.PercentOutput, 0);
     }
 
     @Override
     public void setExtensionPercent(double percent) {
         extensionFalcon500.set(ControlMode.PercentOutput, percent);
+        // extensionFalcon500.set(ControlMode.PercentOutput, 0);
     }
 
     @Override
     public void setIntakePercent(double percent) {
-        intakeFalcon500.set(ControlMode.PercentOutput, percent);
+        // intakeFalcon500.set(ControlMode.PercentOutput, percent);
+        intakeFalcon500.set(ControlMode.PercentOutput, 0);
     }
 
     @Override
     public void setShoulderPercent(double percent) {
         shoulderFalcon500.set(ControlMode.PercentOutput, percent);
+        // shoulderFalcon500.set(ControlMode.PercentOutput, 0);
     }
 
     @Override

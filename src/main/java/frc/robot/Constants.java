@@ -137,7 +137,7 @@ public class Constants {
         public static final double WRIST_HIGH_MAX = 0;
         public static final double WRIST_LOW_MIN = 0;
 
-        public static final Vector<N3> ZERO_ANGLES = VecBuilder.fill(-1.33, 0.77, 2.3);
+        public static final Vector<N3> ZERO_ANGLES = VecBuilder.fill(-1.33, 0.77, 2.15);
 
         // Simulation values
         public static final double PHYSICS_TEST_KgPerMetersSquared = SingleJointedArmSim.estimateMOI(0.9, 6.8);

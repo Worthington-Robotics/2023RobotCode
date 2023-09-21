@@ -37,6 +37,7 @@ public class SwerveDrive extends Subsystem {
         PathPlanner,
         ChargeStationLock
     }
+
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
     NetworkTable table = inst.getTable("SwerveDrive");
     DoubleArrayPublisher poseEstimatorPub = table.getDoubleArrayTopic("Pose Estimator").publish();
@@ -71,6 +72,7 @@ public class SwerveDrive extends Subsystem {
     }
 
     public SwerveDrive() {
+        poseEstimatorPub.setDefault(new double[] {0.0, 0.0, 0.0});
         //Create all of our swerve modules, with their ids and gear ratio constants
         frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
             // This can either be STANDARD or FAST depending on your gear configuration

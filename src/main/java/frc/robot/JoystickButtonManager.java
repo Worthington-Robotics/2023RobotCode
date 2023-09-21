@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.arm.FollowTrajectory;
 import frc.robot.actions.drive.ToggleGranny;
+import frc.robot.actions.drive.ZeroGyro;
 import frc.robot.actions.lights.SetCone;
 import frc.robot.actions.lights.SetCube;
 
@@ -15,7 +16,8 @@ public class JoystickButtonManager {
     public void registerButtons() {
         new JoystickButton(Constants.Joysticks.XBOX, 1).whileTrue(Action.toCommand(new SetCone()));
         new JoystickButton(Constants.Joysticks.XBOX, 2).whileTrue(Action.toCommand(new SetCube()));
-        new JoystickButton(Constants.Joysticks.XBOX, 3).whileTrue(Action.toCommand(new ToggleGranny()));
+        new JoystickButton(Constants.Joysticks.XBOX, 5).whileTrue(Action.toCommand(new ToggleGranny()));
+        new JoystickButton(Constants.Joysticks.XBOX, 6).whileTrue(Action.toCommand(new ZeroGyro()));
         new JoystickButton(Constants.Joysticks.SECOND, 1).whenPressed(Action.toCommand(new FollowTrajectory()));
     }
     

@@ -34,11 +34,7 @@ public class ArmTrajectoryManager {
             for(Preset preset : leftovPresets) {
                 List<Translation2d> waypoints = new ArrayList<>();
                 Trajectory traj = TrajectoryGenerator.generateTrajectory(pose.getPose2d(), waypoints, preset.getPose2d(), trajectoryConfig);
-                trajectories.add(splineToTraj(pose.getPose2d(), preset.getPose2d(), traj));
-                
-                // ControlVector[] vecs = SplineHelper.getCubicControlVectorsFromWaypoints(pose.getPose2d(), new Translation2d[] {}, preset.getPose2d());
-                // CubicHermiteSpline[] splines = SplineHelper.getCubicSplinesFromControlVectors(vecs[0], new Translation2d[] {}, vecs[1]);
-                // trajectories.add(splineToTraj(pose.getPose2d(), preset.getPose2d(), 1.0, splines[0]));
+                trajectories.add(trajToArmTraj(pose.getPose2d(), preset.getPose2d(), traj));
             }
         }
 
@@ -56,7 +52,7 @@ public class ArmTrajectoryManager {
         return trajectory;
     }
 
-    public ArmTrajectory splineToTraj(Pose2d initialPose, Pose2d finalPose, Trajectory traj) {
+    public ArmTrajectory trajToArmTraj(Pose2d initialPose, Pose2d finalPose, Trajectory traj) {
         ArmTrajectory trajectory = new ArmTrajectory(new Parameters(ArmKinematics.inverseSafe(initialPose), ArmKinematics.inverseSafe(finalPose)));
 
         List<Vector<N3>> points = new ArrayList<>();

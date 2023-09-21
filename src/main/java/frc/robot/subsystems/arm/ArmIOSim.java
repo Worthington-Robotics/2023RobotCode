@@ -33,16 +33,16 @@ public class ArmIOSim implements ArmIO {
 
     @Override
     public void setShoulderPercent(double percent) {
-        shoulderSim.setInputVoltage(12 * percent);
+        shoulderSim.setInputVoltage(10 * percent);
     }
 
     @Override
     public void setExtensionPercent(double percent) {
-        extensionSim.setInputVoltage(12 * percent);
+        extensionSim.setInputVoltage(10 * percent);
     }
 
     @Override
     public void setWristPercent(double percent) {
-        wristSim.setInputVoltage(12 * percent);
+        wristSim.setInputVoltage(10 * percent);
     }
 }
