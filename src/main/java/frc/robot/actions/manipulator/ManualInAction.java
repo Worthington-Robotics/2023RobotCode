@@ -24,7 +24,7 @@ public class ManualInAction extends Action {
 
     @Override
     public void onStop() {
-        Manipulator.getInstance().setIntakePower(0);
+        Manipulator.getInstance().setIntakePower(0.15);
     }
     
 }

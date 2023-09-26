@@ -9,16 +9,24 @@ import com.swervedrivespecialties.swervelib.SwerveModule;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
+import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.PubSubOption;
+import edu.wpi.first.networktables.PubSubOptions;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.robot.Constants;
@@ -39,6 +47,8 @@ public class SwerveDrive extends Subsystem {
     }
 
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    NetworkTable limelight = inst.getTable("limelight-worbots");
+    DoubleArraySubscriber pSubscriber = limelight.getDoubleArrayTopic("botpose").subscribe(new double[] {0,0,0,0,0,0,0});
     NetworkTable table = inst.getTable("SwerveDrive");
     DoubleArrayPublisher poseEstimatorPub = table.getDoubleArrayTopic("Pose Estimator").publish();
     DoubleArrayPublisher swervePub = table.getDoubleArrayTopic("Swerve").publish();
@@ -53,6 +63,7 @@ public class SwerveDrive extends Subsystem {
 
     public class SwerveDriveIO {
         public State state = State.FieldRel;
+        public Pose3d limelightPose = new Pose3d();
         public SwerveDrivePoseEstimator poseEstimator;
         public Pose2d simPoseEstimator = new Pose2d();
         public SwerveModuleState[] states = {new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState()};
@@ -145,9 +156,9 @@ public class SwerveDrive extends Subsystem {
                 switch (periodic.state) {
                     case FieldRel:
                     if(!periodic.grannyMode) {
-                        speedsToApply = ChassisSpeeds.fromFieldRelativeSpeeds((periodic.XboxLeftX * Constants.DriveTrain.DRIVE_XY_MULTIPLIER),(periodic.XboxLeftY * Constants.DriveTrain.DRIVE_XY_MULTIPLIER),(periodic.XboxRightX * Constants.DriveTrain.DRIVE_ROTATION_MULTIPLIER), getPoseEstimatorRotation()); //TODO: Expiriment with pose estimator position
+                        speedsToApply = ChassisSpeeds.fromFieldRelativeSpeeds((periodic.XboxLeftX * Constants.DriveTrain.DRIVE_XY_MULTIPLIER),(periodic.XboxLeftY * Constants.DriveTrain.DRIVE_XY_MULTIPLIER),(periodic.XboxRightX * Constants.DriveTrain.DRIVE_ROTATION_MULTIPLIER), getGyroRotation()); //TODO: Expiriment with pose estimator position
                     } else {
-                        speedsToApply = ChassisSpeeds.fromFieldRelativeSpeeds((periodic.XboxLeftX * (Constants.DriveTrain.DRIVE_XY_MULTIPLIER * 0.5)),(periodic.XboxLeftY * (Constants.DriveTrain.DRIVE_XY_MULTIPLIER * 0.5)),(periodic.XboxRightX * (Constants.DriveTrain.DRIVE_ROTATION_MULTIPLIER * 0.5)), getPoseEstimatorRotation()); //TODO: Expiriment with pose estimator position
+                        speedsToApply = ChassisSpeeds.fromFieldRelativeSpeeds((periodic.XboxLeftX * (Constants.DriveTrain.DRIVE_XY_MULTIPLIER * 0.5)),(periodic.XboxLeftY * (Constants.DriveTrain.DRIVE_XY_MULTIPLIER * 0.5)),(periodic.XboxRightX * (Constants.DriveTrain.DRIVE_ROTATION_MULTIPLIER * 0.5)), getGyroRotation()); //TODO: Expiriment with pose estimator position
                     }
                     break;
                     case PathPlanner:
@@ -170,6 +181,14 @@ public class SwerveDrive extends Subsystem {
         double LeftX = -Constants.Joysticks.XBOX.getLeftY();
         double LeftY = -Constants.Joysticks.XBOX.getLeftX();
         double RightX = -Constants.Joysticks.XBOX.getRightX();
+        double[] doubleArray = pSubscriber.get();
+        if (doubleArray[0] != 0) {
+            periodic.limelightPose = new Pose3d(new Translation3d(doubleArray[0], doubleArray[1], doubleArray[2]), new Rotation3d(doubleArray[3], doubleArray[4], doubleArray[5]));
+            SmartDashboard.putNumberArray("LimelightPose", new double[] {
+                periodic.limelightPose.getX(), periodic.limelightPose.getY(), periodic.limelightPose.getZ(), periodic.limelightPose.getRotation().getQuaternion().getW(), periodic.limelightPose.getRotation().getQuaternion().getX(), periodic.limelightPose.getRotation().getQuaternion().getY(), periodic.limelightPose.getRotation().getQuaternion().getZ()
+            });
+            periodic.poseEstimator.addVisionMeasurement(periodic.limelightPose.toPose2d(), Timer.getFPGATimestamp() - (doubleArray[6])/1000);
+        }
         if (Math.abs(LeftX) < Constants.Joysticks.XBOX_DEADZONE) {
             periodic.XboxLeftX = 0.0;
         } else {
