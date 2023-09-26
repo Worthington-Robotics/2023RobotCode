@@ -11,7 +11,7 @@ public class ArmIOSim implements ArmIO {
     private SingleJointedArmSim wristSim;
 
     public ArmIOSim() {
-        shoulderSim = new SingleJointedArmSim(DCMotor.getFalcon500(1), Constants.Arm.PHYSICS_SHOULDER_GEAR_RATIO * 2051, Constants.Arm.PHYSICS_TEST_KgPerMetersSquared, 0.9, -1.35, 1.35, true);
+        shoulderSim = new SingleJointedArmSim(DCMotor.getFalcon500(1), Constants.Arm.PHYSICS_SHOULDER_GEAR_RATIO * 2051/2, Constants.Arm.PHYSICS_TEST_KgPerMetersSquared, 0.9, -1.35, 1.35, true);
         extensionSim = new ElevatorSim(DCMotor.getFalcon500(1), 3, 1.5, 0.01, 0.69, 1.37, true);
         wristSim = new SingleJointedArmSim(DCMotor.getFalcon500(1), 10, SingleJointedArmSim.estimateMOI(0.2, 2), 0.2, -2, 2, true);
     }

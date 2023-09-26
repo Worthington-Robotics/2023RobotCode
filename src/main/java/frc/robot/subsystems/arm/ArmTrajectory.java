@@ -62,14 +62,39 @@ public class ArmTrajectory {
     }
 
     public Vector<N3> sample(double timestamp) {
+        // if (timestamp >= totalTime) {
+        //     return parameters.finalPose();
+        // } else if (timestamp <= 0.0) {
+        //     return parameters.initialPose();
+        // } else {
+        //     double percentage = timestamp/totalTime;
+        //     int closestValue = (int)(points.size() * percentage);
+        //     return points.get(closestValue);
+        // }
         if (timestamp >= totalTime) {
             return parameters.finalPose();
         } else if (timestamp <= 0.0) {
             return parameters.initialPose();
         } else {
             double percentage = timestamp/totalTime;
+            double wristDelta = parameters.finalPose().get(2, 0) - parameters.initialPose().get(2, 0);
             int closestValue = (int)(points.size() * percentage);
-            return points.get(closestValue);
+            Vector<N3> pose = VecBuilder.fill(points.get(closestValue).get(0, 0), points.get(closestValue).get(1, 0), (wristDelta*percentage)+parameters.initialPose().get(2, 0));
+            return pose;
         }
     }
+
+    // public Vector<N3> sampleInterpolateWrist(double timestamp) {
+    //     if (timestamp >= totalTime) {
+    //         return parameters.finalPose();
+    //     } else if (timestamp <= 0.0) {
+    //         return parameters.initialPose();
+    //     } else {
+    //         double percentage = timestamp/totalTime;
+    //         double wristDelta = parameters.finalPose().get(2, 0) - parameters.initialPose().get(2, 0);
+    //         int closestValue = (int)(points.size() * percentage);
+    //         Vector<N3> pose = VecBuilder.fill(points.get(closestValue).get(0, 0), points.get(closestValue).get(1, 0), (wristDelta*percentage)+parameters.initialPose().get(2, 0));
+    //         return pose;
+    //     }
+    // }
 }

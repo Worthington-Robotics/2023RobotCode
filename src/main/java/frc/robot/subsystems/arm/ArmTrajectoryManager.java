@@ -200,7 +200,6 @@ public class ArmTrajectoryManager {
         ArmTrajectory returnTraj = null;
         for (ArmTrajectory trajectory : trajectories) {
             if (trajectory.sample(0).isEqual(initialPose, 0.05) && trajectory.sample(trajectory.getTotalTime()).isEqual(finalPose, 0.05)) {
-                System.out.println("yes");
                 returnTraj = trajectory;
                 return trajectory;
             }
