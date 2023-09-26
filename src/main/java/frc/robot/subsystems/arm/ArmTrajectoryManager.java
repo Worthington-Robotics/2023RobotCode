@@ -211,23 +211,26 @@ public class ArmTrajectoryManager {
         return trajectories.get(index);
     }
 
-    public ArmTrajectory getTrajectory(Pose2d initialPose, Pose2d finalPose) {
-        ArmTrajectory returnTrajectory = new ArmTrajectory(null);
-        for (ArmTrajectory trajectory : trajectories) {
-            if (trajectory.sample(0).equals(ArmKinematics.inverseSafe(initialPose)) && trajectory.sample(trajectory.getTotalTime()).equals(ArmKinematics.inverseSafe(finalPose))) {
-                returnTrajectory = trajectory;
-            }
-        }
-        return returnTrajectory;
-    }
+    // public ArmTrajectory getTrajectory(Pose2d initialPose, Pose2d finalPose) {
+    //     ArmTrajectory returnTrajectory = new ArmTrajectory(null);
+    //     for (ArmTrajectory trajectory : trajectories) {
+    //         if (trajectory.sample(0).equals(ArmKinematics.inverseSafe(initialPose)) && trajectory.sample(trajectory.getTotalTime()).equals(ArmKinematics.inverseSafe(finalPose))) {
+    //             returnTrajectory = trajectory;
+    //         }
+    //     }
+    //     return returnTrajectory;
+    // }
 
     public ArmTrajectory getTrajectory(Vector<N3> initialPose, Vector<N3> finalPose) {
-        ArmTrajectory returnTrajectory = new ArmTrajectory(null);
+        ArmTrajectory returnTraj = null;
         for (ArmTrajectory trajectory : trajectories) {
-            if (trajectory.sample(0).equals(initialPose) && trajectory.sample(trajectory.getTotalTime()).equals(finalPose)) {
-                returnTrajectory = trajectory;
+            if (trajectory.sample(0).isEqual(initialPose, 0.05) && trajectory.sample(trajectory.getTotalTime()).isEqual(finalPose, 0.05)) {
+                System.out.println("yes");
+                returnTraj = trajectory;
+                return trajectory;
             }
         }
-        return returnTrajectory;
+        return returnTraj;
     }
+
 }

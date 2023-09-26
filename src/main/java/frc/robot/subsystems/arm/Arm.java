@@ -62,7 +62,7 @@ public class Arm extends Subsystem {
         public double manualY = 0;
 
         public ArmTrajectory currentTrajectory = trajectories.getTrajectory(0);
-        public Vector<N3> holdPose = ArmPose.Preset.ZERO.getAngles();
+        public ArmPose.Preset holdPose = ArmPose.Preset.ZERO;
         public boolean trajectoryComplete = true;
         public boolean trajectoryInProgress = false;
         public double currentTime = 0.0;
@@ -121,10 +121,10 @@ public class Arm extends Subsystem {
                     break;
                     case TRAJECTORY:
                     if(periodic.trajectoryComplete) {
-                        setpointViz.update(periodic.holdPose);
-                        periodic.shoulderSetpoint = shoulderController.calculate(periodic.inputs.shoulderAbsoluteRad, periodic.holdPose.get(0, 0));
-                        periodic.extensionSetpoint = extensionController.calculate(periodic.inputs.extensionLengthMeters, periodic.holdPose.get(1, 0));
-                        periodic.wristSetpoint = wristController.calculate(periodic.inputs.wristAbsoluteRad, periodic.holdPose.get(2,0));
+                        setpointViz.update(periodic.holdPose.getAngles());
+                        periodic.shoulderSetpoint = shoulderController.calculate(periodic.inputs.shoulderAbsoluteRad, periodic.holdPose.getAngles().get(0, 0));
+                        periodic.extensionSetpoint = extensionController.calculate(periodic.inputs.extensionLengthMeters, periodic.holdPose.getAngles().get(1, 0));
+                        periodic.wristSetpoint = wristController.calculate(periodic.inputs.wristAbsoluteRad, periodic.holdPose.getAngles().get(2,0));
                     } else if (periodic.trajectoryInProgress && periodic.currentTime == 0) {
                         periodic.timer.restart();
                         periodic.currentTime = periodic.timer.get();
@@ -136,7 +136,7 @@ public class Arm extends Subsystem {
                         periodic.extensionSetpoint = extensionController.calculate(periodic.inputs.extensionLengthMeters, pose.get(1, 0));
                         periodic.wristSetpoint = wristController.calculate(periodic.inputs.wristAbsoluteRad, pose.get(2,0));
                         if(periodic.currentTime >= periodic.currentTrajectory.getTotalTime()) {
-                            periodic.holdPose = pose;
+                            periodic.holdPose = getPresetFromAngles(pose);
                             periodic.trajectoryInProgress = false;
                             periodic.timer.stop();
                             periodic.currentTime = 0.0;
@@ -205,7 +205,20 @@ public class Arm extends Subsystem {
     public void setNewTrajectoryAndFollow(ArmPose.Preset desiredPose) {
         periodic.trajectoryInProgress = true;
         periodic.trajectoryComplete = false;
-        periodic.currentTrajectory = trajectories.getTrajectory(periodic.holdPose, desiredPose.getAngles());
+        periodic.currentTrajectory = trajectories.getTrajectory(periodic.holdPose.getAngles(), desiredPose.getAngles());
     }
     
+    public ArmPose.Preset getCurrentPose() {
+        return periodic.holdPose;
+    }
+
+    public ArmPose.Preset getPresetFromAngles(Vector<N3> angles) {
+        ArmPose.Preset returnPreset = ArmPose.Preset.HIGH;
+        for (ArmPose.Preset preset : ArmPose.Preset.values()) {
+            if(preset.getAngles().isEqual(angles, 0.05)) {
+                returnPreset = preset;
+            }
+        }
+        return returnPreset;
+    }
 }

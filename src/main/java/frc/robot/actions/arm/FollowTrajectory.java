@@ -9,7 +9,11 @@ public class FollowTrajectory extends Action {
     @Override
     public void onStart() {
         // Arm.getInstance().setFollowingTrajectory(true, false);
-        Arm.getInstance().setNewTrajectoryAndFollow(ArmPose.Preset.MID);
+        if (Arm.getInstance().getCurrentPose() == ArmPose.Preset.MID) {
+            Arm.getInstance().setNewTrajectoryAndFollow(ArmPose.Preset.HIGH);
+        } else {
+            Arm.getInstance().setNewTrajectoryAndFollow(ArmPose.Preset.MID);
+        }
     }
 
     @Override
