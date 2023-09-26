@@ -3,6 +3,7 @@ package frc.robot.subsystems.arm;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.numbers.N3;
 

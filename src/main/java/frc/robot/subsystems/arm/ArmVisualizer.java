@@ -68,7 +68,7 @@ public class ArmVisualizer {
 
         jointPose = new Pose3d(-0.14, 0.0, 0.94, new Rotation3d(0, -angles.get(0, 0), 0));
         extensionPose = jointPose.transformBy(new Transform3d(new Translation3d(-0.6526 + joint.getLength(), 0.0, -0.055), new Rotation3d(0.0, 0.0, 0.0)));
-        wristPose = extensionPose.transformBy(new Transform3d(new Translation3d(0.54 + 0.14, 0.0, 0.0), new Rotation3d(0.0, -angles.get(2, 0), 0.0)));
+        wristPose = extensionPose.transformBy(new Transform3d(new Translation3d(0.512 + 0.14, 0.0, 0.0), new Rotation3d(0.0, -angles.get(2, 0), 0.0)));
         logPose3d(name+"/jointPose", jointPose);
         logPose3d(name+"/extensionPose", extensionPose);
         logPose3d(name+"/wristPose", wristPose);

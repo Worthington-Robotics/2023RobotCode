@@ -128,7 +128,7 @@ public class Constants {
         // Arm Kinematics
         public static final double END_LENGTH = 0.28;
 
-        public static final double EXTENSION_MIN_METERS = 0.6985;
+        public static final double EXTENSION_MIN_METERS = 0.66;
         public static final double EXTENSION_MAX_METERS = 1.3462;
 
         public static final double SHOULDER_HIGH_MAX = 0;

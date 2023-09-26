@@ -167,21 +167,6 @@ public class ArmTrajectoryManager {
         Trajectory fortySecondTrajectory = TrajectoryGenerator.generateTrajectory(ArmPose.Preset.MID.getPose2d(), fortyFirstWaypoints, ArmPose.Preset.ZERO.getPose2d(), trajectoryConfig);
         trajectories.add(trajToArmTraj(fortySecondTrajectory.sample(0).poseMeters, fortySecondTrajectory.sample(fortySecondTrajectory.getTotalTimeSeconds()).poseMeters, fortySecondTrajectory));
 
-        // for(ArmPose.Preset pose : ArmPose.Preset.values()) {
-        //     List<Preset> leftovPresets = new ArrayList<>(); //Get all other poses that arent this one
-        //     for (Preset preset : ArmPose.Preset.values()) {
-        //         if (pose != preset) {
-        //             leftovPresets.add(preset);
-        //         }
-        //     }
-
-        //     for(Preset preset : leftovPresets) {
-        //         List<Translation2d> waypoints = new ArrayList<>();
-        //         Trajectory traj = TrajectoryGenerator.generateTrajectory(pose.getPose2d(), waypoints, preset.getPose2d(), trajectoryConfig);
-        //         trajectories.add(trajToArmTraj(pose.getPose2d(), preset.getPose2d(), traj));
-        //     }
-        // }
-
         System.out.println("Done generating splines. Total: " + trajectories.size());
     }
 
@@ -210,16 +195,6 @@ public class ArmTrajectoryManager {
     public ArmTrajectory getTrajectory(int index) {
         return trajectories.get(index);
     }
-
-    // public ArmTrajectory getTrajectory(Pose2d initialPose, Pose2d finalPose) {
-    //     ArmTrajectory returnTrajectory = new ArmTrajectory(null);
-    //     for (ArmTrajectory trajectory : trajectories) {
-    //         if (trajectory.sample(0).equals(ArmKinematics.inverseSafe(initialPose)) && trajectory.sample(trajectory.getTotalTime()).equals(ArmKinematics.inverseSafe(finalPose))) {
-    //             returnTrajectory = trajectory;
-    //         }
-    //     }
-    //     return returnTrajectory;
-    // }
 
     public ArmTrajectory getTrajectory(Vector<N3> initialPose, Vector<N3> finalPose) {
         ArmTrajectory returnTraj = null;
