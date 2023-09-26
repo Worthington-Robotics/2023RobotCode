@@ -137,7 +137,7 @@ public class Constants {
         public static final double WRIST_HIGH_MAX = 0;
         public static final double WRIST_LOW_MIN = 0;
 
-        public static final Vector<N3> ZERO_ANGLES = VecBuilder.fill(-1.33, 0.77, 2.15);
+        public static final Vector<N3> ZERO_ANGLES = VecBuilder.fill(-1.33, 0.75, 1.25);
 
         // Simulation values
         public static final double PHYSICS_TEST_KgPerMetersSquared = SingleJointedArmSim.estimateMOI(0.9, 6.8);
@@ -197,7 +197,7 @@ public class Constants {
         public static final double MID_CONE_HEIGHT = 0.97;
         public static final double HIGH_CUBE_HEIGHT = 1.15;
         public static final double HIGH_CONE_HEIGHT = 1.34;
-        public static final double BASE_TO_MID_X = 0.97;
+        public static final double BASE_TO_MID_X = 1.00;
         public static final double BASE_TO_HIGH_X = 1.28;
         public static final double ARM_HEIGHT = 0.94;
     }

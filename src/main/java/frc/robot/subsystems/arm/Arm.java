@@ -1,8 +1,5 @@
 package frc.robot.subsystems.arm;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.controller.PIDController;
@@ -21,7 +18,7 @@ import frc.robot.subsystems.arm.ArmIO.ArmIOInputs;
 
 public class Arm extends Subsystem {
     private static Arm instance = new Arm();
-    private ArmNewIO periodic = new ArmNewIO();
+    private ArmNewIO periodic;
     public static Arm getInstance() {return instance;}
 
     private ArmIO io;
@@ -42,13 +39,14 @@ public class Arm extends Subsystem {
             io = new ArmIOSim();
         } else {io = new ArmIOFalcon();}
         visualizer = new ArmVisualizer(Constants.Arm.ZERO_ANGLES, "Actual");
-        setpointViz = new ArmVisualizer(Constants.Arm.ZERO_ANGLES, "Setpoint");
+        setpointViz = new ArmVisualizer(ArmPose.Preset.ZERO.getAngles(), "Setpoint");
         trajectories = new ArmTrajectoryManager();
+        periodic  = new ArmNewIO();
         periodic.timer.start();
     }
 
     public class ArmNewIO extends PeriodicIO {
-        public ArmMode state = ArmMode.MANUAL;
+        public ArmMode state = ArmMode.TRAJECTORY;
         public ArmIOInputs inputs = new ArmIOInputs();
         public Vector<N3> anglesSetpoint = VecBuilder.fill(0, 1, 0);
 
@@ -63,8 +61,8 @@ public class Arm extends Subsystem {
         public double manualX = 0;
         public double manualY = 0;
 
-        public ArmTrajectory currentTrajectory;
-        public Vector<N3> holdPose = Constants.Arm.ZERO_ANGLES;
+        public ArmTrajectory currentTrajectory = trajectories.getTrajectory(0);
+        public Vector<N3> holdPose = ArmPose.Preset.ZERO.getAngles();
         public boolean trajectoryComplete = true;
         public boolean trajectoryInProgress = false;
         public double currentTime = 0.0;
@@ -172,7 +170,7 @@ public class Arm extends Subsystem {
         SmartDashboard.putNumber("Arm/Shoulder/Position", periodic.inputs.shoulderBuiltinTicks);
         SmartDashboard.putNumber("Arm/Shoulder/Abs Position", periodic.inputs.shoulderAbsoluteRad);
         SmartDashboard.putNumber("Arm/Shoulder/Percent Setpoint", periodic.shoulderSetpoint);
-        SmartDashboard.putNumber("Arm/Shoulder/Actual Percent", periodic.inputs.shoulderAppliedPower);
+        SmartDashboard.putNumber("Arm/Shoulder/Actual Amps", periodic.inputs.shoulderAppliedPower);
         SmartDashboard.putNumberArray("Arm/Shoulder/Manual Pose Setpoint", new double[] {
             periodic.anglesSetpoint.get(0, 0), periodic.anglesSetpoint.get(1, 0), periodic.anglesSetpoint.get(2, 0)
         });
@@ -180,13 +178,13 @@ public class Arm extends Subsystem {
 
         SmartDashboard.putNumber("Arm/Extension/Position", periodic.inputs.extensionBuiltinTicks);
         SmartDashboard.putNumber("Arm/Extension/Percent Setpoint", periodic.extensionSetpoint);
-        SmartDashboard.putNumber("Arm/Extension/Actual Percent", periodic.inputs.extensionAppliedPower);
+        SmartDashboard.putNumber("Arm/Extension/Actual Amps", periodic.inputs.extensionAppliedPower);
         SmartDashboard.putNumber("Arm/Extension/Meters", periodic.inputs.extensionLengthMeters);
         SmartDashboard.putNumber("Arm/Extension/Err", extensionController.getPositionError());
 
         SmartDashboard.putNumber("Arm/Wrist/Position", periodic.inputs.wristBuiltinTicks);
         SmartDashboard.putNumber("Arm/Wrist/Percent Setpoint", periodic.wristSetpoint);
-        SmartDashboard.putNumber("Arm/Wrist/Actual Percent", periodic.inputs.wristAppliedPower);
+        SmartDashboard.putNumber("Arm/Wrist/Actual Amps", periodic.inputs.wristAppliedPower);
         SmartDashboard.putNumber("Arm/Wrist/Abs Encoder", periodic.inputs.wristAbsoluteRad);
         SmartDashboard.putNumber("Arm/Wrist/Err", wristController.getPositionError());
     }
@@ -201,7 +199,13 @@ public class Arm extends Subsystem {
     public void setFollowingTrajectory(boolean isInProgress, boolean isComplete) {
         periodic.trajectoryInProgress = isInProgress;
         periodic.trajectoryComplete = isComplete;
-        periodic.currentTrajectory = trajectories.getTrajectory(0);
+        periodic.currentTrajectory = trajectories.getTrajectory(6);
+    }
+
+    public void setNewTrajectoryAndFollow(ArmPose.Preset desiredPose) {
+        periodic.trajectoryInProgress = true;
+        periodic.trajectoryComplete = false;
+        periodic.currentTrajectory = trajectories.getTrajectory(periodic.holdPose, desiredPose.getAngles());
     }
     
 }

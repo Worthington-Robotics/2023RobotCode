@@ -7,11 +7,13 @@ import frc.robot.Constants;
 
 public final record ArmPose(Pose2d wpipose) {
     public static enum Preset{
-        HOMED(new ArmPose(ArmKinematics.forward(Constants.Arm.ZERO_ANGLES))),
-        MID_CUBE(new ArmPose(new Pose2d(new Translation2d(Constants.Field.BASE_TO_MID_X, Constants.Field.MID_CUBE_HEIGHT - Constants.Field.ARM_HEIGHT), new Rotation2d(-0.5)))),
-        MID_CONE(new ArmPose(new Pose2d(new Translation2d(Constants.Field.BASE_TO_MID_X, Constants.Field.MID_CONE_HEIGHT - Constants.Field.ARM_HEIGHT), new Rotation2d(0)))),
-        HIGH_CUBE(new ArmPose(new Pose2d(new Translation2d(Constants.Field.BASE_TO_HIGH_X, Constants.Field.HIGH_CUBE_HEIGHT - Constants.Field.ARM_HEIGHT), new Rotation2d(-0.35)))),
-        HIGH_CONE(new ArmPose(new Pose2d(new Translation2d(Constants.Field.BASE_TO_HIGH_X, Constants.Field.HIGH_CONE_HEIGHT - Constants.Field.ARM_HEIGHT), new Rotation2d(-0.1))));
+        ZERO(new ArmPose(ArmKinematics.forward(Constants.Arm.ZERO_ANGLES))),
+        TRANSIT(new ArmPose(new Pose2d(new Translation2d(0.6, -0.6), new Rotation2d(0)))),
+        MID(new ArmPose(new Pose2d(new Translation2d(Constants.Field.BASE_TO_MID_X, Constants.Field.MID_CUBE_HEIGHT - Constants.Field.ARM_HEIGHT), new Rotation2d(-0.95)))),
+        HIGH(new ArmPose(new Pose2d(new Translation2d(Constants.Field.BASE_TO_HIGH_X, Constants.Field.HIGH_CUBE_HEIGHT - Constants.Field.ARM_HEIGHT), new Rotation2d(-0.95)))),
+        SLIDE(new ArmPose(new Pose2d(new Translation2d(0.65, -0.55), new Rotation2d(0.25)))),
+        INTAKE(new ArmPose(new Pose2d(new Translation2d(1, -0.85), new Rotation2d(-1)))),
+        SHELF(new ArmPose(new Pose2d(new Translation2d(1, 0.16), new Rotation2d(-1.6))));
 
         private ArmPose pose;
 

@@ -3,7 +3,6 @@ package frc.robot.subsystems.arm;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.sensors.CANCoder;
 
 import frc.robot.Constants;
 
@@ -27,6 +26,11 @@ public class ArmIOFalcon implements ArmIO {
         extensionFalcon500.setInverted(true);
         shoulderFalcon500.setInverted(true);
 
+        extensionFalcon500.setNeutralMode(NeutralMode.Brake);
+        shoulderFalcon500.setNeutralMode(NeutralMode.Brake);
+        wristFalcon500.setNeutralMode(NeutralMode.Brake);
+        intakeFalcon500.setNeutralMode(NeutralMode.Brake);
+
         shoulderFalcon500.configVoltageCompSaturation(10);
         extensionFalcon500.configVoltageCompSaturation(10);
         wristFalcon500.configVoltageCompSaturation(10);
@@ -37,16 +41,20 @@ public class ArmIOFalcon implements ArmIO {
     public void updateInputs(ArmIOInputs inputs) {
         inputs.extensionAppliedPower = extensionFalcon500.getSelectedSensorVelocity();
         inputs.extensionBuiltinTicks = extensionFalcon500.getSelectedSensorPosition();
+        inputs.extensionAppliedPower = extensionFalcon500.getStatorCurrent();
         inputs.extensionLengthMeters = (((extensionFalcon500.getSelectedSensorPosition()) - 15380) / 230186.1) + 0.8; //GET REAL VALUE
 
         inputs.intakeAppliedPower = intakeFalcon500.getSelectedSensorVelocity();
+        inputs.intakeAppliedPower = intakeFalcon500.getStatorCurrent();
 
         inputs.shoulderBuiltinTicks = shoulderFalcon500.getSelectedSensorPosition();
+        inputs.shoulderAppliedPower = shoulderFalcon500.getStatorCurrent();
         inputs.shoulderAppliedPower = shoulderFalcon500.getSelectedSensorVelocity();
         inputs.shoulderAbsoluteRad = ((-(shoulderFalcon500.getSelectedSensorPosition()) / -72165) - 1.33);
 
         inputs.wristAppliedPower = wristFalcon500.getSelectedSensorVelocity();
         inputs.wristBuiltinTicks = wristFalcon500.getSelectedSensorPosition();
+        inputs.wristAppliedPower = wristFalcon500.getStatorCurrent();
         inputs.wristAbsoluteRad = (wristFalcon500.getSelectedSensorPosition() / 29000) + 1.78;
     }
 
@@ -64,8 +72,8 @@ public class ArmIOFalcon implements ArmIO {
 
     @Override
     public void setIntakePercent(double percent) {
-        // intakeFalcon500.set(ControlMode.PercentOutput, percent);
-        intakeFalcon500.set(ControlMode.PercentOutput, 0);
+        intakeFalcon500.set(ControlMode.PercentOutput, percent);
+        // intakeFalcon500.set(ControlMode.PercentOutput, 0);
     }
 
     @Override
