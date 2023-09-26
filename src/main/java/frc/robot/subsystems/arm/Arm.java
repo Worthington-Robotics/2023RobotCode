@@ -1,13 +1,9 @@
 package frc.robot.subsystems.arm;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -32,8 +28,10 @@ public class Arm extends Subsystem {
 	public Arm() {
 		extensionMotor = new TalonFX(Constants.Arm.ARM_EXTENSION_ID, "Default Name");
 		armMasterMotor = new TalonFX(Constants.Arm.ARM_ARM_M_ID, "Default Name");
-		extensionMotor.setNeutralMode(NeutralMode.Brake);
-		armMasterMotor.setNeutralMode(NeutralMode.Brake);
+		// extensionMotor.setNeutralMode(NeutralMode.Brake);
+		// armMasterMotor.setNeutralMode(NeutralMode.Brake);
+		extensionMotor.setNeutralMode(NeutralMode.Coast);
+		armMasterMotor.setNeutralMode(NeutralMode.Coast);
 		reset();
 		extensionMotor.configVoltageCompSaturation(11);
 		armMasterMotor.configVoltageCompSaturation(11); 
@@ -63,7 +61,7 @@ public class Arm extends Subsystem {
 		{0,0,0},
 		{-9623, 16110, 14270},
 		{-21000, -1223, 18000},
-		{-60700, -17100, -87200},
+		{-60700, -17100, -70200},
 		{-98372, -5100, -54000},
 		{-127000, -18728, -85700},
 		{-138800, -117375, -85740},
@@ -201,7 +199,7 @@ public class Arm extends Subsystem {
 		SmartDashboard.putNumber("Arm/Close Loop Demand/Extend", periodic.desiredArmLengthEncoder);
 
 		SmartDashboard.putString("Arm/Current Mode", periodic.currentMode.toString());
-		SmartDashboard.putString("Arm/Current Mode", periodic.currentPose.toString());
+		SmartDashboard.putString("Arm/Current Pose", periodic.currentPose.toString());
 		SmartDashboard.putBoolean("Arm/Error/Accepted", periodic.poseAccepted);
 
 
@@ -291,11 +289,6 @@ public class Arm extends Subsystem {
 
 	public double convertRawTurretIntoEncoder(double inputPower) {
 		return inputPower * 22000;
-	}
-
-	public void cycleMode() {
-		int nState = periodic.currentMode.ordinal() + 1;
-		periodic.currentMode = ArmMode.values()[nState % 3];
 	}
 
 	public void setMode(ArmMode mode) {

@@ -77,8 +77,8 @@ public class Constants {
     }
 
     public static class Lights {
-        public static final int LIGHTS_ID = 0;
-        public static final int NUM_LEDS = 200;
+        public static final int LIGHTS_ID = 8;
+        public static final int NUM_LEDS = 100;
     }
 
     public static class Arm {
