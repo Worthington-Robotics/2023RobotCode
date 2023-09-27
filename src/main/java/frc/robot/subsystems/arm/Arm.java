@@ -22,16 +22,14 @@ public class Arm extends Subsystem {
 	public static Arm getInstance() { return instance; }
 	private ArmIO periodic = new ArmIO();
 	private ArmKinematics kinematics = new ArmKinematics();
-	Vector<N3> angles = kinematics.inverseSafe(ArmPoseNew.Preset.MID_CONE.getPose2d());
+	Vector<N3> angles = kinematics.inverseSafe(new Pose2d(1.0, -0.15, new Rotation2d()));
 	private ArmVisualizer visualizer = new ArmVisualizer(angles);
 
 	public Arm() {
 		extensionMotor = new TalonFX(Constants.Arm.ARM_EXTENSION_ID, "Default Name");
 		armMasterMotor = new TalonFX(Constants.Arm.ARM_ARM_M_ID, "Default Name");
-		// extensionMotor.setNeutralMode(NeutralMode.Brake);
-		// armMasterMotor.setNeutralMode(NeutralMode.Brake);
-		extensionMotor.setNeutralMode(NeutralMode.Coast);
-		armMasterMotor.setNeutralMode(NeutralMode.Coast);
+		extensionMotor.setNeutralMode(NeutralMode.Brake);
+		armMasterMotor.setNeutralMode(NeutralMode.Brake);
 		reset();
 		extensionMotor.configVoltageCompSaturation(11);
 		armMasterMotor.configVoltageCompSaturation(11); 
@@ -87,6 +85,11 @@ public class Arm extends Subsystem {
 		public double pivotEncoderError;
 		public double lengthEncoderError;
 
+		//Kinematics values
+		public double extensionLengthMeters;
+		public double shoulderRads;
+		public double wristRads;
+
 		// State
 		public ArmMode currentMode = ArmMode.CLOSED_LOOP;
 		public ArmPose currentPose = ArmPose.ZERO;
@@ -105,6 +108,10 @@ public class Arm extends Subsystem {
 
 		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.Joysticks.SECOND.getRawAxis(1), -.2, .2);
 		periodic.rawPivotPower =  HIDHelper.getAxisMapped(Constants.Joysticks.SECOND.getRawAxis(3), -1,1);
+
+		periodic.extensionLengthMeters = (((extensionMotor.getSelectedSensorPosition()) - 15380) / 230186.1) + 0.8; //GET REAL VALUE
+		periodic.shoulderRads = ((-(armMasterMotor.getSelectedSensorPosition()) / -72165) - 1.33);
+		periodic.wristRads = Manipulator.getInstance().getWristRads();
 
 		if(periodic.currentMode == ArmMode.CLOSED_LOOP){
 			periodic.pivotOffset = HIDHelper.getAxisMapped(Constants.Joysticks.SECOND.getRawAxis(3), -1,0) * 20000;

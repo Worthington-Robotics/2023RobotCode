@@ -185,7 +185,9 @@ public class SwerveDrive extends Subsystem {
         double[] doubleArray = pSubscriber.get();
         if (tvSubscriber.get() == 1.0) {
             periodic.limelightPose = new Pose3d(new Translation3d(doubleArray[0], doubleArray[1], doubleArray[2]), new Rotation3d(Units.degreesToRadians(doubleArray[3]), Units.degreesToRadians(doubleArray[4]), Units.degreesToRadians(doubleArray[5])));
-            periodic.poseEstimator.addVisionMeasurement(periodic.limelightPose.toPose2d(), Timer.getFPGATimestamp() - (doubleArray[6])/1000);
+            if (periodic.limelightPose.getX() - periodic.poseEstimator.getEstimatedPosition().getX() < 0.5 && periodic.limelightPose.getY() - periodic.poseEstimator.getEstimatedPosition().getY() < 0.5) {
+                periodic.poseEstimator.addVisionMeasurement(periodic.limelightPose.toPose2d(), Timer.getFPGATimestamp() - (doubleArray[6])/1000);
+            }
         }
         if (Math.abs(LeftX) < Constants.Joysticks.XBOX_DEADZONE) {
             periodic.XboxLeftX = 0.0;

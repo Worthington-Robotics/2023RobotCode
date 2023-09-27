@@ -21,7 +21,8 @@ public class Lights extends Subsystem {
         AUTO,
         TELEOP,
         CUBE,
-        CONE
+        CONE,
+        HAS_GAMEPIECE
     }
 
     private final AddressableLED leds;
@@ -80,6 +81,9 @@ public class Lights extends Subsystem {
                     timer.stop();
                     setState(previousState);
                 }
+            break;
+            case HAS_GAMEPIECE:
+                wave(100, Color.kGreen, Color.kPurple, 25.0, 2.0, 0.4);
             break;
         }
         leds.setData(buffer);
@@ -142,6 +146,10 @@ public class Lights extends Subsystem {
         this.state = state;
     }
 
+    public State getState() {
+        return state;
+    }
+
     public void setCube() {
         if (state != State.CONE && state != State.CUBE) {
             previousState = state;
@@ -158,6 +166,17 @@ public class Lights extends Subsystem {
         timer.reset();
         timer.start();
         setState(State.CONE);
+    }
+
+    public void setGamepiece(boolean hasGamePiece) {
+        if(state != State.HAS_GAMEPIECE) {
+            previousState = state;
+        }
+        if (hasGamePiece) {
+            setState(State.HAS_GAMEPIECE);
+        } else {
+            setState(previousState);
+        }
     }
 
     @Override

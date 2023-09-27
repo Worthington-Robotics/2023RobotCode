@@ -28,6 +28,7 @@ public class Manipulator extends Subsystem {
 		double wristMotorPower;
 		double intakeMotorPower;
 		double intakeMotorVelocity;
+		double wristAbsRads;
 		double rawWristMotorPower;
 		double desiredWristEncoder;
 		double wristEncoderError;
@@ -55,6 +56,7 @@ public class Manipulator extends Subsystem {
 		periodic.intakeMotorCurrent = intakeMotor.getSupplyCurrent();
 		periodic.wristEncoder = wristMotor.getSelectedSensorPosition();
 		periodic.intakeMotorVelocity = intakeMotor.getSelectedSensorVelocity();
+		periodic.wristAbsRads = (wristMotor.getSelectedSensorPosition() / 29000) + 1.78;
 		double currentTime = Timer.getFPGATimestamp();
 		if(periodic.state == State.DriverControlled) {
 			if (periodic.intakeMotorCurrent > Constants.Arm.INTAKE_CURRENT_ACCEPTANCE && periodic.isAuto) {
@@ -169,6 +171,10 @@ public class Manipulator extends Subsystem {
 		periodic.wristMotorPower = power;
 	}
 
+	public double getWristRads() {
+		return periodic.wristAbsRads;
+	}
+
 	public void resWrist() {
 		periodic.wristOffset = 0;
 	}
@@ -229,15 +235,15 @@ public class Manipulator extends Subsystem {
 	// ### Telemetry ###
 
 	public void outputTelemetry() {
-		SmartDashboard.putNumber("Manipulator/IntakePower", periodic.intakeMotorPower);
-		SmartDashboard.putNumber("Manipulator/WristPower", periodic.wristMotorPower);
-		SmartDashboard.putNumber("Manipulator/RawWristMotorPower", periodic.rawWristMotorPower);
-		SmartDashboard.putNumber("Arm/encoder/wrist", periodic.wristEncoder);
-		SmartDashboard.putNumber("Manipulator/IntakeMotorCurrent", periodic.intakeMotorCurrent);
-		SmartDashboard.putNumber("Manipulator/IntakeMotorVelocity", periodic.intakeMotorVelocity);
-		SmartDashboard.putNumber("Arm/error/wrist error", periodic.wristEncoderError);
-		SmartDashboard.putNumber("Arm/encoder/wrist-D", periodic.desiredWristEncoder);
-		SmartDashboard.putNumber("Arm/encoder/wrist offset", periodic.wristOffset);
+		SmartDashboard.putNumber("Arm/Manipulator/IntakePower", periodic.intakeMotorPower);
+		SmartDashboard.putNumber("Arm/Manipulator/WristPower", periodic.wristMotorPower);
+		SmartDashboard.putNumber("Arm/Manipulator/RawWristMotorPower", periodic.rawWristMotorPower);
+		SmartDashboard.putNumber("Arm/Encoder/Wrist", periodic.wristEncoder);
+		SmartDashboard.putNumber("Arm/Manipulator/IntakeMotorCurrent", periodic.intakeMotorCurrent);
+		SmartDashboard.putNumber("Arm/Manipulator/IntakeMotorVelocity", periodic.intakeMotorVelocity);
+		SmartDashboard.putNumber("Arm/Error/Wrist error", periodic.wristEncoderError);
+		SmartDashboard.putNumber("Arm/Encoder/Wrist-D", periodic.desiredWristEncoder);
+		SmartDashboard.putNumber("Arm/Encoder/Wrist offset", periodic.wristOffset);
 	}
 
 
