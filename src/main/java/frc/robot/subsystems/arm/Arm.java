@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -112,6 +113,9 @@ public class Arm extends Subsystem {
 		periodic.extensionLengthMeters = (((extensionMotor.getSelectedSensorPosition()) - 15380) / 230186.1) + 0.8; //GET REAL VALUE
 		periodic.shoulderRads = ((-(armMasterMotor.getSelectedSensorPosition()) / -72165) - 1.33);
 		periodic.wristRads = Manipulator.getInstance().getWristRads();
+		Vector<N3> angles = VecBuilder.fill(periodic.extensionLengthMeters, periodic.shoulderRads, periodic.wristRads);
+
+		visualizer.update(angles);
 
 		if(periodic.currentMode == ArmMode.CLOSED_LOOP){
 			periodic.pivotOffset = HIDHelper.getAxisMapped(Constants.Joysticks.SECOND.getRawAxis(3), -1,0) * 20000;
