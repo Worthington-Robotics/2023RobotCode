@@ -17,16 +17,15 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.PubSubOption;
-import edu.wpi.first.networktables.PubSubOptions;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.robot.Constants;
@@ -48,10 +47,12 @@ public class SwerveDrive extends Subsystem {
 
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
     NetworkTable limelight = inst.getTable("limelight-worbots");
-    DoubleArraySubscriber pSubscriber = limelight.getDoubleArrayTopic("botpose").subscribe(new double[] {0,0,0,0,0,0,0});
+    DoubleArraySubscriber pSubscriber = limelight.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {0,0,0,0,0,0,0});
+    DoubleSubscriber tvSubscriber = limelight.getDoubleTopic("tv").subscribe(0);
     NetworkTable table = inst.getTable("SwerveDrive");
     DoubleArrayPublisher poseEstimatorPub = table.getDoubleArrayTopic("Pose Estimator").publish();
     DoubleArrayPublisher swervePub = table.getDoubleArrayTopic("Swerve").publish();
+    DoubleArrayPublisher limelightPub = table.getDoubleArrayTopic("Limelight Pose").publish();
     DoubleArrayPublisher setpointPub = table.getDoubleArrayTopic("Setpoint").publish();
     DoubleArrayPublisher encoderPub = table.getDoubleArrayTopic("Encoders").publish();
     StringPublisher statePub = table.getStringTopic("State").publish();
@@ -182,11 +183,8 @@ public class SwerveDrive extends Subsystem {
         double LeftY = -Constants.Joysticks.XBOX.getLeftX();
         double RightX = -Constants.Joysticks.XBOX.getRightX();
         double[] doubleArray = pSubscriber.get();
-        if (doubleArray[0] != 0) {
-            periodic.limelightPose = new Pose3d(new Translation3d(doubleArray[0], doubleArray[1], doubleArray[2]), new Rotation3d(doubleArray[3], doubleArray[4], doubleArray[5]));
-            SmartDashboard.putNumberArray("LimelightPose", new double[] {
-                periodic.limelightPose.getX(), periodic.limelightPose.getY(), periodic.limelightPose.getZ(), periodic.limelightPose.getRotation().getQuaternion().getW(), periodic.limelightPose.getRotation().getQuaternion().getX(), periodic.limelightPose.getRotation().getQuaternion().getY(), periodic.limelightPose.getRotation().getQuaternion().getZ()
-            });
+        if (tvSubscriber.get() == 1.0) {
+            periodic.limelightPose = new Pose3d(new Translation3d(doubleArray[0], doubleArray[1], doubleArray[2]), new Rotation3d(Units.degreesToRadians(doubleArray[3]), Units.degreesToRadians(doubleArray[4]), Units.degreesToRadians(doubleArray[5])));
             periodic.poseEstimator.addVisionMeasurement(periodic.limelightPose.toPose2d(), Timer.getFPGATimestamp() - (doubleArray[6])/1000);
         }
         if (Math.abs(LeftX) < Constants.Joysticks.XBOX_DEADZONE) {
@@ -237,11 +235,9 @@ public class SwerveDrive extends Subsystem {
             poseEstimatorPose.getY(),
             poseEstimatorPose.getRotation().getRadians()
         });
-        // poseEstimatorPub.set(new double[] {
-        //     periodic.simPoseEstimator.getX(),
-        //     periodic.simPoseEstimator.getY(),
-        //     periodic.simPoseEstimator.getRotation().getRadians()
-        // });
+        limelightPub.set(new double[] {
+            periodic.limelightPose.getX(), periodic.limelightPose.getY(), periodic.limelightPose.getZ(), periodic.limelightPose.getRotation().getQuaternion().getW(), periodic.limelightPose.getRotation().getQuaternion().getX(), periodic.limelightPose.getRotation().getQuaternion().getY(), periodic.limelightPose.getRotation().getQuaternion().getZ()
+        });
         swervePub.set(new double[] {
                 frontLeftModule.getSteerAngle(), frontLeftModule.getDriveVelocity(),
                 frontRightModule.getSteerAngle(), frontRightModule.getDriveVelocity(),
