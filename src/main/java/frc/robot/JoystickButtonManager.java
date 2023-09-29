@@ -7,6 +7,7 @@ import frc.robot.actions.arm.ArmMidPose;
 import frc.robot.actions.arm.ArmPoseAction;
 import frc.robot.actions.arm.ArmSlidePose;
 import frc.robot.actions.arm.ArmUnstowPose;
+import frc.robot.actions.drive.AutoBalance;
 import frc.robot.actions.drive.ToggleGranny;
 import frc.robot.actions.drive.UpdatePoseEstimator;
 import frc.robot.actions.drive.ZeroGyro;
@@ -27,6 +28,7 @@ public class JoystickButtonManager {
         new JoystickButton(Constants.Joysticks.XBOX, 1).whileTrue(Action.toCommand(new SetCone()));
         new JoystickButton(Constants.Joysticks.XBOX, 2).whileTrue(Action.toCommand(new SetCube()));
         new JoystickButton(Constants.Joysticks.XBOX, 3).whileTrue(Action.toCommand(new TestBackCurrent()));
+        new JoystickButton(Constants.Joysticks.XBOX, 3).whileTrue(Action.toCommand(new AutoBalance()));
         new JoystickButton(Constants.Joysticks.XBOX, 5).whileTrue(Action.toCommand(new ToggleGranny()));
         new JoystickButton(Constants.Joysticks.XBOX, 6).whileTrue(Action.toCommand(new ZeroGyro()));
         // new JoystickButton(Constants.Joysticks.XBOX, 3).whileTrue(Action.toCommand(new ArmTestKinematics()));
