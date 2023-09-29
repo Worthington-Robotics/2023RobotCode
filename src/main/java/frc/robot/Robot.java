@@ -9,6 +9,7 @@ package frc.robot;
 
 import java.util.Arrays;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -59,6 +60,8 @@ public class Robot extends TimedRobot {
         AutoChooser.getInstance().getAutos();
         AutoChooser.getInstance().logAuto();
         AutoChooser.getInstance().printAutos();
+
+        SwerveDrive.getInstance().setVisionUpdates(true);
     }
 
     @Override
@@ -70,7 +73,9 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         enabledLooper.stop();
+        SwerveDrive.getInstance().setVisionUpdates(true);
         PPStateMachine.getInstance().assertStop();
+        SwerveDrive.getInstance().setChassisSpeeds(new ChassisSpeeds(0, 0, 0));
         Lights.getInstance().setState(Lights.State.INIT);
         disabledLooper.start();
     }
@@ -78,6 +83,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         disabledLooper.stop();
+        SwerveDrive.getInstance().setVisionUpdates(false);
         Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
         Lights.getInstance().setState(Lights.State.AUTO);
         Manipulator.getInstance().setAuto(true);
@@ -94,6 +100,7 @@ public class Robot extends TimedRobot {
         disabledLooper.stop();
         // Reset anything here
         Arm.getInstance().setMode(ArmMode.CLOSED_LOOP);
+        SwerveDrive.getInstance().setVisionUpdates(true);
         Manipulator.getInstance().setAuto(false);
         SwerveDrive.getInstance().setState(SwerveDrive.State.FieldRel);
         PPStateMachine.getInstance().clearTrajectory();

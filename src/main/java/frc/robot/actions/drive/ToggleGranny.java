@@ -7,11 +7,7 @@ public class ToggleGranny extends Action {
 
     @Override
     public void onStart() {
-        if(SwerveDrive.getInstance().getGrannyMode()) {
-            SwerveDrive.getInstance().setGrannyMode(false);
-        } else {
-            SwerveDrive.getInstance().setGrannyMode(true);
-        }
+        SwerveDrive.getInstance().setGrannyMode(false);
     }
 
     @Override
@@ -19,10 +15,12 @@ public class ToggleGranny extends Action {
 
     @Override
     public boolean isFinished() {
-        return true;
+        return false;
     }
 
     @Override
-    public void onStop() {}
+    public void onStop() {
+        SwerveDrive.getInstance().setGrannyMode(true);
+    }
     
 }

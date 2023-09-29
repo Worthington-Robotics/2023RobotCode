@@ -10,6 +10,7 @@ import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -47,6 +48,8 @@ public class SwerveDrive extends Subsystem {
 
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
     NetworkTable limelight = inst.getTable("limelight-worbots");
+    NetworkTable jetson = inst.getTable("VisionModule0/module/output");
+    DoubleArraySubscriber jetsonPose0 = jetson.getDoubleArrayTopic("pose0").subscribe(new double[] {0,0,0,0,0,0,0});
     DoubleArraySubscriber pSubscriber = limelight.getDoubleArrayTopic("botpose_wpiblue").subscribe(new double[] {0,0,0,0,0,0,0});
     DoubleSubscriber tvSubscriber = limelight.getDoubleTopic("tv").subscribe(0);
     NetworkTable table = inst.getTable("SwerveDrive");
@@ -65,6 +68,8 @@ public class SwerveDrive extends Subsystem {
     public class SwerveDriveIO {
         public State state = State.FieldRel;
         public Pose3d limelightPose = new Pose3d();
+        public Pose3d jetsonPoseZero = new Pose3d();
+        public Pose3d jetsonPoneOne = new Pose3d();
         public SwerveDrivePoseEstimator poseEstimator;
         public Pose2d simPoseEstimator = new Pose2d();
         public SwerveModuleState[] states = {new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState(), new SwerveModuleState()};
@@ -75,6 +80,7 @@ public class SwerveDrive extends Subsystem {
         public double XboxLeftY;
         public double XboxRightX;
         public boolean grannyMode = false;
+        public boolean visionUpdates = true;
         public SwerveModulePosition[] simulatedModulePositions = {
             new SwerveModulePosition(0, new Rotation2d()),
             new SwerveModulePosition(0, new Rotation2d()),
@@ -141,18 +147,6 @@ public class SwerveDrive extends Subsystem {
                 periodic.states = Constants.DriveTrain.SWERVE_KINEMATICS.toSwerveModuleStates(periodic.speeds);
                 SwerveDriveKinematics.desaturateWheelSpeeds(periodic.states, Constants.DriveTrain.SWERVE_MAX_VELOCITY_METERS_PER_SECOND);
 
-                
-                if(RobotBase.isSimulation()) { //Essentially simulates our swerve drive. Not physically accurate. Only use to get a general sense of what may happen.
-                    SwerveModuleState[] simStates = Constants.DriveTrain.SWERVE_KINEMATICS.toSwerveModuleStates(periodic.speeds);
-                    periodic.simulatedModulePositions[0] = new SwerveModulePosition(periodic.simulatedModulePositions[0].distanceMeters + (simStates[0].speedMetersPerSecond/50.0), simStates[0].angle);
-                    periodic.simulatedModulePositions[1] = new SwerveModulePosition(periodic.simulatedModulePositions[1].distanceMeters + (simStates[1].speedMetersPerSecond/50.0), simStates[1].angle);
-                    periodic.simulatedModulePositions[2] = new SwerveModulePosition(periodic.simulatedModulePositions[2].distanceMeters + (simStates[2].speedMetersPerSecond/50.0), simStates[2].angle);
-                    periodic.simulatedModulePositions[3] = new SwerveModulePosition(periodic.simulatedModulePositions[3].distanceMeters + (simStates[3].speedMetersPerSecond/50.0), simStates[3].angle);
-                    periodic.poseEstimator.update(new Rotation2d(), periodic.simulatedModulePositions);
-                } else {
-                    periodic.poseEstimator.update(getGyroRotation(), getSwerveModulePositions());
-                }
-
                 ChassisSpeeds speedsToApply = new ChassisSpeeds();
                 switch (periodic.state) {
                     case FieldRel:
@@ -183,12 +177,32 @@ public class SwerveDrive extends Subsystem {
         double LeftY = -Constants.Joysticks.XBOX.getLeftX();
         double RightX = -Constants.Joysticks.XBOX.getRightX();
         double[] doubleArray = pSubscriber.get();
-        if (tvSubscriber.get() == 1.0) {
+        double[] jetsonZero = jetsonPose0.get();
+        // if(jetsonZero[0] != null) {
+        //     periodic.jetsonPoseZero = new Pose3d(new Translation3d(jetsonZero[0], jetsonZero[1], jetsonZero[2]), new Rotation3d(new Quaternion(jetsonZero[3], jetsonZero[4], jetsonZero[5], jetsonZero[6])));
+        //     periodic.poseEstimator.addVisionMeasurement(periodic.jetsonPoseZero.toPose2d(), Timer.getFPGATimestamp());
+        // }
+        if (tvSubscriber.get() == 1.0 && periodic.visionUpdates) {
             periodic.limelightPose = new Pose3d(new Translation3d(doubleArray[0], doubleArray[1], doubleArray[2]), new Rotation3d(Units.degreesToRadians(doubleArray[3]), Units.degreesToRadians(doubleArray[4]), Units.degreesToRadians(doubleArray[5])));
-            if (Math.abs(periodic.limelightPose.getX() - periodic.poseEstimator.getEstimatedPosition().getX()) < 0.5 && Math.abs(periodic.limelightPose.getY() - periodic.poseEstimator.getEstimatedPosition().getY()) < 0.5) {
-                periodic.poseEstimator.addVisionMeasurement(periodic.limelightPose.toPose2d(), Timer.getFPGATimestamp() - (doubleArray[6]/1000.0));
-            }
+            periodic.poseEstimator.addVisionMeasurement(periodic.limelightPose.toPose2d(), Timer.getFPGATimestamp() - (doubleArray[6]/1000.0));
+            // if (Math.abs(periodic.limelightPose.getX() - periodic.poseEstimator.getEstimatedPosition().getX()) < 0.5 && Math.abs(periodic.limelightPose.getY() - periodic.poseEstimator.getEstimatedPosition().getY()) < 0.5) {
+            //     periodic.poseEstimator.addVisionMeasurement(periodic.limelightPose.toPose2d(), Timer.getFPGATimestamp() - (doubleArray[6]/1000.0));
+            // }
+            // else if (periodic.poseEstimator.getEstimatedPosition().getX() < 2.0) {
+            //     periodic.poseEstimator.addVisionMeasurement(periodic.limelightPose.toPose2d(), Timer.getFPGATimestamp() - (doubleArray[6]/1000.0));
+            // }
         }
+        if(RobotBase.isSimulation()) { //Essentially simulates our swerve drive. Not physically accurate. Only use to get a general sense of what may happen.
+            SwerveModuleState[] simStates = Constants.DriveTrain.SWERVE_KINEMATICS.toSwerveModuleStates(periodic.speeds);
+            periodic.simulatedModulePositions[0] = new SwerveModulePosition(periodic.simulatedModulePositions[0].distanceMeters + (simStates[0].speedMetersPerSecond/50.0), simStates[0].angle);
+            periodic.simulatedModulePositions[1] = new SwerveModulePosition(periodic.simulatedModulePositions[1].distanceMeters + (simStates[1].speedMetersPerSecond/50.0), simStates[1].angle);
+            periodic.simulatedModulePositions[2] = new SwerveModulePosition(periodic.simulatedModulePositions[2].distanceMeters + (simStates[2].speedMetersPerSecond/50.0), simStates[2].angle);
+            periodic.simulatedModulePositions[3] = new SwerveModulePosition(periodic.simulatedModulePositions[3].distanceMeters + (simStates[3].speedMetersPerSecond/50.0), simStates[3].angle);
+            periodic.poseEstimator.update(new Rotation2d(), periodic.simulatedModulePositions);
+        } else {
+            periodic.poseEstimator.update(getGyroRotation(), getSwerveModulePositions());
+        }
+
         if (Math.abs(LeftX) < Constants.Joysticks.XBOX_DEADZONE) {
             periodic.XboxLeftX = 0.0;
         } else {
@@ -227,6 +241,14 @@ public class SwerveDrive extends Subsystem {
             backLeftModule.set(0, 2.350);
             backRightModule.set(0, 0.568);
         }
+    }
+
+    public void setVisionUpdates(boolean isUpdating) {
+        periodic.visionUpdates = isUpdating;
+    }
+
+    public boolean getVisionUpdates() {
+        return periodic.visionUpdates;
     }
 
     @Override

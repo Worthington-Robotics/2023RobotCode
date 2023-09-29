@@ -116,8 +116,7 @@ public class PPSwerveControllerAction extends Action {
         Pose2d currentPose = this.poseSupplier.get();
     
         PathPlannerServer.sendPathFollowingData(
-            new Pose2d(desiredState.poseMeters.getTranslation(), desiredState.holonomicRotation),
-            currentPose);
+            new Pose2d(desiredState.poseMeters.getTranslation(), desiredState.holonomicRotation), currentPose);
     
         ChassisSpeeds targetChassisSpeeds = this.controller.calculate(currentPose, desiredState);
     
@@ -132,6 +131,10 @@ public class PPSwerveControllerAction extends Action {
 
         SmartDashboard.putNumberArray("PPSwerveControllerAction/targetChassisSpeeds", new double[] {
           targetChassisSpeeds.vxMetersPerSecond, targetChassisSpeeds.vyMetersPerSecond, targetChassisSpeeds.omegaRadiansPerSecond
+        });
+
+        SmartDashboard.putNumberArray("PPSwerveControllerAction/DesiredPose", new double[] {
+          desiredState.poseMeters.getX(), desiredState.poseMeters.getY(), desiredState.holonomicRotation.getRadians()
         });
     
         if (logTargetPose != null) {
@@ -158,6 +161,7 @@ public class PPSwerveControllerAction extends Action {
     @Override
     public void onStop() {
       System.out.println("[State Machine] Stopped path planner action");
+      SwerveDrive.getInstance().setState(State.FieldRel);
       this.timer.stop();
     }
 

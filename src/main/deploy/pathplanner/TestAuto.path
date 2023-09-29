@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 0.0,
-        "y": 0.0
+        "x": 2.1065446981107936,
+        "y": 0.7318693096729976
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.3773701128001423,
-        "y": 0.022870915927281854
+        "x": 3.106544698110793,
+        "y": 0.7318693096729976
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -24,37 +24,39 @@
     },
     {
       "anchorPoint": {
-        "x": 2.5296566427654965,
-        "y": 0.0
+        "x": 5.537182087202976,
+        "y": 0.6289501880002328
       },
       "prevControl": {
-        "x": 2.3566337925256406,
-        "y": -0.18263523080873617
+        "x": 5.548617545166617,
+        "y": 0.6289501880002328
       },
       "nextControl": {
-        "x": 2.9413331294565586,
-        "y": 0.4345474026183421
+        "x": 5.548617545166617,
+        "y": 0.6289501880002328
       },
       "holonomicAngle": 180.0,
-      "isReversal": false,
+      "isReversal": true,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": false,
+      "isStopPoint": true,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "lights.SetCone"
+        ],
         "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
+        "waitBehavior": "minimum",
+        "waitTime": 2.0
       }
     },
     {
       "anchorPoint": {
-        "x": 2.6668821383291834,
-        "y": 2.0
+        "x": 5.514311171275695,
+        "y": 2.3785752564372458
       },
       "prevControl": {
-        "x": 2.6440112224019026,
-        "y": 0.5946438141093098
+        "x": 5.537182087202976,
+        "y": 1.3150776658186696
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -70,8 +72,5 @@
       }
     }
   ],
-  "maxVelocity": 3.0,
-  "maxAcceleration": 2.0,
-  "isReversed": null,
   "markers": []
 }

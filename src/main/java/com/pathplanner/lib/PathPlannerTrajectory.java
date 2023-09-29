@@ -135,10 +135,11 @@ public class PathPlannerTrajectory extends Trajectory {
       // Create a new state so that we don't overwrite the original
       PathPlannerState transformedState = new PathPlannerState();
 
-      Translation2d transformedTranslation =
-          new Translation2d(state.poseMeters.getX(), FIELD_WIDTH_METERS - state.poseMeters.getY());
-      Rotation2d transformedHeading = state.poseMeters.getRotation().times(-1);
-      Rotation2d transformedHolonomicRotation = state.holonomicRotation.times(-1);
+      // Translation2d transformedTranslation = new Translation2d(16.54175 * 2-state.poseMeters.getX(), FIELD_WIDTH_METERS *2 - state.poseMeters.getY()).rotateBy(new Rotation2d(Math.PI));
+      // Translation2d transformedTranslation = new Translation2d(0, 0).rotateBy(new Rotation2d(Math.PI));
+      Translation2d transformedTranslation = new Translation2d((16.54175-state.poseMeters.getX()), (state.poseMeters.getY()));
+      Rotation2d transformedHeading = state.poseMeters.getRotation().rotateBy(new Rotation2d(Math.PI));
+      Rotation2d transformedHolonomicRotation = state.holonomicRotation.rotateBy(new Rotation2d(Math.PI));
 
       transformedState.timeSeconds = state.timeSeconds;
       transformedState.velocityMetersPerSecond = state.velocityMetersPerSecond;
@@ -148,6 +149,7 @@ public class PathPlannerTrajectory extends Trajectory {
       transformedState.holonomicRotation = transformedHolonomicRotation;
       transformedState.holonomicAngularVelocityRadPerSec = -state.holonomicAngularVelocityRadPerSec;
       transformedState.curveRadius = -state.curveRadius;
+      // transformedState.curvatureRadPerMeter = -state.curvatureRadPerMeter;
       transformedState.curvatureRadPerMeter = -state.curvatureRadPerMeter;
       transformedState.deltaPos = state.deltaPos;
 

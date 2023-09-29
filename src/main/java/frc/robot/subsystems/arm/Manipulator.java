@@ -56,7 +56,7 @@ public class Manipulator extends Subsystem {
 		periodic.intakeMotorCurrent = intakeMotor.getSupplyCurrent();
 		periodic.wristEncoder = wristMotor.getSelectedSensorPosition();
 		periodic.intakeMotorVelocity = intakeMotor.getSelectedSensorVelocity();
-		periodic.wristAbsRads = (wristMotor.getSelectedSensorPosition() / 29000) + 1.78;
+		periodic.wristAbsRads = (wristMotor.getSelectedSensorPosition() / 35000) + 1.78;
 		double currentTime = Timer.getFPGATimestamp();
 		if(periodic.state == State.DriverControlled) {
 			if (periodic.intakeMotorCurrent > Constants.Arm.INTAKE_CURRENT_ACCEPTANCE && periodic.isAuto) {

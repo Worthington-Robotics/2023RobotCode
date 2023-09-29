@@ -110,10 +110,10 @@ public class Arm extends Subsystem {
 		periodic.rawExtensionPower = HIDHelper.getAxisMapped(Constants.Joysticks.SECOND.getRawAxis(1), -.2, .2);
 		periodic.rawPivotPower =  HIDHelper.getAxisMapped(Constants.Joysticks.SECOND.getRawAxis(3), -1,1);
 
-		periodic.extensionLengthMeters = (((extensionMotor.getSelectedSensorPosition()) - 15380) / 230186.1) + 0.8; //GET REAL VALUE
-		periodic.shoulderRads = ((-(armMasterMotor.getSelectedSensorPosition()) / -72165) - 1.33);
+		periodic.extensionLengthMeters = ((-(periodic.lengthEncoder) - 15380) / 230186.1) + 0.8; //GET REAL VALUE
+		periodic.shoulderRads = (((periodic.pivotEncoder) / -72165) - 1.33);
 		periodic.wristRads = Manipulator.getInstance().getWristRads();
-		Vector<N3> angles = VecBuilder.fill(periodic.extensionLengthMeters, periodic.shoulderRads, periodic.wristRads);
+		Vector<N3> angles = VecBuilder.fill(periodic.shoulderRads, periodic.extensionLengthMeters, periodic.wristRads);
 
 		visualizer.update(angles);
 
@@ -130,8 +130,6 @@ public class Arm extends Subsystem {
 
 			@Override
 			public void onLoop(double timestamp) {
-				double x = Math.sin(timestamp);
-				visualizer.update(kinematics.inverseSafe(new Pose2d(0.9+(0.3*x), 0.5 *x, new Rotation2d(0))));
 				switch (periodic.currentMode) {
 					case OPEN_LOOP:
 						periodic.poseAccepted = true;

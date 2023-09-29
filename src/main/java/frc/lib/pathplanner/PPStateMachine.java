@@ -83,7 +83,7 @@ public class PPStateMachine implements Loggable {
                 pathThread.join();
                 SwerveDrive.getInstance().setState(SwerveDrive.State.FieldRel);
 
-                if (data.state.get() == fullTrajectory.size() - 1) { //At the very end
+                if (data.state.get() == fullTrajectory.size()) { //At the very end
                     clearTrajectory();
                     StopEvent endStopEvent = currentTrajectory.getEndStopEvent();
                     if(endStopEvent.waitBehavior == WaitBehavior.NONE) {
