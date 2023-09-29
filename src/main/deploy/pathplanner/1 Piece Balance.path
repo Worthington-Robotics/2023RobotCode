@@ -1,0 +1,56 @@
+{
+  "waypoints": [
+    {
+      "anchorPoint": {
+        "x": 1.9918375907784003,
+        "y": 2.7873243315853995
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.9918375907783985,
+        "y": 2.7873243315853995
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "arm.ArmHighPose",
+          "manipulator.SpitGamePiece",
+          "arm.ArmUnstowPose"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "deadline",
+        "waitTime": 5.0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 3.9286013311205314,
+        "y": 2.7873243315853995
+      },
+      "prevControl": {
+        "x": 2.9286013311205314,
+        "y": 2.7873243315853995
+      },
+      "nextControl": null,
+      "holonomicAngle": -149.34933204294708,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    }
+  ],
+  "maxVelocity": 2.0,
+  "maxAcceleration": 2.0,
+  "isReversed": null,
+  "markers": []
+}

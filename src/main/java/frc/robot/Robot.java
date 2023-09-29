@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
         AutoChooser.getInstance().logAuto();
         AutoChooser.getInstance().printAutos();
 
-        SwerveDrive.getInstance().setVisionUpdates(true);
+        SwerveDrive.getInstance().setVisionUpdates(false);
     }
 
     @Override
@@ -73,7 +73,6 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
         enabledLooper.stop();
-        SwerveDrive.getInstance().setVisionUpdates(true);
         PPStateMachine.getInstance().assertStop();
         SwerveDrive.getInstance().setChassisSpeeds(new ChassisSpeeds(0, 0, 0));
         Lights.getInstance().setState(Lights.State.INIT);

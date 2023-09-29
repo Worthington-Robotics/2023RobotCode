@@ -1,0 +1,113 @@
+{
+  "waypoints": [
+    {
+      "anchorPoint": {
+        "x": 1.9459427154148428,
+        "y": 1.0433190677702104
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.708305929375456,
+        "y": 0.5935492892073453
+      },
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "arm.ArmHighPose",
+          "manipulator.SpitGamePiece",
+          "arm.ArmUnstowPose"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "deadline",
+        "waitTime": 5.0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 4.81896191317355,
+        "y": 0.7312339152980197
+      },
+      "prevControl": {
+        "x": 3.855169530538839,
+        "y": 0.7036969900798852
+      },
+      "nextControl": {
+        "x": 5.215200182221452,
+        "y": 0.7425550086993884
+      },
+      "holonomicAngle": 1.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "arm.ArmIntakePose",
+          "manipulator.IntakeGamePiece"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 6.232524074371124,
+        "y": 0.8964554666068265
+      },
+      "prevControl": {
+        "x": 5.424774267972509,
+        "y": 0.8413816161705583
+      },
+      "nextControl": {
+        "x": 5.424774267972509,
+        "y": 0.8413816161705583
+      },
+      "holonomicAngle": 0.0,
+      "isReversal": true,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": true,
+      "stopEvent": {
+        "names": [
+          "arm.ArmUnstowPose"
+        ],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    },
+    {
+      "anchorPoint": {
+        "x": 1.95,
+        "y": 1.04
+      },
+      "prevControl": {
+        "x": 3.653232078939186,
+        "y": 0.4283277378985398
+      },
+      "nextControl": null,
+      "holonomicAngle": 180.0,
+      "isReversal": false,
+      "velOverride": null,
+      "isLocked": false,
+      "isStopPoint": false,
+      "stopEvent": {
+        "names": [
+          "arm.ArmMidPose"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "none",
+        "waitTime": 0
+      }
+    }
+  ],
+  "maxVelocity": 2.0,
+  "maxAcceleration": 2.0,
+  "isReversed": null,
+  "markers": []
+}

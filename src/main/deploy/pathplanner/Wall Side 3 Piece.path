@@ -19,7 +19,7 @@
         "names": [
           "arm.ArmHighPose",
           "manipulator.SpitGamePiece",
-          "arm.ArmZeroPose"
+          "arm.ArmUnstowPose"
         ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
@@ -96,7 +96,7 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [],
-        "executionBehavior": "parallel",
+        "executionBehavior": "parallelDeadline",
         "waitBehavior": "none",
         "waitTime": 0
       }
@@ -124,6 +124,9 @@
       }
     }
   ],
+  "maxVelocity": 2.0,
+  "maxAcceleration": 2.0,
+  "isReversed": null,
   "markers": [
     {
       "position": 0.8727272727272642,

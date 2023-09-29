@@ -13,10 +13,7 @@ public class IntakeGamePiece extends Action {
     }
 
     @Override
-    public void onLoop() {
-        // TODO Auto-generated method stub
-        
-    }
+    public void onLoop() {}
 
     @Override
     public boolean isFinished() {
@@ -25,6 +22,9 @@ public class IntakeGamePiece extends Action {
 
     @Override
     public void onStop() {
+        if (Manipulator.getInstance().isObject()) {
+
+        }
         Manipulator.getInstance().setIntakePower(0.1);
         Manipulator.getInstance().setGamePiece(true);
     }

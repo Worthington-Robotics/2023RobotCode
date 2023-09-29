@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -25,8 +26,10 @@ import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.lib.loops.ILooper;
 import frc.lib.loops.Loop;
 import frc.robot.Constants;
@@ -43,7 +46,8 @@ public class SwerveDrive extends Subsystem {
     public enum State {
         FieldRel,
         PathPlanner,
-        ChargeStationLock
+        ChargeStationLock,
+        AutoBalance
     }
 
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -80,7 +84,7 @@ public class SwerveDrive extends Subsystem {
         public double XboxLeftY;
         public double XboxRightX;
         public boolean grannyMode = false;
-        public boolean visionUpdates = true;
+        public boolean visionUpdates = false;
         public SwerveModulePosition[] simulatedModulePositions = {
             new SwerveModulePosition(0, new Rotation2d()),
             new SwerveModulePosition(0, new Rotation2d()),
@@ -159,8 +163,20 @@ public class SwerveDrive extends Subsystem {
                     case PathPlanner:
                         speedsToApply = periodic.PPspeeds;
                     break;
+                    case AutoBalance:
+                        Pose2d autoPose = new Pose2d();
+                        if (DriverStation.getAlliance() == Alliance.Blue) {
+                            autoPose = new Pose2d(new Translation2d(3.92, 2.8), new Rotation2d());
+                        } else {
+                            autoPose = new Pose2d(new Translation2d(12.6, 2.8), new Rotation2d(Math.PI));
+                        }
+                        double xDemand = Constants.DriveTrain.DRIVE_X_CONTROLLER.calculate(getPose().getX(), autoPose.getX());
+                        double yDemand = Constants.DriveTrain.DRIVE_Y_CONTROLLER.calculate(getPose().getY(), autoPose.getY());
+                        speedsToApply = new ChassisSpeeds(xDemand, yDemand, 0.0);
+                    break;
                     default:
                         speedsToApply = new ChassisSpeeds();
+                    break;
                 }
                 setChassisSpeeds(speedsToApply);
             }
