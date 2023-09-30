@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.lib.statemachine.Action;
 import frc.robot.actions.arm.ArmHighPose;
@@ -41,7 +42,7 @@ public class JoystickButtonManager {
         new JoystickButton(Constants.Joysticks.SECOND, 6).whileTrue(Action.toCommand(new MoveWristAction(-.33)));
         new JoystickButton(Constants.Joysticks.SECOND, 7).whileTrue(Action.toCommand(new ArmMidPose()));
         new JoystickButton(Constants.Joysticks.SECOND, 8).whileTrue(Action.toCommand(new ArmHighPose()));
-        new JoystickButton(Constants.Joysticks.SECOND, 9).whileTrue(Action.toCommand(new UpdatePoseEstimator()));
+        new JoystickButton(Constants.Joysticks.SECOND, 9).whileTrue(new UpdatePoseEstimator());
         new JoystickButton(Constants.Joysticks.SECOND, 11).whileTrue(Action.toCommand(new ArmPoseAction(ArmPose.HYBRID)));
         new JoystickButton(Constants.Joysticks.SECOND, 12).whileTrue(Action.toCommand(new ArmPoseAction(ArmPose.INTAKE)));
     }

@@ -59,19 +59,24 @@ public class Manipulator extends Subsystem {
 		periodic.wristAbsRads = (wristMotor.getSelectedSensorPosition() / 35000) + 1.78;
 		double currentTime = Timer.getFPGATimestamp();
 		if(periodic.state == State.DriverControlled) {
-			if (periodic.intakeMotorCurrent > Constants.Arm.INTAKE_CURRENT_ACCEPTANCE && periodic.isAuto) {
+			// if (periodic.intakeMotorCurrent > Constants.Arm.INTAKE_CURRENT_ACCEPTANCE && periodic.isAuto) {
+			// 	periodic.hasGamePiece = true;
+			// }
+			// if (periodic.intakeMotorCurrent < 5 && periodic.intakeMotorCurrent > 0.5 && periodic.isAuto) {
+			// 	periodic.hasGamePiece = true;
+			// }
+			// if (periodic.intakeMotorPower < 0 && periodic.isAuto) {
+			// 	periodic.hasGamePiece = false;
+			// }
+			// if(periodic.intakeMotorCurrent == 0 && periodic.isAuto) {
+			// 	periodic.hasGamePiece = false;
+			// } 
+			// if (periodic.intakeMotorCurrent < 0.2 && periodic.isAuto) {
+			// 	periodic.hasGamePiece = false;
+			// }
+			if (periodic.intakeMotorCurrent > Constants.Arm.INTAKE_CURRENT_ACCEPTANCE && Math.abs(intakeMotor.getSelectedSensorVelocity()) < 100) {
 				periodic.hasGamePiece = true;
-			}
-			if (periodic.intakeMotorCurrent < 5 && periodic.intakeMotorCurrent > 0.5 && periodic.isAuto) {
-				periodic.hasGamePiece = true;
-			}
-			if (periodic.intakeMotorPower < 0 && periodic.isAuto) {
-				periodic.hasGamePiece = false;
-			}
-			if(periodic.intakeMotorCurrent == 0 && periodic.isAuto) {
-				periodic.hasGamePiece = false;
-			} 
-			if (periodic.intakeMotorCurrent < 0.2 && periodic.isAuto) {
+			} else if (periodic.intakeMotorPower < 0 || periodic.intakeMotorPower == 0) {
 				periodic.hasGamePiece = false;
 			}
 		} 

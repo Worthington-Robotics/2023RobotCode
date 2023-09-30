@@ -7,8 +7,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6440112224019026,
-        "y": 4.722844138983571
+        "x": 2.7583658020383086,
+        "y": 4.814327802692695
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -64,7 +64,7 @@
       "isStopPoint": false,
       "stopEvent": {
         "names": [],
-        "executionBehavior": "parallel",
+        "executionBehavior": "sequential",
         "waitBehavior": "none",
         "waitTime": 0
       }

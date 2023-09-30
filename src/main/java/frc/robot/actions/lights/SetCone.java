@@ -11,8 +11,7 @@ public class SetCone extends Action {
     }
 
     @Override
-    public void onLoop() {
-    }
+    public void onLoop() {}
 
     @Override
     public boolean isFinished() {
@@ -20,7 +19,6 @@ public class SetCone extends Action {
     }
 
     @Override
-    public void onStop() {
-    }
+    public void onStop() {}
     
 }

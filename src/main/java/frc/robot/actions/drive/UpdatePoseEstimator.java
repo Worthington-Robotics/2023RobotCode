@@ -1,26 +1,34 @@
 package frc.robot.actions.drive;
 
-import frc.lib.statemachine.Action;
+import java.util.Collections;
+import java.util.Set;
+
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.SwerveDrive;
 
-public class UpdatePoseEstimator extends Action {
-
-    @Override
-    public void onStart() {
+public class UpdatePoseEstimator extends CommandBase {
+    public void initialize() {
         SwerveDrive.getInstance().setVisionUpdates(true);
     }
 
-    @Override
-    public void onLoop() {}
+    public Set<Subsystem> getRequirements() {
+        return Collections.emptySet();
+    }
 
-    @Override
+    public void execute() {}
+
     public boolean isFinished() {
         return true;
     }
 
-    @Override
-    public void onStop() {
+    public void end(boolean end) {
         SwerveDrive.getInstance().setVisionUpdates(false);
     }
-    
-}
+
+    @Override
+    public boolean runsWhenDisabled() {
+        return true;
+    }
+
+};

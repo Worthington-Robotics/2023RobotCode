@@ -20,7 +20,6 @@ public class SetCube extends Action {
     }
 
     @Override
-    public void onStop() {
-    }
+    public void onStop() {}
     
 }
